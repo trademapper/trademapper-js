@@ -2,15 +2,15 @@
 
 set -e
 
-if [ -f world-geo.json ]; then
-    rm world-geo.json
+if [ -f subunits.json ]; then
+    rm subunits.json
 fi
 
 # extract just African countries into subunits.json
 ogr2ogr \
     -f GeoJSON \
     -where "continent NOT IN ('Antarctica')" \
-    world-geo.json \
+    subunits.json \
     ne_110m_admin_0_countries.shp
 
     #-where "continent IN ('Africa')" \
@@ -26,7 +26,7 @@ topojson \
     -p region_un \
     -p region_wb \
     -o world.json \
-    world-geo.json
+    subunits.json
 
 # make a readable version of the json
 cat world.json | python -mjson.tool > world.pp.json
@@ -34,3 +34,5 @@ cat world.json | python -mjson.tool > world.pp.json
 echo 'define([], ' > worldmap.js
 cat world.json >> worldmap.js
 echo ');' >> worldmap.js
+
+cp worldmap.js ../trademapper/js/

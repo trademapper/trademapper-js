@@ -1,0 +1,51 @@
+/*-------General---
+ ===============================*/
+
+
+html {
+	font-size:1em;
+}
+
+body {
+	font-family: Arial,"liberation sans", Helvetica, sans-serif;
+	font-size:85%;
+	color:#6D6E72;
+	margin:1em 0;
+	min-width:290px;
+}
+
+* {
+	 -webkit-box-sizing:border-box;
+		-moz-box-sizing:border-box;
+		  -o-box-sizing:border-box;
+		     box-sizing:border-box;
+}
+
+a, a img, img a {
+	outline-style:none;
+	outline:none;
+	border:none;
+}
+
+/*----------General Layout---
+ =====================================*/
+
+#mapheader {
+	height: 100px;
+}
+
+/*----------Map---
+ =====================================*/
+
+.map-svg {
+	overflow:visible;
+}
+
+.country { fill: #eee; }
+
+.country-border {
+	fill: none;
+	stroke: #fff;
+	stroke-linejoin: round;
+}
+

@@ -22,9 +22,31 @@ define(
 			.attr("class", "map-svg flow")
 			.attr("viewBox", "0 0 " + config.width + " " + config.height);
 		mapper.init(tmsvg, config);
+		arrows.init(tmsvg);
 
-		route.setCountryGetLatLongFunc(mapper.countryCentrePoint);
+		route.setCountryGetPointFunc(mapper.countryCentrePoint);
 		route.setLatLongToPointFunc(mapper.latLongToPoint);
+
+		// Below this point is hardwired code that will be replaced down the road
+		routes = [
+			new route.Route([
+				new route.PointCountry("IN"),
+				new route.PointCountry("CN")
+			], 2),
+			new route.Route([
+				new route.PointCountry("KE"),
+				new route.PointCountry("US"),
+				new route.PointCountry("GB")
+			], 20),
+			new route.Route([
+				new route.PointCountry("AU"),
+				new route.PointCountry("ET"),
+				new route.PointCountry("FR")
+			], 10)
+		];
+		for (var i = 0; i < routes.length; i++) {
+			arrows.drawRoute(routes[i]);
+		}
 	};
 
 	return {

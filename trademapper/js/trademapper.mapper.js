@@ -35,9 +35,10 @@ define(["d3", "topojson", "worldmap"], function(d3, topojson, mapdata) {
 	countryCentrePoint = function(countryCode) {
 		for (var i = 0; i < countries.length; i++) {
 			if (countries[i].id === countryCode) {
+				// TODO: special case for the US - Alaska means the centre is over Canada ...
 				return pathmaker.centroid(countries[i]);
 			}
-	}
+		}
 	},
 
 	/*
@@ -53,6 +54,11 @@ define(["d3", "topojson", "worldmap"], function(d3, topojson, mapdata) {
 	latLongToPoint = function(latLong) {
 		return projection(latLong);
 	};
+
+	// TODO:
+	// * highlight country
+	// * clear country highlights
+	// * chloropeth/ colour countries
 
 	return {
 		init: init,

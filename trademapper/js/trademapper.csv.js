@@ -20,7 +20,8 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 	loadCSVFile = function() {
 		var file = fileInputElement.files[0];
 
-		if (file.type == 'text/comma-separated-values') {
+		if (file.type == 'text/csv' ||
+				file.type == 'text/comma-separated-values') {
 			var reader = new FileReader();
 			reader.onload = function(e) {
 				processCSVFile(reader.result);

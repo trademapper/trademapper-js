@@ -55,3 +55,7 @@ a, a img, img a {
 	stroke-width: 2;
 	stroke-linejoin: round;
 }
+
+.route-arrow-head {
+	fill: #333;
+}

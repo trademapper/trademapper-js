@@ -23,6 +23,10 @@ define([], function() {
 		this.point = countryGetPointFunc(countryCode);
 	}
 
+	/*
+	 * points is a list of objects of PointXyz
+	 * weight is the volume of trade
+	 */
 	function Route(points, weight) {
 		this.points = points;
 		this.weight = weight || 1;

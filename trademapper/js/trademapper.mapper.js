@@ -52,6 +52,7 @@ define(["d3", "topojson", "worldmap"], function(d3, topojson, mapdata) {
 	 * the projection.
 	 */
 	latLongToPoint = function(latLong) {
+		// TODO: test this actually does what I expect ...
 		return projection(latLong);
 	};
 

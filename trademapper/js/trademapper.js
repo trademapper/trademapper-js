@@ -21,8 +21,8 @@ define(
 			.attr("id", "mapcanvas")
 			.attr("class", "map-svg flow")
 			.attr("viewBox", "0 0 " + config.width + " " + config.height);
-		mapper.init(tmsvg, config);
 		arrows.init(tmsvg);
+		mapper.init(tmsvg, config);
 
 		route.setCountryGetPointFunc(mapper.countryCentrePoint);
 		route.setLatLongToPointFunc(mapper.latLongToPoint);

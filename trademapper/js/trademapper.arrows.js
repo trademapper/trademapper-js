@@ -4,24 +4,28 @@ define(["d3"], function(d3) {
 
 	/*
 	 * Save the svg we use for later user
+	 * Add the arrow head to defs/marker in the SVG
 	 */
 	init = function(svgElement) {
 		mapsvg = svgElement;
+		addArrowHeadToSvg();
+	},
+
+	addArrowHeadToSvg = function() {
 		mapsvg
-			//.append("defs")
+			.append("defs")
 			.append("marker")
 				.attr("id", "markerArrow")
 				.attr("viewBox", "0 0 10 10")
 				.attr("markerUnits", "strokeWidth")
-				.attr("refX", "0")
+				.attr("refX", "10")
 				.attr("refY", "5")
 				.attr("markerWidth", "4")
 				.attr("markerHeight", "3")
 				.attr("orient", "auto")
 			.append("path")
-				//.attr("d", "M2,2 L2,11 L10,6 L2,2")
-				.attr("d", "M 0 0 L 10 5 L 0 10 z");
-				//.attr("class", "route-arrow-head");
+				.attr("d", "M 0 0 L 10 5 L 0 10 z")
+				.attr("class", "route-arrow-head");
 
 	},
 
@@ -44,6 +48,7 @@ define(["d3"], function(d3) {
 
 	return {
 		init: init,
+		addArrowHeadToSvg: addArrowHeadToSvg,
 		drawRoute: drawRoute
 	};
 });

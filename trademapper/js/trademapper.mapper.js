@@ -4,6 +4,10 @@ define(["d3", "topojson", "worldmap"], function(d3, topojson, mapdata) {
 		countries, borders,
 		projection, pathmaker,
 
+	/*
+	 * caches svg reference
+	 * decodes countries and borders and draws them
+	 */
 	init = function(svgElement, mapConfig) {
 		mapsvg = svgElement;
 
@@ -36,6 +40,8 @@ define(["d3", "topojson", "worldmap"], function(d3, topojson, mapdata) {
 		for (var i = 0; i < countries.length; i++) {
 			if (countries[i].id === countryCode) {
 				// TODO: special case for the US - Alaska means the centre is over Canada ...
+				// Could find largest polygon and use centre of that
+				// Could have hard wired alternative coordinate for a few countries
 				return pathmaker.centroid(countries[i]);
 			}
 		}

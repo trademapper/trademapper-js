@@ -27,7 +27,11 @@ define(
 		route.setCountryGetPointFunc(mapper.countryCentrePoint);
 		route.setLatLongToPointFunc(mapper.latLongToPoint);
 
-		// Below this point is hardwired code that will be replaced down the road
+		hardWiredTest();
+	},
+
+	// hardwired code that will be replaced down the road
+	hardWiredTest = function() {
 		routes = [
 			new route.Route([
 				new route.PointCountry("IN"),

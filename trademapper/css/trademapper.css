@@ -38,7 +38,7 @@ a, a img, img a {
  =====================================*/
 
 .map-svg {
-	overflow:visible;
+/*	overflow:visible;*/
 }
 
 .country { fill: #eee; }

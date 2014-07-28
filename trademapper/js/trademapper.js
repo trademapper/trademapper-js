@@ -2,20 +2,22 @@
  * The main trademapper library
  */
 define(
-	["trademapper.mapper", "trademapper.arrows", "trademapper.route", "d3"],
-	function(mapper, arrows, route, d3) {
+	["trademapper.arrows", "trademapper.csv", "trademapper.mapper",
+		"trademapper.route", "d3"],
+	function(arrows, csv, mapper, route, d3) {
 
-	var config, rootElement,
+	var config, rootElement, fileInputElement,
 
-	init = function(element, tmConfig) {
+	init = function(map, fileInput, tmConfig) {
 		config = tmConfig || {};
-		rootElement = element;
+		rootElement = map;
+		fileInputElement = fileInput;
 
 		config.ratio = config.ratio || 1.0;
-		config.width = parseInt(element.style('width'));
+		config.width = parseInt(rootElement.style('width'));
 		config.height = config.width * config.ratio;
 
-		tmsvg = element.insert("svg")
+		tmsvg = rootElement.insert("svg")
 			.attr("width", config.width)
 			.attr("height", config.height)
 			.attr("id", "mapcanvas")
@@ -23,6 +25,8 @@ define(
 			.attr("viewBox", "0 0 " + config.width + " " + config.height);
 		arrows.init(tmsvg);
 		mapper.init(tmsvg, config);
+
+		csv.init(fileInputElement);
 
 		route.setCountryGetPointFunc(mapper.countryCentrePoint);
 		route.setLatLongToPointFunc(mapper.latLongToPoint);
@@ -32,6 +36,7 @@ define(
 
 	// hardwired code that will be replaced down the road
 	hardWiredTest = function() {
+
 		routes = [
 			new route.Route([
 				new route.PointCountry("IN"),

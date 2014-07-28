@@ -1,6 +1,6 @@
 define(
-	['trademapper.arrows', 'trademapper.route'],
-	function(arrows, route) {
+	['trademapper.arrows', 'trademapper.route', 'd3'],
+	function(arrows, route, d3) {
 		var run = function() {
 			test('check PointLatLong sets point using latLongToPointFunc', function() {
 				route.setLatLongToPointFunc(function() { return [3, 4]; });
@@ -19,9 +19,14 @@ define(
 				equal(9, point.point[1], 'The y of point should be 9');
 			});
 
-			test('silly', function() {
-				equal(1+1, 2, 'The return should be 2');
+			test('check arrows.init() adds the marker svg bit', function() {
+				newsvg = d3.select('#container').append('svg');
+				arrows.init(newsvg);
+				equal(1, d3.select('#container defs')[0].length);
+				equal(1, d3.select('#container defs marker')[0].length);
+				equal(1, d3.select('#container defs marker path')[0].length);
 			});
+
 		};
 		return {run: run};
 	}

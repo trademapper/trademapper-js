@@ -46,9 +46,11 @@ define(["d3"], function(d3) {
 				.attr("marker-end", "url(#markerArrow)");
 	},
 
-	drawMultipleRoutes = function(routes) {
-		for (var i = 0; i < routes.length; i++) {
-			drawRoute(routes[i]);
+	drawRouteCollection = function(collection) {
+		for (var routeCode in collection.routes) {
+			if (collection.routes.hasOwnProperty(routeCode)) {
+				drawRoute(collection.routes[routeCode]);
+			}
 		}
 	};
 
@@ -56,6 +58,6 @@ define(["d3"], function(d3) {
 		init: init,
 		addArrowHeadToSvg: addArrowHeadToSvg,
 		drawRoute: drawRoute,
-		drawMultipleRoutes: drawMultipleRoutes
+		drawRouteCollection: drawRouteCollection
 	};
 });

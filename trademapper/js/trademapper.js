@@ -57,7 +57,7 @@ define(
 	},
 
 	csvLoadedCallback = function(routes) {
-		arrows.drawMultipleRoutes(routes);
+		arrows.drawRouteCollection(routes);
 	};
 
 	return {

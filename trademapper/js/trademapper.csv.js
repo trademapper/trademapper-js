@@ -38,10 +38,9 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 
 		csvData = d3.csv.parseRows(fileText);
 		// make routes from CSV
-		// TODO: do different things for different formats
-		console.log(csvData.length + " lines in CSV file");
+		// TODO: do different things for different formats: CITES etc
 
-		routes = [];
+		routes = new route.RouteCollection();
 		// we start at 1 to skip the title row
 		for (var i = 1; i < csvData.length; i++) {
 			origin = csvData[i][ORIGIN_INDEX];
@@ -63,7 +62,7 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 			}
 			// only add a route if it has at least 2 points
 			if (points.length >= 2) {
-				routes.push(new route.Route(points, weight));
+				routes.addRoute(new route.Route(points, weight));
 			}
 		}
 		console.log(routes);

@@ -1,7 +1,10 @@
 /*
  * The main trademapper library
  */
-define(["trademapper.mapper", "d3"], function(mapper, d3) {
+define(
+	["trademapper.mapper", "trademapper.arrows", "trademapper.route", "d3"],
+	function(mapper, arrows, route, d3) {
+
 	var config, rootElement,
 
 	init = function(element, tmConfig) {
@@ -19,6 +22,9 @@ define(["trademapper.mapper", "d3"], function(mapper, d3) {
 			.attr("class", "map-svg flow")
 			.attr("viewBox", "0 0 " + config.width + " " + config.height);
 		mapper.init(tmsvg, config);
+
+		route.setCountryGetLatLongFunc(mapper.countryCentrePoint);
+		route.setLatLongToPointFunc(mapper.latLongToPoint);
 	};
 
 	return {

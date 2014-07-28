@@ -2,12 +2,12 @@
 define(["d3", "topojson", "worldmap"], function(d3, topojson, mapdata) {
 	var mapsvg, config,
 		countries, borders,
-		pathmaker,
+		projection, pathmaker,
 
 	init = function(svgElement, mapConfig) {
 		mapsvg = svgElement;
 
-		var projection = d3.geo.mercator();
+		projection = d3.geo.mercator();
 			//.scale(mapWidth/1.25)
 			//.translate([mapWidth/4, mapHeight/2+10]);
 		pathmaker = d3.geo.path().projection(projection);
@@ -38,10 +38,25 @@ define(["d3", "topojson", "worldmap"], function(d3, topojson, mapdata) {
 				return pathmaker.centroid(countries[i]);
 			}
 	}
+	},
+
+	/*
+	 * Projects forward from spherical coordinates (in degrees) to Cartesian
+	 * coordinates (in pixels)
+	 *
+	 * Returns an array [x, y] given the input array [longitude, latitude].
+	 *
+	 * May return null if the specified location has no defined projected
+	 * position, such as when the location is outside the clipping bounds of
+	 * the projection.
+	 */
+	latLongToPoint = function(latLong) {
+		return projection(latLong);
 	};
 
 	return {
 		init: init,
-		countryCentrePoint: countryCentrePoint
+		countryCentrePoint: countryCentrePoint,
+		latLongToPoint: latLongToPoint
 	};
 });

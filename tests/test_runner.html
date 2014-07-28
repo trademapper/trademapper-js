@@ -1,0 +1,27 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Test runner</title>
+    <link rel="stylesheet" href="lib/qunit-1.14.0.css" />
+    <link rel="stylesheet" href="lib/qunit-composite.css" />
+</head>
+<body>
+    <div id="qunit"></div>
+    <div id="qunit-fixture"></div>
+
+    <script type="text/javascript" src="lib/qunit-1.14.0.js"></script>
+    <script type="text/javascript" src="lib/qunit-composite.js"></script>
+    <script>
+QUnit.testSuites([
+    "test-x.html"
+/*    "test_lists.html",
+    "test_filter_date.html",
+    "test_filter_lead.html",
+    "editables/test_cleaninput_mixin.html",
+    "editables/test_feedback_mixin.html",
+    "components/test_base_view.html"*/
+]);
+    </script>
+</body>
+</html>

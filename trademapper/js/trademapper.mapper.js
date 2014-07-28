@@ -30,9 +30,18 @@ define(["d3", "topojson", "worldmap"], function(d3, topojson, mapdata) {
 			.datum(borders)
 			.attr("d", pathmaker)
 			.attr("class", "country-border");
+	},
+
+	countryCentrePoint = function(countryCode) {
+		for (var i = 0; i < countries.length; i++) {
+			if (countries[i].id === countryCode) {
+				return pathmaker.centroid(countries[i]);
+			}
+	}
 	};
 
 	return {
-		init: init
+		init: init,
+		countryCentrePoint: countryCentrePoint
 	};
 });

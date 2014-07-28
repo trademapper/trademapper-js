@@ -26,12 +26,12 @@ define(
 		arrows.init(tmsvg);
 		mapper.init(tmsvg, config);
 
-		csv.init(fileInputElement);
+		csv.init(fileInputElement, csvLoadedCallback);
 
 		route.setCountryGetPointFunc(mapper.countryCentrePoint);
 		route.setLatLongToPointFunc(mapper.latLongToPoint);
 
-		hardWiredTest();
+		//hardWiredTest();
 	},
 
 	// hardwired code that will be replaced down the road
@@ -53,9 +53,11 @@ define(
 				new route.PointCountry("FR")
 			], 10)
 		];
-		for (var i = 0; i < routes.length; i++) {
-			arrows.drawRoute(routes[i]);
-		}
+		arrows.drawMultipleRoutes(routes);
+	},
+
+	csvLoadedCallback = function(routes) {
+		arrows.drawMultipleRoutes(routes);
 	};
 
 	return {

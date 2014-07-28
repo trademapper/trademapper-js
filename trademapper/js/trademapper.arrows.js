@@ -44,12 +44,18 @@ define(["d3"], function(d3) {
 				.attr("class", "route-arrow")
 				.attr("d", routeline)
 				.attr("marker-end", "url(#markerArrow)");
+	},
+
+	drawMultipleRoutes = function(routes) {
+		for (var i = 0; i < routes.length; i++) {
+			drawRoute(routes[i]);
+		}
 	};
 
 	return {
 		init: init,
 		addArrowHeadToSvg: addArrowHeadToSvg,
-		drawRoute: drawRoute
+		drawRoute: drawRoute,
+		drawMultipleRoutes: drawMultipleRoutes
 	};
 });
-

@@ -3,12 +3,12 @@ define([], function() {
 	// this is done to avoid circular dependencies
 	var countryGetPointFunc, latLongToPointFunc,
 
-	setCountryGetPointFunc = function(func) {
-		countryGetPointFunc = func;
-	};
-
 	setLatLongToPointFunc = function(func) {
 		latLongToPointFunc = func;
+	};
+
+	setCountryGetPointFunc = function(func) {
+		countryGetPointFunc = func;
 	};
 
 	function PointLatLong(latitude, longitude) {
@@ -17,10 +17,10 @@ define([], function() {
 		this.point = latLongToPointFunc(this.latlong);
 	}
 
-	function PointCountry(countryCode, getLatLongCallback) {
+	function PointCountry(countryCode) {
 		this.type = "country";
 		this.countryCode = countryCode;
-		this.point = countryGetPointFunc(this.countryCode);
+		this.point = countryGetPointFunc(countryCode);
 	}
 
 	function Route(points, weight) {

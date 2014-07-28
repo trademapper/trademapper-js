@@ -11,6 +11,14 @@ define(
 				equal(4, point.point[1], 'The y of point should be 4');
 			});
 
+			test('check PointCountry sets point using countryGetPointFunc', function() {
+				route.setCountryGetPointFunc(function() { return [8, 9]; });
+				var point = new route.PointCountry("GB");
+				equal("GB", point.countryCode, 'The countryCode should be "GB"');
+				equal(8, point.point[0], 'The x of point should be 8');
+				equal(9, point.point[1], 'The y of point should be 9');
+			});
+
 			test('silly', function() {
 				equal(1+1, 2, 'The return should be 2');
 			});

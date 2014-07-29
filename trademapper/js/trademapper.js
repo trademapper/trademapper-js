@@ -7,7 +7,7 @@ define(
 	function(arrows, csv, mapper, route, d3) {
 	"use strict";
 
-	var config, rootElement, fileInputElement,
+	var config, rootElement, fileInputElement, tmsvg,
 
 	init = function(map, fileInput, tmConfig) {
 		config = tmConfig || {};

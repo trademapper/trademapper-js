@@ -17,9 +17,10 @@ require.config({
 });
 
 require(
-	['QUnit', '../../tests/js/test1'],
-	function(QUnit, test1) {
-		test1.run();
+	['QUnit', '../../tests/js/test-arrows', '../../tests/js/test-route'],
+	function(QUnit, test_arrow, test_route) {
+		test_arrow.run();
+		test_route.run();
 
 		QUnit.load();
 		QUnit.start();

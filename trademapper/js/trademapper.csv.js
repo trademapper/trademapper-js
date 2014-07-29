@@ -1,5 +1,6 @@
 
 define(['d3', 'trademapper.route'], function(d3, route) {
+	"use strict";
 	var fileInputElement,
 		csvFileLoadedCallback,
 		filename = '/home/hamish/dev/wwftrademapper/trademapper-js/tests/data/Ivory_tiny.csv',

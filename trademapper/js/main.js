@@ -8,5 +8,6 @@ require.config({
 
 // once loaded, get to work
 require(["d3", "trademapper", "domReady!"], function(d3, tm, doc) {
-    tm.init(d3.select("#trademapper"), document.getElementById('fileinput'));
+	"use strict";
+	tm.init(d3.select("#trademapper"), document.getElementById('fileinput'));
 });

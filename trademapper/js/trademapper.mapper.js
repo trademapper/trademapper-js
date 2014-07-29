@@ -1,5 +1,6 @@
 
 define(["d3", "topojson", "worldmap"], function(d3, topojson, mapdata) {
+	"use strict";
 	var mapsvg, config,
 		countries, borders,
 		projection, pathmaker,

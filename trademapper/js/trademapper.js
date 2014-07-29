@@ -5,6 +5,7 @@ define(
 	["trademapper.arrows", "trademapper.csv", "trademapper.mapper",
 		"trademapper.route", "d3"],
 	function(arrows, csv, mapper, route, d3) {
+	"use strict";
 
 	var config, rootElement, fileInputElement,
 

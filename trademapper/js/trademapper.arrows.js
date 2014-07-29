@@ -50,7 +50,9 @@ define(["d3"], function(d3) {
 	drawRouteCollection = function(collection) {
 		var routeList = collection.getRoutes();
 		for (var i = 0; i < routeList.length; i++) {
-			drawRoute(routeList[i]);
+			if (routeList[i].points.length >= 2) {
+				drawRoute(routeList[i]);
+			}
 		}
 	};
 

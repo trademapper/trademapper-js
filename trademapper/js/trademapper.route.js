@@ -1,11 +1,12 @@
 
 define([], function() {
+	"use strict";
 	// this is done to avoid circular dependencies
 	var countryGetPointFunc, latLongToPointFunc,
 
 	setLatLongToPointFunc = function(func) {
 		latLongToPointFunc = func;
-	};
+	},
 
 	setCountryGetPointFunc = function(func) {
 		countryGetPointFunc = func;
@@ -48,6 +49,27 @@ define([], function() {
 		this.routes = {};
 	}
 
+	RouteCollection.prototype.routeCount = function() {
+		var count = 0;
+		for (var route in this.routes) {
+			if (this.routes.hasOwnProperty(route)) {
+				count++;
+			}
+		}
+		return count;
+	};
+
+	// TODO: add filters, eg minimum weight ...
+	RouteCollection.prototype.getRoutes = function() {
+		var routeList = [];
+		for (var route in this.routes) {
+			if (this.routes.hasOwnProperty(route)) {
+				routeList.push(this.routes[route]);
+			}
+		}
+		return routeList;
+	};
+
 	RouteCollection.prototype.addRoute = function(route) {
 		var routeName = route.toString();
 		if (this.routes.hasOwnProperty(routeName)) {
@@ -57,6 +79,8 @@ define([], function() {
 			this.routes[routeName] = route;
 		}
 	};
+
+	// TODO: maxWeight in collection
 
 	return {
 		setCountryGetPointFunc: setCountryGetPointFunc,

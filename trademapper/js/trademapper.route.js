@@ -50,22 +50,15 @@ define([], function() {
 	}
 
 	RouteCollection.prototype.routeCount = function() {
-		var count = 0;
-		for (var route in this.routes) {
-			if (this.routes.hasOwnProperty(route)) {
-				count++;
-			}
-		}
-		return count;
+		var routes = Object.keys(this.routes);
+		return routes.length;
 	};
 
 	// TODO: add filters, eg minimum weight ...
 	RouteCollection.prototype.getRoutes = function() {
-		var routeList = [];
-		for (var route in this.routes) {
-			if (this.routes.hasOwnProperty(route)) {
-				routeList.push(this.routes[route]);
-			}
+		var routeList = [], routeKeys = Object.keys(this.routes);
+		for (var i = 0; i < routeKeys.length; i++) {
+			routeList.push(this.routes[routeKeys[i]]);
 		}
 		return routeList;
 	};

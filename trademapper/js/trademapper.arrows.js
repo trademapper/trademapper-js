@@ -47,10 +47,9 @@ define(["d3"], function(d3) {
 	},
 
 	drawRouteCollection = function(collection) {
-		for (var routeCode in collection.routes) {
-			if (collection.routes.hasOwnProperty(routeCode)) {
-				drawRoute(collection.routes[routeCode]);
-			}
+		routeList = collection.getRoutes();
+		for (var i = 0; i < routeList.length; i++) {
+			drawRoute(collection.routes[routeCode]);
 		}
 	};
 

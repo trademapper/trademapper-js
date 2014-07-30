@@ -3,7 +3,6 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 	"use strict";
 	var fileInputElement,
 		csvFileLoadedCallback, errorCallback,
-		filename = '/home/hamish/dev/wwftrademapper/trademapper-js/tests/data/Ivory_tiny.csv',
 
 	init = function(fileInput, success_callback, error_callback) {
 		fileInputElement = fileInput;
@@ -26,7 +25,7 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 			};
 			reader.readAsText(file);
 		} else {
-			console.log("File needs to be a CSV file");
+			errorCallback("File needs to be a CSV file");
 		}
 	},
 
@@ -88,7 +87,6 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 			}
 			routes.addRoute(new route.Route(points, weight));
 		}
-		console.log(routes);
 
 		// now send back to the callback
 		csvFileLoadedCallback(routes);

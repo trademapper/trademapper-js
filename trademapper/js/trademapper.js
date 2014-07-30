@@ -9,14 +9,18 @@ define(
 
 	var config, rootElement, fileInputElement, tmsvg,
 
+		defaultConfig = {
+			ratio: 0.6,
+			arrowColours: {
+				pathStart: "black",
+				pathEnd: "orange"
+			}
+		},
+
 	init = function(map, fileInput, tmConfig) {
-		config = tmConfig || {};
 		rootElement = map;
 		fileInputElement = fileInput;
-
-		config.ratio = config.ratio || 1.0;
-		config.width = parseInt(rootElement.style('width'));
-		config.height = config.width * config.ratio;
+		setConfigDefaults(tmConfig);
 
 		tmsvg = rootElement.insert("svg")
 			.attr("width", config.width)
@@ -24,7 +28,7 @@ define(
 			.attr("id", "mapcanvas")
 			.attr("class", "map-svg flow")
 			.attr("viewBox", "0 0 " + config.width + " " + config.height);
-		arrows.init(tmsvg);
+		arrows.init(tmsvg, config.arrowColours);
 		mapper.init(tmsvg, config);
 
 		csv.init(fileInputElement, csvLoadedCallback);
@@ -32,10 +36,26 @@ define(
 		route.setCountryGetPointFunc(mapper.countryCentrePoint);
 		route.setLatLongToPointFunc(mapper.latLongToPoint);
 
+		// TODO: delete when happy to do so
 		//hardWiredTest();
 	},
 
+	setConfigToDefaultIfNotSet = function(key) {
+		config[key] = config[key] || defaultConfig[key];
+	},
+
+	setConfigDefaults = function(tmConfig) {
+		config = tmConfig || {};
+
+		setConfigToDefaultIfNotSet("ratio");
+		setConfigToDefaultIfNotSet("arrowColours");
+
+		config.width = parseInt(rootElement.style('width'));
+		config.height = config.width * config.ratio;
+	},
+
 	// hardwired code that will be replaced down the road
+	// TODO: delete this
 	hardWiredTest = function() {
 
 		routes = [

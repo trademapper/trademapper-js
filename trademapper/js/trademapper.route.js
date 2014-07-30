@@ -73,7 +73,16 @@ define([], function() {
 		}
 	};
 
-	// TODO: maxWeight in collection
+	RouteCollection.prototype.maxWeight = function() {
+		var routeList = this.getRoutes();
+		if (routeList.length === 0) {
+			return 0;
+		} else {
+			return Math.max.apply(null, routeList.map(function(aRoute) {
+				return aRoute.weight;
+			}));
+		}
+	};
 
 	return {
 		setCountryGetPointFunc: setCountryGetPointFunc,

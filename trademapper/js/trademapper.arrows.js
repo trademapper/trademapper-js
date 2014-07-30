@@ -1,21 +1,22 @@
 
 define(["d3"], function(d3) {
 	"use strict";
-	var mapsvg, config,
+	var mapsvg, config, svgdefs, arrowColours,
 
 	/*
 	 * Save the svg we use for later user
 	 * Add the arrow head to defs/marker in the SVG
 	 */
-	init = function(svgElement) {
+	init = function(svgElement, colours) {
 		mapsvg = svgElement;
-		addArrowHeadToSvg();
+		arrowColours = colours;
+		addDefsToSvg();
 	},
 
-	addArrowHeadToSvg = function() {
-		mapsvg
-			.append("defs")
-			.append("marker")
+	addDefsToSvg = function() {
+		svgdefs = mapsvg.append("defs");
+		// first add arrow head
+		svgdefs.append("marker")
 				.attr("id", "markerArrow")
 				.attr("viewBox", "0 0 10 10")
 				.attr("markerUnits", "strokeWidth")
@@ -28,6 +29,17 @@ define(["d3"], function(d3) {
 				.attr("d", "M 0 0 L 10 5 L 0 10 z")
 				.attr("class", "route-arrow-head");
 
+		// now add a gradient
+		var gradient = svgdefs.append("linearGradient")
+			.attr("id", "route-grad");
+		gradient.append("stop")
+			.attr("offset", "0%")
+			.attr("stop-color", arrowColours.pathStart)
+			.attr("stop-opacity", "0.5");
+		gradient.append("stop")
+			.attr("offset", "100%")
+			.attr("stop-color", arrowColours.pathEnd)
+			.attr("stop-opacity", "0.5");
 	},
 
 	/*
@@ -44,7 +56,9 @@ define(["d3"], function(d3) {
 				.datum(route.points)
 				.attr("class", "route-arrow")
 				.attr("d", routeline)
-				.attr("marker-end", "url(#markerArrow)");
+				.attr("marker-end", "url(#markerArrow)")
+				.attr("stroke", "url(#route-grad)")
+				.attr("stroke-width", 2);
 	},
 
 	drawRouteCollection = function(collection) {
@@ -58,7 +72,7 @@ define(["d3"], function(d3) {
 
 	return {
 		init: init,
-		addArrowHeadToSvg: addArrowHeadToSvg,
+		addDefsToSvg: addDefsToSvg,
 		drawRoute: drawRoute,
 		drawRouteCollection: drawRouteCollection
 	};

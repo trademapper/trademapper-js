@@ -51,10 +51,6 @@ define(["d3"], function(d3) {
 				.attr("stop-opacity", "0.5");
 		},
 
-		setMaxRouteWeight: function(maxWeight) {
-			this.maxRouteWeight = maxWeight;
-		},
-
 		getArrowWidth: function(route) {
 			var width = (route.weight / this.maxWeight) * this.maxArrowWidth;
 			return Math.max(width, this.minArrowWidth);

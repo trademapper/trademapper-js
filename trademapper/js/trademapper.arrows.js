@@ -22,7 +22,7 @@ define(["d3"], function(d3) {
 				.attr("id", "markerArrow")
 				.attr("viewBox", "0 0 10 10")
 				.attr("markerUnits", "strokeWidth")
-				.attr("refX", "10")
+				.attr("refX", "7")
 				.attr("refY", "5")
 				.attr("markerWidth", "4")
 				.attr("markerHeight", "3")
@@ -44,12 +44,8 @@ define(["d3"], function(d3) {
 			.attr("stop-opacity", "0.5");
 	},
 
-	setMaxRouteWeight = function(maxWeight) {
-		maxRouteWeight = maxWeight;
-	},
-
 	getArrowWidth = function(route) {
-		var width = (route.weight / maxWeight) * maxArrowWidth;
+		var width = (route.weight / maxRouteWeight) * maxArrowWidth;
 		return Math.max(width, minArrowWidth);
 	},
 
@@ -69,22 +65,26 @@ define(["d3"], function(d3) {
 				.attr("d", routeline)
 				.attr("marker-end", "url(#markerArrow)")
 				.attr("stroke", "url(#route-grad)")
-				.attr("stroke-width", 2);
+				.attr("stroke-width", getArrowWidth(route));
 	},
 
 	drawRouteCollection = function(collection) {
+		maxRouteWeight = collection.maxWeight();
 		var routeList = collection.getRoutes();
 		for (var i = 0; i < routeList.length; i++) {
 			if (routeList[i].points.length >= 2) {
 				drawRoute(routeList[i]);
 			}
 		}
+	},
+
+	clearArrows = function() {
+		d3.selectAll('.route-arrow').remove();
 	};
 
 	return {
 		init: init,
 		addDefsToSvg: addDefsToSvg,
-		setMaxRouteWeight: setMaxRouteWeight,
 		drawRoute: drawRoute,
 		drawRouteCollection: drawRouteCollection
 	};

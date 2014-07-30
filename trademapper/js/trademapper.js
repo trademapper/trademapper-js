@@ -15,6 +15,7 @@ define(
 				pathStart: "black",
 				pathEnd: "orange"
 			},
+			minArrowWidth: 2,
 			maxArrowWidth: 30
 		},
 
@@ -29,7 +30,7 @@ define(
 			.attr("id", "mapcanvas")
 			.attr("class", "map-svg flow")
 			.attr("viewBox", "0 0 " + config.width + " " + config.height);
-		arrows.init(tmsvg, config.arrowColours, config.maxArrowWidth);
+		arrows.init(tmsvg, config.arrowColours, config.minArrowWidth, config.maxArrowWidth);
 		mapper.init(tmsvg, config);
 
 		csv.init(fileInputElement, csvLoadedCallback, csvLoadErrorCallback);
@@ -41,16 +42,15 @@ define(
 		//hardWiredTest();
 	},
 
-	setConfigToDefaultIfNotSet = function(key) {
-		config[key] = config[key] || defaultConfig[key];
-	},
-
 	setConfigDefaults = function(tmConfig) {
 		config = tmConfig || {};
 
-		setConfigToDefaultIfNotSet("ratio");
-		setConfigToDefaultIfNotSet("arrowColours");
+		// set defaults for all
+		Object.keys(defaultConfig).forEach(function(key) {
+			config[key] = config[key] || defaultConfig[key];
+		});
 
+		// work out some stuff from the size of the element we're attached to
 		config.width = parseInt(rootElement.style('width'));
 		config.height = config.width * config.ratio;
 	},

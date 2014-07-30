@@ -2,13 +2,16 @@
 define(['d3', 'trademapper.route'], function(d3, route) {
 	"use strict";
 	var fileInputElement,
-		csvFileLoadedCallback,
+		csvFileLoadedCallback, errorCallback,
 		filename = '/home/hamish/dev/wwftrademapper/trademapper-js/tests/data/Ivory_tiny.csv',
 
-	init = function(fileInput, callback) {
+	init = function(fileInput, success_callback, error_callback) {
 		fileInputElement = fileInput;
-		csvFileLoadedCallback = callback;
-		fileInputElement.addEventListener('change', loadCSVFile);
+		csvFileLoadedCallback = success_callback;
+		errorCallback = error_callback;
+		if (fileInputElement !== null) {
+			fileInputElement.addEventListener('change', loadCSVFile);
+		}
 	},
 
 	loadCSVFile = function() {
@@ -47,7 +50,7 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 		if (csvProcessors.hasOwnProperty(csvType)) {
 			csvProcessors[csvType](csvData);
 		} else {
-			console.log("unknown csvType: " + csvType);
+			errorCallback("unknown csvType: " + csvType);
 		}
 	},
 
@@ -96,6 +99,7 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 	};
 
 	return {
-		init: init
+		init: init,
+		processCSVString: processCSVString
 	};
 });

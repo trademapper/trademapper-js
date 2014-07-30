@@ -31,7 +31,7 @@ define(
 		arrows.init(tmsvg, config.arrowColours);
 		mapper.init(tmsvg, config);
 
-		csv.init(fileInputElement, csvLoadedCallback);
+		csv.init(fileInputElement, csvLoadedCallback, csvLoadErrorCallback);
 
 		route.setCountryGetPointFunc(mapper.countryCentrePoint);
 		route.setLatLongToPointFunc(mapper.latLongToPoint);
@@ -79,6 +79,10 @@ define(
 
 	csvLoadedCallback = function(routes) {
 		arrows.drawRouteCollection(routes);
+	},
+
+	csvLoadErrorCallback = function(msg) {
+		// TODO: show the error to the user
 	};
 
 	return {

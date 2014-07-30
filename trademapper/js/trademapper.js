@@ -15,6 +15,7 @@ define(
 				pathStart: "black",
 				pathEnd: "orange"
 			},
+			minArrowWidth: 2,
 			maxArrowWidth: 30
 		},
 
@@ -29,7 +30,7 @@ define(
 			.attr("id", "mapcanvas")
 			.attr("class", "map-svg flow")
 			.attr("viewBox", "0 0 " + config.width + " " + config.height);
-		arrows.init(tmsvg, config.arrowColours, config.maxArrowWidth);
+		initArrows();
 		mapper.init(tmsvg, config);
 
 		csv.init(fileInputElement, csvLoadedCallback, csvLoadErrorCallback);
@@ -39,6 +40,14 @@ define(
 
 		// TODO: delete when happy to do so
 		//hardWiredTest();
+	},
+
+	initArrows = function() {
+		arrows.mapsvg = tmsvg;
+		arrows.arrowColours = config.arrowColours;
+		arrows.minArrowWidth = config.minArrowWidth;
+		arrows.maxArrowWidth = config.maxArrowWidth;
+		arrows.init();
 	},
 
 	setConfigToDefaultIfNotSet = function(key) {

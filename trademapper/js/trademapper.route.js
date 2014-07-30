@@ -26,6 +26,11 @@ define([], function() {
 		this.type = "country";
 		this.countryCode = countryCode;
 		this.point = countryGetPointFunc(countryCode);
+		if (this.point === undefined) {
+			// TODO: look up country codes in map data
+			// TODO: report to user these countries
+			console.log("could not find point for country code: " + countryCode);
+		}
 	}
 
 	PointCountry.prototype.toString = function() {

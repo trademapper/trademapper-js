@@ -1,15 +1,17 @@
 
 define(["d3"], function(d3) {
 	"use strict";
-	var mapsvg, config, svgdefs, arrowColours,
+	var mapsvg, config, svgdefs, arrowColours, minArrowWidth, maxArrowWidth, maxRouteWeight,
 
 	/*
 	 * Save the svg we use for later user
 	 * Add the arrow head to defs/marker in the SVG
 	 */
-	init = function(svgElement, colours) {
+	init = function(svgElement, colours, minWidth, maxWidth) {
 		mapsvg = svgElement;
 		arrowColours = colours;
+		minArrowWidth = minWidth;
+		maxArrowWidth = maxWidth;
 		addDefsToSvg();
 	},
 
@@ -40,6 +42,15 @@ define(["d3"], function(d3) {
 			.attr("offset", "100%")
 			.attr("stop-color", arrowColours.pathEnd)
 			.attr("stop-opacity", "0.5");
+	},
+
+	setMaxRouteWeight = function(maxWeight) {
+		maxRouteWeight = maxWeight;
+	},
+
+	getArrowWidth = function(route) {
+		var width = (route.weight / maxWeight) * maxArrowWidth;
+		return Math.max(width, minArrowWidth);
 	},
 
 	/*
@@ -73,6 +84,7 @@ define(["d3"], function(d3) {
 	return {
 		init: init,
 		addDefsToSvg: addDefsToSvg,
+		setMaxRouteWeight: setMaxRouteWeight,
 		drawRoute: drawRoute,
 		drawRouteCollection: drawRouteCollection
 	};

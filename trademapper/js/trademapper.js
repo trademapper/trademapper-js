@@ -14,7 +14,8 @@ define(
 			arrowColours: {
 				pathStart: "black",
 				pathEnd: "orange"
-			}
+			},
+			maxArrowWidth: 30
 		},
 
 	init = function(map, fileInput, tmConfig) {
@@ -28,7 +29,7 @@ define(
 			.attr("id", "mapcanvas")
 			.attr("class", "map-svg flow")
 			.attr("viewBox", "0 0 " + config.width + " " + config.height);
-		arrows.init(tmsvg, config.arrowColours);
+		arrows.init(tmsvg, config.arrowColours, config.maxArrowWidth);
 		mapper.init(tmsvg, config);
 
 		csv.init(fileInputElement, csvLoadedCallback, csvLoadErrorCallback);

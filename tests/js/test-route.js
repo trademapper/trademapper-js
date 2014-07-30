@@ -127,7 +127,7 @@ define(
 
 			q.test('check RouteCollection maxWeight returns 0 when it has one route', function() {
 				var collection = new route.RouteCollection(),
-					route1 = new route.Route([pointL1, pointC1, pointC2], 20);
+					route1 = new route.Route([pointC1, pointC2], 20);
 				collection.addRoute(route1);
 				q.equal(collection.maxWeight(), 20);
 			});

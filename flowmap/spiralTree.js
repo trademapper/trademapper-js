@@ -70,12 +70,13 @@ BinarySearchArray.prototype.search = function (value, start, end) {
 	}
 	while (this.bsStart <= this.bsEnd) {
 		this.bsCurrent = parseInt((this.bsStart + this.bsEnd) / 2);
-		if (value === this.arrayData[this.bsCurrent].theta)
+		if (value === this.arrayData[this.bsCurrent].theta) {
 			return this.bsCurrent;
-		else if (value < this.arrayData[this.bsCurrent].theta)
+		} else if (value < this.arrayData[this.bsCurrent].theta) {
 			this.bsEnd = this.bsCurrent - 1;
-		else
+		} else {
 			this.bsStart = this.bsCurrent + 1;
+		}
 	}
 	return this.bsStart;
 };
@@ -114,13 +115,11 @@ function SpiralTree(layerId_, projection_) {
 	this.terminals = [];
 	this.center = {};
 	this.alpha = Math.PI / 12;	//spiral angle
-	this.projection = null;
-	if (projection_ === undefined) {
+	this.projection = projection_;
+	if (this.projection === undefined) {
 		this.projection = d3.geo.mercator()
-		.scale(1000)
-		.translate([480, 400]);
-	} else {
-		this.projection = projection_;
+			.scale(1000)
+			.translate([480, 400]);
 	}
 	this.spiralTreeLayer = this.layerId
 		.append("g");
@@ -139,9 +138,11 @@ SpiralTree.prototype.setProjection = function (projection_) {
 };
 
 SpiralTree.prototype.setAlpha = function (alpha_) {
-	if (alpha_ === undefined)
+	if (alpha_ === undefined) {
 		this.alpha = Math.PI / 12;
-	else this.alpha = alpha_;
+	} else {
+		this.alpha = alpha_;
+	}
 };
 
 SpiralTree.prototype.setColor = function (className, color) {
@@ -158,18 +159,18 @@ SpiralTree.prototype.setColor = function (className, color) {
 };
 
 SpiralTree.prototype.setWidth = function (width) {
-	if (width === undefined) width = 1;
+	if (width === undefined) { width = 1; }
 	this.strokeWidth = width;
 };
 
 SpiralTree.prototype.setOpacity = function (opacity) {
-	if (opacity === undefined) opacity = 0.8;
+	if (opacity === undefined) { opacity = 0.8; }
 	this.opacity = opacity;
 };
 
 //this is used for setting up a threshold of detecting the overlapping nodes
 SpiralTree.prototype.setThreshold = function (zoomLevel) {
-	if (zoomLevel === undefined) zoomLevel = 3;
+	if (zoomLevel === undefined) { zoomLevel = 3; }
 	this.threshold = Math.pow(2, (zoomLevel - 3));
 };
 
@@ -203,24 +204,34 @@ SpiralTree.prototype.preprocess = function (Geodata, Geocenter) {
 	}
 	var minX = this.center.x, minY = this.center.y, maxX = this.center.x, maxY = this.center.y;
 	for (var loopi = 0; loopi < this.terminals.length; loopi++) {
-		this.terminals[loopi].r = Math.sqrt((this.terminals[loopi].x - this.center.x) * (this.terminals[loopi].x - this.center.x) + (this.terminals[loopi].y - this.center.y) * (this.terminals[loopi].y - this.center.y));
+		this.terminals[loopi].r = Math.sqrt(
+			(this.terminals[loopi].x - this.center.x) * (this.terminals[loopi].x - this.center.x) +
+			(this.terminals[loopi].y - this.center.y) * (this.terminals[loopi].y - this.center.y)
+		);
 		//r could be possibly 0 when the terminal are totally overlapped with the center which will result the NaN in theta
 		//and then it would cause the last segment of the spiral tree disappear, so we need to add a conditional statement for that situation
 		var theta;
 		if (this.terminals[loopi].r === 0) {
 			theta = 0;
-		}
-		else
+		} else {
 			theta = Math.acos((this.terminals[loopi].x - this.center.x) / this.terminals[loopi].r);
+		}
 		this.terminals[loopi].theta = (this.terminals[loopi].y - this.center.y) < 0 ? 2 * Math.PI - theta : theta;
-		if (this.terminals[loopi].x > maxX) maxX = this.terminals[loopi].x;
-		if (this.terminals[loopi].x < minX) minX = this.terminals[loopi].x;
-		if (this.terminals[loopi].y > maxY) maxY = this.terminals[loopi].y;
-		if (this.terminals[loopi].y < minY) minY = this.terminals[loopi].y;
+		if (this.terminals[loopi].x > maxX) { maxX = this.terminals[loopi].x; }
+		if (this.terminals[loopi].x < minX) { minX = this.terminals[loopi].x; }
+		if (this.terminals[loopi].y > maxY) { maxY = this.terminals[loopi].y; }
+		if (this.terminals[loopi].y < minY) { minY = this.terminals[loopi].y; }
 	}
 	//sort the array of terminals
 	Array.prototype.sort.call(this.terminals, function (a, b) { return b.r - a.r; });
-	return { xMin: minX, yMin: minY, xMax: maxX, yMax: maxY, width: maxX - minX, height: maxY - minY };
+	return {
+		xMin: minX,
+		yMin: minY,
+		xMax: maxX,
+		yMax: maxY,
+		width: maxX - minX,
+		height: maxY - minY
+	};
 };
 
 //this is a function of calculating and storing the spiral segments
@@ -230,32 +241,48 @@ SpiralTree.prototype.spiralPath = function (point, tValue, sign) {
 		.x(function (d) { return x(d.x); })
 		.y(function (d) { return y(d.y); });
 	var adjustAlpha;
-	if (sign === "-") adjustAlpha = -this.alpha;
-	else adjustAlpha = this.alpha;
-	var r = Math.sqrt((point.x - this.center.x) * (point.x - this.center.x) + (point.y - this.center.y) * (point.y - this.center.y));
+	if (sign === "-") {
+		adjustAlpha = -this.alpha;
+	} else {
+		adjustAlpha = this.alpha;
+	}
+	var r = Math.sqrt(
+		(point.x - this.center.x) * (point.x - this.center.x) +
+		(point.y - this.center.y) * (point.y - this.center.y)
+	);
 	var initialTheta = Math.acos((point.x - this.center.x) / r);
 	var theta = (point.y - this.center.y) < 0 ? 2 * Math.PI - initialTheta : initialTheta;
 	var step;
 	var ncount = 60;
-	if (tValue === undefined)
+	if (tValue === undefined) {
 		step = (Math.PI / Math.tan(this.alpha)) / ncount; //0.05;
-	else step = tValue / ncount;
+	} else {
+		step = tValue / ncount;
+	}
 	var spiral = [];
 	for (var i = 0; i < ncount; i++) {
 		currentTheta = theta + Math.tan(adjustAlpha) * i * step;
-		spiral.push({ x: r * Math.exp(-i * step) * Math.cos(currentTheta) + this.center.x, y: r * Math.exp(-i * step) * Math.sin(currentTheta) + this.center.y });
+		spiral.push({
+			x: r * Math.exp(-i * step) * Math.cos(currentTheta) + this.center.x,
+			y: r * Math.exp(-i * step) * Math.sin(currentTheta) + this.center.y
+		});
 	}
 	//need to push the last point of the spiral path to make sure that it is theoretically closed
 	currentTheta = theta + Math.tan(adjustAlpha) * tValue;
-	spiral.push({ x: r * Math.exp(-tValue) * Math.cos(currentTheta) + this.center.x, y: r * Math.exp(-tValue) * Math.sin(currentTheta) + this.center.y });
+	spiral.push({
+		x: r * Math.exp(-tValue) * Math.cos(currentTheta) + this.center.x,
+		y: r * Math.exp(-tValue) * Math.sin(currentTheta) + this.center.y
+	});
 	return spiralLine(spiral);
 };
 
 SpiralTree.prototype.drawNode = function (point, color, opacity) {
 	if (opacity === undefined) {
-		if (point.opacity === undefined)
+		if (point.opacity === undefined) {
 			opacity = this.opacity;
-		else opacity = point.opacity;
+		} else { 
+			opacity = point.opacity;
+		}
 	}
 	var node = this.spiralTreeLayer.append("svg:path")
 		.attr("class", "dot")
@@ -276,12 +303,15 @@ SpiralTree.prototype.drawNode = function (point, color, opacity) {
 // TODO: currently unused
 SpiralTree.prototype.drawLineSegment = function (point1, point2, opacity) {
 	if (opacity === undefined) {
-		if (point1.opacity === undefined)
+		if (point1.opacity === undefined) {
 			opacity = this.opacity;
-		else opacity = point1.opacity;
+		} else {
+			opacity = point1.opacity;
+		}
 	}
-	if (this.lineColor === undefined)
+	if (this.lineColor === undefined) {
 		this.lineColor = 'green';
+	}
 	this.spiralTreeLayer.append("svg:line")
 		.attr("x1", x(point1.x))
 		.attr("y1", y(point1.y))
@@ -296,14 +326,19 @@ SpiralTree.prototype.drawLineSegment = function (point1, point2, opacity) {
 
 SpiralTree.prototype.drawSpiralSegment = function (point, tValue, sign, opacity) {
 	if (opacity === undefined) {
-		if (point.opacity === undefined)
+		if (point.opacity === undefined) {
 			opacity = this.opacity;
-		else opacity = point.opacity;
+		} else {
+			opacity = point.opacity;
+		}
 	}
 	//special situation need to take care
-	if (point.r === 0) return;
-	if (this.spiralColor === undefined)
+	if (point.r === 0) {
+		return;
+	}
+	if (this.spiralColor === undefined) {
 		this.spiralColor = 'black';
+	}
 	this.spiralTreeLayer.append("svg:path")
 		.attr("d", this.spiralPath(point, tValue, sign))
 		.attr("class", "spiral")
@@ -324,28 +359,49 @@ SpiralTree.prototype.drawSteinerNode = function (point) {
 //this function is newly added to force terminal points to be leaves rather than becoming interior points
 SpiralTree.prototype.auxCircleJoinPoint = function (point, r, sign) {
 	//special situation need to take care
-	if (point.r === 0)
+	if (point.r === 0) {
 		return null;
-	if (r === 0)
-		return { ti: undefined, x: this.center.x, y: this.center.y, r: 0, theta: 0, opacity: point.opacity };
+	}
+	if (r === 0) {
+		return {
+			ti: undefined,
+			x: this.center.x,
+			y: this.center.y,
+			r: 0,
+			theta: 0,
+			opacity: point.opacity
+		};
+	}
 	var ti = Math.log(point.r / r);
 	var tempTheta;
-	if (sign === '+')
+	if (sign === '+') {
 		tempTheta = point.theta + Math.tan(this.alpha) * ti;
-	else
+	} else {
 		tempTheta = point.theta + Math.tan(-this.alpha) * ti;
-	if (r <= point.r)
-		return { ti: ti, x: r * Math.cos(tempTheta) + this.center.x, y: r * Math.sin(tempTheta) + this.center.y, r: r, theta: tempTheta, opacity: point.opacity };
-	else return null;
+	}
+	if (r <= point.r) {
+		return {
+			ti: ti,
+			x: r * Math.cos(tempTheta) + this.center.x,
+			y: r * Math.sin(tempTheta) + this.center.y,
+			r: r,
+			theta: tempTheta,
+			opacity: point.opacity
+		};
+	} else {
+		return null;
+	}
 };
 
 //this function is used to try to avoid overlapping of the steiner node and the terminals
 SpiralTree.prototype.overlapArea = function (joinPoint, terminal, threshold) {
-	if (threshold === undefined) threshold = this.threshold;
-	var dis = (joinPoint.x - terminal.x) * (joinPoint.x - terminal.x) + (joinPoint.y - terminal.y) * (joinPoint.y - terminal.y);
+	if (threshold === undefined) {
+		threshold = this.threshold;
+	}
+	var dis = (joinPoint.x - terminal.x) * (joinPoint.x - terminal.x) +
+			(joinPoint.y - terminal.y) * (joinPoint.y - terminal.y);
 	dis = Math.sqrt(dis);
-	if (dis <= threshold) return true;
-	else return false;
+	return (Math.sqrt(dis) <= threshold);
 };
 
 
@@ -353,14 +409,22 @@ SpiralTree.prototype.overlapArea = function (joinPoint, terminal, threshold) {
 SpiralTree.prototype.spiralJoinPoint = function (point1, point2) {
 	//special situation need to take care
 	if (point1.r === 0 || point2.r === 0) {
-		return { tPlus: undefined, tMinus: undefined, x: this.center.x, y: this.center.y,
-			r: 0, theta: 0, opacity: Math.max(point1.opacity, point2.opacity)
+		return {
+			tPlus: undefined,
+			tMinus: undefined,
+			x: this.center.x,
+			y: this.center.y,
+			r: 0,
+			theta: 0,
+			opacity: Math.max(point1.opacity, point2.opacity)
 		};
 	}
 
 	//because of the angle problem, we need to add 2*Pi sometime, not proved but tested
 	var angleDifference = point2.theta - point1.theta;
-	if (angleDifference < 0) angleDifference = angleDifference + 2 * Math.PI;
+	if (angleDifference < 0) {
+		angleDifference = angleDifference + 2 * Math.PI;
+	}
 	var radiusDifference = Math.log(point1.r) - Math.log(point2.r);
 	angleDifference = angleDifference / Math.tan(this.alpha);
 	var t1 = (angleDifference + radiusDifference) / 2;
@@ -369,19 +433,27 @@ SpiralTree.prototype.spiralJoinPoint = function (point1, point2) {
 		var tempR = point1.r * Math.exp(-t1);
 		var tempTheta = point1.theta + Math.tan(this.alpha) * t1;
 		//opacity attribute added for controlling the spiral segment opacity
-		return { tPlus: t1, tMinus: t2, x: tempR * Math.cos(tempTheta) + this.center.x, y: tempR * Math.sin(tempTheta) + this.center.y,
-			r: tempR, theta: tempTheta, opacity: Math.max(point1.opacity, point2.opacity)
+		return {
+			tPlus: t1,
+			tMinus: t2,
+			x: tempR * Math.cos(tempTheta) + this.center.x,
+			y: tempR * Math.sin(tempTheta) + this.center.y,
+			r: tempR,
+			theta: tempTheta,
+			opacity: Math.max(point1.opacity, point2.opacity)
 		};
+	} else {
+		return null;
 	}
-	else return null;
 };
 
 SpiralTree.prototype.calculateJP = function (waveF) {
 	var tempJoinPoint = null;
 	for (var loopk = 0; loopk < waveF.arrayData.length; loopk++) {
 		var neighborCCW = (loopk + 1) > (waveF.arrayData.length - 1) ? (loopk + 1 - waveF.arrayData.length) : (loopk + 1);
-		if (neighborCCW === loopk) continue;
-		else {
+		if (neighborCCW === loopk) {
+			continue;
+		} else {
 			var currentJoinPoint = this.spiralJoinPoint(waveF.arrayData[loopk], waveF.arrayData[neighborCCW]);
 			if ((currentJoinPoint !== null) && ((tempJoinPoint === null) || (tempJoinPoint.r < currentJoinPoint.r))) {
 				tempJoinPoint = currentJoinPoint;
@@ -418,15 +490,17 @@ SpiralTree.prototype.drawTree = function () {
 			//second step check the neighbor of that terminal
 			var neighborRight = (position + 1) > (waveFront.arrayData.length - 1) ? (position + 1 - waveFront.arrayData.length) : (position + 1);
 			var neighborLeft = (position - 1) < 0 ? (position - 1 + waveFront.arrayData.length) : (position - 1);
-			if (neighborRight === position && neighborLeft === position) continue;
+			if (neighborRight === position && neighborLeft === position) {
+				continue;
+			}
 			if (this.spiralJoinPoint(waveFront.arrayData[position], waveFront.arrayData[neighborRight]) === null) {
 				//this.drawLineSegment(waveFront.arrayData[position], waveFront.arrayData[neighborRight]);
 				joinPoint = this.auxCircleJoinPoint(waveFront.arrayData[neighborRight], waveFront.arrayData[position].r, "+");
 				this.drawSpiralSegment(waveFront.arrayData[neighborRight], joinPoint.ti, "+");
 				waveFront.remove(waveFront.arrayData[neighborRight], neighborRight);
 				position = waveFront.add(joinPoint);
-			}
-			else if (this.spiralJoinPoint(waveFront.arrayData[neighborLeft], waveFront.arrayData[position]) === null) {
+
+			} else if (this.spiralJoinPoint(waveFront.arrayData[neighborLeft], waveFront.arrayData[position]) === null) {
 				//this.drawLineSegment(waveFront.arrayData[neighborLeft], waveFront.arrayData[position]);
 				joinPoint = this.auxCircleJoinPoint(waveFront.arrayData[neighborLeft], waveFront.arrayData[position].r, "-");
 				this.drawSpiralSegment(waveFront.arrayData[neighborLeft], joinPoint.ti, "-");
@@ -434,10 +508,10 @@ SpiralTree.prototype.drawTree = function () {
 				position = waveFront.add(joinPoint);
 			}
 			joinPoint = this.calculateJP(waveFront);
-			if (joinPoint !== null && loopi < this.terminals.length && joinPoint.r < this.terminals[loopi].r)
+			if (joinPoint !== null && loopi < this.terminals.length && joinPoint.r < this.terminals[loopi].r) {
 				joinPoint = null;
-		}
-		else {
+			}
+		} else {
 			//This is the join point event
 			//pre-step for processing if the steiner node overlaps with the terminals
 			if (this.overlapArea(waveFront.arrayData[joinPoint.parentMinus], waveFront.arrayData[joinPoint.parentPlus], this.threshold*3)) {
@@ -449,20 +523,20 @@ SpiralTree.prototype.drawTree = function () {
 				waveFront.remove(waveFront.arrayData[joinPoint.parentPlus], joinPoint.parentPlus, joinPoint.parentMinus);
 				//third step we need to insert the steiner node into W
 				position = waveFront.add(joinPoint);
-			}
-			else if (this.overlapArea(joinPoint, waveFront.arrayData[joinPoint.parentPlus])) {
+
+			} else if (this.overlapArea(joinPoint, waveFront.arrayData[joinPoint.parentPlus])) {
 				newJoinPoint = this.auxCircleJoinPoint(waveFront.arrayData[joinPoint.parentMinus], waveFront.arrayData[joinPoint.parentPlus].r, "+");
 				this.drawSpiralSegment(waveFront.arrayData[joinPoint.parentMinus], newJoinPoint.ti, "+");
 				waveFront.remove(waveFront.arrayData[joinPoint.parentMinus], joinPoint.parentMinus);
 				position = waveFront.add(newJoinPoint);
-			}
-			else if (this.overlapArea(joinPoint, waveFront.arrayData[joinPoint.parentMinus])) {
+
+			} else if (this.overlapArea(joinPoint, waveFront.arrayData[joinPoint.parentMinus])) {
 				newJoinPoint = this.auxCircleJoinPoint(waveFront.arrayData[joinPoint.parentPlus], waveFront.arrayData[joinPoint.parentMinus].r, "-");
 				this.drawSpiralSegment(waveFront.arrayData[joinPoint.parentPlus], newJoinPoint.ti, "-");
 				waveFront.remove(waveFront.arrayData[joinPoint.parentPlus], joinPoint.parentPlus);
 				position = waveFront.add(newJoinPoint);
-			}
-			else {
+
+			} else {
 				//first step we need to draw out the two spiral segments and the steiner node
 				this.drawSpiralSegment(waveFront.arrayData[joinPoint.parentPlus], joinPoint.tPlus, "+");
 				this.drawSpiralSegment(waveFront.arrayData[joinPoint.parentMinus], joinPoint.tMinus, "-");
@@ -473,8 +547,9 @@ SpiralTree.prototype.drawTree = function () {
 				position = waveFront.add(joinPoint);
 			}
 			joinPoint = this.calculateJP(waveFront);
-			if (joinPoint !== null && loopi < this.terminals.length && joinPoint.r < this.terminals[loopi].r)
+			if (joinPoint !== null && loopi < this.terminals.length && joinPoint.r < this.terminals[loopi].r) {
 				joinPoint = null;
+			}
 		}
 	}
 
@@ -483,8 +558,11 @@ SpiralTree.prototype.drawTree = function () {
 		var tempCenterColor = this.centerColor;
 		var tempTerminalColor = this.terminalColor;
 		for (var tI in this.terminals) {
-			if (tI === 0) this.drawNode(this.terminals[tI], tempCenterColor);
-			else this.drawNode(this.terminals[tI], tempTerminalColor);
+			if (tI === 0) {
+				this.drawNode(this.terminals[tI], tempCenterColor);
+			} else {
+				this.drawNode(this.terminals[tI], tempTerminalColor);
+			}
 		}
 		Array.prototype.shift.call(this.terminals, this.center);
 	}

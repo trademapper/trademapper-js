@@ -1,18 +1,23 @@
 var flowmap = (function() {
 
-var width = 800,
-	height = 800,
-	margin = 20;
+// no op functions for x/y conversion
+// used in drawLineSegment and drawSteinerNode - neither of which are still used ..
+var x = function (d) { return d; };
+var y = function (d) { return d; };
 
-//Below is for the balanced binary search tree, if the data being processed is small, we can use a sorted array instead 
+
+// Below is for the balanced binary search tree, if the data being processed is
+// small, we can use a sorted array instead
+// TODO: currently unused
 var node = function () {
-	var node = {
+	return {
 		value: null,
 		left: null,
 		right: null
 	};
-	return node;
 };
+
+// TODO: this is currently unused
 function BinarySearchTree() {
 	this._root = null;
 }
@@ -35,17 +40,18 @@ BinarySearchTree.prototype = {
 };
 //end of the balanced binary tree
 
+// TODO: this is currently unused
 //Below is the sorted array with binary search
 //Defined with the spiral elements
 var arrayElement = function () {
-	var arrayElement = {
+	return {
 		r: null,	//radius
 		theta: null,	//spiral angle from the center to the node
 		plusJoinPoint: null,	//left spiral
 		minusJoinPoint: null	//right spiral
 	};
-	return arrayElement;
 };
+
 function BinarySearchArray() {
 	this.arrayData = [];
 	this.bsStart = 0;
@@ -78,37 +84,30 @@ BinarySearchArray.prototype.add = function (value) {
 	Array.prototype.splice.call(this.arrayData, pos, 0, value);
 	return pos;
 };
+// TODO: this never appears to be called with arguments.length 1, so maybe
+// we can remove the first argument and refactor the calls ...
 BinarySearchArray.prototype.remove = function (value, index1, index2) {
-	switch (arguments.length) {
-		case 1: index1 = this.search(value.theta);
-		case 2: Array.prototype.splice.call(this.arrayData, index1, 1); break;
-		case 3: if (index1 > index2) {
-				var tempIndex = index2;
-				index2 = index1;
-				index1 = tempIndex;
-			}
-			Array.prototype.splice.call(this.arrayData, index1, 1);
-			Array.prototype.splice.call(this.arrayData, index2 - 1, 1);
-			break;
+	if (arguments.length === 1) {
+		index1 = this.search(value.theta);
+	}
+	if (arguments.length === 2) {
+		Array.prototype.splice.call(this.arrayData, index1, 1);
+	} else {
+		if (index1 > index2) {
+			var tempIndex = index2;
+			index2 = index1;
+			index1 = tempIndex;
+		}
+		Array.prototype.splice.call(this.arrayData, index1, 1);
+		Array.prototype.splice.call(this.arrayData, index2 - 1, 1);
 	}
 };
 //end of the class for sorted array
 
-var x = d3.scale.linear()
-	.range([0, width]);
-
-var y = d3.scale.linear()
-	.range([height, 0]);
-
-x = function (d) {
-	return d;
-};
-y = function (d) {
-	return d;
-};
-
+// TODO: these two vars are currently unused
 var symbol = d3.scale.ordinal().range(d3.svg.symbolTypes),
 	color = d3.scale.category10();
+
 //This is the class for spiral tree, need parameters for layer which should be svg type and the projection
 function SpiralTree(layerId_, projection_) {
 	this.layerId = layerId_;
@@ -274,6 +273,7 @@ SpiralTree.prototype.drawNode = function (point, color, opacity) {
 	var testmore = node.append("svg:title").append("xhtml:div").html(content);
 };
 
+// TODO: currently unused
 SpiralTree.prototype.drawLineSegment = function (point1, point2, opacity) {
 	if (opacity === undefined) {
 		if (point1.opacity === undefined)
@@ -313,6 +313,7 @@ SpiralTree.prototype.drawSpiralSegment = function (point, tValue, sign, opacity)
 		.attr('opacity', opacity);
 };
 
+// TODO: currently unused
 SpiralTree.prototype.drawSteinerNode = function (point) {
 	this.spiralTreeLayer.append("svg:path")
 		.attr("class", "steiner")

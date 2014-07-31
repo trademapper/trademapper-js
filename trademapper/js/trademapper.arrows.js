@@ -69,6 +69,7 @@ define(["d3"], function(d3) {
 	},
 
 	drawRouteCollection = function(collection) {
+		clearArrows();
 		maxRouteWeight = collection.maxWeight();
 		var routeList = collection.getRoutes();
 		for (var i = 0; i < routeList.length; i++) {

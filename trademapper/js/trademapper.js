@@ -15,7 +15,7 @@ define(
 				pathStart: "black",
 				pathEnd: "orange"
 			},
-			minArrowWidth: 2,
+			minArrowWidth: 1,
 			maxArrowWidth: 30
 		},
 

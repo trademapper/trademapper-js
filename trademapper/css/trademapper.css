@@ -55,5 +55,6 @@ a, a img, img a {
 }
 
 .route-arrow-head {
-	fill: #333;
+	fill: orange;
+	fill-opacity: 0.5;
 }

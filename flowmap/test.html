@@ -37,8 +37,8 @@ myFlow.setInfoFields(["lat", "lng"]);
 var origin = {lat: 37, lng: 1, quantity: 0};
 var terminals = [
 	{lat: 15, lng: 20, quantity: 10},
-	{lat: -15, lng: 20, quantity: 10},
-	{lat: 15, lng: 40, quantity: 10}
+	{lat: -15, lng: 20, quantity: 20},
+	{lat: 15, lng: 40, quantity: 30}
 ];
 myFlow.preprocess(terminals, origin);
 
@@ -49,9 +49,9 @@ myFlow.drawTree();
 myFlow.setColor('spiralSegment', 'green');
 origin = {lat: 54, lng: -10, quantity: 0};
 terminals = [
-	{lat: 37, lng: -20, quantity: 10},
-	{lat: -24, lng: -20, quantity: 10},
-	{lat: 23, lng: -40, quantity: 10}
+	{lat: 27, lng: -20, quantity: 10},
+	{lat: -24, lng: -20, quantity: 20},
+	{lat: 23, lng: -40, quantity: 30}
 ];
 myFlow.preprocess(terminals, origin);
 myFlow.drawTree();

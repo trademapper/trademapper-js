@@ -114,6 +114,7 @@ function SpiralTree(layerId_, projection_) {
 	this.layerId = layerId_;
 	this.terminals = [];
 	this.center = {};
+
 	this.alpha = Math.PI / 12;	//spiral angle
 	this.projection = projection_;
 	if (this.projection === undefined) {
@@ -121,14 +122,20 @@ function SpiralTree(layerId_, projection_) {
 			.scale(1000)
 			.translate([480, 400]);
 	}
+
 	this.spiralTreeLayer = this.layerId
 		.append("g");
+
 	this.strokeWidth = 1;	//spiral line width
 	this.opacity = 0.8;		//spiral node opacity
+	this.quantity = 1;		// default quantity for terminal node
 	this.centerColor='red'; //spiral center node color
 	this.terminalColor = 'steelblue';	//spiral terminal color
 	this.infoFields = [];	//the index of fields for displaying in the tooltips
 	this.nodeDrawable = true;	//indicator of whether showing the node or not
+	this.maxQuantity = 200;  // the maximum quantity anywhere, scale quantity against this
+	                         // and then convert to strokewidth using:
+	this.maxStrokeWidth = 50;
 	//.attr("transform", "translate(" + margin + "," + margin + ")");
 }
 
@@ -188,7 +195,7 @@ SpiralTree.prototype.convertGeoToPoint = function (geo) {
 		x: tempPixelPoint[0],
 		y: tempPixelPoint[1],
 		opacity: geo.opacity === undefined ? this.opacity : geo.opacity,
-		weight: geo.weight === undefined ? this.weight : geo.weight
+		quantity: geo.quantity === undefined ? this.quantity : geo.quantity
 	};
 	for (var field in this.infoFields) {
 		if (this.infoFields.hasOwnProperty(field)) {
@@ -205,8 +212,10 @@ SpiralTree.prototype.preprocess = function (Geodata, Geocenter) {
 	var minX = this.center.x, minY = this.center.y, maxX = this.center.x, maxY = this.center.y;
 
 	this.terminals = [];
+	this.center.quantity = 0;
 	for (var i = 0; i < Geodata.length; i++) {
 		var newTerminal = this.convertGeoToPoint(Geodata[i]);
+		this.center.quantity += newTerminal.quantity;
 
 		newTerminal.r = Math.sqrt(
 			(newTerminal.x - this.center.x) * (newTerminal.x - this.center.x) +
@@ -228,6 +237,10 @@ SpiralTree.prototype.preprocess = function (Geodata, Geocenter) {
 		if (newTerminal.y < minY) { minY = newTerminal.y; }
 
 		this.terminals.push(newTerminal);
+	}
+
+	if (this.center.quantity <= 0) {
+		this.center.quantity = 1;
 	}
 
 	//sort the array of terminals
@@ -286,26 +299,38 @@ SpiralTree.prototype.spiralPath = function (point, tValue, sign) {
 	return spiralLine(spiral);
 };
 
-SpiralTree.prototype.quantityToStrokeWidth = function (quantity) {
-	return 1;
+SpiralTree.prototype.quantityToStrokeWidth = function (quantity, point) {
+	quantity = this.getQuantity(quantity, point);
+	return (quantity / this.maxQuantity) * this.maxStrokeWidth;
+};
+
+SpiralTree.prototype.getValueFromValuePointOrThis = function (value, key, point) {
+	if (value !== undefined) {
+		return value;
+	} else if (point[key] !== undefined) {
+		return point[key];
+	} else {
+		return this[key];
+	}
+};
+
+SpiralTree.prototype.getOpacity = function (opacity, point) {
+	return this.getValueFromValuePointOrThis(opacity, "opacity", point);
+};
+
+SpiralTree.prototype.getQuantity = function (quantity, point) {
+	return this.getValueFromValuePointOrThis(quantity, "quantity", point);
 };
 
 SpiralTree.prototype.drawNode = function (point, color, opacity) {
-	if (opacity === undefined) {
-		if (point.opacity === undefined) {
-			opacity = this.opacity;
-		} else { 
-			opacity = point.opacity;
-		}
-	}
-	// TODO: add weight?  bigger circle??
+	// TODO: add quantity?  bigger circle??
 	var node = this.spiralTreeLayer.append("svg:path")
 		.attr("class", "dot")
 		.attr("transform", "translate(" + x(point.x) + "," + y(point.y) + ")")
 		.attr("d", d3.svg.symbol().size(36).type("circle"))
 		.attr('fill', color)
 	//.attr('stroke-width', this.strokeWidth)
-		.attr('opacity', opacity)
+		.attr('opacity', this.getOpacity(opacity, point))
 		.attr('onmouseover', "this.setAttribute('style', 'cursor:pointer');");
 	var content = "";
 	for (var fieldId in this.infoFields) {
@@ -316,14 +341,7 @@ SpiralTree.prototype.drawNode = function (point, color, opacity) {
 };
 
 // TODO: currently unused
-SpiralTree.prototype.drawLineSegment = function (point1, point2, opacity) {
-	if (opacity === undefined) {
-		if (point1.opacity === undefined) {
-			opacity = this.opacity;
-		} else {
-			opacity = point1.opacity;
-		}
-	}
+SpiralTree.prototype.drawLineSegment = function (point1, point2, opacity, quantity) {
 	if (this.lineColor === undefined) {
 		this.lineColor = 'green';
 	}
@@ -336,17 +354,10 @@ SpiralTree.prototype.drawLineSegment = function (point1, point2, opacity) {
 		.attr('stroke', this.lineColor)
 		.attr('fill', 'none')
 		.attr('stroke-width', this.strokeWidth)
-		.attr('opacity', opacity);
+		.attr('opacity', this.getOpacity(opacity, point));
 };
 
-SpiralTree.prototype.drawSpiralSegment = function (point, tValue, sign, opacity) {
-	if (opacity === undefined) {
-		if (point.opacity === undefined) {
-			opacity = this.opacity;
-		} else {
-			opacity = point.opacity;
-		}
-	}
+SpiralTree.prototype.drawSpiralSegment = function (point, tValue, sign, opacity, quantity) {
 	//special situation need to take care
 	if (point.r === 0) {
 		return;
@@ -359,8 +370,8 @@ SpiralTree.prototype.drawSpiralSegment = function (point, tValue, sign, opacity)
 		.attr("class", "spiral")
 		.attr('stroke', this.spiralColor)
 		.attr('fill', 'none')
-		.attr('stroke-width', this.strokeWidth)
-		.attr('opacity', opacity);
+		.attr('stroke-width', this.quantityToStrokeWidth(quantity, point))
+		.attr('opacity', this.getOpacity(opacity, point));
 };
 
 // TODO: currently unused
@@ -384,7 +395,8 @@ SpiralTree.prototype.auxCircleJoinPoint = function (point, r, sign) {
 			y: this.center.y,
 			r: 0,
 			theta: 0,
-			opacity: point.opacity
+			opacity: point.opacity,
+			quantity: point.quantity
 		};
 	}
 	var ti = Math.log(point.r / r);
@@ -401,7 +413,8 @@ SpiralTree.prototype.auxCircleJoinPoint = function (point, r, sign) {
 			y: r * Math.sin(tempTheta) + this.center.y,
 			r: r,
 			theta: tempTheta,
-			opacity: point.opacity
+			opacity: point.opacity,
+			quantity: point.quantity
 		};
 	} else {
 		return null;
@@ -433,7 +446,8 @@ SpiralTree.prototype.spiralJoinPoint = function (point1, point2) {
 			y: this.center.y,
 			r: 0,
 			theta: 0,
-			opacity: Math.max(point1.opacity, point2.opacity)
+			opacity: Math.max(point1.opacity, point2.opacity),
+			quantity: point1.quantity + point2.quantity
 		};
 	}
 
@@ -457,7 +471,8 @@ SpiralTree.prototype.spiralJoinPoint = function (point1, point2) {
 			y: tempR * Math.sin(tempTheta) + this.center.y,
 			r: tempR,
 			theta: tempTheta,
-			opacity: Math.max(point1.opacity, point2.opacity)
+			opacity: Math.max(point1.opacity, point2.opacity),
+			quantity: point1.quantity + point2.quantity
 		};
 	} else {
 		return null;

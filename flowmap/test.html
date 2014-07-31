@@ -2,7 +2,7 @@
 <html>
 <head profile="http://www.w3.org/2005/10/profile">
 	<meta charset="utf-8">
-	<title>TradeMapper</title>
+	<title>Flowmap Test</title>
 	<script src="http://d3js.org/d3.v3.min.js"></script>
 	<script src="spiralTree.js"></script>
 </head>
@@ -29,16 +29,16 @@ myFlow.setColor('spiralSegment', 'red');
 myFlow.setColor('center', 'orange');
 myFlow.setColor('terminal', 'blue');
 myFlow.setWidth(4);
-myFlow.setAlpha(0.5);
-myFlow.setThreshold(1);
+//myFlow.setAlpha(0.5);
+//myFlow.setThreshold(1);
 myFlow.setInfoFields(["lat", "lng"]);
 
 // step 4
-var origin = {lat: 37, lng: 1};
+var origin = {lat: 37, lng: 1, quantity: 0};
 var terminals = [
-	{lat: 15, lng: 20},
-	{lat: -15, lng: 20},
-	{lat: 15, lng: 40}
+	{lat: 15, lng: 20, quantity: 10},
+	{lat: -15, lng: 20, quantity: 10},
+	{lat: 15, lng: 40, quantity: 10}
 ];
 myFlow.preprocess(terminals, origin);
 
@@ -47,11 +47,11 @@ myFlow.drawTree();
 
 // second tree
 myFlow.setColor('spiralSegment', 'green');
-origin = {lat: 54, lng: -10};
+origin = {lat: 54, lng: -10, quantity: 0};
 terminals = [
-	{lat: 37, lng: -20},
-	{lat: -24, lng: -20},
-	{lat: 23, lng: -40}
+	{lat: 37, lng: -20, quantity: 10},
+	{lat: -24, lng: -20, quantity: 10},
+	{lat: 23, lng: -40, quantity: 10}
 ];
 myFlow.preprocess(terminals, origin);
 myFlow.drawTree();

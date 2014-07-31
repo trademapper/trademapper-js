@@ -33,13 +33,32 @@ define(
 		arrows.init(tmsvg, config.arrowColours, config.minArrowWidth, config.maxArrowWidth);
 		mapper.init(tmsvg, config);
 
-		csv.init(fileInputElement, csvLoadedCallback, csvLoadErrorCallback);
+		initCsv();
+		initRoute();
 
-		route.setCountryGetPointFunc(mapper.countryCentrePoint);
-		route.setLatLongToPointFunc(mapper.latLongToPoint);
 
 		// TODO: delete when happy to do so
 		//hardWiredTest();
+	},
+
+	initArrows = function() {
+		arrows.mapsvg = tmsvg;
+		arrows.arrowColours = config.arrowColours;
+		arrows.minArrowWidth = config.minArrowWidth;
+		arrows.maxArrowWidth = config.maxArrowWidth;
+		arrows.init();
+	},
+
+	initCsv = function() {
+		csv.fileInputElement = fileInputElement;
+		csv.csvFileLoadedCallback = csvLoadedCallback;
+		csv.errorCallback = csvLoadErrorCallback;
+		csv.initFileInput();
+	},
+
+	initRoute = function() {
+		route.setCountryGetPointFunc(mapper.countryCentrePoint);
+		route.setLatLongToPointFunc(mapper.latLongToPoint);
 	},
 
 	setConfigToDefaultIfNotSet = function(key) {

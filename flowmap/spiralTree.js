@@ -126,6 +126,7 @@ function SpiralTree(layerId_, projection_) {
 	this.spiralTreeLayer = this.layerId
 		.append("g");
 
+	this.varyStrokeWidth = true;	//spiral line width
 	this.strokeWidth = 1;	//spiral line width
 	this.opacity = 0.8;		//spiral node opacity
 	this.quantity = 1;		// default quantity for terminal node
@@ -163,6 +164,11 @@ SpiralTree.prototype.setColor = function (className, color) {
 		this.terminalColor = color;
 	else
 		this.SteinerColor = color;
+};
+
+SpiralTree.prototype.setVaryStrokeWidth = function (varyStrokeWidth) {
+	if (varyStrokeWidth === undefined) { varyStrokeWidth = true; }
+	this.varyStrokeWidth = varyStrokeWidth;
 };
 
 SpiralTree.prototype.setWidth = function (width) {
@@ -300,8 +306,12 @@ SpiralTree.prototype.spiralPath = function (point, tValue, sign) {
 };
 
 SpiralTree.prototype.quantityToStrokeWidth = function (quantity, point) {
-	quantity = this.getQuantity(quantity, point);
-	return (quantity / this.maxQuantity) * this.maxStrokeWidth;
+	if (this.varyStrokeWidth) {
+		quantity = this.getQuantity(quantity, point);
+		return (quantity / this.maxQuantity) * this.maxStrokeWidth;
+	} else {
+		return this.strokeWidth;
+	}
 };
 
 SpiralTree.prototype.getValueFromValuePointOrThis = function (value, key, point) {

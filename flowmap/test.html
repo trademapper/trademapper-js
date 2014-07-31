@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head profile="http://www.w3.org/2005/10/profile">
+	<meta charset="utf-8">
+	<title>TradeMapper</title>
+	<script src="http://d3js.org/d3.v3.min.js"></script>
+	<script src="spiralTree.js"></script>
+</head>
+<body>
+	<header id="mapheader">
+	</header>
+	<div id="trademapper">
+		<svg id="thesvg" width="1000" height="1000">
+		</svg>
+	</div>
+	</div>
+	<script type="text/javascript">
+// step 1
+var svgMap = d3.select('#thesvg');
+var myFlow = new SpiralTree(svgMap);
+
+// step 2
+var projection = d3.geo.mercator();
+var pathmaker = d3.geo.path().projection(projection);
+myFlow.setProjection(projection);
+
+// step 3
+myFlow.setColor('spiralSegment', 'red');
+myFlow.setColor('center', 'orange');
+myFlow.setColor('terminal', 'blue');
+myFlow.setWidth(4);
+myFlow.setAlpha(0.5);
+myFlow.setThreshold(1);
+myFlow.setInfoFields(["lat", "lng"]);
+
+// step 4
+var origin = {lat: 37, lng: 1};
+var terminals = [
+	{lat: 15, lng: 20},
+	{lat: -15, lng: 20},
+	{lat: 15, lng: 40}
+];
+myFlow.preprocess(terminals, origin);
+
+// step 5
+myFlow.drawTree();
+
+// second tree
+myFlow.setColor('spiralSegment', 'green');
+origin = {lat: 54, lng: -10};
+terminals = [
+	{lat: 37, lng: -20},
+	{lat: -24, lng: -20},
+	{lat: 23, lng: -40}
+];
+myFlow.preprocess(terminals, origin);
+myFlow.drawTree();
+</script>
+</body>
+</html>

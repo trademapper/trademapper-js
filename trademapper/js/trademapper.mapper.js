@@ -11,6 +11,7 @@ define(["d3", "topojson", "worldmap"], function(d3, topojson, mapdata) {
 	 */
 	init = function(svgElement, mapConfig) {
 		mapsvg = svgElement;
+		config = mapConfig;
 
 		projection = d3.geo.mercator();
 			//.scale(mapWidth/1.25)

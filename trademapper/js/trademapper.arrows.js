@@ -18,7 +18,11 @@ define(["d3"], function(d3) {
 		 * Save the svg we use for later user
 		 * Add the arrow head to defs/marker in the SVG
 		 */
-		init: function() {
+		init: function(mapsvg, arrowColours, minArrowWidth, maxArrowWidth) {
+			this.mapsvg = mapsvg;
+			this.arrowColours = arrowColours;
+			this.minArrowWidth = minArrowWidth;
+			this.maxArrowWidth = maxArrowWidth;
 			this.addDefsToSvg();
 		},
 
@@ -72,10 +76,11 @@ define(["d3"], function(d3) {
 					.attr("d", routeline)
 					.attr("marker-end", "url(#markerArrow)")
 					.attr("stroke", "url(#route-grad)")
-					.attr("stroke-width", 2);
+					.attr("stroke-width", this.getArrowWidth(route));
 		},
 
 		drawRouteCollection: function(collection) {
+			this.maxWeight = collection.maxWeight();
 			var routeList = collection.getRoutes();
 			for (var i = 0; i < routeList.length; i++) {
 				if (routeList[i].points.length >= 2) {

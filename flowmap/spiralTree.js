@@ -598,17 +598,11 @@ SpiralTree.prototype.drawTree = function () {
 	}
 
 	if (this.nodeDrawable) {
-		Array.prototype.unshift.call(this.terminals, this.center);
-		var tempCenterColor = this.centerColor;
-		var tempTerminalColor = this.terminalColor;
-		for (var tI in this.terminals) {
-			if (tI === 0) {
-				this.drawNode(this.terminals[tI], tempCenterColor);
-			} else {
-				this.drawNode(this.terminals[tI], tempTerminalColor);
-			}
+		this.drawNode(this.center, this.centerColor);
+
+		for (var i = 0; i < this.terminals.length; i++) {
+			this.drawNode(this.terminals[i], this.terminalColor);
 		}
-		Array.prototype.shift.call(this.terminals, this.center);
 	}
 };
 

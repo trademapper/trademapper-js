@@ -1,4 +1,4 @@
-var flowmap = (function() {
+(function() {
 
 // no op functions for x/y conversion
 // used in drawLineSegment and drawSteinerNode - neither of which are still used ..
@@ -607,7 +607,16 @@ SpiralTree.prototype.drawTree = function () {
 	}
 };
 
-return {
+var flowmap = {
 	SpiralTree: SpiralTree
 };
+
+// play nice with or without require.js etc
+if (typeof define === "function" && define.amd) {
+	define(flowmap); 
+} else if (typeof module === "object" && module.exports) {
+	module.exports = flowmap;
+}
+this.flowmap = flowmap;
+
 })();

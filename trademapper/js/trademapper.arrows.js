@@ -52,6 +52,7 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 		flowmap.setColor('center', 'orange');
 		flowmap.setColor('terminal', 'blue');
 		flowmap.setOpacity(1);
+		flowmap.setNodeDrawable(false);
 	},
 
 	getArrowWidth = function(route) {
@@ -93,10 +94,55 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 		}
 	},
 
+	drawPoint = function(point, pointType) {
+		var node, size, color;
+		if (point.point === undefined) {
+			console.log("point.point undefined for " + point.toString());
+			return;
+		}
+		if (pointType == "source") {
+			size = 5;
+			color = "yellow";
+		} else if (pointType == "transit") {
+			size = 4;
+			color = "green";
+		} else if (pointType == "dest") {
+			size = 3;
+			color = "blue";
+		} else {
+			console.log("unknown pointType: " + pointType);
+			return;
+		}
+		node = mapsvg.append("circle")
+			.attr("cx", point.point[0])
+			.attr("cy", point.point[1])
+			.attr("r", size)
+			.attr("fill", color);
+	},
+
+	drawPointRoles = function(pointRoles) {
+		var pointInfo,
+			pointKeys = Object.keys(pointRoles);
+
+		for (var i = 0; i < pointKeys.length; i++) {
+			pointInfo = pointRoles[pointKeys[i]];
+			if (pointInfo.source) {
+				drawPoint(pointInfo.point, "source");
+			}
+			if (pointInfo.transit) {
+				drawPoint(pointInfo.point, "transit");
+			}
+			if (pointInfo.dest) {
+				drawPoint(pointInfo.point, "dest");
+			}
+		}
+	},
+
 	drawRouteCollectionSpiralTree = function(collection) {
 		var ctAndMax = collection.getCenterTerminalList();
 		var centerTerminals = ctAndMax.centerTerminalList;
 		var maxSourceQuantity = ctAndMax.maxSourceQuantity;
+		var pointRoles = collection.getPointRoles();
 
 		flowmap.clearSpiralPaths();
 		//flowmap.setMaxQuantity(collection.maxWeight());
@@ -106,6 +152,8 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 			flowmap.preprocess(centerTerminals[i].terminals, centerTerminals[i].center);
 			flowmap.drawTree();
 		}
+
+		drawPointRoles(pointRoles);
 	};
 
 	return {

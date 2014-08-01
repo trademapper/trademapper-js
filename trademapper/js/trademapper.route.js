@@ -68,6 +68,7 @@ define([], function() {
 			centerObj, terminalObj, maxSourceQuantity,
 			centerTerminalObj = {},
 			centerTerminalList = [],
+			pointRoles = {},
 			routeKeys = Object.keys(this.routes);
 
 		// first extract into nested objects and de-duplicate routes
@@ -139,8 +140,42 @@ define([], function() {
 		}
 		return {
 			centerTerminalList: centerTerminalList,
-			maxSourceQuantity: maxSourceQuantity
+			maxSourceQuantity: maxSourceQuantity,
+			pointRoles: pointRoles
 		};
+	};
+
+	/*
+	 * Create an object with a key for each point, and for each point
+	 * record whether it is a source, transit and/or destination node.
+	 */
+	RouteCollection.prototype.getPointRoles = function() {
+		var i, j, route, pointName,
+			pointRoles = {},
+			routeKeys = Object.keys(this.routes);
+
+		for (i = 0; i < routeKeys.length; i++) {
+			route = this.routes[routeKeys[i]];
+			for (j = 0; j < route.points.length; j++) {
+				pointName = route.points[j].toString();
+				if (!pointRoles.hasOwnProperty(pointName)) {
+					pointRoles[pointName] = {
+						point: route.points[j],
+						source: false,
+						transit: false,
+						dest: false
+					};
+				}
+				if (j === 0) {
+					pointRoles[pointName].source = true;
+				} else if (j === route.points.length - 1) {
+					pointRoles[pointName].dest = true;
+				} else {
+					pointRoles[pointName].transit = true;
+				}
+			}
+		}
+		return pointRoles;
 	};
 
 	RouteCollection.prototype.addRoute = function(route) {

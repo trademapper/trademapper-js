@@ -7,7 +7,7 @@ define(
 	function(arrows, csv, mapper, route, d3) {
 	"use strict";
 
-	var config, rootElement, fileInputElement, tmsvg,
+	var config, rootElement, fileInputElement, tmsvg, currentCsvData, currentCsvType,
 
 		defaultConfig = {
 			ratio: 0.6,
@@ -82,7 +82,11 @@ define(
 		arrows.drawMultipleRoutes(routes);
 	},
 
-	csvLoadedCallback = function(routes) {
+	csvLoadedCallback = function(csvType, csvData, routes) {
+		// first cache the current values, so we can regenerate if we want
+		currentCsvData = csvData;
+		currentCsvType = csvType;
+		// now draw the routes
 		arrows.drawRouteCollection(routes);
 	},
 

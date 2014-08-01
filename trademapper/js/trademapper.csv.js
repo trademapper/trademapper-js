@@ -15,6 +15,7 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 
 	loadCSVFile = function() {
 		var file = fileInputElement.files[0];
+		// TODO: replace with output from form element, or even maybe auto discovery ...
 		var csvType = "cites";
 
 		if (file.type == 'text/csv' ||
@@ -47,13 +48,13 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 
 	processParsedCSV = function(csvData, csvType) {
 		if (csvProcessors.hasOwnProperty(csvType)) {
-			csvProcessors[csvType](csvData);
+			csvProcessors[csvType](csvType, csvData);
 		} else {
 			errorCallback("unknown csvType: " + csvType);
 		}
 	},
 
-	processCitesCsv = function(csvData) {
+	processCitesCsv = function(csvType, csvData) {
 		var routes, points, origin, importer, exporter, importer_quantity,
 			exporter_quantity, weight, row,
 
@@ -75,6 +76,8 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 			exporter_quantity = row[EXPORTER_QUANTITY_INDEX];
 			weight = Math.max(importer_quantity, exporter_quantity);
 
+			// TODO: filter func goes here: if (!filterPass(row)) { continue; }
+
 			points = [];
 			if (origin.length == 2 && origin != 'XX') {
 				points.push(new route.PointCountry(origin));
@@ -89,7 +92,7 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 		}
 
 		// now send back to the callback
-		csvFileLoadedCallback(routes);
+		csvFileLoadedCallback(csvType, csvData, routes);
 	},
 
 	csvProcessors = {

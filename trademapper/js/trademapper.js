@@ -51,8 +51,12 @@ define(
 		});
 
 		// work out some stuff from the size of the element we're attached to
-		config.width = parseInt(rootElement.style('width'));
-		config.height = config.width * config.ratio;
+		if (!config.hasOwnProperty("width")) {
+			config.width = parseInt(rootElement.style('width'));
+		}
+		if (!config.hasOwnProperty("height")) {
+			config.height = config.width * config.ratio;
+		}
 	},
 
 	// hardwired code that will be replaced down the road

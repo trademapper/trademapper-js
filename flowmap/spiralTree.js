@@ -380,6 +380,7 @@ SpiralTree.prototype.drawSpiralSegment = function (point, tValue, sign, opacity,
 		.attr("class", "spiral")
 		.attr('stroke', this.spiralColor)
 		.attr('fill', 'none')
+		.attr('stroke-linecap', "round")
 		.attr('stroke-width', this.quantityToStrokeWidth(quantity, point))
 		.attr('opacity', this.getOpacity(opacity, point));
 };

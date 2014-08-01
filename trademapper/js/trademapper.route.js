@@ -63,6 +63,86 @@ define([], function() {
 		return routeList;
 	};
 
+	RouteCollection.prototype.getCenterTerminalList = function() {
+		var i, j, route, source, dest, sourceKeys, destKeys, terminalList,
+			centerObj, terminalObj, maxSourceQuantity,
+			centerTerminalObj = {},
+			centerTerminalList = [],
+			routeKeys = Object.keys(this.routes);
+
+		// first extract into nested objects and de-duplicate routes
+		for (i = 0; i < routeKeys.length; i++) {
+			route = this.routes[routeKeys[i]];
+			for (j = 0; j < route.points.length - 1; j++) {
+				source = route.points[j];
+				dest = route.points[j + 1];
+				// TODO: record type - source or transit - maybe we get two different sets ...
+				// or could be [source2dest, source2transit, transit2dest, transit2transit]
+				// to allow for different gradients - but then they will be on top of each other :/
+				if (!centerTerminalObj.hasOwnProperty(source.toString())) {
+					centerTerminalObj[source.toString()] = {
+						point: source.point,
+						quantity: route.weight
+					};
+				} else {
+					centerTerminalObj[source.toString()].quantity += route.weight;
+				}
+
+				if (!centerTerminalObj[source.toString()].hasOwnProperty(dest.toString())) {
+					centerTerminalObj[source.toString()][dest.toString()] = {
+						point: dest.point,
+						quantity: route.weight
+					};
+				} else {
+					centerTerminalObj[source.toString()][dest.toString()].quantity += route.weight;
+				}
+			}
+		}
+		
+		// now convert to list of center and terminals
+		maxSourceQuantity = 0;
+		sourceKeys = Object.keys(centerTerminalObj);
+		for (i = 0; i < sourceKeys.length; i++) {
+			terminalList = [];
+			centerObj = centerTerminalObj[sourceKeys[i]];
+			if (centerObj.point === undefined) {
+				console.log("missing point for center: " + sourceKeys[i]);
+				continue;
+			}
+			if (centerObj.quantity > maxSourceQuantity) {
+				maxSourceQuantity = centerObj.quantity;
+			}
+			destKeys = Object.keys(centerObj);
+			for (j = 0; j < destKeys.length; j++) {
+				if (destKeys[j] === "point" || destKeys[j] === "quantity") {
+					continue;
+				}
+				terminalObj = centerObj[destKeys[j]];
+				if (terminalObj.point === undefined) {
+					console.log("missing point for terminal: " + destKeys[j]);
+					continue;
+				}
+				terminalList.push({
+					lat: terminalObj.point[0],
+					lng: terminalObj.point[1],
+					quantity: terminalObj.quantity
+				});
+			}
+			centerTerminalList.push({
+				center: {
+					lat: centerObj.point[0],
+					lng: centerObj.point[1],
+					quantity: centerObj.quantity
+				},
+				terminals: terminalList
+			});
+		}
+		return {
+			centerTerminalList: centerTerminalList,
+			maxSourceQuantity: maxSourceQuantity
+		};
+	};
+
 	RouteCollection.prototype.addRoute = function(route) {
 		var routeName = route.toString();
 		if (this.routes.hasOwnProperty(routeName)) {

@@ -1,56 +1,10 @@
 (function() {
 
+// TODO: decide whether to keep this
 // no op functions for x/y conversion
 // used in drawLineSegment and drawSteinerNode - neither of which are still used ..
 var x = function (d) { return d; };
 var y = function (d) { return d; };
-
-
-// Below is for the balanced binary search tree, if the data being processed is
-// small, we can use a sorted array instead
-// TODO: currently unused
-var node = function () {
-	return {
-		value: null,
-		left: null,
-		right: null
-	};
-};
-
-// TODO: this is currently unused
-function BinarySearchTree() {
-	this._root = null;
-}
-
-BinarySearchTree.prototype = {
-	//restore constructor
-	constructor: BinarySearchTree,
-	add: function (value) {
-	},
-	contains: function (value) {
-	},
-	remove: function (value) {
-	},
-	size: function () {
-	},
-	toArray: function () {
-	},
-	toString: function () {
-	}
-};
-//end of the balanced binary tree
-
-// TODO: this is currently unused
-//Below is the sorted array with binary search
-//Defined with the spiral elements
-var arrayElement = function () {
-	return {
-		r: null,	//radius
-		theta: null,	//spiral angle from the center to the node
-		plusJoinPoint: null,	//left spiral
-		minusJoinPoint: null	//right spiral
-	};
-};
 
 function BinarySearchArray() {
 	this.arrayData = [];

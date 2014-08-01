@@ -10,7 +10,7 @@
 	<header id="mapheader">
 	</header>
 	<div id="trademapper">
-		<svg id="thesvg" width="1000" height="1000">
+		<svg id="thesvg" width="3000" height="3000" viewBox="0 0 900 900">
 		</svg>
 	</div>
 	</div>
@@ -32,6 +32,7 @@ myFlow.setWidth(4);
 //myFlow.setAlpha(0.5);
 //myFlow.setThreshold(1);
 myFlow.setInfoFields(["lat", "lng"]);
+//myFlow.setVaryStrokeWidth(false);
 
 // step 4
 var origin = {lat: 37, lng: 1, quantity: 0};
@@ -52,6 +53,28 @@ terminals = [
 	{lat: 27, lng: -20, quantity: 10},
 	{lat: -24, lng: -20, quantity: 20},
 	{lat: 23, lng: -40, quantity: 30}
+];
+myFlow.preprocess(terminals, origin);
+myFlow.drawTree();
+
+// line tree
+myFlow.setColor('spiralSegment', 'steelblue');
+origin = {lat: 0, lng: -80, quantity: 0};
+terminals = [
+	{lat: 20, lng: -80, quantity: 10},
+	{lat: -20, lng: -80, quantity: 30}
+];
+myFlow.preprocess(terminals, origin);
+myFlow.drawTree();
+
+// line tree
+myFlow.setColor('spiralSegment', 'lightgreen');
+origin = {lat: 20, lng: -50, quantity: 0};
+terminals = [
+	{lat: 0, lng: -70, quantity: 10},
+	{lat: 40, lng: -70, quantity: 30},
+	{lat: 0, lng: -30, quantity: 10},
+	{lat: 40, lng: -30, quantity: 30}
 ];
 myFlow.preprocess(terminals, origin);
 myFlow.drawTree();

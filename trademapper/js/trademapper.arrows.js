@@ -1,7 +1,8 @@
 
-define(["d3"], function(d3) {
+define(["d3", "spiralTree"], function(d3, spiralTree) {
 	"use strict";
-	var mapsvg, config, svgdefs, arrowColours, minArrowWidth, maxArrowWidth, maxRouteWeight,
+	var mapsvg, config, svgdefs, flowmap,
+		arrowColours, minArrowWidth, maxArrowWidth, maxRouteWeight,
 
 	/*
 	 * Save the svg we use for later user
@@ -13,6 +14,7 @@ define(["d3"], function(d3) {
 		minArrowWidth = minWidth;
 		maxArrowWidth = maxWidth;
 		addDefsToSvg();
+		setUpFlowmap();
 	},
 
 	addDefsToSvg = function() {
@@ -44,9 +46,21 @@ define(["d3"], function(d3) {
 			.attr("stop-opacity", "0.5");
 	},
 
+	setUpFlowmap = function() {
+		flowmap = new spiralTree.SpiralTree(mapsvg, function(xy) { return [xy[1], xy[0]]; });
+		flowmap.setColor('spiralSegment', 'red');
+		flowmap.setColor('center', 'orange');
+		flowmap.setColor('terminal', 'blue');
+		flowmap.setOpacity(1);
+	},
+
 	getArrowWidth = function(route) {
 		var width = (route.weight / maxRouteWeight) * maxArrowWidth;
 		return Math.max(width, minArrowWidth);
+	},
+
+	clearArrows = function() {
+		d3.selectAll('.route-arrow').remove();
 	},
 
 	/*
@@ -68,7 +82,7 @@ define(["d3"], function(d3) {
 				.attr("stroke-width", getArrowWidth(route));
 	},
 
-	drawRouteCollection = function(collection) {
+	drawRouteCollectionPlainArrows = function(collection) {
 		clearArrows();
 		maxRouteWeight = collection.maxWeight();
 		var routeList = collection.getRoutes();
@@ -79,14 +93,26 @@ define(["d3"], function(d3) {
 		}
 	},
 
-	clearArrows = function() {
-		d3.selectAll('.route-arrow').remove();
+	drawRouteCollectionSpiralTree = function(collection) {
+		var ctAndMax = collection.getCenterTerminalList();
+		var centerTerminals = ctAndMax.centerTerminalList;
+		var maxSourceQuantity = ctAndMax.maxSourceQuantity;
+
+		flowmap.clearSpiralPaths();
+		//flowmap.setMaxQuantity(collection.maxWeight());
+		flowmap.setMaxQuantity(maxSourceQuantity);
+
+		for (var i = 0; i < centerTerminals.length; i++) {
+			flowmap.preprocess(centerTerminals[i].terminals, centerTerminals[i].center);
+			flowmap.drawTree();
+		}
 	};
 
 	return {
 		init: init,
 		addDefsToSvg: addDefsToSvg,
 		drawRoute: drawRoute,
-		drawRouteCollection: drawRouteCollection
+		drawRouteCollectionSpiralTree: drawRouteCollectionSpiralTree,
+		drawRouteCollectionPlainArrows: drawRouteCollectionPlainArrows
 	};
 });

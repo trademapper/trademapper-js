@@ -87,7 +87,8 @@ define(
 		currentCsvData = csvData;
 		currentCsvType = csvType;
 		// now draw the routes
-		arrows.drawRouteCollection(routes);
+		arrows.drawRouteCollectionSpiralTree(routes);
+		//arrows.drawRouteCollectionPlainArrows(routes);
 	},
 
 	csvLoadErrorCallback = function(msg) {

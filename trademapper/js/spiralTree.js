@@ -130,6 +130,16 @@ SpiralTree.prototype.setWidth = function (width) {
 	this.strokeWidth = width;
 };
 
+SpiralTree.prototype.setMaxWidth = function (width) {
+	if (width === undefined) { width = 50; }
+	this.maxStrokeWidth = width;
+};
+
+SpiralTree.prototype.setMaxQuantity = function (quantity) {
+	if (quantity === undefined) { quantity = 200; }
+	this.maxStrokeQuantity = quantity;
+};
+
 SpiralTree.prototype.setOpacity = function (opacity) {
 	if (opacity === undefined) { opacity = 0.8; }
 	this.opacity = opacity;
@@ -559,6 +569,10 @@ SpiralTree.prototype.drawTree = function () {
 			this.drawNode(this.terminals[i], this.terminalColor);
 		}
 	}
+};
+
+SpiralTree.prototype.clearSpiralPaths = function() {
+	d3.selectAll('.spiral').remove();
 };
 
 var flowmap = {

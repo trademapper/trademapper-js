@@ -92,7 +92,7 @@ function SpiralTree(layerId_, projection_) {
 	this.maxQuantity = 200;  // the maximum quantity anywhere, scale quantity against this
 	                         // and then convert to strokewidth using:
 	this.maxStrokeWidth = 30;
-	this.minStrokeWidth = 1;
+	this.minStrokeWidth = 0.5;
 	//.attr("transform", "translate(" + margin + "," + margin + ")");
 }
 
@@ -136,6 +136,11 @@ SpiralTree.prototype.setWidth = function (width) {
 SpiralTree.prototype.setMaxWidth = function (width) {
 	if (width === undefined) { width = 50; }
 	this.maxStrokeWidth = width;
+};
+
+SpiralTree.prototype.setMinWidth = function (width) {
+	if (width === undefined) { width = 0.5; }
+	this.minStrokeWidth = width;
 };
 
 SpiralTree.prototype.setMaxQuantity = function (quantity) {

@@ -109,16 +109,17 @@ SpiralTree.prototype.setAlpha = function (alpha_) {
 };
 
 SpiralTree.prototype.setColor = function (className, color) {
-	if (className === 'spiralSegment')
+	if (className === 'spiralSegment') {
 		this.spiralColor = color;
-	else if (className === 'lineSegment')
+	} else if (className === 'lineSegment') {
 		this.lineColor = color;
-	else if (className === 'center')
+	} else if (className === 'center') {
 		this.centerColor = color;
-	else if (className === 'terminal')
+	} else if (className === 'terminal') {
 		this.terminalColor = color;
-	else
+	} else {
 		this.SteinerColor = color;
+	}
 };
 
 SpiralTree.prototype.setVaryStrokeWidth = function (varyStrokeWidth) {

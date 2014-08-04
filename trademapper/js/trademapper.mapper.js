@@ -27,8 +27,7 @@ define(["d3", "topojson", "worldmap"], function(d3, topojson, mapdata) {
 			.enter()
 				.append("path")
 				.attr("d", pathmaker)
-				.attr("class", function(d) { return "country " + d.id; })
-				.style("fill", config.nonTradingColor);
+				.attr("class", function(d) { return "country " + d.id; });
 				//.on("click", countryClicked)
 				//.on("mouseover", hoverCountry)
 				//.on("mouseout", unhoverCountry);
@@ -52,20 +51,18 @@ define(["d3", "topojson", "worldmap"], function(d3, topojson, mapdata) {
 
 	colorTradingCountries = function(countryObj) {
 		mapsvg.selectAll(".country")
-			.style("fill", function(d) {
+			.classed("trading", function(d) {
 				if (countryObj.hasOwnProperty(d.id)) {
-					return config.tradingColor;
+					return true;
 				} else {
-					return config.nonTradingColor;
+					return false;
 				}
 			});
 	},
 
 	resetCountryColors = function() {
 		mapsvg.selectAll(".country")
-			.style("fill", function(d) {
-				return config.nonTradingColor;
-			});
+			.classed("trading", false);
 	},
 
 	/*

@@ -43,6 +43,8 @@ a, a img, img a {
 
 .country { fill: #ccc; }
 
+.country.trading { fill: #b1c73e; }
+
 .country-border {
 	fill: none;
 	stroke: #fff;

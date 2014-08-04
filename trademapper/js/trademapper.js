@@ -42,7 +42,7 @@ define(
 		arrows.init(tmsvg, config.arrowColours, config.minArrowWidth, config.maxArrowWidth);
 		mapper.init(tmsvg, config);
 
-		csv.init(csvLoadedCallback, csvLoadErrorCallback);
+		csv.init(csvLoadedCallback, filterLoadedCallback, csvLoadErrorCallback);
 
 		route.setCountryGetPointFunc(mapper.countryCentrePoint);
 		route.setLatLongToPointFunc(mapper.latLongToPoint);
@@ -97,7 +97,7 @@ define(
 		csv.setFileInputElement(fileInputElement);
 	},
 
-	createFilterForm = function() {
+	createFilterForm = function(filters) {
 		// generate the form for playing with the data
 		formElement.html(filterSkeleton);
 		fileInputElement = formElement.select("#fileinput");
@@ -105,6 +105,10 @@ define(
 
 		// TODO: ...
 
+	},
+
+	filterLoadedCallback = function(csvType, csvData, filters) {
+		createFilterForm(filters);
 	},
 
 	csvLoadedCallback = function(csvType, csvData, routes) {

@@ -133,12 +133,17 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 		}
 	},
 
+	clearPoints = function() {
+		d3.selectAll(".tradenode").remove();
+	},
+
 	drawRouteCollectionSpiralTree = function(collection, pointRoles) {
 		var ctAndMax = collection.getCenterTerminalList();
 		var centerTerminals = ctAndMax.centerTerminalList;
 		var maxSourceQuantity = ctAndMax.maxSourceQuantity;
 
 		flowmap.clearSpiralPaths();
+		clearPoints();
 		//flowmap.setMaxQuantity(collection.maxWeight());
 		flowmap.setMaxQuantity(maxSourceQuantity);
 

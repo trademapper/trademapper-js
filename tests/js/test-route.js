@@ -2,7 +2,7 @@ define(
 	['QUnit', 'trademapper.route', 'd3'],
 	function(q, route, d3) {
 		"use strict";
-		var pointL1, pointL2, pointL3, pointC1, pointC2;
+		var pointL1, pointL2, pointL3, pointL4, pointC1, pointC2;
 
 		var run = function() {
 			q.module("PointLatLong module", {
@@ -150,10 +150,11 @@ define(
 					pointL1 = new route.PointLatLong(2.34, 3.45);
 					pointL2 = new route.PointLatLong(4.56, 5.67);
 					pointL3 = new route.PointLatLong(6.78, 7.89);
+					pointL4 = new route.PointLatLong(8.90, 9.01);
 				}
 			});
 
-			q.test('check RouteCollection getCenterTerminalList does one route correctly', function() {
+			q.test('check RouteCollection getCenterTerminalList does one two-stop route correctly', function() {
 				var ctAndMax,
 					collection = new route.RouteCollection(),
 					route1 = new route.Route([pointL1, pointL2], 10);
@@ -173,6 +174,128 @@ define(
 									lat: 4.56,
 									lng: 5.67,
 									quantity: 10
+								}
+							]
+						}
+					]);
+			});
+
+			q.test('check RouteCollection getCenterTerminalList does one three-stop route correctly', function() {
+				var ctAndMax,
+					collection = new route.RouteCollection(),
+					route1 = new route.Route([pointL1, pointL2, pointL3], 10);
+				collection.addRoute(route1);
+				ctAndMax = collection.getCenterTerminalList();
+				q.equal(ctAndMax.maxSourceQuantity, 10);
+				q.deepEqual(ctAndMax.centerTerminalList,
+					[
+						{
+							center: {
+								lat: 2.34,
+								lng: 3.45,
+								quantity: 10
+							},
+							terminals: [
+								{
+									lat: 4.56,
+									lng: 5.67,
+									quantity: 10
+								}
+							]
+						},
+						{
+							center: {
+								lat: 4.56,
+								lng: 5.67,
+								quantity: 10
+							},
+							terminals: [
+								{
+									lat: 6.78,
+									lng: 7.89,
+									quantity: 10
+								}
+							]
+						}
+					]);
+			});
+
+			q.test('check RouteCollection getCenterTerminalList does two two-stop route correctly (same start)', function() {
+				// Note the center quantity should be the sum of the others
+				var ctAndMax,
+					collection = new route.RouteCollection(),
+					route1 = new route.Route([pointL1, pointL2], 10),
+					route2 = new route.Route([pointL1, pointL3], 20);
+				collection.addRoute(route1);
+				collection.addRoute(route2);
+				ctAndMax = collection.getCenterTerminalList();
+				q.equal(ctAndMax.maxSourceQuantity, 30);
+				q.deepEqual(ctAndMax.centerTerminalList,
+					[
+						{
+							center: {
+								lat: 2.34,
+								lng: 3.45,
+								quantity: 30
+							},
+							terminals: [
+								{
+									lat: 4.56,
+									lng: 5.67,
+									quantity: 10
+								},
+								{
+									lat: 6.78,
+									lng: 7.89,
+									quantity: 20
+								}
+							]
+						}
+					]);
+			});
+
+			q.test('check RouteCollection getCenterTerminalList does overlapping two-stop and three-stop route correctly', function() {
+				// Note the center quantity should be the sum of the others
+				var ctAndMax,
+					collection = new route.RouteCollection(),
+					route1 = new route.Route([pointL1, pointL2, pointL3], 10),
+					route2 = new route.Route([pointL2, pointL4], 20);
+				collection.addRoute(route1);
+				collection.addRoute(route2);
+				ctAndMax = collection.getCenterTerminalList();
+				q.equal(ctAndMax.maxSourceQuantity, 30);
+				q.deepEqual(ctAndMax.centerTerminalList,
+					[
+						{
+							center: {
+								lat: 2.34,
+								lng: 3.45,
+								quantity: 10
+							},
+							terminals: [
+								{
+									lat: 4.56,
+									lng: 5.67,
+									quantity: 10
+								}
+							]
+						},
+						{
+							center: {
+								lat: 4.56,
+								lng: 5.67,
+								quantity: 30
+							},
+							terminals: [
+								{
+									lat: 6.78,
+									lng: 7.89,
+									quantity: 10
+								},
+								{
+									lat: 8.90,
+									lng: 9.01,
+									quantity: 20
 								}
 							]
 						}

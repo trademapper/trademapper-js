@@ -26,16 +26,11 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 		// TODO: replace with output from form element, or even maybe auto discovery ...
 		var csvType = "cites";
 
-		if (file.type == 'text/csv' ||
-				file.type == 'text/comma-separated-values') {
-			var reader = new FileReader();
-			reader.onload = function(e) {
-				processCSVString(reader.result, csvType);
-			};
-			reader.readAsText(file);
-		} else {
-			errorCallback("File needs to be a CSV file");
-		}
+		var reader = new FileReader();
+		reader.onload = function(e) {
+			processCSVString(reader.result, csvType);
+		};
+		reader.readAsText(file);
 	},
 
 	/*

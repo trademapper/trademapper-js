@@ -23,14 +23,14 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 		svgdefs.append("marker")
 				.attr("id", "markerArrow")
 				.attr("viewBox", "0 0 10 10")
-				.attr("markerUnits", "strokeWidth")
+				.attr("markerUnits", "userSpaceOnUse")
 				.attr("refX", "7")
 				.attr("refY", "5")
 				.attr("markerWidth", "4")
 				.attr("markerHeight", "3")
 				.attr("orient", "auto")
 			.append("path")
-				.attr("d", "M 0 0 L 10 5 L 0 10 z")
+				.attr("d", "M 10 0 L 0 5 L 10 10 z")
 				.attr("class", "route-arrow-head");
 
 		// now add a gradient

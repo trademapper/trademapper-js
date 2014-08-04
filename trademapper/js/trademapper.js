@@ -5,16 +5,19 @@ define(
 	[
 		"trademapper.arrows",
 		"trademapper.csv",
+		"trademapper.filterform",
 		"trademapper.mapper",
 		"trademapper.route",
 		"d3",
 		"text!../fragments/filterskeleton.html",
 		"text!../fragments/csvonlyskeleton.html"
 	],
-	function(arrows, csv, mapper, route, d3, filterSkeleton, csvOnlySkeleton) {
+	function(arrows, csv, filterform, mapper, route,
+			 d3, filterSkeleton, csvOnlySkeleton) {
 	"use strict";
 
-	var config, mapRootElement, formElement, fileInputElement, tmsvg, currentCsvData, currentCsvType,
+	var config, mapRootElement, formElement, fileInputElement, tmsvg,
+		currentCsvData, currentCsvType,
 
 		defaultConfig = {
 			ratio: 0.6,
@@ -46,9 +49,6 @@ define(
 
 		route.setCountryGetPointFunc(mapper.countryCentrePoint);
 		route.setLatLongToPointFunc(mapper.latLongToPoint);
-
-		// TODO: delete when happy to do so
-		//hardWiredTest();
 	},
 
 	setConfigDefaults = function(tmConfig) {
@@ -68,29 +68,6 @@ define(
 		}
 	},
 
-	// hardwired code that will be replaced down the road
-	// TODO: delete this
-	hardWiredTest = function() {
-
-		routes = [
-			new route.Route([
-				new route.PointCountry("IN"),
-				new route.PointCountry("CN")
-			], 2),
-			new route.Route([
-				new route.PointCountry("KE"),
-				new route.PointCountry("US"),
-				new route.PointCountry("GB")
-			], 20),
-			new route.Route([
-				new route.PointCountry("AU"),
-				new route.PointCountry("ET"),
-				new route.PointCountry("FR")
-			], 10)
-		];
-		arrows.drawMultipleRoutes(routes);
-	},
-
 	createCsvOnlyForm = function() {
 		formElement.html(csvOnlySkeleton);
 		fileInputElement = formElement.select("#fileinput");
@@ -103,8 +80,7 @@ define(
 		fileInputElement = formElement.select("#fileinput");
 		csv.setFileInputElement(fileInputElement);
 
-		// TODO: ...
-
+		filterform.createFormFromFilters(formElement, filters);
 	},
 
 	filterLoadedCallback = function(csvType, csvData, filters) {
@@ -115,8 +91,6 @@ define(
 		// first cache the current values, so we can regenerate if we want
 		currentCsvData = csvData;
 		currentCsvType = csvType;
-
-		createFilterForm();
 
 		var pointRoles = routes.getPointRoles();
 		// now draw the routes

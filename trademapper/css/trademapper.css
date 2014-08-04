@@ -34,8 +34,8 @@ a, a img, img a {
 	max-width:1280px;
 	display:block;
 	margin:0 auto;
-	border:5px solid #6D6E72;
 	overflow:hidden;
+	
 }
 
 #mapheader {
@@ -58,19 +58,16 @@ a, a img, img a {
     width: 80%;
 }
 
+#map-wrapper {
+	border:5px solid #6D6E72;
+	background-color:#D6D8D3;
+}
+
 /*----------Filter Panel---
  =====================================*/
 
 #filter-panel {
 	background-color:#D6D8D3;
-}
-
-#filter-panel:after {
-    background-color: #d6d8d3;
-    content: "";
-    height: 100%;
-    position: absolute;
-    width: 100%;
 }
 
 .logo {
@@ -137,14 +134,15 @@ a, a img, img a {
     width: 60%;
 }
 
-.form-item.key-exporter {background-color: #008080;}
-.form-item.key-importer {background-color: #FF6600;}
+.form-item.key-exporters {background-color: #008080;}
+.form-item.key-importers {background-color: #FF6600;}
 
 /*----------Map---
  =====================================*/
 
 #trademapper {
     box-shadow: 5px 0 5px rgba(0, 0, 0, 0.4) inset;
+    background-color:#fff;
 }
 
 .map-svg {

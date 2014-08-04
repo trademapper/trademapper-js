@@ -4,13 +4,16 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 	var fileInputElement,
 		csvRoutesLoadedCallback, csvFilterLoadedCallback, errorCallback,
 
-	init = function(fileInput, routeLoadedCallback, filterLoadedCallback, error_callback) {
-		fileInputElement = fileInput;
+	init = function(routeLoadedCallback, filterLoadedCallback, error_callback) {
 		csvRoutesLoadedCallback = routeLoadedCallback;
 		csvFilterLoadedCallback = filterLoadedCallback;
 		errorCallback = error_callback;
+	},
+
+	setFileInputElement = function(fileInput) {
+		fileInputElement = fileInput;
 		if (fileInputElement !== null) {
-			fileInputElement.addEventListener('change', loadCSVFile);
+			fileInputElement.on('change', loadCSVFile);
 		}
 	},
 
@@ -19,20 +22,15 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 	},
 
 	loadCSVFile = function() {
-		var file = fileInputElement.files[0];
+		var file = fileInputElement[0][0].files[0];
 		// TODO: replace with output from form element, or even maybe auto discovery ...
 		var csvType = "cites";
 
-		if (file.type == 'text/csv' ||
-				file.type == 'text/comma-separated-values') {
-			var reader = new FileReader();
-			reader.onload = function(e) {
-				processCSVString(reader.result, csvType);
-			};
-			reader.readAsText(file);
-		} else {
-			errorCallback("File needs to be a CSV file");
-		}
+		var reader = new FileReader();
+		reader.onload = function(e) {
+			processCSVString(reader.result, csvType);
+		};
+		reader.readAsText(file);
 	},
 
 	/*
@@ -229,7 +227,7 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 
 	return {
 		init: init,
-		setSuccessCallback: setSuccessCallback,
+		setFileInputElement: setFileInputElement,
 		processCSVString: processCSVString,
 		csvProcessors: csvProcessors
 	};

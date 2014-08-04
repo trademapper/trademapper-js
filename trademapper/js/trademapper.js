@@ -2,12 +2,19 @@
  * The main trademapper library
  */
 define(
-	["trademapper.arrows", "trademapper.csv", "trademapper.mapper",
-		"trademapper.route", "d3"],
-	function(arrows, csv, mapper, route, d3) {
+	[
+		"trademapper.arrows",
+		"trademapper.csv",
+		"trademapper.mapper",
+		"trademapper.route",
+		"d3",
+		"text!../fragments/filterskeleton.html",
+		"text!../fragments/csvonlyskeleton.html"
+	],
+	function(arrows, csv, mapper, route, d3, filterSkeleton, csvOnlySkeleton) {
 	"use strict";
 
-	var config, rootElement, fileInputElement, tmsvg, currentCsvData, currentCsvType,
+	var config, mapRootElement, formElement, fileInputElement, tmsvg, currentCsvData, currentCsvType,
 
 		defaultConfig = {
 			ratio: 0.6,
@@ -19,12 +26,14 @@ define(
 			maxArrowWidth: 30
 		},
 
-	init = function(map, fileInput, tmConfig) {
-		rootElement = map;
-		fileInputElement = fileInput;
+	init = function(mapId, formElementId, tmConfig) {
+		mapRootElement = d3.select(mapId);
+		formElement = d3.select(formElementId);
 		setConfigDefaults(tmConfig);
 
-		tmsvg = rootElement.insert("svg")
+		createCsvOnlyForm();
+
+		tmsvg = mapRootElement.insert("svg")
 			.attr("width", config.width)
 			.attr("height", config.height)
 			.attr("id", "mapcanvas")
@@ -33,7 +42,7 @@ define(
 		arrows.init(tmsvg, config.arrowColours, config.minArrowWidth, config.maxArrowWidth);
 		mapper.init(tmsvg, config);
 
-		csv.init(fileInputElement, csvLoadedCallback, csvLoadErrorCallback);
+		csv.init(csvLoadedCallback, filterLoadedCallback, csvLoadErrorCallback);
 
 		route.setCountryGetPointFunc(mapper.countryCentrePoint);
 		route.setLatLongToPointFunc(mapper.latLongToPoint);
@@ -52,7 +61,7 @@ define(
 
 		// work out some stuff from the size of the element we're attached to
 		if (!config.hasOwnProperty("width")) {
-			config.width = parseInt(rootElement.style('width'));
+			config.width = parseInt(mapRootElement.style('width'));
 		}
 		if (!config.hasOwnProperty("height")) {
 			config.height = config.width * config.ratio;
@@ -82,10 +91,33 @@ define(
 		arrows.drawMultipleRoutes(routes);
 	},
 
+	createCsvOnlyForm = function() {
+		formElement.html(csvOnlySkeleton);
+		fileInputElement = formElement.select("#fileinput");
+		csv.setFileInputElement(fileInputElement);
+	},
+
+	createFilterForm = function(filters) {
+		// generate the form for playing with the data
+		formElement.html(filterSkeleton);
+		fileInputElement = formElement.select("#fileinput");
+		csv.setFileInputElement(fileInputElement);
+
+		// TODO: ...
+
+	},
+
+	filterLoadedCallback = function(csvType, csvData, filters) {
+		createFilterForm(filters);
+	},
+
 	csvLoadedCallback = function(csvType, csvData, routes) {
 		// first cache the current values, so we can regenerate if we want
 		currentCsvData = csvData;
 		currentCsvType = csvType;
+
+		createFilterForm();
+
 		var pointRoles = routes.getPointRoles();
 		// now draw the routes
 		arrows.drawRouteCollectionSpiralTree(routes, pointRoles);

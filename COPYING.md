@@ -20,6 +20,7 @@ This includes:
 
 * `trademapper/js/require.js`
 * `trademapper/js/domReady.js`
+* `trademapper/js/text.js`
 
 These are [licensed under both BSD and MIT License](https://github.com/jrburke/requirejs/blob/master/LICENSE)
 

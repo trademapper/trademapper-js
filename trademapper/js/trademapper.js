@@ -16,9 +16,7 @@ define(
 				pathEnd: "orange"
 			},
 			minArrowWidth: 1,
-			maxArrowWidth: 30,
-			tradingColor: "#b1c73e",
-			nonTradingColor: "#ccc"
+			maxArrowWidth: 30
 		},
 
 	init = function(map, fileInput, tmConfig) {

@@ -85,6 +85,8 @@ function SpiralTree(layerId_, projection_) {
 	this.strokeWidth = 1;	//spiral line width
 	this.opacity = 0.8;		//spiral node opacity
 	this.quantity = 1;		// default quantity for terminal node
+	this.extraSpiralClass = "";
+	this.extraLineClass = "";
 	this.centerColor='red'; //spiral center node color
 	this.terminalColor = 'steelblue';	//spiral terminal color
 	this.infoFields = [];	//the index of fields for displaying in the tooltips
@@ -309,6 +311,7 @@ SpiralTree.prototype.getQuantity = function (quantity, point) {
 	return this.getValueFromValuePointOrThis(quantity, "quantity", point);
 };
 
+// TODO: draw a circle rather than this thing
 SpiralTree.prototype.drawNode = function (point, color, opacity) {
 	// TODO: add quantity?  bigger circle??
 	var node = this.spiralTreeLayer.append("svg:path")
@@ -329,19 +332,18 @@ SpiralTree.prototype.drawNode = function (point, color, opacity) {
 
 // TODO: currently unused
 SpiralTree.prototype.drawLineSegment = function (point1, point2, opacity, quantity) {
-	if (this.lineColor === undefined) {
-		this.lineColor = 'green';
-	}
-	this.spiralTreeLayer.append("svg:line")
+	var line = this.spiralTreeLayer.append("svg:line")
 		.attr("x1", x(point1.x))
 		.attr("y1", y(point1.y))
 		.attr("x2", x(point2.x))
 		.attr("y2", y(point2.y))
-		.attr("class", "lineSegment")
-		.attr('stroke', this.lineColor)
+		.attr("class", "lineSegment " + this.extraLineClass)
 		.attr('fill', 'none')
 		.attr('stroke-width', this.strokeWidth)
 		.attr('opacity', this.getOpacity(opacity, point));
+	if (this.lineColor !== undefined) {
+		line.attr("fill", this.lineColor);
+	}
 };
 
 SpiralTree.prototype.drawSpiralSegment = function (point, tValue, sign, opacity, quantity) {
@@ -349,17 +351,16 @@ SpiralTree.prototype.drawSpiralSegment = function (point, tValue, sign, opacity,
 	if (point.r === 0) {
 		return;
 	}
-	if (this.spiralColor === undefined) {
-		this.spiralColor = 'black';
-	}
-	this.spiralTreeLayer.append("svg:path")
+	var path = this.spiralTreeLayer.append("svg:path")
 		.attr("d", this.spiralPath(point, tValue, sign))
-		.attr("class", "spiral")
-		.attr('stroke', this.spiralColor)
+		.attr("class", "spiral " + this.extraSpiralClass)
 		.attr('fill', 'none')
 		.attr('stroke-linecap', "round")
 		.attr('stroke-width', this.quantityToStrokeWidth(quantity, point))
 		.attr('opacity', this.getOpacity(opacity, point));
+	if (this.spiralColor !== undefined) {
+		path.attr("fill", this.spiralColor);
+	}
 };
 
 // TODO: currently unused

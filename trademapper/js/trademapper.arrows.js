@@ -48,9 +48,7 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 
 	setUpFlowmap = function() {
 		flowmap = new spiralTree.SpiralTree(mapsvg, function(xy) { return [xy[1], xy[0]]; });
-		flowmap.setColor('spiralSegment', 'red');
-		flowmap.setColor('center', 'orange');
-		flowmap.setColor('terminal', 'blue');
+		flowmap.extraSpiralClass = "traderoute";
 		flowmap.setOpacity(1);
 		flowmap.setNodeDrawable(false);
 	},

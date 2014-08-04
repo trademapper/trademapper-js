@@ -68,7 +68,6 @@ define([], function() {
 			centerObj, terminalObj, maxSourceQuantity,
 			centerTerminalObj = {},
 			centerTerminalList = [],
-			pointRoles = {},
 			routeKeys = Object.keys(this.routes);
 
 		// first extract into nested objects and de-duplicate routes
@@ -140,8 +139,7 @@ define([], function() {
 		}
 		return {
 			centerTerminalList: centerTerminalList,
-			maxSourceQuantity: maxSourceQuantity,
-			pointRoles: pointRoles
+			maxSourceQuantity: maxSourceQuantity
 		};
 	};
 

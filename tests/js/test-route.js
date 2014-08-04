@@ -2,7 +2,7 @@ define(
 	['QUnit', 'trademapper.route', 'd3'],
 	function(q, route, d3) {
 		"use strict";
-		var pointL1, pointL2, pointC1, pointC2;
+		var pointL1, pointL2, pointL3, pointC1, pointC2;
 
 		var run = function() {
 			q.module("PointLatLong module", {
@@ -141,6 +141,42 @@ define(
 				collection.addRoute(route2);
 				collection.addRoute(route3);
 				q.equal(collection.maxWeight(), 30);
+			});
+
+			q.module("LatLongIdentity module", {
+				setup: function() {
+					// set a default function - required before we can create points
+					route.setLatLongToPointFunc(function(latlong) { return [latlong[0], latlong[1]]; });
+					pointL1 = new route.PointLatLong(2.34, 3.45);
+					pointL2 = new route.PointLatLong(4.56, 5.67);
+					pointL3 = new route.PointLatLong(6.78, 7.89);
+				}
+			});
+
+			q.test('check RouteCollection getCenterTerminalList does one route correctly', function() {
+				var ctAndMax,
+					collection = new route.RouteCollection(),
+					route1 = new route.Route([pointL1, pointL2], 10);
+				collection.addRoute(route1);
+				ctAndMax = collection.getCenterTerminalList();
+				q.equal(ctAndMax.maxSourceQuantity, 10);
+				q.deepEqual(ctAndMax.centerTerminalList,
+					[
+						{
+							center: {
+								lat: 2.34,
+								lng: 3.45,
+								quantity: 10
+							},
+							terminals: [
+								{
+									lat: 4.56,
+									lng: 5.67,
+									quantity: 10
+								}
+							]
+						}
+					]);
 			});
 
 		};

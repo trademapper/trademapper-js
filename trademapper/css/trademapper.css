@@ -60,3 +60,13 @@ a, a img, img a {
 	fill: orange;
 	fill-opacity: 0.5;
 }
+
+.tradenode.source {
+	fill: blue;
+}
+.tradenode.transit {
+	fill: yellow;
+}
+.tradenode.dest {
+	fill: black;
+}

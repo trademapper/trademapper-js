@@ -102,13 +102,10 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 		}
 		if (pointType == "source") {
 			size = 5;
-			color = "yellow";
 		} else if (pointType == "transit") {
 			size = 4;
-			color = "green";
 		} else if (pointType == "dest") {
 			size = 3;
-			color = "blue";
 		} else {
 			console.log("unknown pointType: " + pointType);
 			return;
@@ -117,7 +114,7 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 			.attr("cx", point.point[0])
 			.attr("cy", point.point[1])
 			.attr("r", size)
-			.attr("fill", color);
+			.attr("class", "tradenode " + pointType);
 	},
 
 	drawPointRoles = function(pointRoles) {

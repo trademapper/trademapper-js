@@ -10,7 +10,7 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 		csvFilterLoadedCallback = filterLoadedCallback;
 		errorCallback = error_callback;
 		if (fileInputElement !== null) {
-			fileInputElement.addEventListener('change', loadCSVFile);
+			fileInputElement.on('change', loadCSVFile);
 		}
 	},
 
@@ -19,7 +19,7 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 	},
 
 	loadCSVFile = function() {
-		var file = fileInputElement.files[0];
+		var file = fileInputElement[0][0].files[0];
 		// TODO: replace with output from form element, or even maybe auto discovery ...
 		var csvType = "cites";
 

@@ -10,5 +10,7 @@ require.config({
 require(["d3", "trademapper", "domReady!"], function(d3, tm, doc) {
 	"use strict";
 	var config = {width: 2000};
-	tm.init(d3.select("#trademapper"), document.getElementById('fileinput'), config);
+	tm.init(d3.select("#trademapper"),
+			d3.select("#fileinput"),
+			config);
 });

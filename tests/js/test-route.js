@@ -2,7 +2,7 @@ define(
 	['QUnit', 'trademapper.route', 'd3'],
 	function(q, route, d3) {
 		"use strict";
-		var pointL1, pointL2, pointL3, pointL4, pointC1, pointC2;
+		var pointL1, pointL2, pointL3, pointL4, pointC1, pointC2, pointC3, pointC4;
 
 		var run = function() {
 			q.module("PointLatLong module", {
@@ -300,6 +300,103 @@ define(
 							]
 						}
 					]);
+			});
+
+			q.module("Country Points module", {
+				setup: function() {
+					// set a default function - required before we can create points
+					route.setCountryGetPointFunc(function() { return [8, 9]; });
+					pointC1 = new route.PointCountry("ZA");
+					pointC2 = new route.PointCountry("GB");
+					pointC3 = new route.PointCountry("ZW");
+					pointC4 = new route.PointCountry("AR");
+				}
+			});
+
+			q.test('check getPointRoles sets source and dest for one two-stop route', function() {
+				var pointRoles,
+					collection = new route.RouteCollection(),
+					route1 = new route.Route([pointC1, pointC2], 10);
+				collection.addRoute(route1);
+				pointRoles = collection.getPointRoles();
+				q.deepEqual(pointRoles, {
+					"ZA": {
+						point: pointC1,
+						source: true,
+						transit: false,
+						dest: false
+					},
+					"GB": {
+						point: pointC2,
+						source: false,
+						transit: false,
+						dest: true
+					}
+				});
+			});
+
+			q.test('check getPointRoles sets source, transit and dest for one three-stop route', function() {
+				var pointRoles,
+					collection = new route.RouteCollection(),
+					route1 = new route.Route([pointC1, pointC2, pointC3], 10);
+				collection.addRoute(route1);
+				pointRoles = collection.getPointRoles();
+				q.deepEqual(pointRoles, {
+					"ZA": {
+						point: pointC1,
+						source: true,
+						transit: false,
+						dest: false
+					},
+					"GB": {
+						point: pointC2,
+						source: false,
+						transit: true,
+						dest: false
+					},
+					"ZW": {
+						point: pointC3,
+						source: false,
+						transit: false,
+						dest: true
+					}
+				});
+			});
+
+			q.test('check getPointRoles sets source, transit and dest for overlapping two-stop and three-stop route', function() {
+				var pointRoles,
+					collection = new route.RouteCollection(),
+					route1 = new route.Route([pointC1, pointC2, pointC3], 10),
+					route2 = new route.Route([pointC2, pointC4], 20);
+				collection.addRoute(route1);
+				collection.addRoute(route2);
+				pointRoles = collection.getPointRoles();
+				q.deepEqual(pointRoles, {
+					"ZA": {
+						point: pointC1,
+						source: true,
+						transit: false,
+						dest: false
+					},
+					"GB": {
+						point: pointC2,
+						source: true,
+						transit: true,
+						dest: false
+					},
+					"ZW": {
+						point: pointC3,
+						source: false,
+						transit: false,
+						dest: true
+					},
+					"AR": {
+						point: pointC4,
+						source: false,
+						transit: false,
+						dest: true
+					}
+				});
 			});
 
 		};

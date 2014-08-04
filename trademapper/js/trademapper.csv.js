@@ -2,11 +2,12 @@
 define(['d3', 'trademapper.route'], function(d3, route) {
 	"use strict";
 	var fileInputElement,
-		csvFileLoadedCallback, errorCallback,
+		csvRoutesLoadedCallback, csvFilterLoadedCallback, errorCallback,
 
-	init = function(fileInput, success_callback, error_callback) {
+	init = function(fileInput, routeLoadedCallback, filterLoadedCallback, error_callback) {
 		fileInputElement = fileInput;
-		csvFileLoadedCallback = success_callback;
+		csvRoutesLoadedCallback = routeLoadedCallback;
+		csvFilterLoadedCallback = filterLoadedCallback;
 		errorCallback = error_callback;
 		if (fileInputElement !== null) {
 			fileInputElement.addEventListener('change', loadCSVFile);
@@ -14,7 +15,7 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 	},
 
 	setSuccessCallback = function(success_callback) {
-		csvFileLoadedCallback = success_callback;
+		csvRoutesLoadedCallback = success_callback;
 	},
 
 	loadCSVFile = function() {
@@ -52,13 +53,14 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 
 	processParsedCSV = function(csvData, csvType) {
 		if (csvProcessors.hasOwnProperty(csvType)) {
-			csvProcessors[csvType](csvType, csvData);
+			csvProcessors[csvType].routeExtractor(csvType, csvData);
+			csvProcessors[csvType].filterExtractor(csvType, csvData);
 		} else {
 			errorCallback("unknown csvType: " + csvType);
 		}
 	},
 
-	processCitesCsv = function(csvType, csvData) {
+	citesCsvToRoutes = function(csvType, csvData) {
 		var routes, points, origin, importer, exporter, importer_quantity,
 			exporter_quantity, weight, row,
 
@@ -96,16 +98,139 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 		}
 
 		// now send back to the callback
-		csvFileLoadedCallback(csvType, csvData, routes);
+		csvRoutesLoadedCallback(csvType, csvData, routes);
+	},
+
+	getMinMaxValuesFromCsvColumn = function(csvData, column) {
+		var columnNumber,
+			min = NaN,
+			max = NaN;
+		for (var i = 0; i < csvData.length; i++) {
+			columnNumber = parseFloat(csvData[i][column]);
+			if (!isNaN(columnNumber)) {
+				if (isNaN(max)) {
+					max = columnNumber;
+				} else if (columnNumber > max) {
+					max = columnNumber;
+				}
+
+				if (isNaN(min)) {
+					min = columnNumber;
+				} else if (columnNumber < min) {
+					min = columnNumber;
+				}
+			}
+		}
+		if (isNaN(min)) { min = 0; }
+		if (isNaN(max)) { max = min; }
+		return [min, max];
+	},
+
+	getUniqueValuesFromCsvColumn = function(csvData, column) {
+		var unique = {};  // to track what we've already got
+		var distinct = [];
+		for (var i = 0; i < csvData.length; i++) {
+			if (typeof(unique[csvData[i][column]]) === "undefined") {
+				distinct.push(csvData[i][column]);
+				unique[csvData[i][column]] = 0;
+			}
+		}
+		return distinct;
+	},
+
+	csvToFilters = function(csvData, filterSpec) {
+		var minmax, filters = {};
+		for (var column in filterSpec) {
+			if (filterSpec.hasOwnProperty(column)) {
+				if (filterSpec[column].type === "ignore") {
+					// do nothing
+					continue;
+				}
+
+				filters[column] = {
+					type: filterSpec[column].type
+				};
+				// TODO: add textmapping? date?
+				if (filterSpec[column].type === "text") {
+					filters[column].values = getUniqueValuesFromCsvColumn(csvData, column);
+				} else if (filterSpec[column].type === "number") {
+					minmax = getMinMaxValuesFromCsvColumn(csvData, column);
+					filters[column].min = minmax[0];
+					filters[column].max = minmax[1];
+				} else if (filterSpec[column].type === "location") {
+					filters[column].values = getUniqueValuesFromCsvColumn(csvData, column);
+				} else if (filterSpec[column].type === "year") {
+					minmax = getMinMaxValuesFromCsvColumn(csvData, column);
+					filters[column].min = minmax[0];
+					filters[column].max = minmax[1];
+				} else {
+					console.log("Unknown filter column type: " + filterSpec[column].type);
+				}
+			}
+		}
+		return filters;
+	},
+
+	citesCsvToFilters = function(csvType, csvData) {
+		// the header of the CITES CSV is:
+		// Year,App.,Family,Taxon,Importer,Exporter,Origin,Importer reported quantity,Exporter reported quantity,Term,Unit,Purpose,Source
+		var filterSpec = {
+			"Year": {
+				type: "year"
+			},
+			"App.": {
+				type: "text"
+			},
+			"Family": {
+				type: "text"
+			},
+			"Taxon": {
+				type: "text"
+			},
+			"Importer": {
+				type: "location"
+			},
+			"Exporter": {
+				type: "location"
+			},
+			"Origin": {
+				type: "location"
+			},
+			"Importer reported quantity": {
+				type: "number"
+			},
+			"Exporter reported quantity": {
+				type: "number"
+			},
+			"Term": {
+				type: "text"
+			},
+			"Unit": {
+				type: "text"
+			},
+			"Purpose": {
+				type: "text"
+			},
+			"Source": {
+				type: "text"
+			}
+		};
+
+		var filters = csvToFilters(csvData, filterSpec);
+		csvFilterLoadedCallback(csvType, csvData, filters);
 	},
 
 	csvProcessors = {
-		cites: processCitesCsv
+		cites: {
+			routeExtractor: citesCsvToRoutes,
+			filterExtractor: citesCsvToFilters
+		}
 	};
 
 	return {
 		init: init,
 		setSuccessCallback: setSuccessCallback,
-		processCSVString: processCSVString
+		processCSVString: processCSVString,
+		csvProcessors: csvProcessors
 	};
 });

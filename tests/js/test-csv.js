@@ -6,6 +6,10 @@ define(
 			setReturnedRoutes = function(csvType, csvData, routes) {
 				returnedRoutes = routes;
 			},
+			returnedFilters,
+			setReturnedFilters = function(csvType, csvData, filters) {
+				returnedFilters = filters;
+			},
 			errorMessage,
 			setErrorMessage = function(message) {
 				errorMessage = message;
@@ -32,7 +36,7 @@ define(
 			q.module("CSV", {
 				setup: function() {
 					// set a default function for collecting the returned routes
-					csv.init(null, setReturnedRoutes, setErrorMessage);
+					csv.init(null, setReturnedRoutes, setReturnedFilters, setErrorMessage);
 					// we also need to be able to create points
 					route.setCountryGetPointFunc(function() { return [8, 9]; });
 				}
@@ -86,6 +90,73 @@ define(
 				var routeList = returnedRoutes.getRoutes();
 				// There are 3 duplicates which will be combined
 				q.equal(routeList.length, 5);
+			});
+
+			q.test('check csv filter extraction for multiline CSV', function() {
+				returnedFilters = null;
+				errorMessage = null;
+				csv.processCSVString(csvEightLine, "cites");
+
+				q.equal(errorMessage, null);
+				q.notEqual(returnedFilters, null);
+				q.deepEqual(returnedFilters,
+					{
+						"Year": {
+							type: "year",
+							min: 2003,
+							max: 2003
+						},
+						"App.": {
+							type: "text",
+							values: ["II"]
+						},
+						"Family": {
+							type: "text",
+							values: ["Elephantidae"]
+						},
+						"Taxon": {
+							type: "text",
+							values: ["Loxodonta africana"]
+						},
+						"Importer": {
+							type: "location",
+							values: ["AE", "AR", "AT"]
+						},
+						"Exporter": {
+							type: "location",
+							values: ["ZW", "BW", "NA", "ZA"]
+						},
+						"Origin": {
+							type: "location",
+							values: ["", "BW"]
+						},
+						"Importer reported quantity": {
+							type: "number",
+							min: 6,
+							max: 6
+						},
+						"Exporter reported quantity": {
+							type: "number",
+							min: 1,
+							max: 10
+						},
+						"Term": {
+							type: "text",
+							values: ["tusks", "ivory carvings"]
+						},
+						"Unit": {
+							type: "text",
+							values: [""]
+						},
+						"Purpose": {
+							type: "text",
+							values: ["T", "H", "P"]
+						},
+						"Source": {
+							type: "text",
+							values: ["W"]
+						}
+					});
 			});
 
 		};

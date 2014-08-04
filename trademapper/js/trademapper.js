@@ -29,7 +29,7 @@ define(
 			.attr("height", config.height)
 			.attr("id", "mapcanvas")
 			.attr("class", "map-svg flow")
-			.attr("viewBox", "0 0 1500 900");
+			.attr("viewBox", "0 -30 1500 700");
 		arrows.init(tmsvg, config.arrowColours, config.minArrowWidth, config.maxArrowWidth);
 		mapper.init(tmsvg, config);
 

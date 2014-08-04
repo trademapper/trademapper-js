@@ -30,10 +30,12 @@ a, a img, img a {
 /*----------General Layout---
  =====================================*/
 
-.map-wrapper {
+#map-wrapper {
 	max-width:1280px;
 	display:block;
 	margin:0 auto;
+	border:5px solid #6D6E72;
+	overflow:hidden;
 }
 
 #mapheader {
@@ -43,21 +45,113 @@ a, a img, img a {
 #filter-panel {
 	width:20%;
 	float:left;
+	position:relative;
+	display:block;
 }
 
 #trademapper {
-	width:80%;
-	float:left;
+    display: block;
+    float: left;
+    height: 600px;
+    overflow: hidden;
+    position: relative;
+    width: 80%;
 }
+
+/*----------Filter Panel---
+ =====================================*/
+
+#filter-panel {
+	background-color:#D6D8D3;
+}
+
+#filter-panel:after {
+    background-color: #d6d8d3;
+    content: "";
+    height: 100%;
+    position: absolute;
+    width: 100%;
+}
+
+.logo {
+    background-color:#6D6E72;
+    color: #fff;
+    margin: 0;
+    padding: 0.5em;
+}
+.logo img {
+	width:100%;
+}
+
+.filters-group {
+    border: none;
+    clear: both;
+    margin: 0;
+    padding: 0.5em 1em;
+    width: 100%;
+}
+
+.filter-group-title {
+    color: #000;
+    display: block;
+    font-weight: bold;
+    margin-top: 0.5em;
+}
+
+.form-item {
+	margin:0;
+}
+
+/*---Map Title--*/
+
+#title {
+    border: none;
+    font-family: sans-serif;
+    font-size: 1.1em;
+    font-weight: bold;
+    margin-top: 0.5em;
+    padding: 0.5em;
+    width: 100%;
+}
+
+/*---Key Group selectors--*/
+
+.group-key > p {
+    background-color: #333;
+    color: #fff;
+    overflow: auto;
+    padding: 0.5em;
+    margin:0.25em 0;
+}
+
+.group-key > p > label {
+    display: inline-block;
+    float: left;
+    font-weight: bold;
+    line-height: 1.8em;
+    width: 25%;
+}
+
+.group-key > p > select {
+    float: right;
+    width: 60%;
+}
+
+.form-item.key-exporter {background-color: #008080;}
+.form-item.key-importer {background-color: #FF6600;}
 
 /*----------Map---
  =====================================*/
+
+#trademapper {
+    box-shadow: 5px 0 5px rgba(0, 0, 0, 0.4) inset;
+}
 
 .map-svg {
 /*	overflow:visible;*/
 }
 
-.country { fill: #ccc; }
+.country { fill: #DFDFDF; }
 
 .country.trading { fill: #b1c73e; }
 
@@ -68,7 +162,7 @@ a, a img, img a {
 }
 
 .spiral.traderoute {
-	stroke: #EF0E81;
+	stroke: #6D6E72;
 }
 
 .route-arrow {
@@ -82,11 +176,11 @@ a, a img, img a {
 }
 
 .tradenode.source {
-	fill: #FF6600;
+	fill: #000000;
 }
 .tradenode.transit {
 	fill: #008080;
 }
 .tradenode.dest {
-	fill: black;
+	fill: #FF6600;
 }

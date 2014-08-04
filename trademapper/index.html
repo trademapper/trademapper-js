@@ -7,12 +7,10 @@
 	<script data-main="js/main" src="js/require.js"></script>
 </head>
 <body>
-	<div class="map-wrapper">
-		<header id="mapheader">
-		</header>
+	<div id="map-wrapper">
 		<aside id="filter-panel">
 			<header class="branding">
-				<h1 class="logo"><img alt="trademapper" src="images/trademapper-logo" /></h1>
+				<h1 class="logo"><img alt="trademapper" src="images/logo-on-dark.png" /></h1>
 			</header>
 			<form id="form-filters">
 				<fieldset class="filters-group group-title">
@@ -30,7 +28,7 @@
 				<fieldset class="filters-group group-key">
 					<legend class="filter-group-title fileinput">Key Countries</legend>
 					<p class="form-item key-origins">
-						<label for "fileinput">Origins</label>
+						<label for "fileinput">Origin</label>
 						<select id="key-select-origin">
 							<option>All Origins</option>
 							<option>Algeria</option>
@@ -38,8 +36,8 @@
 							<option>Zimbabwe</option>
 						</select>
 					</p>
-					<p class="form-item key-exporters">
-						<label for "fileinput">Exporters</label>
+					<p class="form-item key-exporter">
+						<label for "fileinput">Exporter</label>
 						<select id="key-select-exporters">
 							<option>All Exporters</option>
 							<option>Algeria</option>
@@ -47,8 +45,8 @@
 							<option>Zimbabwe</option>
 						</select>
 					</p>
-					<p class="form-item key-importers">
-						<label for "fileinput">Importers</label>
+					<p class="form-item key-importer">
+						<label for "fileinput">Importer</label>
 						<select id="key-select-importers">
 							<option>All Importers</option>
 							<option>Algeria</option>
@@ -59,9 +57,7 @@
 				</fieldset>
 			</form>
 		</aside>
-		<div id="fileselect">
-			<div id="trademapper">
-			</div>
+		<div id="trademapper">
 		</div>
 	</div>
 </body>

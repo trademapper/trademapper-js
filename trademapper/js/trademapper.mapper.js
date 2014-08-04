@@ -11,6 +11,7 @@ define(["d3", "topojson", "worldmap"], function(d3, topojson, mapdata) {
 	 */
 	init = function(svgElement, mapConfig) {
 		mapsvg = svgElement;
+		config = mapConfig;
 
 		projection = d3.geo.mercator();
 			//.scale(mapWidth/1.25)
@@ -26,7 +27,8 @@ define(["d3", "topojson", "worldmap"], function(d3, topojson, mapdata) {
 			.enter()
 				.append("path")
 				.attr("d", pathmaker)
-				.attr("class", function(d) { return "country " + d.id; });
+				.attr("class", function(d) { return "country " + d.id; })
+				.style("fill", config.nonTradingColor);
 				//.on("click", countryClicked)
 				//.on("mouseover", hoverCountry)
 				//.on("mouseout", unhoverCountry);
@@ -46,6 +48,24 @@ define(["d3", "topojson", "worldmap"], function(d3, topojson, mapdata) {
 				return pathmaker.centroid(countries[i]);
 			}
 		}
+	},
+
+	colorTradingCountries = function(countryObj) {
+		mapsvg.selectAll(".country")
+			.style("fill", function(d) {
+				if (countryObj.hasOwnProperty(d.id)) {
+					return config.tradingColor;
+				} else {
+					return config.nonTradingColor;
+				}
+			});
+	},
+
+	resetCountryColors = function() {
+		mapsvg.selectAll(".country")
+			.style("fill", function(d) {
+				return config.nonTradingColor;
+			});
 	},
 
 	/*
@@ -70,6 +90,8 @@ define(["d3", "topojson", "worldmap"], function(d3, topojson, mapdata) {
 
 	return {
 		init: init,
+		colorTradingCountries: colorTradingCountries,
+		resetCountryColors: resetCountryColors,
 		countryCentrePoint: countryCentrePoint,
 		latLongToPoint: latLongToPoint
 	};

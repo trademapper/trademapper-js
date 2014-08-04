@@ -138,11 +138,10 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 		}
 	},
 
-	drawRouteCollectionSpiralTree = function(collection) {
+	drawRouteCollectionSpiralTree = function(collection, pointRoles) {
 		var ctAndMax = collection.getCenterTerminalList();
 		var centerTerminals = ctAndMax.centerTerminalList;
 		var maxSourceQuantity = ctAndMax.maxSourceQuantity;
-		var pointRoles = collection.getPointRoles();
 
 		flowmap.clearSpiralPaths();
 		//flowmap.setMaxQuantity(collection.maxWeight());

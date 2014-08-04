@@ -16,7 +16,9 @@ define(
 				pathEnd: "orange"
 			},
 			minArrowWidth: 1,
-			maxArrowWidth: 30
+			maxArrowWidth: 30,
+			tradingColor: "#b1c73e",
+			nonTradingColor: "#ccc"
 		},
 
 	init = function(map, fileInput, tmConfig) {
@@ -86,9 +88,12 @@ define(
 		// first cache the current values, so we can regenerate if we want
 		currentCsvData = csvData;
 		currentCsvType = csvType;
+		var pointRoles = routes.getPointRoles();
 		// now draw the routes
-		arrows.drawRouteCollectionSpiralTree(routes);
+		arrows.drawRouteCollectionSpiralTree(routes, pointRoles);
 		//arrows.drawRouteCollectionPlainArrows(routes);
+		// colour in the countries that are trading
+		mapper.colorTradingCountries(pointRoles);
 	},
 
 	csvLoadErrorCallback = function(msg) {

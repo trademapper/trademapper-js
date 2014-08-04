@@ -30,8 +30,24 @@ a, a img, img a {
 /*----------General Layout---
  =====================================*/
 
+.map-wrapper {
+	max-width:1280px;
+	display:block;
+	margin:0 auto;
+}
+
 #mapheader {
 	height: 100px;
+}
+
+#filter-panel {
+	width:20%;
+	float:left;
+}
+
+#trademapper {
+	width:80%;
+	float:left;
 }
 
 /*----------Map---
@@ -52,7 +68,7 @@ a, a img, img a {
 }
 
 .spiral.traderoute {
-	stroke: red;
+	stroke: #EF0E81;
 }
 
 .route-arrow {
@@ -61,15 +77,15 @@ a, a img, img a {
 }
 
 .route-arrow-head {
-	fill: orange;
+	fill: black;
 	fill-opacity: 0.5;
 }
 
 .tradenode.source {
-	fill: blue;
+	fill: #FF6600;
 }
 .tradenode.transit {
-	fill: yellow;
+	fill: #008080;
 }
 .tradenode.dest {
 	fill: black;

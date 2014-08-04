@@ -13,6 +13,10 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 		}
 	},
 
+	setSuccessCallback = function(success_callback) {
+		csvFileLoadedCallback = success_callback;
+	},
+
 	loadCSVFile = function() {
 		var file = fileInputElement.files[0];
 		// TODO: replace with output from form element, or even maybe auto discovery ...
@@ -101,6 +105,7 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 
 	return {
 		init: init,
+		setSuccessCallback: setSuccessCallback,
 		processCSVString: processCSVString
 	};
 });

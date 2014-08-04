@@ -3,7 +3,7 @@ define(
 	function(q, csv, route) {
 		"use strict";
 		var returnedRoutes,
-			setReturnedRoutes = function(routes) {
+			setReturnedRoutes = function(csvType, csvData, routes) {
 				returnedRoutes = routes;
 			},
 			errorMessage,

@@ -53,6 +53,7 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 		flowmap.setColor('terminal', 'blue');
 		flowmap.setOpacity(1);
 		flowmap.setNodeDrawable(false);
+		flowmap.markerMid = "url(#markerArrow)";
 	},
 
 	getArrowWidth = function(route) {

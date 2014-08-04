@@ -94,6 +94,10 @@ function SpiralTree(layerId_, projection_) {
 	this.maxStrokeWidth = 30;
 	this.minStrokeWidth = 0.5;
 	//.attr("transform", "translate(" + margin + "," + margin + ")");
+	
+	this.markerStart = null;
+	this.markerMid = null;
+	this.markerEnd = null;
 }
 
 //below is a bunch of configuration functions
@@ -352,7 +356,7 @@ SpiralTree.prototype.drawSpiralSegment = function (point, tValue, sign, opacity,
 	if (this.spiralColor === undefined) {
 		this.spiralColor = 'black';
 	}
-	this.spiralTreeLayer.append("svg:path")
+	var segment = this.spiralTreeLayer.append("svg:path")
 		.attr("d", this.spiralPath(point, tValue, sign))
 		.attr("class", "spiral")
 		.attr('stroke', this.spiralColor)
@@ -360,6 +364,15 @@ SpiralTree.prototype.drawSpiralSegment = function (point, tValue, sign, opacity,
 		.attr('stroke-linecap', "round")
 		.attr('stroke-width', this.quantityToStrokeWidth(quantity, point))
 		.attr('opacity', this.getOpacity(opacity, point));
+	if (this.markerStart) {
+		segment.attr("marker-start", this.markerStart);
+	}
+	if (this.markerMid) {
+		segment.attr("marker-mid", this.markerMid);
+	}
+	if (this.markerEnd) {
+		segment.attr("marker-end", this.markerEnd);
+	}
 };
 
 // TODO: currently unused

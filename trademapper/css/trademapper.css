@@ -88,15 +88,18 @@ a, a img, img a {
     width: 100%;
 }
 
-.filter-group-title {
-    color: #000;
-    display: block;
-    font-weight: bold;
-    margin-top: 0.5em;
+.filter-group-title,
+.group-title > label {
+    display:none;
 }
 
 .form-item {
 	margin:0;
+}
+
+.form-item > label {
+	color:#333;
+	font-weight:bold;
 }
 
 /*---Map Title--*/
@@ -110,6 +113,7 @@ a, a img, img a {
     padding: 0.5em;
     width: 100%;
 }
+
 
 /*---Key Group selectors--*/
 
@@ -127,6 +131,7 @@ a, a img, img a {
     font-weight: bold;
     line-height: 1.8em;
     width: 25%;
+    color:#fff;
 }
 
 .group-key > p > select {
@@ -136,6 +141,17 @@ a, a img, img a {
 
 .form-item.key-exporters {background-color: #008080;}
 .form-item.key-importers {background-color: #FF6600;}
+
+/*---Year Group selectors--*/
+
+.group-year > p {
+    float: left;
+    width: 50%;
+}
+
+.group-year > p > label {
+	margin-right:0.5em;
+}
 
 /*----------Map---
  =====================================*/

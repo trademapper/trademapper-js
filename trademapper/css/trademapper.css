@@ -115,7 +115,27 @@ a, a img, img a {
 }
 
 
+/*---File Select--*/
+
+
+.group-fileinput > p > input {width: 100%;}
+.group-fileinput > p > label {width: 100%;}
+
 /*---Key Group selectors--*/
+
+.form-item > label{
+	display: inline-block;
+    float: left;
+    font-weight: bold;
+    line-height: 1.8em;
+    width: 25%;
+}
+
+.form-item > select,
+.form-item > input {
+    float: right;
+    width: 60%;
+}
 
 .group-key > p {
     background-color: #333;
@@ -126,18 +146,10 @@ a, a img, img a {
 }
 
 .group-key > p > label {
-    display: inline-block;
-    float: left;
-    font-weight: bold;
-    line-height: 1.8em;
-    width: 25%;
     color:#fff;
 }
 
-.group-key > p > select {
-    float: right;
-    width: 60%;
-}
+
 
 .form-item.key-exporters {background-color: #008080;}
 .form-item.key-importers {background-color: #FF6600;}
@@ -152,6 +164,8 @@ a, a img, img a {
 .group-year > p > label {
 	margin-right:0.5em;
 }
+
+.key-year-to > label {padding-left: 1em;}
 
 /*----------Map---
  =====================================*/

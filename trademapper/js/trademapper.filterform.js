@@ -49,6 +49,63 @@ define(["d3"], function(d3) {
 			return columnName.replace(/\W+/, "-");
 		},
 
+		addLocationFieldset: function(formElement) {
+			var fieldset = formElement.append("fieldset")
+				.attr("class", "filters-group group-location");
+			fieldset.append("legend")
+				.attr("class", "filter-group-title group-location")
+				.text("Key Countries");
+
+			return fieldset;
+		},
+
+		addLocationField: function(fieldset, filters, columnName) {
+			var cName = this.columnNameToClassName(columnName);
+			var values = filters[columnName].values;
+			values.sort();
+
+			var locationP = fieldset.append("p")
+				.attr("class", "form-item location-" + cName);
+			locationP.append("label")
+				.attr("for", cName + "-location-select")
+				.text(columnName);
+			var locationSelect = locationP.append("select")
+				.attr("id", cName + "-location-select")
+				.attr("class", "multiselect");
+
+			if (values.length > 1) {
+				locationSelect.append("option")
+					.attr("value", this.anyString)
+					.text("Any " + columnName);
+			}
+			for (var i = 0; i < values.length; i++) {
+				locationSelect.append("option")
+					.attr("value", values[i])
+					.text(values[i]);
+			}
+
+			var moduleThis = this;
+			locationSelect.on("change", function() {
+				// the data/index arguments d3 gives us are useless, so gather
+				// the info we need in this closure
+				// `this` currently refers to the select element
+				if (this.value === moduleThis.anyString) {
+					moduleThis.filterValues[columnName].any = true;
+					moduleThis.filterValues[columnName].valueList = [];
+				} else {
+					moduleThis.filterValues[columnName].any = false;
+					moduleThis.filterValues[columnName].valueList = [this.value];
+				}
+				moduleThis.formChangedCallback(columnName);
+			});
+
+			this.filterValues[columnName] = {
+				type: "category-multi",
+				any: true,
+				valueList: []
+			};
+		},
+
 		addYearFieldset: function(formElement, filters, columnName) {
 			var yearFieldset, yearP, yearSelect, year, yearOption,
 				moduleThis = this,
@@ -61,7 +118,7 @@ define(["d3"], function(d3) {
 				.text("Year range");
 
 			yearP = yearFieldset.append("p")
-				.attr("class", "form-item key-year-from");
+				.attr("class", "form-item year-from");
 			yearP.append("label")
 				.attr("for", "year-select-from")
 				.text("From");
@@ -82,7 +139,7 @@ define(["d3"], function(d3) {
 			});
 
 			yearP = yearFieldset.append("p")
-				.attr("class", "form-item key-year-to");
+				.attr("class", "form-item year-to");
 			yearP.append("label")
 				.attr("for", "year-select-to")
 				.text("To");
@@ -116,7 +173,7 @@ define(["d3"], function(d3) {
 			values.sort();
 
 			var categoryP = fieldset.append("p")
-				.attr("class", "form-item key-category-" + cName);
+				.attr("class", "form-item category-" + cName);
 			categoryP.append("label")
 				.attr("for", cName + "-select")
 				.text(columnName);
@@ -176,9 +233,15 @@ define(["d3"], function(d3) {
 		},
 
 		createFormFromFilters: function(formElement, filters) {
-			var i, yearFilters, categoryFilters, categoryFieldset;
+			var i, locationFilters, locationFieldset, yearFilters,
+				categoryFilters, categoryFieldset;
 
 			// TODO: recreate country filter stuff
+			locationFieldset = this.addLocationFieldset(formElement);
+			locationFilters = this.getFilterNamesForType(filters, "location");
+			for (i = 0; i < locationFilters.length; i++) {
+				this.addLocationField(locationFieldset, filters, locationFilters[i]);
+			}
 
 			yearFilters = this.getFilterNamesForType(filters, "year");
 			if (yearFilters.length === 1) {

@@ -106,7 +106,7 @@ define(
 				q.equal(2, collection.routeCount());
 			});
 
-			q.test('check RouteCollection combines weight of routes with same points in same order', function() {
+			q.test('check RouteCollection combines quantity of routes with same points in same order', function() {
 				var route1 = new route.Route([pointL1, pointC1, pointC2], 20);
 				var route2 = new route.Route([pointL1, pointC1, pointC2], 10);
 
@@ -114,25 +114,25 @@ define(
 				q.equal(0, collection.routeCount());
 				collection.addRoute(route1);
 				q.equal(1, collection.routeCount());
-				q.equal(20, collection.getRoutes()[0].weight);
+				q.equal(20, collection.getRoutes()[0].quantity);
 				collection.addRoute(route2);
 				q.equal(1, collection.routeCount());
-				q.equal(30, collection.getRoutes()[0].weight);
+				q.equal(30, collection.getRoutes()[0].quantity);
 			});
 
-			q.test('check RouteCollection maxWeight returns 0 when it has no routes', function() {
+			q.test('check RouteCollection maxQuantity returns 0 when it has no routes', function() {
 				var collection = new route.RouteCollection();
-				q.equal(collection.maxWeight(), 0);
+				q.equal(collection.maxQuantity(), 0);
 			});
 
-			q.test('check RouteCollection maxWeight returns 0 when it has one route', function() {
+			q.test('check RouteCollection maxQuantity returns 0 when it has one route', function() {
 				var collection = new route.RouteCollection(),
 					route1 = new route.Route([pointC1, pointC2], 20);
 				collection.addRoute(route1);
-				q.equal(collection.maxWeight(), 20);
+				q.equal(collection.maxQuantity(), 20);
 			});
 
-			q.test('check RouteCollection maxWeight returns max when it has multiple routes', function() {
+			q.test('check RouteCollection maxQuantity returns max when it has multiple routes', function() {
 				var collection = new route.RouteCollection(),
 					route1 = new route.Route([pointL1, pointC1], 10),
 					route2 = new route.Route([pointC1, pointC2], 30),
@@ -140,7 +140,7 @@ define(
 				collection.addRoute(route1);
 				collection.addRoute(route2);
 				collection.addRoute(route3);
-				q.equal(collection.maxWeight(), 30);
+				q.equal(collection.maxQuantity(), 30);
 			});
 
 			q.module("LatLongIdentity module", {

@@ -2,7 +2,7 @@
 define(["d3", "spiralTree"], function(d3, spiralTree) {
 	"use strict";
 	var mapsvg, config, svgdefs, flowmap,
-		arrowColours, minArrowWidth, maxArrowWidth, maxRouteWeight,
+		arrowColours, minArrowWidth, maxArrowWidth, maxRouteQuantity,
 
 	/*
 	 * Save the svg we use for later user
@@ -54,7 +54,7 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 	},
 
 	getArrowWidth = function(route) {
-		var width = (route.weight / maxRouteWeight) * maxArrowWidth;
+		var width = (route.quantity / maxRouteQuantity) * maxArrowWidth;
 		return Math.max(width, minArrowWidth);
 	},
 
@@ -83,7 +83,7 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 
 	drawRouteCollectionPlainArrows = function(collection) {
 		clearArrows();
-		maxRouteWeight = collection.maxWeight();
+		maxRouteQuantity = collection.maxQuantity();
 		var routeList = collection.getRoutes();
 		for (var i = 0; i < routeList.length; i++) {
 			if (routeList[i].points.length >= 2) {
@@ -144,7 +144,6 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 
 		flowmap.clearSpiralPaths();
 		clearPoints();
-		//flowmap.setMaxQuantity(collection.maxWeight());
 		flowmap.setMaxQuantity(maxSourceQuantity);
 
 		for (var i = 0; i < centerTerminals.length; i++) {

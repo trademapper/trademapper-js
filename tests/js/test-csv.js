@@ -2,9 +2,9 @@ define(
 	['QUnit', 'trademapper.csv', 'trademapper.route'],
 	function(q, csv, route) {
 		"use strict";
-		var returnedRoutes,
-			setReturnedRoutes = function(csvType, csvData, routes) {
-				returnedRoutes = routes;
+		var returnedCsv,
+			setReturnedCsv = function(csvType, csvData) {
+				returnedCsv = csvData;
 			},
 			returnedFilters,
 			setReturnedFilters = function(csvType, csvData, filters) {
@@ -36,29 +36,31 @@ define(
 			q.module("CSV", {
 				setup: function() {
 					// set a default function for collecting the returned routes
-					csv.init(null, setReturnedRoutes, setReturnedFilters, setErrorMessage);
+					csv.init(setReturnedCsv, setReturnedFilters, setErrorMessage);
 					// we also need to be able to create points
 					route.setCountryGetPointFunc(function() { return [8, 9]; });
 				}
 			});
 
 			q.test('check error message for unknown csv type', function() {
-				returnedRoutes = null;
+				returnedCsv = null;
 				errorMessage = null;
 				csv.processCSVString(csvMinimal, "unknown");
+				var routes = csv.filterDataAndReturnRoutes("unknown", returnedCsv, {});
 
-				q.equal(returnedRoutes, null);
+				q.equal(routes, null);
 				q.notEqual(errorMessage, null);
 			});
 
 			q.test('check csv parsing for one line CSV without origin', function() {
-				returnedRoutes = null;
+				returnedCsv = null;
 				errorMessage = null;
 				csv.processCSVString(csvOneLine, "cites");
 
 				q.equal(errorMessage, null);
-				q.notEqual(returnedRoutes, null);
-				var routeList = returnedRoutes.getRoutes();
+				q.notEqual(returnedCsv, null);
+				var routes = csv.filterDataAndReturnRoutes("cites", returnedCsv, {});
+				var routeList = routes.getRoutes();
 				q.equal(routeList.length, 1);
 				q.equal(routeList[0].points.length, 2);
 				q.equal(routeList[0].points[0].countryCode, "ZW");
@@ -66,13 +68,14 @@ define(
 			});
 
 			q.test('check csv parsing for one line CSV with origin', function() {
-				returnedRoutes = null;
+				returnedCsv = null;
 				errorMessage = null;
 				csv.processCSVString(csvOneLine3Points, "cites");
 
 				q.equal(errorMessage, null);
-				q.notEqual(returnedRoutes, null);
-				var routeList = returnedRoutes.getRoutes();
+				q.notEqual(returnedCsv, null);
+				var routes = csv.filterDataAndReturnRoutes("cites", returnedCsv, {});
+				var routeList = routes.getRoutes();
 				q.equal(routeList.length, 1);
 				q.equal(routeList[0].points.length, 3);
 				q.equal(routeList[0].points[0].countryCode, "BW");
@@ -81,13 +84,14 @@ define(
 			});
 
 			q.test('check csv parsing for multiline CSV', function() {
-				returnedRoutes = null;
+				returnedCsv = null;
 				errorMessage = null;
 				csv.processCSVString(csvEightLine, "cites");
 
 				q.equal(errorMessage, null);
-				q.notEqual(returnedRoutes, null);
-				var routeList = returnedRoutes.getRoutes();
+				q.notEqual(returnedCsv, null);
+				var routes = csv.filterDataAndReturnRoutes("cites", returnedCsv, {});
+				var routeList = routes.getRoutes();
 				// There are 3 duplicates which will be combined
 				q.equal(routeList.length, 5);
 			});
@@ -107,26 +111,32 @@ define(
 							max: 2003
 						},
 						"App.": {
+							multiselect: true,
 							type: "text",
 							values: ["II"]
 						},
 						"Family": {
+							multiselect: true,
 							type: "text",
 							values: ["Elephantidae"]
 						},
 						"Taxon": {
+							multiselect: true,
 							type: "text",
 							values: ["Loxodonta africana"]
 						},
 						"Importer": {
+							multiselect: true,
 							type: "location",
 							values: ["AE", "AR", "AT"]
 						},
 						"Exporter": {
+							multiselect: true,
 							type: "location",
 							values: ["ZW", "BW", "NA", "ZA"]
 						},
 						"Origin": {
+							multiselect: true,
 							type: "location",
 							values: ["", "BW"]
 						},
@@ -141,18 +151,22 @@ define(
 							max: 10
 						},
 						"Term": {
+							multiselect: true,
 							type: "text",
 							values: ["tusks", "ivory carvings"]
 						},
 						"Unit": {
+							multiselect: false,
 							type: "text",
 							values: [""]
 						},
 						"Purpose": {
+							multiselect: true,
 							type: "text",
 							values: ["T", "H", "P"]
 						},
 						"Source": {
+							multiselect: true,
 							type: "text",
 							values: ["W"]
 						}

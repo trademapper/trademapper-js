@@ -34,11 +34,11 @@ define([], function() {
 
 	/*
 	 * points is a list of objects of PointXyz
-	 * weight is the volume of trade
+	 * quantity is the volume of trade
 	 */
-	function Route(points, weight) {
+	function Route(points, quantity) {
 		this.points = points;
-		this.weight = weight || 1;
+		this.quantity = quantity || 1;
 	}
 
 	Route.prototype.toString = function() {
@@ -54,7 +54,7 @@ define([], function() {
 		return routes.length;
 	};
 
-	// TODO: add filters, eg minimum weight ...
+	// TODO: add filters, eg minimum quantity ...
 	RouteCollection.prototype.getRoutes = function() {
 		var routeList = [], routeKeys = Object.keys(this.routes);
 		for (var i = 0; i < routeKeys.length; i++) {
@@ -68,7 +68,6 @@ define([], function() {
 			centerObj, terminalObj, maxSourceQuantity,
 			centerTerminalObj = {},
 			centerTerminalList = [],
-			pointRoles = {},
 			routeKeys = Object.keys(this.routes);
 
 		// first extract into nested objects and de-duplicate routes
@@ -83,19 +82,19 @@ define([], function() {
 				if (!centerTerminalObj.hasOwnProperty(source.toString())) {
 					centerTerminalObj[source.toString()] = {
 						point: source.point,
-						quantity: route.weight
+						quantity: route.quantity
 					};
 				} else {
-					centerTerminalObj[source.toString()].quantity += route.weight;
+					centerTerminalObj[source.toString()].quantity += route.quantity;
 				}
 
 				if (!centerTerminalObj[source.toString()].hasOwnProperty(dest.toString())) {
 					centerTerminalObj[source.toString()][dest.toString()] = {
 						point: dest.point,
-						quantity: route.weight
+						quantity: route.quantity
 					};
 				} else {
-					centerTerminalObj[source.toString()][dest.toString()].quantity += route.weight;
+					centerTerminalObj[source.toString()][dest.toString()].quantity += route.quantity;
 				}
 			}
 		}
@@ -140,8 +139,7 @@ define([], function() {
 		}
 		return {
 			centerTerminalList: centerTerminalList,
-			maxSourceQuantity: maxSourceQuantity,
-			pointRoles: pointRoles
+			maxSourceQuantity: maxSourceQuantity
 		};
 	};
 
@@ -181,20 +179,20 @@ define([], function() {
 	RouteCollection.prototype.addRoute = function(route) {
 		var routeName = route.toString();
 		if (this.routes.hasOwnProperty(routeName)) {
-			this.routes[routeName].weight += route.weight;
+			this.routes[routeName].quantity += route.quantity;
 		}
 		else {
 			this.routes[routeName] = route;
 		}
 	};
 
-	RouteCollection.prototype.maxWeight = function() {
+	RouteCollection.prototype.maxQuantity = function() {
 		var routeList = this.getRoutes();
 		if (routeList.length === 0) {
 			return 0;
 		} else {
 			return Math.max.apply(null, routeList.map(function(aRoute) {
-				return aRoute.weight;
+				return aRoute.quantity;
 			}));
 		}
 	};

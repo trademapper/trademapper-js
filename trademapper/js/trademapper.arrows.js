@@ -2,7 +2,7 @@
 define(["d3", "spiralTree"], function(d3, spiralTree) {
 	"use strict";
 	var mapsvg, config, svgdefs, flowmap,
-		arrowColours, minArrowWidth, maxArrowWidth, maxRouteWeight,
+		arrowColours, minArrowWidth, maxArrowWidth, maxRouteQuantity,
 
 	/*
 	 * Save the svg we use for later user
@@ -48,16 +48,14 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 
 	setUpFlowmap = function() {
 		flowmap = new spiralTree.SpiralTree(mapsvg, function(xy) { return [xy[1], xy[0]]; });
-		flowmap.setColor('spiralSegment', 'red');
-		flowmap.setColor('center', 'orange');
-		flowmap.setColor('terminal', 'blue');
+		flowmap.extraSpiralClass = "traderoute";
 		flowmap.setOpacity(1);
 		flowmap.setNodeDrawable(false);
 		flowmap.markerMid = "url(#markerArrow)";
 	},
 
 	getArrowWidth = function(route) {
-		var width = (route.weight / maxRouteWeight) * maxArrowWidth;
+		var width = (route.quantity / maxRouteQuantity) * maxArrowWidth;
 		return Math.max(width, minArrowWidth);
 	},
 
@@ -86,7 +84,7 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 
 	drawRouteCollectionPlainArrows = function(collection) {
 		clearArrows();
-		maxRouteWeight = collection.maxWeight();
+		maxRouteQuantity = collection.maxQuantity();
 		var routeList = collection.getRoutes();
 		for (var i = 0; i < routeList.length; i++) {
 			if (routeList[i].points.length >= 2) {
@@ -136,13 +134,17 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 		}
 	},
 
+	clearPoints = function() {
+		d3.selectAll(".tradenode").remove();
+	},
+
 	drawRouteCollectionSpiralTree = function(collection, pointRoles) {
 		var ctAndMax = collection.getCenterTerminalList();
 		var centerTerminals = ctAndMax.centerTerminalList;
 		var maxSourceQuantity = ctAndMax.maxSourceQuantity;
 
 		flowmap.clearSpiralPaths();
-		//flowmap.setMaxQuantity(collection.maxWeight());
+		clearPoints();
 		flowmap.setMaxQuantity(maxSourceQuantity);
 
 		for (var i = 0; i < centerTerminals.length; i++) {

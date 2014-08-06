@@ -30,18 +30,156 @@ a, a img, img a {
 /*----------General Layout---
  =====================================*/
 
+#map-wrapper {
+	max-width:1280px;
+	display:block;
+	margin:0 auto;
+	overflow:hidden;
+	
+}
+
 #mapheader {
 	height: 100px;
 }
 
+#filter-panel {
+	width:20%;
+	float:left;
+	position:relative;
+	display:block;
+}
+
+#trademapper {
+    display: block;
+    float: left;
+    height: 600px;
+    overflow: hidden;
+    position: relative;
+    width: 80%;
+}
+
+#map-wrapper {
+	border:5px solid #6D6E72;
+	background-color:#D6D8D3;
+}
+
+/*----------Filter Panel---
+ =====================================*/
+
+#filter-panel {
+	background-color:#D6D8D3;
+}
+
+.logo {
+    background-color:#6D6E72;
+    color: #fff;
+    margin: 0;
+    padding: 0.5em;
+}
+.logo img {
+	width:100%;
+}
+
+.filters-group {
+    border: none;
+    clear: both;
+    margin: 0;
+    padding: 0.5em 1em;
+    width: 100%;
+}
+
+.filter-group-title,
+.group-title > label {
+    display:none;
+}
+
+.form-item {
+	margin:0;
+}
+
+.form-item > label {
+	color:#333;
+	font-weight:bold;
+}
+
+/*---Map Title--*/
+
+#title {
+    border: none;
+    font-family: sans-serif;
+    font-size: 1.1em;
+    font-weight: bold;
+    margin-top: 0.5em;
+    padding: 0.5em;
+    width: 100%;
+}
+
+
+/*---File Select--*/
+
+
+.group-fileinput > p > input {width: 100%;}
+.group-fileinput > p > label {width: 100%;}
+
+/*---Filter Group selectors--*/
+
+.form-item > label{
+	display: inline-block;
+    float: left;
+    font-weight: bold;
+    line-height: 1.8em;
+    width: 25%;
+}
+
+.form-item > select,
+.form-item > input {
+    float: right;
+    width: 60%;
+}
+
+.group-location > p {
+    background-color: #333;
+    color: #fff;
+    overflow: auto;
+    padding: 0.5em;
+    margin:0.25em 0;
+}
+
+.group-location > p > label {
+    color:#fff;
+}
+
+
+
+.form-item.location-exporter {background-color: #008080;}
+.form-item.location-importer {background-color: #FF6600;}
+
+/*---Year Group selectors--*/
+
+.group-year > p {
+    float: left;
+    width: 50%;
+}
+
+.group-year > p > label {
+	margin-right:0.5em;
+}
+
+.year-to > label {padding-left: 1em;}
+
 /*----------Map---
  =====================================*/
+
+#trademapper {
+    box-shadow: 5px 0 5px rgba(0, 0, 0, 0.4) inset;
+    background-color:#fff;
+}
 
 .map-svg {
 /*	overflow:visible;*/
 }
 
-.country { fill: #ccc; }
+.country { fill: #DFDFDF; }
 
 .country.trading { fill: #b1c73e; }
 
@@ -51,22 +189,26 @@ a, a img, img a {
 	stroke-linejoin: round;
 }
 
+.spiral.traderoute {
+	stroke: #6D6E72;
+}
+
 .route-arrow {
 	fill: none;
 	stroke-linejoin: round;
 }
 
 .route-arrow-head {
-	fill: orange;
+	fill: black;
 	fill-opacity: 0.5;
 }
 
 .tradenode.source {
-	fill: blue;
+	fill: #000000;
 }
 .tradenode.transit {
-	fill: yellow;
+	fill: #008080;
 }
 .tradenode.dest {
-	fill: black;
+	fill: #FF6600;
 }

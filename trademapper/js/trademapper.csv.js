@@ -2,10 +2,10 @@
 define(['d3', 'trademapper.route'], function(d3, route) {
 	"use strict";
 	var fileInputElement,
-		csvRoutesLoadedCallback, csvFilterLoadedCallback, errorCallback,
+		csvDataLoadedCallback, csvFilterLoadedCallback, errorCallback,
 
-	init = function(routeLoadedCallback, filterLoadedCallback, error_callback) {
-		csvRoutesLoadedCallback = routeLoadedCallback;
+	init = function(dataLoadedCallback, filterLoadedCallback, error_callback) {
+		csvDataLoadedCallback = dataLoadedCallback;
 		csvFilterLoadedCallback = filterLoadedCallback;
 		errorCallback = error_callback;
 	},
@@ -18,7 +18,7 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 	},
 
 	setSuccessCallback = function(success_callback) {
-		csvRoutesLoadedCallback = success_callback;
+		csvDataLoadedCallback = success_callback;
 	},
 
 	loadCSVFile = function() {
@@ -51,14 +51,24 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 
 	processParsedCSV = function(csvData, csvType) {
 		if (csvProcessors.hasOwnProperty(csvType)) {
-			csvProcessors[csvType].routeExtractor(csvType, csvData);
 			csvProcessors[csvType].filterExtractor(csvType, csvData);
 		} else {
 			errorCallback("unknown csvType: " + csvType);
 		}
+		// now send back to the callback
+		csvDataLoadedCallback(csvType, csvData);
 	},
 
-	citesCsvToRoutes = function(csvType, csvData) {
+	filterDataAndReturnRoutes = function(csvType, csvData, filterValues) {
+		if (csvProcessors.hasOwnProperty(csvType)) {
+			return csvProcessors[csvType].routeExtractor(csvType, csvData, filterValues);
+		} else {
+			errorCallback("unknown csvType: " + csvType);
+			return null;
+		}
+	},
+
+	citesCsvToRoutes = function(csvType, csvData, filterValues) {
 		var routes, points, origin, importer, exporter, importer_quantity,
 			exporter_quantity, weight, row,
 
@@ -95,8 +105,7 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 			routes.addRoute(new route.Route(points, weight));
 		}
 
-		// now send back to the callback
-		csvRoutesLoadedCallback(csvType, csvData, routes);
+		return routes;
 	},
 
 	getMinMaxValuesFromCsvColumn = function(csvData, column) {
@@ -148,6 +157,9 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 				filters[column] = {
 					type: filterSpec[column].type
 				};
+				if (filterSpec[column].hasOwnProperty("multiselect")) {
+					filters[column].multiselect = filterSpec[column].multiselect;
+				}
 				// TODO: add textmapping? date?
 				if (filterSpec[column].type === "text") {
 					filters[column].values = getUniqueValuesFromCsvColumn(csvData, column);
@@ -177,22 +189,28 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 				type: "year"
 			},
 			"App.": {
-				type: "text"
+				type: "text",
+				multiselect: true
 			},
 			"Family": {
-				type: "text"
+				type: "text",
+				multiselect: true
 			},
 			"Taxon": {
-				type: "text"
+				type: "text",
+				multiselect: true
 			},
 			"Importer": {
-				type: "location"
+				type: "location",
+				multiselect: true
 			},
 			"Exporter": {
-				type: "location"
+				type: "location",
+				multiselect: true
 			},
 			"Origin": {
-				type: "location"
+				type: "location",
+				multiselect: true
 			},
 			"Importer reported quantity": {
 				type: "number"
@@ -201,16 +219,20 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 				type: "number"
 			},
 			"Term": {
-				type: "text"
+				type: "text",
+				multiselect: true
 			},
 			"Unit": {
-				type: "text"
+				type: "text",
+				multiselect: false  // doesn't make sense to have multiselect
 			},
 			"Purpose": {
-				type: "text"
+				type: "text",
+				multiselect: true
 			},
 			"Source": {
-				type: "text"
+				type: "text",
+				multiselect: true
 			}
 		};
 
@@ -229,6 +251,7 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 		init: init,
 		setFileInputElement: setFileInputElement,
 		processCSVString: processCSVString,
+		filterDataAndReturnRoutes: filterDataAndReturnRoutes,
 		csvProcessors: csvProcessors
 	};
 });

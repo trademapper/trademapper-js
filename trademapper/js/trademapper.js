@@ -45,10 +45,12 @@ define(
 		arrows.init(tmsvg, config.arrowColours, config.minArrowWidth, config.maxArrowWidth);
 		mapper.init(tmsvg, config);
 
+		// set up the various callbacks we need to link things together
 		csv.init(csvLoadedCallback, filterLoadedCallback, csvLoadErrorCallback);
 
 		route.setCountryGetPointFunc(mapper.countryCentrePoint);
 		route.setLatLongToPointFunc(mapper.latLongToPoint);
+		filterform.formChangedCallback = filterformChangedCallback;
 	},
 
 	setConfigDefaults = function(tmConfig) {
@@ -87,21 +89,36 @@ define(
 		createFilterForm(filters);
 	},
 
-	csvLoadedCallback = function(csvType, csvData, routes) {
-		// first cache the current values, so we can regenerate if we want
-		currentCsvData = csvData;
-		currentCsvType = csvType;
+	showFilteredCsv = function() {
+		var routes = csv.filterDataAndReturnRoutes(
+			currentCsvType, currentCsvData, filterform.filterValues);
+		if (!routes) {
+			console.log("failed to get routes");
+			return;
+		}
 
 		var pointRoles = routes.getPointRoles();
 		// now draw the routes
 		arrows.drawRouteCollectionSpiralTree(routes, pointRoles);
-		//arrows.drawRouteCollectionPlainArrows(routes);
 		// colour in the countries that are trading
 		mapper.colorTradingCountries(pointRoles);
 	},
 
+	filterformChangedCallback = function(columnName) {
+		showFilteredCsv();
+	},
+
+	csvLoadedCallback = function(csvType, csvData) {
+		// first cache the current values, so we can regenerate if we want
+		currentCsvData = csvData;
+		currentCsvType = csvType;
+
+		showFilteredCsv();
+	},
+
 	csvLoadErrorCallback = function(msg) {
 		// TODO: show the error to the user
+		console.log(msg);
 	};
 
 	return {

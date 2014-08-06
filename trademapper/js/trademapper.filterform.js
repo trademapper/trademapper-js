@@ -4,6 +4,31 @@ define(["d3"], function(d3) {
 
 	return {
 
+		/*
+		 * This will store the values as 
+		 * filterValues[columnName] => {type: <sometype>, ...}
+		 *
+		 * For category it will look like:
+		 * {type: "category-single", any: true/false, value: "value1"}
+		 *
+		 * For category with multiselect it will look like:
+		 * {type: "category-multi", any: true/false, valueList: ["value1", "value2"]}
+		 * The any is the top choice.
+		 *
+		 * For year
+		 * {type: "year", minValue: 2003, maxValue: 2008}
+		 *
+		 * For other numeric ranges
+		 * {type: "numeric", minValue: 4, maxValue: 20}
+		 */
+		filterValues: {},
+
+		/*
+		 * should be set by external program
+		 */
+		formChangedCallback: function(columnName) {
+		},
+
 		getFilterNamesForType: function(filters, filterType) {
 			var result = [], temp;
 
@@ -23,26 +48,31 @@ define(["d3"], function(d3) {
 		},
 
 		addYearFieldset: function(formElement, filters, yearColumn) {
-			var yearInfo = filters[yearColumn];
+			var yearFieldset, yearP, yearSelect, year, yearOption,
+				yearInfo = filters[yearColumn];
 
-			var yearFieldset = formElement.append("fieldset")
+			yearFieldset = formElement.append("fieldset")
 				.attr("class", "filters-group group-year");
 			yearFieldset.append("legend")
 				.attr("class", "filter-group-title year")
 				.text("Year range");
 
-			var yearP = yearFieldset.append("p")
+			yearP = yearFieldset.append("p")
 				.attr("class", "form-item key-year-from");
 			yearP.append("label")
 				.attr("for", "year-select-from")
 				.text("From");
-			var yearSelect = yearP.append("select")
+			yearSelect = yearP.append("select")
+				// TODO: remove disabled once this is working
 				.attr("disabled", "disabled")
 				.attr("id", "year-select-from");
-			for (var year = yearInfo.min; year <= yearInfo.max; year++) {
-				yearSelect.append("option")
+			for (year = yearInfo.min; year <= yearInfo.max; year++) {
+				yearOption = yearSelect.append("option")
 					.attr("value", year.toString())
 					.text(year.toString());
+				if (year === yearInfo.min) {
+					yearOption.attr("selected", "selected");
+				}
 			}
 
 			yearP = yearFieldset.append("p")
@@ -51,18 +81,29 @@ define(["d3"], function(d3) {
 				.attr("for", "year-select-to")
 				.text("To");
 			yearSelect = yearP.append("select")
+				// TODO: remove disabled once this is working
 				.attr("disabled", "disabled")
 				.attr("id", "year-select-to");
 			for (year = yearInfo.min; year <= yearInfo.max; year++) {
-				yearSelect.append("option")
+				yearOption = yearSelect.append("option")
 					.attr("value", year.toString())
 					.text(year.toString());
+				if (year === yearInfo.max) {
+					yearOption.attr("selected", "selected");
+				}
 			}
+
+			this.filterValues[yearColumn] = {
+				type: "year",
+				minValue: yearInfo.min,
+				maxValue: yearInfo.max
+			};
 		},
 
 		addCategoryField: function(fieldset, filters, columnName) {
 			var cName = this.columnNameToClassName(columnName);
 			var values = filters[columnName].values;
+			var multiselect = filters[columnName].multiselect;
 			values.sort();
 
 			var categoryP = fieldset.append("p")
@@ -72,6 +113,9 @@ define(["d3"], function(d3) {
 				.text(columnName);
 			var categorySelect = categoryP.append("select")
 				.attr("id", cName + "-select");
+			if (multiselect) {
+				categorySelect.attr("class", "multiselect");
+			}
 
 			if (values.length > 1) {
 				categorySelect.append("option")
@@ -82,6 +126,35 @@ define(["d3"], function(d3) {
 				categorySelect.append("option")
 					.attr("value", values[i])
 					.text(values[i]);
+			}
+
+			var moduleThis = this;
+			categorySelect.on("change", function() {
+				// the data/index arguments d3 gives us are useless, so gather
+				// the info we need in this closure
+				// `this` currently refers to the select element
+				if (multiselect) {
+					moduleThis.filterValues[columnName].valueList = [this.value];
+				} else {
+					moduleThis.filterValues[columnName].value = this.value;
+				}
+				// TODO: how to spot being put back to any?
+				moduleThis.filterValues[columnName].any = false;
+				moduleThis.formChangedCallback(columnName);
+			});
+
+			if (multiselect) {
+				this.filterValues[columnName] = {
+					type: "category-single",
+					any: true,
+					valueList: null
+				};
+			} else {
+				this.filterValues[columnName] = {
+					type: "category-multi",
+					any: true,
+					valueList: []
+				};
 			}
 		},
 

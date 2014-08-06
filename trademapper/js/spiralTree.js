@@ -60,8 +60,8 @@ BinarySearchArray.prototype.remove = function (value, index1, index2) {
 //end of the class for sorted array
 
 // TODO: these two vars are currently unused
-var symbol = d3.scale.ordinal().range(d3.svg.symbolTypes),
-	color = d3.scale.category10();
+//var symbol = d3.scale.ordinal().range(d3.svg.symbolTypes),
+//	color = d3.scale.category10();
 
 //This is the class for spiral tree, need parameters for layer which should be svg type and the projection
 function SpiralTree(layerId_, projection_) {

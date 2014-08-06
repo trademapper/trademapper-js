@@ -85,7 +85,9 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 						return false;
 					}
 				} else if (filter.type === "year") {
-					// TODO:
+					if (row[filterName] < filter.minValue || row[filterName] > filter.maxValue) {
+						return false;
+					}
 				} else if (filter.type === "numeric") {
 					// TODO:
 				}

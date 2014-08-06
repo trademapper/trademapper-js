@@ -70,6 +70,14 @@ define(
 		}
 	},
 
+	showNowWorking = function() {
+		console.log("start working");
+	},
+
+	stopNowWorking = function() {
+		console.log("work finished");
+	},
+
 	createCsvOnlyForm = function() {
 		formElement.html(csvOnlySkeleton);
 		fileInputElement = formElement.select("#fileinput");
@@ -90,6 +98,7 @@ define(
 	},
 
 	showFilteredCsv = function() {
+		showNowWorking();
 		var routes = csv.filterDataAndReturnRoutes(
 			currentCsvType, currentCsvData, filterform.filterValues);
 		if (!routes) {
@@ -102,6 +111,7 @@ define(
 		arrows.drawRouteCollectionSpiralTree(routes, pointRoles);
 		// colour in the countries that are trading
 		mapper.colorTradingCountries(pointRoles);
+		stopNowWorking();
 	},
 
 	filterformChangedCallback = function(columnName) {

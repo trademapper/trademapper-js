@@ -49,9 +49,10 @@ define(["d3"], function(d3) {
 			return columnName.replace(/\W+/, "-");
 		},
 
-		addYearFieldset: function(formElement, filters, yearColumn) {
+		addYearFieldset: function(formElement, filters, columnName) {
 			var yearFieldset, yearP, yearSelect, year, yearOption,
-				yearInfo = filters[yearColumn];
+				moduleThis = this,
+				yearInfo = filters[columnName];
 
 			yearFieldset = formElement.append("fieldset")
 				.attr("class", "filters-group group-year");
@@ -65,8 +66,6 @@ define(["d3"], function(d3) {
 				.attr("for", "year-select-from")
 				.text("From");
 			yearSelect = yearP.append("select")
-				// TODO: remove disabled once this is working
-				.attr("disabled", "disabled")
 				.attr("id", "year-select-from");
 			for (year = yearInfo.min; year <= yearInfo.max; year++) {
 				yearOption = yearSelect.append("option")
@@ -76,6 +75,11 @@ define(["d3"], function(d3) {
 					yearOption.attr("selected", "selected");
 				}
 			}
+			yearSelect.on("change", function() {
+				// `this` currently refers to the select element
+				moduleThis.filterValues[columnName].minValue = this.value;
+				moduleThis.formChangedCallback(columnName);
+			});
 
 			yearP = yearFieldset.append("p")
 				.attr("class", "form-item key-year-to");
@@ -83,8 +87,6 @@ define(["d3"], function(d3) {
 				.attr("for", "year-select-to")
 				.text("To");
 			yearSelect = yearP.append("select")
-				// TODO: remove disabled once this is working
-				.attr("disabled", "disabled")
 				.attr("id", "year-select-to");
 			for (year = yearInfo.min; year <= yearInfo.max; year++) {
 				yearOption = yearSelect.append("option")
@@ -94,8 +96,13 @@ define(["d3"], function(d3) {
 					yearOption.attr("selected", "selected");
 				}
 			}
+			yearSelect.on("change", function() {
+				// `this` currently refers to the select element
+				moduleThis.filterValues[columnName].maxValue = this.value;
+				moduleThis.formChangedCallback(columnName);
+			});
 
-			this.filterValues[yearColumn] = {
+			this.filterValues[columnName] = {
 				type: "year",
 				minValue: yearInfo.min,
 				maxValue: yearInfo.max

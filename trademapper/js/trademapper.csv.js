@@ -68,9 +68,36 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 		}
 	},
 
+	filterPasses = function(row, filterValues) {
+		var filter, filterName;
+		for (filterName in filterValues) {
+			if (filterValues.hasOwnProperty(filterName)) {
+				filter = filterValues[filterName];
+
+				if (filter.type === "category-single") {
+					// if any value is allowed, skip this filter
+					if (filter.any === false && row[filterName] != filter.value) {
+						return false;
+					}
+				} else if (filter.type === "category-multi") {
+					// if any value is allowed, skip this filter
+					if (filter.any === false && filter.valueList.indexOf(row[filterName]) === -1) {
+						return false;
+					}
+				} else if (filter.type === "year") {
+					// TODO:
+				} else if (filter.type === "numeric") {
+					// TODO:
+				}
+
+			}
+		}
+		return true;
+	},
+
 	citesCsvToRoutes = function(csvType, csvData, filterValues) {
 		var routes, points, origin, importer, exporter, importer_quantity,
-			exporter_quantity, weight, row,
+			exporter_quantity, quantity, row,
 
 		// the header of the CITES CSV is:
 		// Year,App.,Family,Taxon,Importer,Exporter,Origin,Importer reported quantity,Exporter reported quantity,Term,Unit,Purpose,Source
@@ -83,14 +110,16 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 		routes = new route.RouteCollection();
 		for (var i = 0; i < csvData.length; i++) {
 			row = csvData[i];
+
+			// filter out rows that don't match our criteria
+			if (!filterPasses(row, filterValues)) { continue; }
+
 			origin = row[ORIGIN_INDEX];
 			importer = row[IMPORTER_INDEX];
 			exporter = row[EXPORTER_INDEX];
 			importer_quantity = row[IMPORTER_QUANTITY_INDEX];
 			exporter_quantity = row[EXPORTER_QUANTITY_INDEX];
-			weight = Math.max(importer_quantity, exporter_quantity);
-
-			// TODO: filter func goes here: if (!filterPass(row)) { continue; }
+			quantity = Math.max(importer_quantity, exporter_quantity);
 
 			points = [];
 			if (origin.length == 2 && origin != 'XX') {
@@ -102,7 +131,7 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 			if (importer.length == 2 && importer != 'XX') {
 				points.push(new route.PointCountry(importer));
 			}
-			routes.addRoute(new route.Route(points, weight));
+			routes.addRoute(new route.Route(points, quantity));
 		}
 
 		return routes;

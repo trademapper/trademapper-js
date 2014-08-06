@@ -23,6 +23,8 @@ define(["d3"], function(d3) {
 		 */
 		filterValues: {},
 
+		anyString: "--------",
+
 		/*
 		 * should be set by external program
 		 */
@@ -119,7 +121,7 @@ define(["d3"], function(d3) {
 
 			if (values.length > 1) {
 				categorySelect.append("option")
-					.attr("value", "")
+					.attr("value", this.anyString)
 					.text("Any " + columnName);
 			}
 			for (var i = 0; i < values.length; i++) {
@@ -133,27 +135,35 @@ define(["d3"], function(d3) {
 				// the data/index arguments d3 gives us are useless, so gather
 				// the info we need in this closure
 				// `this` currently refers to the select element
-				if (multiselect) {
-					moduleThis.filterValues[columnName].valueList = [this.value];
+				if (this.value === moduleThis.anyString) {
+					moduleThis.filterValues[columnName].any = true;
+					if (multiselect) {
+						moduleThis.filterValues[columnName].valueList = [];
+					} else {
+						moduleThis.filterValues[columnName].value = null;
+					}
 				} else {
-					moduleThis.filterValues[columnName].value = this.value;
+					moduleThis.filterValues[columnName].any = false;
+					if (multiselect) {
+						moduleThis.filterValues[columnName].valueList = [this.value];
+					} else {
+						moduleThis.filterValues[columnName].value = this.value;
+					}
 				}
-				// TODO: how to spot being put back to any?
-				moduleThis.filterValues[columnName].any = false;
 				moduleThis.formChangedCallback(columnName);
 			});
 
 			if (multiselect) {
 				this.filterValues[columnName] = {
-					type: "category-single",
-					any: true,
-					valueList: null
-				};
-			} else {
-				this.filterValues[columnName] = {
 					type: "category-multi",
 					any: true,
 					valueList: []
+				};
+			} else {
+				this.filterValues[columnName] = {
+					type: "category-single",
+					any: true,
+					valueList: null
 				};
 			}
 		},

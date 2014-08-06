@@ -37,6 +37,7 @@ define(["d3"], function(d3) {
 				.attr("for", "year-select-from")
 				.text("From");
 			var yearSelect = yearP.append("select")
+				.attr("disabled", "disabled")
 				.attr("id", "year-select-from");
 			for (var year = yearInfo.min; year <= yearInfo.max; year++) {
 				yearSelect.append("option")
@@ -50,6 +51,7 @@ define(["d3"], function(d3) {
 				.attr("for", "year-select-to")
 				.text("To");
 			yearSelect = yearP.append("select")
+				.attr("disabled", "disabled")
 				.attr("id", "year-select-to");
 			for (year = yearInfo.min; year <= yearInfo.max; year++) {
 				yearSelect.append("option")

@@ -23,14 +23,15 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 		svgdefs.append("marker")
 				.attr("id", "markerArrow")
 				.attr("viewBox", "0 0 10 10")
-				.attr("markerUnits", "userSpaceOnUse")
+				.attr("markerUnits", "strokeWidth")
+				//.attr("markerUnits", "userSpaceOnUse")
 				.attr("refX", "7")
 				.attr("refY", "5")
-				.attr("markerWidth", "4")
-				.attr("markerHeight", "3")
+				.attr("markerWidth", "1")
+				.attr("markerHeight", "1.3")
 				.attr("orient", "auto")
 			.append("path")
-				.attr("d", "M 10 0 L 0 5 L 10 10 z")
+				.attr("d", "M 9 2 L 3 5 L 9 8 z")
 				.attr("class", "route-arrow-head");
 
 		// now add a gradient
@@ -49,9 +50,9 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 	setUpFlowmap = function() {
 		flowmap = new spiralTree.SpiralTree(mapsvg, function(xy) { return [xy[1], xy[0]]; });
 		flowmap.extraSpiralClass = "traderoute";
-		flowmap.setOpacity(1);
+		flowmap.setOpacity(0.5);
 		flowmap.setNodeDrawable(false);
-		flowmap.markerMid = "url(#markerArrow)";
+		flowmap.markerStart = "url(#markerArrow)";
 	},
 
 	getArrowWidth = function(route) {

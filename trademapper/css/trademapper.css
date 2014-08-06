@@ -198,9 +198,14 @@ a, a img, img a {
 	stroke-linejoin: round;
 }
 
-.route-arrow-head {
+.route-arrow-head-wide {
 	fill: white;
 	fill-opacity: 0.5;
+}
+
+.route-arrow-head-narrow {
+	fill: black;
+	fill-opacity: 1;
 }
 
 .tradenode.source {

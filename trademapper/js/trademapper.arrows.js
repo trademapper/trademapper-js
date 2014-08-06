@@ -21,7 +21,7 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 		svgdefs = mapsvg.append("defs");
 		// first add arrow head
 		svgdefs.append("marker")
-				.attr("id", "markerArrow")
+				.attr("id", "markerArrowWide")
 				.attr("viewBox", "0 0 10 10")
 				.attr("markerUnits", "strokeWidth")
 				//.attr("markerUnits", "userSpaceOnUse")
@@ -32,7 +32,21 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 				.attr("orient", "auto")
 			.append("path")
 				.attr("d", "M 9 2 L 3 5 L 9 8 z")
-				.attr("class", "route-arrow-head");
+				.attr("class", "route-arrow-head-wide");
+
+		svgdefs.append("marker")
+				.attr("id", "markerArrowNarrow")
+				.attr("viewBox", "0 0 10 10")
+				//.attr("markerUnits", "strokeWidth")
+				.attr("markerUnits", "userSpaceOnUse")
+				.attr("refX", "7")
+				.attr("refY", "5")
+				.attr("markerWidth", "6")
+				.attr("markerHeight", "8")
+				.attr("orient", "auto")
+			.append("path")
+				.attr("d", "M 10 0 L 0 5 L 10 10 z")
+				.attr("class", "route-arrow-head-narrow");
 
 		// now add a gradient
 		var gradient = svgdefs.append("linearGradient")
@@ -52,7 +66,8 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 		flowmap.extraSpiralClass = "traderoute";
 		flowmap.setOpacity(0.5);
 		flowmap.setNodeDrawable(false);
-		flowmap.markerStart = "url(#markerArrow)";
+		flowmap.markerStart.wide = "url(#markerArrowWide)";
+		flowmap.markerStart.narrow = "url(#markerArrowNarrow)";
 	},
 
 	getArrowWidth = function(route) {

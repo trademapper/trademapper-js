@@ -95,11 +95,11 @@ function SpiralTree(layerId_, projection_) {
 	                         // and then convert to strokewidth using:
 	this.maxStrokeWidth = 30;
 	this.minStrokeWidth = 0.5;
-	//.attr("transform", "translate(" + margin + "," + margin + ")");
+	this.narrowWideStrokeThreshold = 3;  // used for deciding whether to use arrows inside or outside line
 	
-	this.markerStart = null;
-	this.markerMid = null;
-	this.markerEnd = null;
+	this.markerStart = {narrow: null, wide: null};
+	this.markerMid = {narrow: null, wide: null};
+	this.markerEnd = {narrow: null, wide: null};
 }
 
 //below is a bunch of configuration functions
@@ -355,21 +355,24 @@ SpiralTree.prototype.drawSpiralSegment = function (point, tValue, sign, opacity,
 	if (point.r === 0) {
 		return;
 	}
+	var strokeWidth = this.quantityToStrokeWidth(quantity, point);
+	var strokeType = strokeWidth < this.narrowWideStrokeThreshold ? "narrow" : "wide";
+	
 	var segment = this.spiralTreeLayer.append("svg:path")
 		.attr("d", this.spiralPath(point, tValue, sign))
 		.attr("class", "spiral " + this.extraSpiralClass)
 		.attr('fill', 'none')
 		.attr('stroke-linecap', "round")
-		.attr('stroke-width', this.quantityToStrokeWidth(quantity, point))
+		.attr('stroke-width', strokeWidth)
 		.attr('opacity', this.getOpacity(opacity, point));
-	if (this.markerStart) {
-		segment.attr("marker-start", this.markerStart);
+	if (this.markerStart[strokeType]) {
+		segment.attr("marker-start", this.markerStart[strokeType]);
 	}
-	if (this.markerMid) {
-		segment.attr("marker-mid", this.markerMid);
+	if (this.markerMid[strokeType]) {
+		segment.attr("marker-mid", this.markerMid[strokeType]);
 	}
-	if (this.markerEnd) {
-		segment.attr("marker-end", this.markerEnd);
+	if (this.markerEnd[strokeType]) {
+		segment.attr("marker-end", this.markerEnd[strokeType]);
 	}
 	if (this.spiralColor !== undefined) {
 		segment.attr("fill", this.spiralColor);

@@ -121,7 +121,7 @@ a, a img, img a {
 .group-fileinput > p > input {width: 100%;}
 .group-fileinput > p > label {width: 100%;}
 
-/*---Key Group selectors--*/
+/*---Filter Group selectors--*/
 
 .form-item > label{
 	display: inline-block;
@@ -137,7 +137,7 @@ a, a img, img a {
     width: 60%;
 }
 
-.group-key > p {
+.group-location > p {
     background-color: #333;
     color: #fff;
     overflow: auto;
@@ -145,14 +145,14 @@ a, a img, img a {
     margin:0.25em 0;
 }
 
-.group-key > p > label {
+.group-location > p > label {
     color:#fff;
 }
 
 
 
-.form-item.key-exporters {background-color: #008080;}
-.form-item.key-importers {background-color: #FF6600;}
+.form-item.location-exporter {background-color: #008080;}
+.form-item.location-importer {background-color: #FF6600;}
 
 /*---Year Group selectors--*/
 
@@ -165,7 +165,7 @@ a, a img, img a {
 	margin-right:0.5em;
 }
 
-.key-year-to > label {padding-left: 1em;}
+.year-to > label {padding-left: 1em;}
 
 /*----------Map---
  =====================================*/

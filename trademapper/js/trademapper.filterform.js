@@ -46,7 +46,7 @@ define(["d3"], function(d3) {
 		},
 
 		columnNameToClassName: function(columnName) {
-			return columnName.replace(/\W+/, "-");
+			return columnName.replace(/\W+/, "-").toLowerCase();
 		},
 
 		addLocationFieldset: function(formElement) {

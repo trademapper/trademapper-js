@@ -86,7 +86,7 @@ define(
 
 	createFilterForm = function(filters) {
 		// generate the form for playing with the data
-		formElement.html(filterSkeleton);
+		formElement.html(filterSkeleton + csvOnlySkeleton);
 		fileInputElement = formElement.select("#fileinput");
 		csv.setFileInputElement(fileInputElement);
 

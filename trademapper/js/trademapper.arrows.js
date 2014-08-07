@@ -286,7 +286,8 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 		}
 
 		// Now add a legend for the circles
-		circleX = lineLength + (margin * 2) + 60;
+		circleX = lineLength + (margin * 3) +
+			maxSourceQuantity.toFixed(1).length * 8;
 		circleY = svgHeight - 50;
 		drawPoint(circleX, circleY, "source", "legend");
 		mapsvg.append("text")

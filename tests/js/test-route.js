@@ -173,6 +173,7 @@ define(
 							},
 							terminals: [
 								{
+									point: pointL2,
 									lat: 4.56,
 									lng: 5.67,
 									quantity: 10
@@ -200,6 +201,7 @@ define(
 							},
 							terminals: [
 								{
+									point: pointL2,
 									lat: 4.56,
 									lng: 5.67,
 									quantity: 10
@@ -215,6 +217,7 @@ define(
 							},
 							terminals: [
 								{
+									point: pointL3,
 									lat: 6.78,
 									lng: 7.89,
 									quantity: 10
@@ -245,11 +248,13 @@ define(
 							},
 							terminals: [
 								{
+									point: pointL2,
 									lat: 4.56,
 									lng: 5.67,
 									quantity: 10
 								},
 								{
+									point: pointL3,
 									lat: 6.78,
 									lng: 7.89,
 									quantity: 20
@@ -280,6 +285,7 @@ define(
 							},
 							terminals: [
 								{
+									point: pointL2,
 									lat: 4.56,
 									lng: 5.67,
 									quantity: 10
@@ -295,11 +301,13 @@ define(
 							},
 							terminals: [
 								{
+									point: pointL3,
 									lat: 6.78,
 									lng: 7.89,
 									quantity: 10
 								},
 								{
+									point: pointL4,
 									lat: 8.90,
 									lng: 9.01,
 									quantity: 20

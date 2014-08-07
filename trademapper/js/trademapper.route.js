@@ -91,6 +91,7 @@ define([], function() {
 
 				if (!centerTerminalObj[source.toString()].hasOwnProperty(dest.toString())) {
 					centerTerminalObj[source.toString()][dest.toString()] = {
+						dest: dest,
 						point: dest.point,
 						quantity: route.quantity
 					};
@@ -126,6 +127,7 @@ define([], function() {
 					continue;
 				}
 				terminalList.push({
+					point: terminalObj.dest,
 					lat: terminalObj.point[0],
 					lng: terminalObj.point[1],
 					quantity: terminalObj.quantity

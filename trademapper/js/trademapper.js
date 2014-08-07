@@ -102,6 +102,7 @@ define(
 
 	showFilteredCsv = function() {
 		showNowWorking();
+		arrows.clearTooltip();
 		var routes = csv.filterDataAndReturnRoutes(
 			currentCsvType, currentCsvData, filterform.filterValues);
 		if (!routes) {

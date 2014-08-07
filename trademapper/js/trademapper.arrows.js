@@ -212,6 +212,12 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 			.style("opacity", 0);
 	},
 
+	clearTooltip = function() {
+		tooltip.transition()
+			.duration(200)
+			.style("opacity", 0);
+	},
+
 	createMouseOverFunc = function(ctIndex) {
 		return function() { genericMouseOverPath(ctIndex); };
 	},
@@ -323,6 +329,7 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 		drawRoute: drawRoute,
 		drawRouteCollectionSpiralTree: drawRouteCollectionSpiralTree,
 		drawRouteCollectionPlainArrows: drawRouteCollectionPlainArrows,
-		drawLegend: drawLegend
+		drawLegend: drawLegend,
+		clearTooltip: clearTooltip
 	};
 });

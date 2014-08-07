@@ -193,6 +193,10 @@ a, a img, img a {
 	stroke: #6D6E72;
 }
 
+.spiral.traderoute.traderoute-highlight {
+	stroke: #EF0E81;
+}
+
 .route-arrow {
 	fill: none;
 	stroke-linejoin: round;

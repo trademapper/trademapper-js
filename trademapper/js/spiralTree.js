@@ -100,6 +100,9 @@ function SpiralTree(layerId_, projection_) {
 	this.markerStart = {narrow: null, wide: null};
 	this.markerMid = {narrow: null, wide: null};
 	this.markerEnd = {narrow: null, wide: null};
+
+	this.mouseOverFunc = null;
+	this.mouseOutFunc = null;
 }
 
 //below is a bunch of configuration functions
@@ -376,6 +379,10 @@ SpiralTree.prototype.drawSpiralSegment = function (point, tValue, sign, opacity,
 	}
 	if (this.spiralColor !== undefined) {
 		segment.attr("fill", this.spiralColor);
+	}
+	if (this.mouseOverFunc && this.mouseOutFunc) {
+		segment.on('mouseover', this.mouseOverFunc);
+		segment.on('mouseout', this.mouseOutFunc);
 	}
 };
 

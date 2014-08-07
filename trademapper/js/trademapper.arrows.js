@@ -3,6 +3,7 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 	"use strict";
 	var mapsvg, config, svgdefs, flowmap,
 		arrowColours, minArrowWidth, maxArrowWidth, maxRouteQuantity,
+		centerTerminals, maxSourceQuantity,
 
 	/*
 	 * Save the svg we use for later user
@@ -154,17 +155,41 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 		d3.selectAll(".tradenode").remove();
 	},
 
+	genericMouseOverPath = function(ctIndex) {
+		var center = centerTerminals[ctIndex].center;
+		var terminals = centerTerminals[ctIndex].terminals;
+
+		var allpath = d3.selectAll(".traderoute.center-" + center.point.toString());
+		allpath.classed("traderoute-highlight", true);
+	},
+
+	genericMouseOutPath = function() {
+		d3.selectAll(".traderoute-highlight").classed("traderoute-highlight", false);
+	},
+
+	createMouseOverFunc = function(ctIndex) {
+		return function() { genericMouseOverPath(ctIndex); };
+	},
+
 	drawRouteCollectionSpiralTree = function(collection, pointRoles) {
+		var center, terminals;
 		var ctAndMax = collection.getCenterTerminalList();
-		var centerTerminals = ctAndMax.centerTerminalList;
-		var maxSourceQuantity = ctAndMax.maxSourceQuantity;
+		centerTerminals = ctAndMax.centerTerminalList;
+		maxSourceQuantity = ctAndMax.maxSourceQuantity;
 
 		flowmap.clearSpiralPaths();
 		clearPoints();
 		flowmap.setMaxQuantity(maxSourceQuantity);
 
 		for (var i = 0; i < centerTerminals.length; i++) {
-			flowmap.preprocess(centerTerminals[i].terminals, centerTerminals[i].center);
+			center = centerTerminals[i].center;
+			terminals = centerTerminals[i].terminals;
+			// set up flowmap settings for this path
+			flowmap.extraSpiralClass = "traderoute center-" + center.point.toString();
+			flowmap.mouseOverFunc = createMouseOverFunc(i);
+			flowmap.mouseOutFunc = genericMouseOutPath;
+
+			flowmap.preprocess(terminals, center);
 			flowmap.drawTree();
 		}
 

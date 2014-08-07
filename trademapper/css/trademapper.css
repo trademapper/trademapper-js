@@ -206,6 +206,7 @@ a, a img, img a {
 
 .legend.traderoute {
 	stroke: #6D6E72;
+	opacity: 0.6;
 }
 
 .spiral.traderoute {

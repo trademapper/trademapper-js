@@ -221,3 +221,18 @@ a, a img, img a {
 .tradenode.dest {
 	fill: #FF6600;
 }
+
+/*----------Tooltip---
+ =====================================*/
+
+#maptooltip {
+	position: absolute;
+	background: #444;
+	padding: 0.5em;
+}
+span.tooltip-source {
+	color: yellow;
+}
+span.tooltip-dest {
+	color: white;
+}

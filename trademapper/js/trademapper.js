@@ -16,8 +16,8 @@ define(
 			 d3, filterSkeleton, csvOnlySkeleton) {
 	"use strict";
 
-	var config, mapRootElement, formElement, fileInputElement, tmsvg,
-		currentCsvData, currentCsvType,
+	var config, mapRootElement, formElement, tooltipElement, fileInputElement,
+		tmsvg, currentCsvData, currentCsvType,
 
 		defaultConfig = {
 			ratio: 0.6,
@@ -42,7 +42,10 @@ define(
 			.attr("id", "mapcanvas")
 			.attr("class", "map-svg flow")
 			.attr("viewBox", "0 -30 1500 700");
-		arrows.init(tmsvg, config.arrowColours, config.minArrowWidth, config.maxArrowWidth);
+		tooltipElement = mapRootElement.append("div")
+			.attr("id", "maptooltip");
+
+		arrows.init(tmsvg, tooltipElement, config.arrowColours, config.minArrowWidth, config.maxArrowWidth);
 		mapper.init(tmsvg, config);
 
 		// set up the various callbacks we need to link things together

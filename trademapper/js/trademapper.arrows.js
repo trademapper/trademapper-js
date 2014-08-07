@@ -1,7 +1,7 @@
 
 define(["d3", "spiralTree"], function(d3, spiralTree) {
 	"use strict";
-	var mapsvg, config, svgdefs, flowmap,
+	var mapsvg, tooltip, config, svgdefs, flowmap,
 		arrowColours, minArrowWidth, maxArrowWidth, maxRouteQuantity,
 		centerTerminals, maxSourceQuantity,
 
@@ -9,13 +9,15 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 	 * Save the svg we use for later user
 	 * Add the arrow head to defs/marker in the SVG
 	 */
-	init = function(svgElement, colours, minWidth, maxWidth) {
+	init = function(svgElement, tooltipElement, colours, minWidth, maxWidth) {
 		mapsvg = svgElement;
+		tooltip = tooltipElement;
 		arrowColours = colours;
 		minArrowWidth = minWidth;
 		maxArrowWidth = maxWidth;
 		addDefsToSvg();
 		setUpFlowmap();
+		tooltip.style("opacity", 0);
 	},
 
 	addDefsToSvg = function() {
@@ -158,13 +160,46 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 	genericMouseOverPath = function(ctIndex) {
 		var center = centerTerminals[ctIndex].center;
 		var terminals = centerTerminals[ctIndex].terminals;
+		// sort, largest quantity first (hence the order swap)
+		terminals.sort(function(a, b) { return b.quantity - a.quantity; });
 
+		// first make the paths stand out, and clear any old paths
+		d3.selectAll(".traderoute-highlight").classed("traderoute-highlight", false);
 		var allpath = d3.selectAll(".traderoute.center-" + center.point.toString());
 		allpath.classed("traderoute-highlight", true);
+
+		// now do the tooltip
+		var tooltiptext = '<span class="tooltip-source">Source: ' +
+			center.point.toString() + '</span>';
+
+		for (var i = 0; i < terminals.length; i++) {
+			// TODO: order by quantity
+			tooltiptext += '<br /><span class="tooltip-dest">Destination: ' +
+				terminals[i].point.toString() + ' Quantity: ' +
+				terminals[i].quantity + '</span>';
+		}
+
+		tooltip.html(tooltiptext);
+
+		var box = d3.select("#mapcanvas")[0][0].getBoundingClientRect();
+		tooltip
+			.style("width", "17em")
+			.style("height", 1.5*(1 + terminals.length) + "em")
+			.style("left", (d3.event.pageX - box.left + 10) + "px")
+			.style("top", (d3.event.pageY - box.top - 100) + "px");
+
+		tooltip.transition()
+			.duration(200)
+			.style("opacity", 0.9);
 	},
 
 	genericMouseOutPath = function() {
+		return;
+		// TODO: decide what behaviour we want on mouseOut
 		d3.selectAll(".traderoute-highlight").classed("traderoute-highlight", false);
+		tooltip.transition()
+			.duration(500)
+			.style("opacity", 0);
 	},
 
 	createMouseOverFunc = function(ctIndex) {
@@ -189,6 +224,7 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 			flowmap.mouseOverFunc = createMouseOverFunc(i);
 			flowmap.mouseOutFunc = genericMouseOutPath;
 
+			// now do preprocess and drawing
 			flowmap.preprocess(terminals, center);
 			flowmap.drawTree();
 		}

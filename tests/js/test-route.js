@@ -168,7 +168,8 @@ define(
 							center: {
 								lat: 2.34,
 								lng: 3.45,
-								quantity: 10
+								quantity: 10,
+								point: pointL1
 							},
 							terminals: [
 								{
@@ -194,7 +195,8 @@ define(
 							center: {
 								lat: 2.34,
 								lng: 3.45,
-								quantity: 10
+								quantity: 10,
+								point: pointL1
 							},
 							terminals: [
 								{
@@ -208,7 +210,8 @@ define(
 							center: {
 								lat: 4.56,
 								lng: 5.67,
-								quantity: 10
+								quantity: 10,
+								point: pointL2
 							},
 							terminals: [
 								{
@@ -237,7 +240,8 @@ define(
 							center: {
 								lat: 2.34,
 								lng: 3.45,
-								quantity: 30
+								quantity: 30,
+								point: pointL1
 							},
 							terminals: [
 								{
@@ -271,7 +275,8 @@ define(
 							center: {
 								lat: 2.34,
 								lng: 3.45,
-								quantity: 10
+								quantity: 10,
+								point: pointL1
 							},
 							terminals: [
 								{
@@ -285,7 +290,8 @@ define(
 							center: {
 								lat: 4.56,
 								lng: 5.67,
-								quantity: 30
+								quantity: 30,
+								point: pointL2
 							},
 							terminals: [
 								{

@@ -81,6 +81,7 @@ define([], function() {
 				// to allow for different gradients - but then they will be on top of each other :/
 				if (!centerTerminalObj.hasOwnProperty(source.toString())) {
 					centerTerminalObj[source.toString()] = {
+						source: source,
 						point: source.point,
 						quantity: route.quantity
 					};
@@ -114,7 +115,9 @@ define([], function() {
 			}
 			destKeys = Object.keys(centerObj);
 			for (j = 0; j < destKeys.length; j++) {
-				if (destKeys[j] === "point" || destKeys[j] === "quantity") {
+				if (destKeys[j] === "point" ||
+						destKeys[j] === "quantity" ||
+						destKeys[j] === "source") {
 					continue;
 				}
 				terminalObj = centerObj[destKeys[j]];
@@ -132,7 +135,8 @@ define([], function() {
 				center: {
 					lat: centerObj.point[0],
 					lng: centerObj.point[1],
-					quantity: centerObj.quantity
+					quantity: centerObj.quantity,
+					point: centerObj.source
 				},
 				terminals: terminalList
 			});

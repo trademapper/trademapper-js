@@ -226,12 +226,36 @@ a, a img, img a {
  =====================================*/
 
 #maptooltip {
-	position: absolute;
-	background: #444;
-	padding: 0.5em;
+    background: none repeat scroll 0 0 rgba(255, 255, 255, 0.8);
+    border: 2px solid rgba(0, 0, 0, 0.5);
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.2);
+    padding: 1em;
+    position: absolute;
+    min-height:8em;
 }
+
+#maptooltip > span {
+    color: #333;
+    float: left;
+    line-height: 1.8em;
+    width: 50%;
+}
+
+.tooltip-dest > em {
+    color: #ff6600;
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.tooltip-dest > em:first-child {
+    color: #333;
+}
+
 span.tooltip-source {
-	color: yellow;
+	font-size:1.3em;
+	font-weight:bold;
+	color:#6D6E72;
+	width:100%!important;
 }
 span.tooltip-dest {
 	color: white;

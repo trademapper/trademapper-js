@@ -12,6 +12,7 @@ body {
 	color:#6D6E72;
 	margin:1em 0;
 	min-width:290px;
+	padding:0;
 }
 
 * {
@@ -30,12 +31,12 @@ a, a img, img a {
 /*----------General Layout---
  =====================================*/
 
-#map-wrapper {
+#map-wrapper,
+#mapinfo {
 	max-width:1280px;
 	display:block;
 	margin:0 auto;
 	overflow:hidden;
-	
 }
 
 #mapheader {
@@ -58,9 +59,23 @@ a, a img, img a {
     width: 80%;
 }
 
+
 #map-wrapper {
-	border:5px solid #6D6E72;
-	background-color:#D6D8D3;
+    background-color: #d6d8d3;
+    border: 5px solid #6d6e72;
+    display: block;
+    position: relative;
+    z-index: 1;
+}
+
+
+#mapinfo {
+    border: medium none;
+    margin-top:2em;
+}
+
+#mapinfo body {
+	padding:0;
 }
 
 /*----------Filter Panel---

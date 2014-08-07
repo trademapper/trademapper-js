@@ -112,12 +112,8 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 		}
 	},
 
-	drawPoint = function(point, pointType) {
-		var node, size, color;
-		if (point.point === undefined) {
-			console.log("point.point undefined for " + point.toString());
-			return;
-		}
+	drawPoint = function(x, y, pointType, extraclass) {
+		var htmlClass;
 		if (pointType == "source") {
 			size = 5;
 		} else if (pointType == "transit") {
@@ -128,11 +124,25 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 			console.log("unknown pointType: " + pointType);
 			return;
 		}
-		node = mapsvg.append("circle")
-			.attr("cx", point.point[0])
-			.attr("cy", point.point[1])
+		if (extraclass) {
+			htmlClass = "tradenode " + pointType + " " + extraclass;
+		} else {
+			htmlClass = "tradenode " + pointType;
+		}
+
+		mapsvg.append("circle")
+			.attr("cx", x)
+			.attr("cy", y)
 			.attr("r", size)
-			.attr("class", "tradenode " + pointType);
+			.attr("class", htmlClass);
+	},
+
+	drawPointRole = function(point, pointType) {
+		if (point.point === undefined) {
+			console.log("point.point undefined for " + point.toString());
+			return;
+		}
+		drawPoint(point.point[0], point.point[1], pointType);
 	},
 
 	drawPointRoles = function(pointRoles) {
@@ -142,13 +152,13 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 		for (var i = 0; i < pointKeys.length; i++) {
 			pointInfo = pointRoles[pointKeys[i]];
 			if (pointInfo.source) {
-				drawPoint(pointInfo.point, "source");
+				drawPointRole(pointInfo.point, "source");
 			}
 			if (pointInfo.transit) {
-				drawPoint(pointInfo.point, "transit");
+				drawPointRole(pointInfo.point, "transit");
 			}
 			if (pointInfo.dest) {
-				drawPoint(pointInfo.point, "dest");
+				drawPointRole(pointInfo.point, "dest");
 			}
 		}
 	},
@@ -230,6 +240,59 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 		}
 
 		drawPointRoles(pointRoles);
+	},
+	
+	drawLegend = function() {
+		// use parseFloat as the height has "px" at the end
+		var i, strokeWidth, value, circleX,
+			margin = 10,
+			lineLength = maxArrowWidth + 10,
+			svgHeight = 430,  // from viewbox - TODO: get this properly
+			lineVertical = svgHeight;
+
+		// clear any old legend
+		d3.selectAll(".legend").remove();
+
+		for (i = 0; i < 4; i++) {
+			if (i === 0) {
+				strokeWidth = maxArrowWidth;
+				value = maxSourceQuantity;
+			} else if (i === 1) {
+				strokeWidth = maxArrowWidth * 0.5;
+				value = maxSourceQuantity * 0.5;
+			} else if (i === 2) {
+				strokeWidth = maxArrowWidth * 0.25;
+				value = maxSourceQuantity * 0.25;
+			} else {
+				strokeWidth = minArrowWidth;
+				value = (maxSourceQuantity * minArrowWidth) / maxArrowWidth;
+			}
+
+			lineVertical = lineVertical - (Math.max(strokeWidth, 8) + margin);
+
+			mapsvg.append("line")
+				.attr("x1", margin)
+				.attr("y1", lineVertical)
+				.attr("x2", margin + lineLength)
+				.attr("y2", lineVertical)
+				.attr("stroke-width", strokeWidth)
+				.attr("class", "legend traderoute");
+
+			mapsvg.append("text")
+				.attr("x", lineLength + (margin * 2))
+				.attr("y", lineVertical + 5)
+				.attr("class", "legend traderoute-label")
+				.text(value.toFixed(1));
+		}
+
+		// Now add a legend for the circles
+		circleX = lineLength + (margin * 2) + 60;
+		circleY = svgHeight - 25;
+		drawPoint(circleX, circleY, "source", "legend");
+		circleY = circleY - 25;
+		drawPoint(circleX, circleY, "transit", "legend");
+		circleY = circleY - 25;
+		drawPoint(circleX, circleY, "dest", "legend");
 	};
 
 	return {
@@ -237,6 +300,7 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 		addDefsToSvg: addDefsToSvg,
 		drawRoute: drawRoute,
 		drawRouteCollectionSpiralTree: drawRouteCollectionSpiralTree,
-		drawRouteCollectionPlainArrows: drawRouteCollectionPlainArrows
+		drawRouteCollectionPlainArrows: drawRouteCollectionPlainArrows,
+		drawLegend: drawLegend
 	};
 });

@@ -189,6 +189,10 @@ a, a img, img a {
 	stroke-linejoin: round;
 }
 
+.legend.traderoute {
+	stroke: #6D6E72;
+}
+
 .spiral.traderoute {
 	stroke: #6D6E72;
 }

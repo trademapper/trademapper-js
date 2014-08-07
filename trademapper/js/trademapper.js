@@ -112,6 +112,7 @@ define(
 		var pointRoles = routes.getPointRoles();
 		// now draw the routes
 		arrows.drawRouteCollectionSpiralTree(routes, pointRoles);
+		arrows.drawLegend();
 		// colour in the countries that are trading
 		mapper.colorTradingCountries(pointRoles);
 		stopNowWorking();

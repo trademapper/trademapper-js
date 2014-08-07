@@ -189,6 +189,10 @@ a, a img, img a {
 	stroke-linejoin: round;
 }
 
+.legend.traderoute {
+	stroke: #6D6E72;
+}
+
 .spiral.traderoute {
 	stroke: #6D6E72;
 }
@@ -243,7 +247,7 @@ a, a img, img a {
 
 .tooltip-dest > em {
     color: #ff6600;
-    font-size: 1.2em;
+    font-size: 1.1em;
     font-weight: bold;
 }
 

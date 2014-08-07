@@ -1,5 +1,5 @@
 
-define(["d3", "spiralTree"], function(d3, spiralTree) {
+define(["d3", "spiralTree", "text!../fragments/svgdefs.html"], function(d3, spiralTree, svgDefsHtml) {
 	"use strict";
 	var mapsvg, config, svgdefs, flowmap,
 		arrowColours, minArrowWidth, maxArrowWidth, maxRouteQuantity,
@@ -18,47 +18,7 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 	},
 
 	addDefsToSvg = function() {
-		svgdefs = mapsvg.append("defs");
-		// first add arrow head
-		svgdefs.append("marker")
-				.attr("id", "markerArrowWide")
-				.attr("viewBox", "0 0 10 10")
-				.attr("markerUnits", "strokeWidth")
-				//.attr("markerUnits", "userSpaceOnUse")
-				.attr("refX", "7")
-				.attr("refY", "5")
-				.attr("markerWidth", "1")
-				.attr("markerHeight", "1.3")
-				.attr("orient", "auto")
-			.append("path")
-				.attr("d", "M 9 2 L 3 5 L 9 8 z")
-				.attr("class", "route-arrow-head-wide");
-
-		svgdefs.append("marker")
-				.attr("id", "markerArrowNarrow")
-				.attr("viewBox", "0 0 10 10")
-				//.attr("markerUnits", "strokeWidth")
-				.attr("markerUnits", "userSpaceOnUse")
-				.attr("refX", "7")
-				.attr("refY", "5")
-				.attr("markerWidth", "6")
-				.attr("markerHeight", "8")
-				.attr("orient", "auto")
-			.append("path")
-				.attr("d", "M 10 0 L 0 5 L 10 10 z")
-				.attr("class", "route-arrow-head-narrow");
-
-		// now add a gradient
-		var gradient = svgdefs.append("linearGradient")
-			.attr("id", "route-grad");
-		gradient.append("stop")
-			.attr("offset", "0%")
-			.attr("stop-color", arrowColours.pathStart)
-			.attr("stop-opacity", "0.5");
-		gradient.append("stop")
-			.attr("offset", "100%")
-			.attr("stop-color", arrowColours.pathEnd)
-			.attr("stop-opacity", "0.5");
+		svgdefs = mapsvg.append("defs").html(svgDefsHtml);
 	},
 
 	setUpFlowmap = function() {

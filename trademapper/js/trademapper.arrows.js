@@ -113,7 +113,7 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 	},
 
 	drawPoint = function(x, y, pointType, extraclass) {
-		var htmlClass;
+		var size, htmlClass;
 		if (pointType == "source") {
 			size = 5;
 		} else if (pointType == "transit") {
@@ -244,7 +244,7 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 	
 	drawLegend = function() {
 		// use parseFloat as the height has "px" at the end
-		var i, strokeWidth, value, circleX,
+		var i, strokeWidth, value, circleX, circleY,
 			margin = 10,
 			lineLength = maxArrowWidth + 10,
 			svgHeight = 430,  // from viewbox - TODO: get this properly
@@ -287,12 +287,29 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 
 		// Now add a legend for the circles
 		circleX = lineLength + (margin * 2) + 60;
-		circleY = svgHeight - 25;
+		circleY = svgHeight - 50;
 		drawPoint(circleX, circleY, "source", "legend");
+		mapsvg.append("text")
+			.attr("x", circleX + 10)
+			.attr("y", circleY + 5)
+			.attr("class", "legend tradenode-label")
+			.text("Source");
+
 		circleY = circleY - 25;
 		drawPoint(circleX, circleY, "transit", "legend");
+		mapsvg.append("text")
+			.attr("x", circleX + 10)
+			.attr("y", circleY + 5)
+			.attr("class", "legend tradenode-label")
+			.text("Transit");
+
 		circleY = circleY - 25;
 		drawPoint(circleX, circleY, "dest", "legend");
+		mapsvg.append("text")
+			.attr("x", circleX + 10)
+			.attr("y", circleY + 5)
+			.attr("class", "legend tradenode-label")
+			.text("Destination");
 	};
 
 	return {

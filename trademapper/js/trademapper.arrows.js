@@ -244,7 +244,7 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 	
 	drawLegend = function() {
 		// use parseFloat as the height has "px" at the end
-		var i, strokeWidth, value, circleX, circleY,
+		var i, strokeWidth, value, valueText, circleX, circleY,
 			margin = 10,
 			lineLength = maxArrowWidth + 10,
 			svgHeight = 430,  // from viewbox - TODO: get this properly
@@ -267,6 +267,10 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 				strokeWidth = minArrowWidth;
 				value = (maxSourceQuantity * minArrowWidth) / maxArrowWidth;
 			}
+			valueText = value.toFixed(1);
+			if (i === 3) {
+				valueText = "< " + valueText;
+			}
 
 			lineVertical = lineVertical - (Math.max(strokeWidth, 8) + margin);
 
@@ -282,7 +286,7 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 				.attr("x", lineLength + (margin * 2))
 				.attr("y", lineVertical + 5)
 				.attr("class", "legend traderoute-label")
-				.text(value.toFixed(1));
+				.text(valueText);
 		}
 
 		// Now add a legend for the circles

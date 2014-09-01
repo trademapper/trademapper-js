@@ -39,6 +39,12 @@ This includes the files `mapdata/ne_110m_admin_0_countries.*`
 
 These files are [in the public domain](http://www.naturalearthdata.com/about/terms-of-use/)
 
+### Country Centre Points
+
+The file `trademapper/js/countrycentre.js` was derived from the [google public data countries.csv](https://developers.google.com/public-data/docs/canonical/countries_csv)
+
+The data is licensed under the [Creative Commons Attribution 3.0 License](http://creativecommons.org/licenses/by/3.0/).
+
 ### Sample Trade CSV Files
 
 We include some sample files for you to play with.  These are all under

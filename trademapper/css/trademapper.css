@@ -204,6 +204,12 @@ a, a img, img a {
 	stroke-linejoin: round;
 }
 
+.disputed-border {
+	fill: none;
+	stroke: #fff;
+	stroke-linejoin: round;
+}
+
 .legend.traderoute {
 	stroke: #6D6E72;
 	opacity: 0.6;

@@ -35,7 +35,7 @@ Data
 
 ### Geographical Data from Natural Earth
 
-This includes the files `mapdata/ne_110m_admin_0_countries.*`
+This includes the files `mapdata/ne_110m_admin_0_countries.*` and `mapdata/ne_10m_admin_0_disputed_areas.*`
 
 These files are [in the public domain](http://www.naturalearthdata.com/about/terms-of-use/)
 

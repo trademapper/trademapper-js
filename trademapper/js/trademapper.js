@@ -42,6 +42,7 @@ define(
 			.attr("id", "mapcanvas")
 			.attr("class", "map-svg flow")
 			.attr("viewBox", "0 -30 1500 700");
+		tmsvg.append("defs");
 		tooltipElement = mapRootElement.append("div")
 			.attr("id", "maptooltip");
 

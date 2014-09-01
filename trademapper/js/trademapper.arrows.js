@@ -21,7 +21,7 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 	},
 
 	addDefsToSvg = function() {
-		svgdefs = mapsvg.append("defs");
+		svgdefs = mapsvg.select("defs");
 		// first add arrow head
 		svgdefs.append("marker")
 				.attr("id", "markerArrowWide")

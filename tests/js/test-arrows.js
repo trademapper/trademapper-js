@@ -11,7 +11,8 @@ define(
 			q.module("Arrows", {
 				setup: function() {
 					var newsvg = d3.select('#container').append('svg');
-					arrows.init(newsvg, arrowColours);
+					var tooltip = d3.select('#container').append('div');
+					arrows.init(newsvg, tooltip, arrowColours);
 				}
 			});
 

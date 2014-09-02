@@ -32,7 +32,7 @@ define(["d3"], function(d3) {
 		},
 
 		getFilterNamesForType: function(filters, filterType) {
-			var result = [], temp;
+			var result = [];
 
 			for (var key in filters) {
 				if (filters.hasOwnProperty(key)) {
@@ -227,9 +227,52 @@ define(["d3"], function(d3) {
 				this.filterValues[columnName] = {
 					type: "category-single",
 					any: true,
-					valueList: null
+					value: null
 				};
 			}
+		},
+
+		addQuantityColumnChooser: function(formElement, filters) {
+			var quantityFieldset,
+				quantityColumns = this.getFilterNamesForType(filters, "quantity");
+
+			quantityFieldset = formElement.append("fieldset")
+				.attr("class", "filters-group group-units");
+			quantityFieldset.append("legend")
+				.attr("class", "filter-group-title units")
+				.text("Column to use for quantity");
+
+			quantityColumns.sort();
+
+			var quantityP = quantityFieldset.append("p")
+				.attr("class", "form-item category-quantity");
+			quantityP.append("label")
+				.attr("for", "quantity-select")
+				.text("Quantity");
+			var quantitySelect = quantityP.append("select")
+				.attr("id", "quantity-select");
+
+			for (var i = 0; i < quantityColumns.length; i++) {
+				quantitySelect.append("option")
+					.attr("value", quantityColumns[i])
+					.text(quantityColumns[i]);
+			}
+
+			var moduleThis = this;
+			quantitySelect.on("change", function() {
+				// the data/index arguments d3 gives us are useless, so gather
+				// the info we need in this closure
+				// `this` currently refers to the select element
+				moduleThis.filterValues.quantityColumn.any = false;
+				moduleThis.filterValues.quantityColumn.value = this.value;
+				moduleThis.formChangedCallback("quantityColumn");
+			});
+
+			this.filterValues.quantityColumn = {
+				type: "category-single",
+				any: false,
+				value: quantityColumns[0]
+			};
 		},
 
 		createFormFromFilters: function(formElement, filters) {
@@ -249,6 +292,8 @@ define(["d3"], function(d3) {
 			} else if (yearFilters.length > 1) {
 				console.log('More than one column with type "year" !!!');
 			}
+
+			this.addQuantityColumnChooser(formElement, filters);
 
 			categoryFilters = this.getFilterNamesForType(filters, "text");
 			if (categoryFilters.length > 0) {

@@ -74,7 +74,10 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 			if (filterValues.hasOwnProperty(filterName)) {
 				filter = filterValues[filterName];
 
-				if (filter.type === "category-single") {
+				if (filterName === "quantityColumn") {
+					// do nothing - don't filter on this column
+				}
+				else if (filter.type === "category-single") {
 					// if any value is allowed, skip this filter
 					if (filter.any === false && row[filterName] != filter.value) {
 						return false;
@@ -105,9 +108,7 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 		// Year,App.,Family,Taxon,Importer,Exporter,Origin,Importer reported quantity,Exporter reported quantity,Term,Unit,Purpose,Source
 		IMPORTER_INDEX = "Importer",
 		EXPORTER_INDEX = "Exporter",
-		ORIGIN_INDEX = "Origin",
-		IMPORTER_QUANTITY_INDEX = "Importer reported quantity",
-		EXPORTER_QUANTITY_INDEX = "Exporter reported quantity";
+		ORIGIN_INDEX = "Origin";
 
 		routes = new route.RouteCollection();
 		for (var i = 0; i < csvData.length; i++) {
@@ -119,9 +120,12 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 			origin = row[ORIGIN_INDEX];
 			importer = row[IMPORTER_INDEX];
 			exporter = row[EXPORTER_INDEX];
-			importer_quantity = row[IMPORTER_QUANTITY_INDEX];
-			exporter_quantity = row[EXPORTER_QUANTITY_INDEX];
-			quantity = Math.max(importer_quantity, exporter_quantity);
+			quantity = row[filterValues.quantityColumn.value];
+
+			// if the quantity is missing for this column, skip this row
+			if (!quantity) {
+				continue;
+			}
 
 			points = [];
 			if (origin.length == 2 && origin != 'XX') {
@@ -244,10 +248,10 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 				multiselect: true
 			},
 			"Importer reported quantity": {
-				type: "number"
+				type: "quantity"
 			},
 			"Exporter reported quantity": {
-				type: "number"
+				type: "quantity"
 			},
 			"Term": {
 				type: "text",

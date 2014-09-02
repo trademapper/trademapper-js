@@ -59,7 +59,7 @@ define(
 
 				q.equal(errorMessage, null);
 				q.notEqual(returnedCsv, null);
-				var routes = csv.filterDataAndReturnRoutes("cites", returnedCsv, {});
+				var routes = csv.filterDataAndReturnRoutes("cites", returnedCsv, {quantityColumn: "Exporter reported quantity"});
 				var routeList = routes.getRoutes();
 				q.equal(routeList.length, 1);
 				q.equal(routeList[0].points.length, 2);
@@ -74,7 +74,7 @@ define(
 
 				q.equal(errorMessage, null);
 				q.notEqual(returnedCsv, null);
-				var routes = csv.filterDataAndReturnRoutes("cites", returnedCsv, {});
+				var routes = csv.filterDataAndReturnRoutes("cites", returnedCsv, {quantityColumn: "Exporter reported quantity"});
 				var routeList = routes.getRoutes();
 				q.equal(routeList.length, 1);
 				q.equal(routeList[0].points.length, 3);
@@ -90,7 +90,7 @@ define(
 
 				q.equal(errorMessage, null);
 				q.notEqual(returnedCsv, null);
-				var routes = csv.filterDataAndReturnRoutes("cites", returnedCsv, {});
+				var routes = csv.filterDataAndReturnRoutes("cites", returnedCsv, {quantityColumn: "Exporter reported quantity"});
 				var routeList = routes.getRoutes();
 				// There are 3 duplicates which will be combined
 				q.equal(routeList.length, 5);

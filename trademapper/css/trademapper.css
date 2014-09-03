@@ -204,6 +204,11 @@ a, a img, img a {
 	stroke-linejoin: round;
 }
 
+.diagonal-hatch-path {
+	stroke:#aaa;
+	stroke-width:1px;
+}
+
 .disputed-border {
 	fill: none;
 	stroke: #fff;

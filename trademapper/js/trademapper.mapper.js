@@ -65,8 +65,7 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre"], functio
 				.attr("width", "4")
 				.attr("height", "4")
 			.append("g")
-				//.attr("class", "diagonal-hatch-path")
-				.attr("style", "stroke:#4c4c4c; stroke-width:1px")
+				.attr("class", "diagonal-hatch-path")
 			.append("path")
 				.attr("d", "M-1,1 l2,-2 M0,4 l4,-4 M3,5 l2,-2");
 	},

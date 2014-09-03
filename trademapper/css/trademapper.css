@@ -78,6 +78,24 @@ a, a img, img a {
 	padding:0;
 }
 
+.disclaimer {
+	clear:both;
+}
+
+.disclaimer > p {
+	background-color: #6d6e72;
+	clear: both;
+	color: #ddd;
+	display: block;
+	font-size: 0.8em;
+	margin: 0;
+	padding: 0.5em 0 0.1em;
+}
+
+.disclaimer > p > a {
+	color: #4DB8FF;
+}
+
 /*----------Filter Panel---
  =====================================*/
 

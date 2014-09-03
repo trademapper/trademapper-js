@@ -8,6 +8,7 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 	errorCallback: null,
 	loadingCsv: false,
 	unknownPoints: {},
+	csvFile: null,
 
 	init: function(dataLoadedCallback, filterLoadedCallback, error_callback) {
 		this.csvDataLoadedCallback = dataLoadedCallback;
@@ -28,7 +29,7 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 	},
 
 	loadCSVFile: function() {
-		var file = this.fileInputElement[0][0].files[0];
+		this.csvFile = this.fileInputElement[0][0].files[0];
 		// TODO: replace with output from form element, or even maybe auto discovery ...
 		var csvType = "cites";
 
@@ -39,7 +40,7 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 			moduleThis.processCSVString(reader.result, csvType);
 			moduleThis.loadingCsv = false;
 		};
-		reader.readAsText(file);
+		reader.readAsText(this.csvFile);
 	},
 
 	/*

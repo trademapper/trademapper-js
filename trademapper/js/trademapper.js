@@ -104,9 +104,13 @@ define(
 
 	createFilterForm: function(filters) {
 		// generate the form for playing with the data
-		this.formElement.html(filterSkeleton + csvOnlySkeleton);
+		var currentFileHtml = '<div class="current-file"><p><strong>Current File:</strong> ' +
+			csv.csvFile.name + "</p></div>";
+		this.formElement.html(filterSkeleton + currentFileHtml + csvOnlySkeleton);
 		this.fileInputElement = this.formElement.select("#fileinput");
 		csv.setFileInputElement(this.fileInputElement);
+
+		this.formElement.append("div").attr("class", "csv-load-errors");
 
 		filterform.createFormFromFilters(this.formElement, filters);
 	},
@@ -161,7 +165,10 @@ define(
 
 		pointList.sort();
 		errorMsg += pointList.join(", ");
-		console.log(errorMsg);
+		var errorDiv = d3.select(".csv-load-errors");
+		errorDiv.html('<p><strong>Errors:</strong> <span class="showhide">Show</span></p>');
+		errorDiv.append("p").text(errorMsg);
+		// TODO: attach a show/hide handler to span.showhide
 	},
 
 	csvLoadErrorCallback: function(msg) {

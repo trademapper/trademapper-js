@@ -16,10 +16,17 @@ define(
 			 d3, filterSkeleton, csvOnlySkeleton) {
 	"use strict";
 
-	var config, mapRootElement, formElement, tooltipElement, fileInputElement,
-		tmsvg, currentCsvData, currentCsvType,
+	return {
+	config: null,
+	mapRootElement: null,
+	formElement: null,
+	tooltipElement: null,
+	fileInputElement: null,
+	tmsvg: null,
+	currentCsvData: null,
+	currentCsvType: null,
 
-		defaultConfig = {
+	defaultConfig: {
 			ratio: 0.6,
 			arrowColours: {
 				pathStart: "black",
@@ -29,83 +36,90 @@ define(
 			maxArrowWidth: 30
 		},
 
-	init = function(mapId, formElementId, tmConfig) {
-		mapRootElement = d3.select(mapId);
-		formElement = d3.select(formElementId);
-		setConfigDefaults(tmConfig);
+	init: function(mapId, formElementId, tmConfig) {
+		this.mapRootElement = d3.select(mapId);
+		this.formElement = d3.select(formElementId);
+		this.setConfigDefaults(tmConfig);
 
-		createCsvOnlyForm();
+		this.createCsvOnlyForm();
 
-		tmsvg = mapRootElement.insert("svg")
-			.attr("width", config.width)
-			.attr("height", config.height)
+		this.tmsvg = this.mapRootElement.insert("svg")
+			.attr("width", this.config.width)
+			.attr("height", this.config.height)
 			.attr("id", "mapcanvas")
 			.attr("class", "map-svg flow")
 			.attr("viewBox", "0 -30 1500 700");
-		tmsvg.append("defs");
-		tooltipElement = mapRootElement.append("div")
+		this.tmsvg.append("defs");
+		this.tooltipElement = this.mapRootElement.append("div")
 			.attr("id", "maptooltip");
 
-		arrows.init(tmsvg, tooltipElement, config.arrowColours, config.minArrowWidth, config.maxArrowWidth);
-		mapper.init(tmsvg, config);
+		arrows.init(this.tmsvg, this.tooltipElement, this.config.arrowColours,
+			this.config.minArrowWidth, this.config.maxArrowWidth);
+		mapper.init(this.tmsvg, this.config);
 
 		// set up the various callbacks we need to link things together
-		csv.init(csvLoadedCallback, filterLoadedCallback, csvLoadErrorCallback);
+		var moduleThis = this;
+		csv.init(
+			function(csvType, csvData) { return moduleThis.csvLoadedCallback(csvType, csvData); },
+			function(csvType, csvData, filters) { return moduleThis.filterLoadedCallback(csvType, csvData, filters); },
+			function(msg) { return moduleThis.csvLoadErrorCallback(msg); });
 
 		route.setCountryGetPointFunc(function(countryCode) {return mapper.countryCentrePoint(countryCode);});
 		route.setLatLongToPointFunc(function(latLong) {return mapper.latLongToPoint(latLong);});
-		filterform.formChangedCallback = filterformChangedCallback;
+		filterform.formChangedCallback = function(columnName) {return moduleThis.filterformChangedCallback(columnName); };
 	},
 
-	setConfigDefaults = function(tmConfig) {
-		config = tmConfig || {};
+	setConfigDefaults: function(tmConfig) {
+		this.config = tmConfig || {};
 
 		// set defaults for all
-		Object.keys(defaultConfig).forEach(function(key) {
-			config[key] = config[key] || defaultConfig[key];
-		});
+		for (var key in this.defaultConfig) {
+			if (this.defaultConfig.hasOwnProperty(key)) {
+				this.config[key] = this.config[key] || this.defaultConfig[key];
+			}
+		}
 
 		// work out some stuff from the size of the element we're attached to
-		if (!config.hasOwnProperty("width")) {
-			config.width = parseInt(mapRootElement.style('width'));
+		if (!this.config.hasOwnProperty("width")) {
+			this.config.width = parseInt(this.mapRootElement.style('width'));
 		}
-		if (!config.hasOwnProperty("height")) {
-			config.height = config.width * config.ratio;
+		if (!this.config.hasOwnProperty("height")) {
+			this.config.height = this.config.width * this.config.ratio;
 		}
 	},
 
-	showNowWorking = function() {
+	showNowWorking: function() {
 		console.log("start working");
 	},
 
-	stopNowWorking = function() {
+	stopNowWorking: function() {
 		console.log("work finished");
 	},
 
-	createCsvOnlyForm = function() {
-		formElement.html(csvOnlySkeleton);
-		fileInputElement = formElement.select("#fileinput");
-		csv.setFileInputElement(fileInputElement);
+	createCsvOnlyForm: function() {
+		this.formElement.html(csvOnlySkeleton);
+		this.fileInputElement = this.formElement.select("#fileinput");
+		csv.setFileInputElement(this.fileInputElement);
 	},
 
-	createFilterForm = function(filters) {
+	createFilterForm: function(filters) {
 		// generate the form for playing with the data
-		formElement.html(filterSkeleton + csvOnlySkeleton);
-		fileInputElement = formElement.select("#fileinput");
-		csv.setFileInputElement(fileInputElement);
+		this.formElement.html(filterSkeleton + csvOnlySkeleton);
+		this.fileInputElement = this.formElement.select("#fileinput");
+		csv.setFileInputElement(this.fileInputElement);
 
-		filterform.createFormFromFilters(formElement, filters);
+		filterform.createFormFromFilters(this.formElement, filters);
 	},
 
-	filterLoadedCallback = function(csvType, csvData, filters) {
-		createFilterForm(filters);
+	filterLoadedCallback: function(csvType, csvData, filters) {
+		this.createFilterForm(filters);
 	},
 
-	showFilteredCsv = function() {
-		showNowWorking();
+	showFilteredCsv: function() {
+		this.showNowWorking();
 		arrows.clearTooltip();
 		var routes = csv.filterDataAndReturnRoutes(
-			currentCsvType, currentCsvData, filterform.filterValues);
+			this.currentCsvType, this.currentCsvData, filterform.filterValues);
 		if (!routes) {
 			console.log("failed to get routes");
 			return;
@@ -117,27 +131,25 @@ define(
 		arrows.drawLegend();
 		// colour in the countries that are trading
 		mapper.colorTradingCountries(pointRoles);
-		stopNowWorking();
+		this.stopNowWorking();
 	},
 
-	filterformChangedCallback = function(columnName) {
-		showFilteredCsv();
+	filterformChangedCallback: function(columnName) {
+		this.showFilteredCsv();
 	},
 
-	csvLoadedCallback = function(csvType, csvData) {
+	csvLoadedCallback: function(csvType, csvData) {
 		// first cache the current values, so we can regenerate if we want
-		currentCsvData = csvData;
-		currentCsvType = csvType;
+		this.currentCsvData = csvData;
+		this.currentCsvType = csvType;
 
-		showFilteredCsv();
+		this.showFilteredCsv();
 	},
 
-	csvLoadErrorCallback = function(msg) {
+	csvLoadErrorCallback: function(msg) {
 		// TODO: show the error to the user
 		console.log(msg);
-	};
+	}
 
-	return {
-		init: init
 	};
 });

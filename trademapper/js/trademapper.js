@@ -144,6 +144,24 @@ define(
 		this.currentCsvType = csvType;
 
 		this.showFilteredCsv();
+		this.reportUnknownPoints(csv.unknownPoints);
+	},
+
+	reportUnknownPoints: function(unknownPoints) {
+		var errorMsg = "Could not parse points: ",
+			pointList = [];
+
+		for (var key in unknownPoints) {
+			if (unknownPoints.hasOwnProperty(key)) {
+				pointList.push(key);
+			}
+		}
+		// return here if no error
+		if (pointList.length === 0) { return; }
+
+		pointList.sort();
+		errorMsg += pointList.join(", ");
+		console.log(errorMsg);
 	},
 
 	csvLoadErrorCallback: function(msg) {

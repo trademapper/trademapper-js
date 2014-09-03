@@ -6,6 +6,8 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 	csvDataLoadedCallback: null,
 	csvFilterLoadedCallback: null,
 	errorCallback: null,
+	loadingCsv: false,
+	unknownPoints: {},
 
 	init: function(dataLoadedCallback, filterLoadedCallback, error_callback) {
 		this.csvDataLoadedCallback = dataLoadedCallback;
@@ -33,7 +35,9 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 		var reader = new FileReader();
 		var moduleThis = this;
 		reader.onload = function(e) {
+			moduleThis.loadingCsv = true;
 			moduleThis.processCSVString(reader.result, csvType);
+			moduleThis.loadingCsv = false;
 		};
 		reader.readAsText(file);
 	},
@@ -129,6 +133,9 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 			locationColumns = this.extractLocationColumns(filterSpec),
 			routes = new route.RouteCollection();
 
+		// only reset/update the unknownPoints when loading the CSV
+		if (this.loadingCsv) { this.unknownPoints = {}; }
+
 		for (var i = 0; i < csvData.length; i++) {
 			row = csvData[i];
 
@@ -145,9 +152,13 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 			for (var j = 0; j < locationColumns.length; j++) {
 				locationType = locationColumns[j].locationType;
 				if (locationType === "country_code") {
-					var pointName = row[locationColumns[j].name];
-					if (pointName.length === 2 && pointName !== 'XX') {
-						points.push(new route.PointCountry(pointName));
+					var countryCode = row[locationColumns[j].name];
+					if (countryCode.length === 2 && countryCode !== 'XX') {
+						var country = new route.PointCountry(countryCode);
+						if (country.point === undefined && this.loadingCsv) {
+							this.unknownPoints[countryCode] = true;
+						}
+						points.push(country);
 					}
 				} else {
 					// TODO: deal with lat/long

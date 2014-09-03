@@ -120,10 +120,10 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 			origin = row[ORIGIN_INDEX];
 			importer = row[IMPORTER_INDEX];
 			exporter = row[EXPORTER_INDEX];
-			quantity = row[filterValues.quantityColumn.value];
 
 			// if the quantity is missing for this column, skip this row
-			if (!quantity) {
+			quantity = parseFloat(row[filterValues.quantityColumn.value]);
+			if (isNaN(quantity)) {
 				continue;
 			}
 

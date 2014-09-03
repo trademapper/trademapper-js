@@ -234,7 +234,8 @@ define(["d3"], function(d3) {
 
 		addQuantityColumnChooser: function(formElement, filters) {
 			var quantityFieldset,
-				quantityColumns = this.getFilterNamesForType(filters, "quantity");
+				//quantityColumns = this.getFilterNamesForType(filters, "quantity");
+				quantityColumns = filters.Quantity.values;
 
 			quantityFieldset = formElement.append("fieldset")
 				.attr("class", "filters-group group-units");

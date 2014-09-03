@@ -1,29 +1,38 @@
 
 define(["d3", "spiralTree"], function(d3, spiralTree) {
 	"use strict";
-	var mapsvg, tooltip, config, svgdefs, flowmap,
-		arrowColours, minArrowWidth, maxArrowWidth, maxRouteQuantity,
-		centerTerminals, maxSourceQuantity,
+	return {
+	mapsvg: null,
+	tooltip: null,
+	config: null,
+	svgdefs: null,
+	flowmap: null,
+	arrowColours: null,
+	minArrowWidth: null,
+	maxArrowWidth: null,
+	maxRouteQuantity: null,
+	centerTerminals: null,
+	maxSourceQuantity: null,
 
 	/*
 	 * Save the svg we use for later user
 	 * Add the arrow head to defs/marker in the SVG
 	 */
-	init = function(svgElement, tooltipElement, colours, minWidth, maxWidth) {
-		mapsvg = svgElement;
-		tooltip = tooltipElement;
-		arrowColours = colours;
-		minArrowWidth = minWidth;
-		maxArrowWidth = maxWidth;
-		addDefsToSvg();
-		setUpFlowmap();
-		tooltip.style("opacity", 0);
+	init: function(svgElement, tooltipElement, colours, minWidth, maxWidth) {
+		this.mapsvg = svgElement;
+		this.tooltip = tooltipElement;
+		this.arrowColours = colours;
+		this.minArrowWidth = minWidth;
+		this.maxArrowWidth = maxWidth;
+		this.addDefsToSvg();
+		this.setUpFlowmap();
+		this.tooltip.style("opacity", 0);
 	},
 
-	addDefsToSvg = function() {
-		svgdefs = mapsvg.select("defs");
+	addDefsToSvg: function() {
+		this.svgdefs = this.mapsvg.select("defs");
 		// first add arrow head
-		svgdefs.append("marker")
+		this.svgdefs.append("marker")
 				.attr("id", "markerArrowWide")
 				.attr("viewBox", "0 0 10 10")
 				.attr("markerUnits", "strokeWidth")
@@ -37,7 +46,7 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 				.attr("d", "M 9 2 L 3 5 L 9 8 z")
 				.attr("class", "route-arrow-head-wide");
 
-		svgdefs.append("marker")
+		this.svgdefs.append("marker")
 				.attr("id", "markerArrowNarrow")
 				.attr("viewBox", "0 0 10 10")
 				//.attr("markerUnits", "strokeWidth")
@@ -52,67 +61,67 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 				.attr("class", "route-arrow-head-narrow");
 
 		// now add a gradient
-		var gradient = svgdefs.append("linearGradient")
+		var gradient = this.svgdefs.append("linearGradient")
 			.attr("id", "route-grad");
 		gradient.append("stop")
 			.attr("offset", "0%")
-			.attr("stop-color", arrowColours.pathStart)
+			.attr("stop-color", this.arrowColours.pathStart)
 			.attr("stop-opacity", "0.5");
 		gradient.append("stop")
 			.attr("offset", "100%")
-			.attr("stop-color", arrowColours.pathEnd)
+			.attr("stop-color", this.arrowColours.pathEnd)
 			.attr("stop-opacity", "0.5");
 	},
 
-	setUpFlowmap = function() {
-		flowmap = new spiralTree.SpiralTree(mapsvg, function(xy) { return [xy[1], xy[0]]; });
-		flowmap.extraSpiralClass = "traderoute";
-		flowmap.setOpacity(0.5);
-		flowmap.setNodeDrawable(false);
-		flowmap.markerStart.wide = "url(#markerArrowWide)";
-		flowmap.markerStart.narrow = "url(#markerArrowNarrow)";
+	setUpFlowmap: function() {
+		this.flowmap = new spiralTree.SpiralTree(this.mapsvg, function(xy) { return [xy[1], xy[0]]; });
+		this.flowmap.extraSpiralClass = "traderoute";
+		this.flowmap.setOpacity(0.5);
+		this.flowmap.setNodeDrawable(false);
+		this.flowmap.markerStart.wide = "url(#markerArrowWide)";
+		this.flowmap.markerStart.narrow = "url(#markerArrowNarrow)";
 	},
 
-	getArrowWidth = function(route) {
-		var width = (route.quantity / maxRouteQuantity) * maxArrowWidth;
-		return Math.max(width, minArrowWidth);
+	getArrowWidth: function(route) {
+		var width = (route.quantity / this.maxRouteQuantity) * this.maxArrowWidth;
+		return Math.max(width, this.minArrowWidth);
 	},
 
-	clearArrows = function() {
+	clearArrows: function() {
 		d3.selectAll('.route-arrow').remove();
 	},
 
 	/*
 	 * Draw a route - the route argument is basically a list of point
 	 */
-	drawRoute = function(route) {
+	drawRoute: function(route) {
 		var routeline = d3.svg.line()
 			.interpolate("monotone")
 			.x(function(d) { return d.point[0]; })
 			.y(function(d) { return d.point[1]; });
 
-		mapsvg
+		this.mapsvg
 			.append("path")
 				.datum(route.points)
 				.attr("class", "route-arrow")
 				.attr("d", routeline)
 				.attr("marker-end", "url(#markerArrow)")
 				.attr("stroke", "url(#route-grad)")
-				.attr("stroke-width", getArrowWidth(route));
+				.attr("stroke-width", this.getArrowWidth(route));
 	},
 
-	drawRouteCollectionPlainArrows = function(collection) {
-		clearArrows();
-		maxRouteQuantity = collection.maxQuantity();
+	drawRouteCollectionPlainArrows: function(collection) {
+		this.clearArrows();
+		this.maxRouteQuantity = collection.maxQuantity();
 		var routeList = collection.getRoutes();
 		for (var i = 0; i < routeList.length; i++) {
 			if (routeList[i].points.length >= 2) {
-				drawRoute(routeList[i]);
+				this.drawRoute(routeList[i]);
 			}
 		}
 	},
 
-	drawPoint = function(x, y, pointType, extraclass) {
+	drawPoint: function(x, y, pointType, extraclass) {
 		var size, htmlClass;
 		if (pointType == "source") {
 			size = 5;
@@ -130,46 +139,46 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 			htmlClass = "tradenode " + pointType;
 		}
 
-		mapsvg.append("circle")
+		this.mapsvg.append("circle")
 			.attr("cx", x)
 			.attr("cy", y)
 			.attr("r", size)
 			.attr("class", htmlClass);
 	},
 
-	drawPointRole = function(point, pointType) {
+	drawPointRole: function(point, pointType) {
 		if (point.point === undefined) {
 			console.log("point.point undefined for " + point.toString());
 			return;
 		}
-		drawPoint(point.point[0], point.point[1], pointType);
+		this.drawPoint(point.point[0], point.point[1], pointType);
 	},
 
-	drawPointRoles = function(pointRoles) {
+	drawPointRoles: function(pointRoles) {
 		var pointInfo,
 			pointKeys = Object.keys(pointRoles);
 
 		for (var i = 0; i < pointKeys.length; i++) {
 			pointInfo = pointRoles[pointKeys[i]];
 			if (pointInfo.source) {
-				drawPointRole(pointInfo.point, "source");
+				this.drawPointRole(pointInfo.point, "source");
 			}
 			if (pointInfo.transit) {
-				drawPointRole(pointInfo.point, "transit");
+				this.drawPointRole(pointInfo.point, "transit");
 			}
 			if (pointInfo.dest) {
-				drawPointRole(pointInfo.point, "dest");
+				this.drawPointRole(pointInfo.point, "dest");
 			}
 		}
 	},
 
-	clearPoints = function() {
+	clearPoints: function() {
 		d3.selectAll(".tradenode").remove();
 	},
 
-	genericMouseOverPath = function(ctIndex) {
-		var center = centerTerminals[ctIndex].center;
-		var terminals = centerTerminals[ctIndex].terminals;
+	genericMouseOverPath: function(ctIndex) {
+		var center = this.centerTerminals[ctIndex].center;
+		var terminals = this.centerTerminals[ctIndex].terminals;
 		// sort, largest quantity first (hence the order swap)
 		terminals.sort(function(a, b) { return b.quantity - a.quantity; });
 
@@ -189,70 +198,70 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 				terminals[i].quantity.toFixed(1) + '</em></span>';
 		}
 
-		tooltip.html(tooltiptext);
+		this.tooltip.html(tooltiptext);
 
 		var box = d3.select("#mapcanvas")[0][0].getBoundingClientRect();
-		tooltip
+		this.tooltip
 			.style("width", "17em")
 			.style("height", 1.5*(1 + terminals.length) + "em")
 			.style("left", (d3.event.pageX - box.left + 10) + "px")
 			.style("top", (d3.event.pageY - box.top - 100) + "px");
 
-		tooltip.transition()
+		this.tooltip.transition()
 			.duration(200)
 			.style("opacity", 0.9);
 	},
 
-	genericMouseOutPath = function() {
+	genericMouseOutPath: function() {
 		return;
 		// TODO: decide what behaviour we want on mouseOut
 		d3.selectAll(".traderoute-highlight").classed("traderoute-highlight", false);
-		tooltip.transition()
+		this.tooltip.transition()
 			.duration(500)
 			.style("opacity", 0);
 	},
 
-	clearTooltip = function() {
-		tooltip.transition()
+	clearTooltip: function() {
+		this.tooltip.transition()
 			.duration(200)
 			.style("opacity", 0);
 	},
 
-	createMouseOverFunc = function(ctIndex) {
-		return function() { genericMouseOverPath(ctIndex); };
+	createMouseOverFunc: function(ctIndex) {
+		return function() { this.genericMouseOverPath(ctIndex); };
 	},
 
-	drawRouteCollectionSpiralTree = function(collection, pointRoles) {
+	drawRouteCollectionSpiralTree: function(collection, pointRoles) {
 		var center, terminals;
 		var ctAndMax = collection.getCenterTerminalList();
-		centerTerminals = ctAndMax.centerTerminalList;
-		maxSourceQuantity = ctAndMax.maxSourceQuantity;
+		this.centerTerminals = ctAndMax.centerTerminalList;
+		this.maxSourceQuantity = ctAndMax.maxSourceQuantity;
 
-		flowmap.clearSpiralPaths();
-		clearPoints();
-		flowmap.setMaxQuantity(maxSourceQuantity);
+		this.flowmap.clearSpiralPaths();
+		this.clearPoints();
+		this.flowmap.setMaxQuantity(this.maxSourceQuantity);
 
-		for (var i = 0; i < centerTerminals.length; i++) {
-			center = centerTerminals[i].center;
-			terminals = centerTerminals[i].terminals;
+		for (var i = 0; i < this.centerTerminals.length; i++) {
+			center = this.centerTerminals[i].center;
+			terminals = this.centerTerminals[i].terminals;
 			// set up flowmap settings for this path
-			flowmap.extraSpiralClass = "traderoute center-" + center.point.toString();
-			flowmap.mouseOverFunc = createMouseOverFunc(i);
-			flowmap.mouseOutFunc = genericMouseOutPath;
+			this.flowmap.extraSpiralClass = "traderoute center-" + center.point.toString();
+			this.flowmap.mouseOverFunc = this.createMouseOverFunc(i);
+			this.flowmap.mouseOutFunc = this.genericMouseOutPath;
 
 			// now do preprocess and drawing
-			flowmap.preprocess(terminals, center);
-			flowmap.drawTree();
+			this.flowmap.preprocess(terminals, center);
+			this.flowmap.drawTree();
 		}
 
-		drawPointRoles(pointRoles);
+		this.drawPointRoles(pointRoles);
 	},
 	
-	drawLegend = function() {
+	drawLegend: function() {
 		// use parseFloat as the height has "px" at the end
 		var i, strokeWidth, value, valueText, circleX, circleY,
 			margin = 10,
-			lineLength = maxArrowWidth + 10,
+			lineLength = this.maxArrowWidth + 10,
 			svgHeight = 430,  // from viewbox - TODO: get this properly
 			lineVertical = svgHeight;
 
@@ -261,17 +270,17 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 
 		for (i = 0; i < 4; i++) {
 			if (i === 0) {
-				strokeWidth = maxArrowWidth;
-				value = maxSourceQuantity;
+				strokeWidth = this.maxArrowWidth;
+				value = this.maxSourceQuantity;
 			} else if (i === 1) {
-				strokeWidth = maxArrowWidth * 0.5;
-				value = maxSourceQuantity * 0.5;
+				strokeWidth = this.maxArrowWidth * 0.5;
+				value = this.maxSourceQuantity * 0.5;
 			} else if (i === 2) {
-				strokeWidth = maxArrowWidth * 0.25;
-				value = maxSourceQuantity * 0.25;
+				strokeWidth = this.maxArrowWidth * 0.25;
+				value = this.maxSourceQuantity * 0.25;
 			} else {
-				strokeWidth = minArrowWidth;
-				value = (maxSourceQuantity * minArrowWidth) / maxArrowWidth;
+				strokeWidth = this.minArrowWidth;
+				value = (this.maxSourceQuantity * this.minArrowWidth) / this.maxArrowWidth;
 			}
 			valueText = value.toFixed(1);
 			if (i === 3) {
@@ -280,7 +289,7 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 
 			lineVertical = lineVertical - (Math.max(strokeWidth, 8) + margin);
 
-			mapsvg.append("line")
+			this.mapsvg.append("line")
 				.attr("x1", margin)
 				.attr("y1", lineVertical)
 				.attr("x2", margin + lineLength)
@@ -288,7 +297,7 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 				.attr("stroke-width", strokeWidth)
 				.attr("class", "legend traderoute");
 
-			mapsvg.append("text")
+			this.mapsvg.append("text")
 				.attr("x", lineLength + (margin * 2))
 				.attr("y", lineVertical + 5)
 				.attr("class", "legend traderoute-label")
@@ -297,39 +306,31 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 
 		// Now add a legend for the circles
 		circleX = lineLength + (margin * 3) +
-			maxSourceQuantity.toFixed(1).length * 8;
+			this.maxSourceQuantity.toFixed(1).length * 8;
 		circleY = svgHeight - 50;
-		drawPoint(circleX, circleY, "source", "legend");
-		mapsvg.append("text")
+		this.drawPoint(circleX, circleY, "source", "legend");
+		this.mapsvg.append("text")
 			.attr("x", circleX + 10)
 			.attr("y", circleY + 5)
 			.attr("class", "legend tradenode-label")
 			.text("Source");
 
 		circleY = circleY - 25;
-		drawPoint(circleX, circleY, "transit", "legend");
-		mapsvg.append("text")
+		this.drawPoint(circleX, circleY, "transit", "legend");
+		this.mapsvg.append("text")
 			.attr("x", circleX + 10)
 			.attr("y", circleY + 5)
 			.attr("class", "legend tradenode-label")
 			.text("Transit");
 
 		circleY = circleY - 25;
-		drawPoint(circleX, circleY, "dest", "legend");
-		mapsvg.append("text")
+		this.drawPoint(circleX, circleY, "dest", "legend");
+		this.mapsvg.append("text")
 			.attr("x", circleX + 10)
 			.attr("y", circleY + 5)
 			.attr("class", "legend tradenode-label")
 			.text("Destination");
-	};
+	}
 
-	return {
-		init: init,
-		addDefsToSvg: addDefsToSvg,
-		drawRoute: drawRoute,
-		drawRouteCollectionSpiralTree: drawRouteCollectionSpiralTree,
-		drawRouteCollectionPlainArrows: drawRouteCollectionPlainArrows,
-		drawLegend: drawLegend,
-		clearTooltip: clearTooltip
 	};
 });

@@ -1,64 +1,72 @@
 
 define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre"], function(d3, topojson, mapdata, disputedareas, countryCentre) {
 	"use strict";
-	var mapsvg, config,
-		countries, borders, disputed, disputedborders,
-		projection, pathmaker,
+
+	return {
+
+	mapsvg: null,
+	config: null,
+	countries: null,
+	borders: null,
+	disputed: null,
+	disputedborders: null,
+	projection: null,
+	pathmaker: null,
 
 	/*
 	 * caches svg reference
 	 * decodes countries and borders and draws them
 	 */
-	init = function(svgElement, mapConfig) {
-		mapsvg = svgElement;
-		config = mapConfig;
+	init: function(svgElement, mapConfig) {
+		this.mapsvg = svgElement;
+		this.config = mapConfig;
 
-		addPatternDefs();
+		this.addPatternDefs();
 
-		projection = d3.geo.mercator();
+		this.projection = d3.geo.mercator();
 			//.scale(mapWidth/1.25)
 			//.translate([mapWidth/4, mapHeight/2+10]);
-		pathmaker = d3.geo.path().projection(projection);
+		this.pathmaker = d3.geo.path().projection(this.projection);
 
-		countries = topojson.feature(mapdata, mapdata.objects.subunits).features;
-		borders = topojson.mesh(mapdata, mapdata.objects.subunits,
+		this.countries = topojson.feature(mapdata, mapdata.objects.subunits).features;
+		this.borders = topojson.mesh(mapdata, mapdata.objects.subunits,
 			function(a, b) { return true; });
-		disputed = topojson.feature(disputedareas, disputedareas.objects.disputeunit).features;
-		disputedborders = topojson.mesh(disputedareas, disputedareas.objects.disputeunit,
+		this.disputed = topojson.feature(disputedareas, disputedareas.objects.disputeunit).features;
+		this.disputedborders = topojson.mesh(disputedareas, disputedareas.objects.disputeunit,
 			function(a, b) { return true; });
 
-		mapsvg.selectAll(".subunit")
-			.data(countries)
+		this.mapsvg.selectAll(".subunit")
+			.data(this.countries)
 			.enter()
 				.append("path")
-				.attr("d", pathmaker)
+				.attr("d", this.pathmaker)
 				.attr("class", function(d) { return "country " + d.id; });
 				//.on("click", countryClicked)
 				//.on("mouseover", hoverCountry)
 				//.on("mouseout", unhoverCountry);
 
-		mapsvg.append("path")
-			.datum(borders)
-			.attr("d", pathmaker)
+		this.mapsvg.append("path")
+			.datum(this.borders)
+			.attr("d", this.pathmaker)
 			.attr("class", "country-border");
 
-		mapsvg.selectAll(".disputed")
-			.data(disputed)
+		this.mapsvg.selectAll(".disputed")
+			.data(this.disputed)
 			.enter()
 				.append("path")
-				.attr("d", pathmaker)
+				.attr("d", this.pathmaker)
 				.attr("class", function(d) { return "disputed " + d.id; })
 				.attr("fill", "url(#diagonalHatch)");
 
-		mapsvg.append("path")
-			.datum(disputedborders)
-			.attr("d", pathmaker)
+		this.mapsvg.append("path")
+			.datum(this.disputedborders)
+			.attr("d", this.pathmaker)
 			.attr("class", "disputed-border");
 	},
 
-	addPatternDefs = function() {
+	addPatternDefs: function() {
 		// from http://stackoverflow.com/a/14500054/3189
-		var svgdefs = mapsvg.select("defs");
+		var svgdefs = this.mapsvg.select("defs");
 		svgdefs.append("pattern")
 				.attr("id", "diagonalHatch")
 				.attr("patternUnits", "userSpaceOnUse")
@@ -70,16 +78,16 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre"], functio
 				.attr("d", "M-1,1 l2,-2 M0,4 l4,-4 M3,5 l2,-2");
 	},
 
-	countryCentrePoint = function(countryCode) {
+	countryCentrePoint: function(countryCode) {
 		if (countryCentre.hasOwnProperty(countryCode)) {
 			var latitude = countryCentre[countryCode].latitude,
 				longitude = countryCentre[countryCode].longitude;
-			return projection([longitude, latitude]);
+			return this.projection([longitude, latitude]);
 		}
 	},
 
-	colorTradingCountries = function(countryObj) {
-		mapsvg.selectAll(".country")
+	colorTradingCountries: function(countryObj) {
+		this.mapsvg.selectAll(".country")
 			.classed("trading", function(d) {
 				if (countryObj.hasOwnProperty(d.id)) {
 					return true;
@@ -89,8 +97,8 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre"], functio
 			});
 	},
 
-	resetCountryColors = function() {
-		mapsvg.selectAll(".country")
+	resetCountryColors: function() {
+		this.mapsvg.selectAll(".country")
 			.classed("trading", false);
 	},
 
@@ -104,21 +112,15 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre"], functio
 	 * position, such as when the location is outside the clipping bounds of
 	 * the projection.
 	 */
-	latLongToPoint = function(latLong) {
+	latLongToPoint: function(latLong) {
 		// TODO: test this actually does what I expect ...
-		return projection(latLong);
-	};
+		return this.projection(latLong);
+	}
 
 	// TODO:
 	// * highlight country
 	// * clear country highlights
 	// * chloropeth/ colour countries
 
-	return {
-		init: init,
-		colorTradingCountries: colorTradingCountries,
-		resetCountryColors: resetCountryColors,
-		countryCentrePoint: countryCentrePoint,
-		latLongToPoint: latLongToPoint
 	};
 });

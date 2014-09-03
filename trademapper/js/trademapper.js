@@ -52,8 +52,8 @@ define(
 		// set up the various callbacks we need to link things together
 		csv.init(csvLoadedCallback, filterLoadedCallback, csvLoadErrorCallback);
 
-		route.setCountryGetPointFunc(mapper.countryCentrePoint);
-		route.setLatLongToPointFunc(mapper.latLongToPoint);
+		route.setCountryGetPointFunc(function(countryCode) {return mapper.countryCentrePoint(countryCode);});
+		route.setLatLongToPointFunc(function(latLong) {return mapper.latLongToPoint(latLong);});
 		filterform.formChangedCallback = filterformChangedCallback;
 	},
 

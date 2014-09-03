@@ -55,24 +55,20 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 	},
 
 	processParsedCSV: function(csvData, csvType) {
-		var csvProcessors = this.getCsvProcessors();
-		if (csvProcessors.hasOwnProperty(csvType)) {
-			csvProcessors[csvType].filterExtractor(csvType, csvData);
-		} else {
+		if (!this.filterSpec.hasOwnProperty(csvType)) {
 			errorCallback("unknown csvType: " + csvType);
 		}
-		// now send back to the callback
+		var filters = this.csvToFilters(csvData, this.filterSpec[csvType]);
+		this.csvFilterLoadedCallback(csvType, csvData, filters);
 		this.csvDataLoadedCallback(csvType, csvData);
 	},
 
 	filterDataAndReturnRoutes: function(csvType, csvData, filterValues) {
-		var csvProcessors = this.getCsvProcessors();
-		if (csvProcessors.hasOwnProperty(csvType)) {
-			return csvProcessors[csvType].routeExtractor(csvType, csvData, filterValues);
-		} else {
+		if (!this.filterSpec.hasOwnProperty(csvType)) {
 			errorCallback("unknown csvType: " + csvType);
 			return null;
 		}
+		return this.csvToRoutes(csvType, csvData, filterValues, this.filterSpec[csvType]);
 	},
 
 	filterPasses: function(row, filterValues) {
@@ -107,26 +103,37 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 		return true;
 	},
 
-	citesCsvToRoutes: function(csvType, csvData, filterValues) {
-		var routes, points, origin, importer, exporter, importer_quantity,
-			exporter_quantity, quantity, row,
+	extractLocationColumns: function(filterSpec) {
+		var locationType, locationColumns = [];
+		for (var key in filterSpec) {
+			if (filterSpec.hasOwnProperty(key) && filterSpec[key].type === "location") {
+				locationType = filterSpec[key].locationType;
+				if (locationType === "country_code") {
+					locationColumns.push({
+						name: key,
+						locationType: locationType,
+						order: filterSpec[key].locationOrder
+					});
+				} else {
+					// TODO: deal with lat/long
+					console.log("unknown locationType: " + locationType);
+				}
+			}
+		}
+		locationColumns.sort(function(a, b) { return a.order - b.order; });
+		return locationColumns;
+	},
 
-		// the header of the CITES CSV is:
-		// Year,App.,Family,Taxon,Importer,Exporter,Origin,Importer reported quantity,Exporter reported quantity,Term,Unit,Purpose,Source
-		IMPORTER_INDEX = "Importer",
-		EXPORTER_INDEX = "Exporter",
-		ORIGIN_INDEX = "Origin";
+	csvToRoutes: function(csvType, csvData, filterValues, filterSpec) {
+		var points, quantity, row, locationType,
+			locationColumns = this.extractLocationColumns(filterSpec),
+			routes = new route.RouteCollection();
 
-		routes = new route.RouteCollection();
 		for (var i = 0; i < csvData.length; i++) {
 			row = csvData[i];
 
 			// filter out rows that don't match our criteria
-			if (!filterPasses(row, filterValues)) { continue; }
-
-			origin = row[ORIGIN_INDEX];
-			importer = row[IMPORTER_INDEX];
-			exporter = row[EXPORTER_INDEX];
+			if (!this.filterPasses(row, filterValues)) { continue; }
 
 			// if the quantity is missing for this column, skip this row
 			quantity = parseFloat(row[filterValues.quantityColumn.value]);
@@ -135,14 +142,17 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 			}
 
 			points = [];
-			if (origin.length == 2 && origin != 'XX') {
-				points.push(new route.PointCountry(origin));
-			}
-			if (exporter.length == 2 && exporter != 'XX') {
-				points.push(new route.PointCountry(exporter));
-			}
-			if (importer.length == 2 && importer != 'XX') {
-				points.push(new route.PointCountry(importer));
+			for (var j = 0; j < locationColumns.length; j++) {
+				locationType = locationColumns[j].locationType;
+				if (locationType === "country_code") {
+					var pointName = row[locationColumns[j].name];
+					if (pointName.length == 2 && pointName != 'XX') {
+						points.push(new route.PointCountry(pointName));
+					}
+				} else {
+					// TODO: deal with lat/long
+					console.log("unknown locationType: " + locationType);
+				}
 			}
 			routes.addRoute(new route.Route(points, quantity));
 		}
@@ -229,10 +239,10 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 		return filters;
 	},
 
-	citesCsvToFilters: function(csvType, csvData) {
-		// the header of the CITES CSV is:
-		// Year,App.,Family,Taxon,Importer,Exporter,Origin,Importer reported quantity,Exporter reported quantity,Term,Unit,Purpose,Source
-		var filterSpec = {
+	filterSpec: {
+		cites: {
+			// the header of the CITES CSV is:
+			// Year,App.,Family,Taxon,Importer,Exporter,Origin,Importer reported quantity,Exporter reported quantity,Term,Unit,Purpose,Source
 			"Year": {
 				type: "year"
 			},
@@ -250,14 +260,20 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 			},
 			"Importer": {
 				type: "location",
+				locationOrder: 3,
+				locationType: "country_code",
 				multiselect: true
 			},
 			"Exporter": {
 				type: "location",
+				locationOrder: 2,
+				locationType: "country_code",
 				multiselect: true
 			},
 			"Origin": {
 				type: "location",
+				locationOrder: 1,
+				locationType: "country_code",
 				multiselect: true
 			},
 			"Importer reported quantity": {
@@ -282,20 +298,7 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 				type: "text",
 				multiselect: true
 			}
-		};
-
-		var filters = this.csvToFilters(csvData, filterSpec);
-		this.csvFilterLoadedCallback(csvType, csvData, filters);
-	},
-
-	getCsvProcessors: function() {
-		var moduleThis = this;
-		return {
-			cites: {
-				routeExtractor: function(csvType, csvData, filterValues) { return moduleThis.citesCsvToRoutes(csvType, csvData, filterValues); },
-				filterExtractor: this.citesCsvToFilters
-			}
-		};
+		}
 	}
 
 	};

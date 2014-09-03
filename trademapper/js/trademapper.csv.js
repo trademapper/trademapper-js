@@ -181,11 +181,17 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 	},
 
 	csvToFilters = function(csvData, filterSpec) {
-		var minmax, filters = {};
+		var minmax, filters = {Quantity: {type: "quantity", values: []}};
 		for (var column in filterSpec) {
 			if (filterSpec.hasOwnProperty(column)) {
 				if (filterSpec[column].type === "ignore") {
 					// do nothing
+					continue;
+				}
+
+				if (filterSpec[column].type === "quantity") {
+					// quantity columns just get added to a list
+					filters.Quantity.values.push(column);
 					continue;
 				}
 
@@ -287,6 +293,7 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 		setFileInputElement: setFileInputElement,
 		processCSVString: processCSVString,
 		filterDataAndReturnRoutes: filterDataAndReturnRoutes,
+		csvToFilters: csvToFilters,
 		csvProcessors: csvProcessors
 	};
 });

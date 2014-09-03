@@ -14,6 +14,7 @@ define(
 			setErrorMessage = function(message) {
 				errorMessage = message;
 			},
+			initialFilterValue = {quantityColumn: {value: "Exporter reported quantity"}},
 			csvHeader = "Year,App.,Family,Taxon,Importer,Exporter,Origin," +
 				"Importer reported quantity,Exporter reported quantity," +
 				"Term,Unit,Purpose,Source\n",
@@ -59,7 +60,7 @@ define(
 
 				q.equal(errorMessage, null);
 				q.notEqual(returnedCsv, null);
-				var routes = csv.filterDataAndReturnRoutes("cites", returnedCsv, {quantityColumn: "Exporter reported quantity"});
+				var routes = csv.filterDataAndReturnRoutes("cites", returnedCsv, initialFilterValue);
 				var routeList = routes.getRoutes();
 				q.equal(routeList.length, 1);
 				q.equal(routeList[0].points.length, 2);
@@ -74,7 +75,7 @@ define(
 
 				q.equal(errorMessage, null);
 				q.notEqual(returnedCsv, null);
-				var routes = csv.filterDataAndReturnRoutes("cites", returnedCsv, {quantityColumn: "Exporter reported quantity"});
+				var routes = csv.filterDataAndReturnRoutes("cites", returnedCsv, initialFilterValue);
 				var routeList = routes.getRoutes();
 				q.equal(routeList.length, 1);
 				q.equal(routeList[0].points.length, 3);
@@ -90,7 +91,7 @@ define(
 
 				q.equal(errorMessage, null);
 				q.notEqual(returnedCsv, null);
-				var routes = csv.filterDataAndReturnRoutes("cites", returnedCsv, {quantityColumn: "Exporter reported quantity"});
+				var routes = csv.filterDataAndReturnRoutes("cites", returnedCsv, initialFilterValue);
 				var routeList = routes.getRoutes();
 				// There are 3 duplicates which will be combined
 				q.equal(routeList.length, 5);
@@ -105,6 +106,10 @@ define(
 				q.notEqual(returnedFilters, null);
 				q.deepEqual(returnedFilters,
 					{
+						"Quantity": {
+							type: "quantity",
+							values: ["Importer reported quantity", "Exporter reported quantity"]
+						},
 						"Year": {
 							type: "year",
 							min: 2003,
@@ -139,16 +144,6 @@ define(
 							multiselect: true,
 							type: "location",
 							values: ["", "BW"]
-						},
-						"Importer reported quantity": {
-							type: "number",
-							min: 6,
-							max: 6
-						},
-						"Exporter reported quantity": {
-							type: "number",
-							min: 1,
-							max: 10
 						},
 						"Term": {
 							multiselect: true,

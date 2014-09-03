@@ -60,9 +60,9 @@ define(
 		// set up the various callbacks we need to link things together
 		var moduleThis = this;
 		csv.init(
-			function(csvType, csvData) { return moduleThis.csvLoadedCallback(csvType, csvData); },
-			function(csvType, csvData, filters) { return moduleThis.filterLoadedCallback(csvType, csvData, filters); },
-			function(msg) { return moduleThis.csvLoadErrorCallback(msg); });
+			function(csvType, csvData) { moduleThis.csvLoadedCallback(csvType, csvData); },
+			function(csvType, csvData, filters) { moduleThis.filterLoadedCallback(csvType, csvData, filters); },
+			function(msg) { moduleThis.csvLoadErrorCallback(msg); });
 
 		route.setCountryGetPointFunc(function(countryCode) {return mapper.countryCentrePoint(countryCode);});
 		route.setLatLongToPointFunc(function(latLong) {return mapper.latLongToPoint(latLong);});

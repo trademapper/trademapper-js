@@ -68,7 +68,7 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 			errorCallback("unknown csvType: " + csvType);
 			return null;
 		}
-		return this.csvToRoutes(csvType, csvData, filterValues, this.filterSpec[csvType]);
+		return this.csvToRoutes(csvData, filterValues, this.filterSpec[csvType]);
 	},
 
 	filterPasses: function(row, filterValues) {
@@ -124,7 +124,7 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 		return locationColumns;
 	},
 
-	csvToRoutes: function(csvType, csvData, filterValues, filterSpec) {
+	csvToRoutes: function(csvData, filterValues, filterSpec) {
 		var points, quantity, row, locationType,
 			locationColumns = this.extractLocationColumns(filterSpec),
 			routes = new route.RouteCollection();
@@ -146,7 +146,7 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 				locationType = locationColumns[j].locationType;
 				if (locationType === "country_code") {
 					var pointName = row[locationColumns[j].name];
-					if (pointName.length == 2 && pointName != 'XX') {
+					if (pointName.length === 2 && pointName !== 'XX') {
 						points.push(new route.PointCountry(pointName));
 					}
 				} else {

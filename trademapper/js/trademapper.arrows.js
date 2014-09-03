@@ -228,7 +228,8 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 	},
 
 	createMouseOverFunc: function(ctIndex) {
-		return function() { this.genericMouseOverPath(ctIndex); };
+		var moduleThis = this;
+		return function() { moduleThis.genericMouseOverPath(ctIndex); };
 	},
 
 	drawRouteCollectionSpiralTree: function(collection, pointRoles) {

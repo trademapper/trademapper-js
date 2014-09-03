@@ -265,10 +265,9 @@ SpiralTree.prototype.spiralPath = function (point, tValue, sign) {
 	var step;
 	var ncount = 60;
 	if (tValue === undefined) {
-		step = (Math.PI / Math.tan(this.alpha)) / ncount; //0.05;
-	} else {
-		step = tValue / ncount;
+		tValue = (Math.PI / Math.tan(this.alpha));
 	}
+	step = tValue / ncount;
 	var spiral = [];
 	for (var i = 0; i < ncount; i++) {
 		currentTheta = theta + Math.tan(adjustAlpha) * i * step;

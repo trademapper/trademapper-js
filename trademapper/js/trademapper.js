@@ -104,10 +104,11 @@ define(
 
 	createFilterForm: function(filters) {
 		// generate the form for playing with the data
-		var currentFileHtml = '<div class="current-file"><p><strong>Current File:</strong> ' +
-			csv.csvFile.name + "</p></div>";
-		this.formElement.html(filterSkeleton + currentFileHtml + csvOnlySkeleton);
-		this.fileInputElement = this.formElement.select("#fileinput");
+		this.formElement.html(filterSkeleton + csvOnlySkeleton);
+		var fileInput = document.querySelector(".filters-group.group-fileinput > p > input#fileinput");
+		var fileInputParent = fileInput.parentNode;
+		fileInputParent.removeChild(fileInput);
+		fileInputParent.appendChild(this.fileInputElement[0][0]);
 		csv.setFileInputElement(this.fileInputElement);
 
 		this.formElement.append("div").attr("class", "csv-load-errors");
@@ -167,8 +168,25 @@ define(
 		errorMsg += pointList.join(", ");
 		var errorDiv = d3.select(".csv-load-errors");
 		errorDiv.html('<p><strong>Errors:</strong> <span class="showhide">Show</span></p>');
-		errorDiv.append("p").text(errorMsg);
-		// TODO: attach a show/hide handler to span.showhide
+		var errorDetails = errorDiv.append("div")
+			.attr("id", "csv-load-error-details")
+			.attr("style", "display: none");
+		errorDetails.append("p")
+			.text(errorMsg);
+		var moduleThis = this;
+		errorDiv.select(".showhide").on("click", function() { moduleThis.csvLoadErrorShowHide(); });
+	},
+
+	csvLoadErrorShowHide: function() {
+		var errorDetails = document.getElementById("csv-load-error-details");
+		var showHide = document.querySelector(".csv-load-errors > p > span.showhide");
+		if (errorDetails.style.display === "block") {
+			errorDetails.style.display = "none";
+			showHide.textContent = "Show";
+		} else {
+			errorDetails.style.display = "block";
+			showHide.textContent = "Hide";
+		}
 	},
 
 	csvLoadErrorCallback: function(msg) {

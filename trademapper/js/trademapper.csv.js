@@ -77,7 +77,7 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 
 	processParsedCSV: function(csvData, csvType) {
 		if (!this.filterSpec.hasOwnProperty(csvType)) {
-			errorCallback("unknown csvType: " + csvType);
+			this.errorCallback("unknown csvType: " + csvType);
 		}
 		var filters = this.csvToFilters(csvData, this.filterSpec[csvType]);
 		this.csvFilterLoadedCallback(csvType, csvData, filters);
@@ -86,7 +86,7 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 
 	filterDataAndReturnRoutes: function(csvType, csvData, filterValues) {
 		if (!this.filterSpec.hasOwnProperty(csvType)) {
-			errorCallback("unknown csvType: " + csvType);
+			this.errorCallback("unknown csvType: " + csvType);
 			return null;
 		}
 		return this.csvToRoutes(csvData, filterValues, this.filterSpec[csvType]);

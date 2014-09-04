@@ -111,7 +111,7 @@ define(
 		fileInputParent.appendChild(this.fileInputElement[0][0]);
 		csv.setFileInputElement(this.fileInputElement);
 
-		this.formElement.append("div").attr("class", "csv-load-errors");
+		this.formElement.append("fieldset").attr("class", "filters-group csv-load-errors");
 
 		filterform.createFormFromFilters(this.formElement, filters);
 	},
@@ -156,6 +156,10 @@ define(
 		var errorMsg = "Could not parse points: ",
 			pointList = [];
 
+		// clear errors
+		var errorFieldset = d3.select(".csv-load-errors");
+		errorFieldset.classed("haserror", false);
+
 		for (var key in unknownPoints) {
 			if (unknownPoints.hasOwnProperty(key)) {
 				pointList.push(key);
@@ -166,15 +170,15 @@ define(
 
 		pointList.sort();
 		errorMsg += pointList.join(", ");
-		var errorDiv = d3.select(".csv-load-errors");
-		errorDiv.html('<p><strong>Errors:</strong> <span class="showhide">Show</span></p>');
-		var errorDetails = errorDiv.append("div")
+		errorFieldset.classed("haserror", true);
+		errorFieldset.html('<p><strong>Errors:</strong> <span class="showhide">Show</span></p>');
+		var errorDetails = errorFieldset.append("div")
 			.attr("id", "csv-load-error-details")
 			.attr("style", "display: none");
 		errorDetails.append("p")
 			.text(errorMsg);
 		var moduleThis = this;
-		errorDiv.select(".showhide").on("click", function() { moduleThis.csvLoadErrorShowHide(); });
+		errorFieldset.select(".showhide").on("click", function() { moduleThis.csvLoadErrorShowHide(); });
 	},
 
 	csvLoadErrorShowHide: function() {

@@ -113,6 +113,20 @@ a, a img, img a {
 	width:100%;
 }
 
+.csv-load-errors.haserror {
+	border-width: 1px;
+	border-color: red;
+	border-style: solid;
+	margin: 0.5em 1em;
+	width: 90%;
+}
+
+span.showhide {
+	cursor: pointer;
+	color: blue;
+	text-decoration: underline;
+}
+
 .filters-group {
     border: none;
     clear: both;

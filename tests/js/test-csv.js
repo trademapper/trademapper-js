@@ -168,6 +168,26 @@ define(
 					});
 			});
 
+			q.test('check autodetectCsvType matches exact text', function() {
+				csv.csvHeaderToType["exact,text,match"] = "test-exact";
+				q.equal(csv.autodetectCsvType("exact,text,match"), "test-exact");
+			});
+
+			q.test('check autodetectCsvType matches text with spaces', function() {
+				csv.csvHeaderToType["text,match,withspaces"] = "test-space";
+				q.equal(csv.autodetectCsvType("text, match, with spaces"), "test-space");
+			});
+
+			q.test('check autodetectCsvType matches text with upper case', function() {
+				csv.csvHeaderToType["text,match,withuppercase"] = "test-uppercase";
+				q.equal(csv.autodetectCsvType("text,match,with Upper Case"), "test-uppercase");
+			});
+
+			q.test('check autodetectCsvType matches text with hyphens', function() {
+				csv.csvHeaderToType["text,match,withhyphens"] = "test-hyphen";
+				q.equal(csv.autodetectCsvType("text,match,with-hyphens"), "test-hyphen");
+			});
+
 		};
 		return {run: run};
 	}

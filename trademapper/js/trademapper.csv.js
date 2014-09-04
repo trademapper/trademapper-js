@@ -44,7 +44,7 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 
 	autodetectCsvType: function(firstLine) {
 		// get the first line, lower case, and remove spaces
-		firstLine = firstLine.toLowerCase().replace(' ', '', 'g');
+		firstLine = firstLine.toLowerCase().replace(/[^\w,]/g, '');
 
 		if (this.csvHeaderToType.hasOwnProperty(firstLine)) {
 			return this.csvHeaderToType[firstLine];
@@ -432,8 +432,8 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 	},
 
 	csvHeaderToType: {
-		"year,app.,family,taxon,importer,exporter,origin,importerreportedquantity,exporterreportedquantity,term,unit,purpose,source": "cites",
-		"etisref.no.,seizureyear,seizuredate,sourceofdata,agencyresponsibleforseizure,activity,placeofdiscovery,cityofdiscovery,countryofdiscov-ery,countriesoforigin,countriesofexport/re-export,countriesoftransit,countryofdestina-tion/im-port,rawivoryno.pcs,rawivorywt(kg),workedivoryno.pcs,workedivorywt(kg),ivorycomment,othercontrabandseized,modeoftransport,methodofconcealment,methodofdetection,suspects'nationalities,additionalinformation": "etis"
+		"year,app,family,taxon,importer,exporter,origin,importerreportedquantity,exporterreportedquantity,term,unit,purpose,source": "cites",
+		"etisrefno,seizureyear,seizuredate,sourceofdata,agencyresponsibleforseizure,activity,placeofdiscovery,cityofdiscovery,countryofdiscovery,countriesoforigin,countriesofexportreexport,countriesoftransit,countryofdestinationimport,rawivorynopcs,rawivorywtkg,workedivorynopcs,workedivorywtkg,ivorycomment,othercontrabandseized,modeoftransport,methodofconcealment,methodofdetection,suspectsnationalities,additionalinformation": "etis"
 	}
 
 	};

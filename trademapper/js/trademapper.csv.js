@@ -42,7 +42,7 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 		reader.readAsText(this.csvFile);
 	},
 
-	discoverCsvType: function(firstLine) {
+	autodetectCsvType: function(firstLine) {
 		// get the first line, lower case, and remove spaces
 		firstLine = firstLine.toLowerCase().replace(' ', '', 'g');
 
@@ -56,7 +56,7 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 	 */
 	processCSVString: function(fileText) {
 		var firstLine = fileText.substring(0, fileText.indexOf("\n"));
-		var csvType = this.discoverCsvType(firstLine);
+		var csvType = this.autodetectCsvType(firstLine);
 		if (csvType) {
 			var csvData = d3.csv.parse(fileText);
 			this.processParsedCSV(csvData, csvType);

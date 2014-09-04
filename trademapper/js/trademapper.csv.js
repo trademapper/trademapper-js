@@ -30,33 +30,49 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 
 	loadCSVFile: function() {
 		this.csvFile = this.fileInputElement[0][0].files[0];
-		// TODO: replace with output from form element, or even maybe auto discovery ...
-		var csvType = "cites";
 
 		var reader = new FileReader();
 		var moduleThis = this;
+
 		reader.onload = function(e) {
 			moduleThis.loadingCsv = true;
-			moduleThis.processCSVString(reader.result, csvType);
+			moduleThis.processCSVString(reader.result);
 			moduleThis.loadingCsv = false;
 		};
 		reader.readAsText(this.csvFile);
 	},
 
+	discoverCsvType: function(firstLine) {
+		// get the first line, lower case, and remove spaces
+		firstLine = firstLine.toLowerCase().replace(' ', '', 'g');
+
+		if (this.csvHeaderToType.hasOwnProperty(firstLine)) {
+			return this.csvHeaderToType[firstLine];
+		}
+	},
+
 	/*
 	 * make a RouteCollection from a CSV string
 	 */
-	processCSVString: function(fileText, csvType) {
-		var csvData = d3.csv.parse(fileText);
-		// do different things for different formats: CITES etc
-		this.processParsedCSV(csvData, csvType);
+	processCSVString: function(fileText) {
+		var firstLine = fileText.substring(0, fileText.indexOf("\n"));
+		var csvType = this.discoverCsvType(firstLine);
+		if (csvType) {
+			var csvData = d3.csv.parse(fileText);
+			this.processParsedCSV(csvData, csvType);
+		} else {
+			console.log("unknown CSV header: " + firstLine);
+		}
 	},
 
 	processCSVURL: function(url, csvType) {
-		d3.csv(url, null, function(csvData) {
-			// do different things for different formats: CITES etc
-			this.processParsedCSV(csvData, csvType);
+		// TODO: work out csvType from csvData???
+		this.loadingCsv = true;
+		var moduleThis = this;
+		d3.csv(url, null, function(csvData, csvType) {
+			moduleThis.processParsedCSV(csvData);
 		});
+		this.loadingCsv = false;
 	},
 
 	processParsedCSV: function(csvData, csvType) {
@@ -310,7 +326,114 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 				type: "text",
 				multiselect: true
 			}
+		},
+		etis: {
+			// the header of the ETIS CSV is:
+			// ETIS Ref. No.,Seizure Year,Seizure Date,Source of Data,Agency responsible for seizure,Activity,Place of discovery,City of discovery,Country of Discov-ery,Countries of origin,Countries of export/re-export,Countries of transit,Country of destina-tion/im-port,Raw Ivory No. Pcs,Raw Ivory  Wt (kg),Worked Ivory No. Pcs,Worked Ivory Wt (kg),Ivory Comment,Other Contraband Seized,Mode of Transport,Method of Concealment,Method of Detection,Suspects' Nationalities,Additional Information
+			"ETIS Ref. No.": {
+				type: "ignore"
+			},
+			"Seizure Year": {
+				type: "year"
+			},
+			"Seizure Date": {
+				// TODO: anything?
+				type: "ignore"
+			},
+			"Source of Data": {
+				// TODO: sample file has no data for this column
+				type: "text",
+				multiselect: true
+			},
+			"Agency responsible for seizure": {
+				// TODO: sample file has no data for this column
+				type: "text",
+				multiselect: true
+			},
+			"Activity": {
+				// TODO: work this out, example suggested multiple values per cell
+				type: "ignore"
+			},
+			"Place of discovery": {
+				type: "text",
+				multiselect: true
+			},
+			"City of discovery": {
+				type: "text",
+				multiselect: true
+			},
+			"Country of Discov-ery": {
+				// TODO: seizing/discovery is a point already on the route
+				// need to decide how to show this
+				type: "ignore"
+			},
+			"Countries of origin": {
+				// TODO: this could have multiple countries, don't know how to display
+				type: "ignore"
+			},
+			"Countries of export/re-export": {
+				type: "location",
+				locationOrder: 1,
+				locationType: "country_code",
+				multiselect: true
+			},
+			"Countries of transit": {
+				// TODO: handle the fact this could have multiple country codes!
+				type: "location",
+				locationOrder: 2,
+				locationType: "country_code",
+				multiselect: true
+			},
+			"Country of destina-tion/im-port": {
+				type: "location",
+				locationOrder: 3,
+				locationType: "country_code",
+				multiselect: true
+			},
+			"Raw Ivory No. Pcs": {
+				type: "quantity"
+			},
+			"Raw Ivory  Wt (kg)": {
+				type: "quantity"
+			},
+			"Worked Ivory No. Pcs": {
+				type: "quantity"
+			},
+			"Worked Ivory Wt (kg)": {
+				type: "quantity"
+			},
+			"Ivory Comment": {
+				type: "ignore"
+			},
+			"Other Contraband Seized": {
+				// TODO: sample file has no data for this column
+				type: "ignore"
+			},
+			"Mode of Transport": {
+				type: "text",
+				multiselect: true
+			},
+			"Method of Concealment": {
+				type: "ignore"
+			},
+			"Method of Detection": {
+				// TODO: work this out, example suggested multiple values per cell
+				type: "ignore"
+			},
+			"Suspects' Nationalities": {
+				// TODO: sample file has no data for this column
+				type: "ignore"
+			},
+			"Additional Information": {
+				// TODO: sample file has no data for this column
+				type: "ignore"
+			}
 		}
+	},
+
+	csvHeaderToType: {
+		"year,app.,family,taxon,importer,exporter,origin,importerreportedquantity,exporterreportedquantity,term,unit,purpose,source": "cites",
+		"etisref.no.,seizureyear,seizuredate,sourceofdata,agencyresponsibleforseizure,activity,placeofdiscovery,cityofdiscovery,countryofdiscov-ery,countriesoforigin,countriesofexport/re-export,countriesoftransit,countryofdestina-tion/im-port,rawivoryno.pcs,rawivorywt(kg),workedivoryno.pcs,workedivorywt(kg),ivorycomment,othercontrabandseized,modeoftransport,methodofconcealment,methodofdetection,suspects'nationalities,additionalinformation": "etis"
 	}
 
 	};

@@ -244,7 +244,7 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 				unique[value] = true;
 			}
 		}
-		return distinct;
+		return distinct.sort();
 	},
 
 	csvToFilters: function(csvData, filterSpec) {

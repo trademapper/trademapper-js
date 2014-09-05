@@ -62,7 +62,6 @@ define(["d3"], function(d3) {
 		addLocationField: function(fieldset, filters, columnName) {
 			var cName = this.columnNameToClassName(columnName);
 			var values = filters[columnName].values;
-			values.sort();
 
 			var locationP = fieldset.append("p")
 				.attr("class", "form-item location-" + cName);
@@ -171,7 +170,6 @@ define(["d3"], function(d3) {
 			var cName = this.columnNameToClassName(columnName);
 			var values = filters[columnName].values;
 			var multiselect = filters[columnName].multiselect;
-			values.sort();
 
 			var categoryP = fieldset.append("p")
 				.attr("class", "form-item category-" + cName);
@@ -244,8 +242,6 @@ define(["d3"], function(d3) {
 			quantityFieldset.append("legend")
 				.attr("class", "filter-group-title units")
 				.text("Column to use for quantity");
-
-			quantityColumns.sort();
 
 			var quantityP = quantityFieldset.append("p")
 				.attr("class", "form-item category-quantity");

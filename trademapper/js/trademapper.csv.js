@@ -109,23 +109,24 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 		for (filterName in filterValues) {
 			if (filterValues.hasOwnProperty(filterName)) {
 				filter = filterValues[filterName];
-				rowValue = row[filterName].trim();
 
 				if (filterName === "quantityColumn") {
 					// do nothing - don't filter on this column
 				}
 				else if (filter.type === "category-single") {
+					rowValue = row[filterName].trim();
 					// if any value is allowed, skip this filter
 					if (filter.any === false && rowValue != filter.value) {
 						return false;
 					}
 				} else if (filter.type === "category-multi") {
+					rowValue = row[filterName].trim();
 					// if any value is allowed, skip this filter
-					if (filter.any === false && filter.valueList.indexOf(rowValue === -1)) {
+					if (filter.any === false && filter.valueList.indexOf(rowValue) === -1) {
 						return false;
 					}
 				} else if (filter.type === "year") {
-					rowValue = parseInt(rowValue);
+					rowValue = parseInt(row[filterName]);
 					if (rowValue < filter.minValue || rowValue > filter.maxValue) {
 						return false;
 					}
@@ -229,12 +230,14 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 	},
 
 	getUniqueValuesFromCsvColumn: function(csvData, column) {
-		var unique = {};  // to track what we've already got
-		var distinct = [];
+		var value,
+			unique = {},  // to track what we've already got
+			distinct = [];
 		for (var i = 0; i < csvData.length; i++) {
-			if (typeof(unique[csvData[i][column]]) === "undefined") {
-				distinct.push(csvData[i][column]);
-				unique[csvData[i][column]] = 0;
+			value = csvData[i][column].trim();
+			if (typeof(unique[value]) === "undefined") {
+				distinct.push(value);
+				unique[value] = true;
 			}
 		}
 		return distinct;

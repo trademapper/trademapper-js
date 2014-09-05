@@ -31,12 +31,12 @@ define(["d3"], function(d3) {
 		formChangedCallback: function(columnName) {
 		},
 
-		getFilterNamesForType: function(filters, filterType) {
+		getFilterNamesForType: function(filters, filterTypes) {
 			var result = [];
 
 			for (var key in filters) {
 				if (filters.hasOwnProperty(key)) {
-					if (filters[key].type === filterType) {
+					if (filterTypes.indexOf(filters[key].type) !== -1) {
 						result.push(key);
 					}
 				}
@@ -282,12 +282,12 @@ define(["d3"], function(d3) {
 
 			// TODO: recreate country filter stuff
 			locationFieldset = this.addLocationFieldset(formElement);
-			locationFilters = this.getFilterNamesForType(filters, "location");
+			locationFilters = this.getFilterNamesForType(filters, ["location"]);
 			for (i = 0; i < locationFilters.length; i++) {
 				this.addLocationField(locationFieldset, filters, locationFilters[i]);
 			}
 
-			yearFilters = this.getFilterNamesForType(filters, "year");
+			yearFilters = this.getFilterNamesForType(filters, ["year"]);
 			if (yearFilters.length === 1) {
 				this.addYearFieldset(formElement, filters, yearFilters[0]);
 			} else if (yearFilters.length > 1) {
@@ -296,7 +296,7 @@ define(["d3"], function(d3) {
 
 			this.addQuantityColumnChooser(formElement, filters);
 
-			categoryFilters = this.getFilterNamesForType(filters, "text");
+			categoryFilters = this.getFilterNamesForType(filters, ["text", "text_list"]);
 			if (categoryFilters.length > 0) {
 				categoryFieldset = formElement.append("fieldset")
 					.attr("class", "filters-group group-category");

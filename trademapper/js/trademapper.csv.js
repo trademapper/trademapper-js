@@ -314,6 +314,9 @@ define(['d3', 'trademapper.route', 'util'], function(d3, route, util) {
 				// TODO: add textmapping? date?
 				if (filterSpec[column].type === "text") {
 					filters[column].values = this.getUniqueValuesFromCsvColumn(csvData, column);
+				} else if (filterSpec[column].type === "text_list") {
+					filters[column].values = this.getUniqueCommaSeparatedValuesFromCsvColumn(csvData, column);
+					filters[column].multiValueColumn = true;
 				} else if (filterSpec[column].type === "number") {
 					minmax = this.getMinMaxValuesFromCsvColumn(csvData, column);
 					filters[column].min = minmax[0];
@@ -423,8 +426,8 @@ define(['d3', 'trademapper.route', 'util'], function(d3, route, util) {
 				multiselect: true
 			},
 			"Activity": {
-				// TODO: work this out, example suggested multiple values per cell
-				type: "ignore"
+				type: "text_list",
+				multiselect: true
 			},
 			"Place of discovery": {
 				type: "text",
@@ -440,25 +443,28 @@ define(['d3', 'trademapper.route', 'util'], function(d3, route, util) {
 				type: "ignore"
 			},
 			"Countries of origin": {
-				// TODO: this could have multiple countries, don't know how to display
-				type: "ignore"
-			},
-			"Countries of export/re-export": {
+				// TODO: strictly the countries here are in parallel, not series
+				// don't know how to display
 				type: "location",
 				locationOrder: 1,
 				locationType: "country_code_list",
 				multiselect: true
 			},
-			"Countries of transit": {
-				// TODO: handle the fact this could have multiple country codes!
+			"Countries of export/re-export": {
 				type: "location",
 				locationOrder: 2,
 				locationType: "country_code_list",
 				multiselect: true
 			},
-			"Country of destina-tion/im-port": {
+			"Countries of transit": {
 				type: "location",
 				locationOrder: 3,
+				locationType: "country_code_list",
+				multiselect: true
+			},
+			"Country of destina-tion/im-port": {
+				type: "location",
+				locationOrder: 4,
 				locationType: "country_code",
 				multiselect: true
 			},
@@ -490,7 +496,8 @@ define(['d3', 'trademapper.route', 'util'], function(d3, route, util) {
 			},
 			"Method of Detection": {
 				// TODO: work this out, example suggested multiple values per cell
-				type: "ignore"
+				type: "text_list",
+				multiselect: true
 			},
 			"Suspects' Nationalities": {
 				// TODO: sample file has no data for this column

@@ -79,9 +79,10 @@ define(["d3"], function(d3) {
 					.text("Any " + columnName);
 			}
 			for (var i = 0; i < values.length; i++) {
+				var textValue = values[i] ? values[i] : "<Blank " + columnName + ">";
 				locationSelect.append("option")
 					.attr("value", values[i])
-					.text(values[i]);
+					.text(textValue);
 			}
 
 			var moduleThis = this;

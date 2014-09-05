@@ -131,7 +131,11 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 						return false;
 					}
 				} else if (filter.type === "numeric") {
-					// TODO:
+					// TODO: the filter form end of this
+					rowValue = parseFloat(row[filterName]);
+					if (rowValue < filter.minValue) {
+						return false;
+					}
 				}
 
 			}

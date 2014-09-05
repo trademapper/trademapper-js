@@ -54,7 +54,6 @@ define([], function() {
 		return routes.length;
 	};
 
-	// TODO: add filters, eg minimum quantity ...
 	RouteCollection.prototype.getRoutes = function() {
 		var routeList = [], routeKeys = Object.keys(this.routes);
 		for (var i = 0; i < routeKeys.length; i++) {

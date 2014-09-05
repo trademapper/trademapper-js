@@ -192,7 +192,6 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 			center.point.toString() + '</span>';
 
 		for (var i = 0; i < terminals.length; i++) {
-			// TODO: order by quantity
 			tooltiptext += '<br /><span class="tooltip-dest">to: <em>' +
 				terminals[i].point.toString() + '</em> : ' + '<em>' +
 				terminals[i].quantity.toFixed(1) + '</em></span>';

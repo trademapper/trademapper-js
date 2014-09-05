@@ -227,6 +227,32 @@ define(
 				q.deepEqual(csv.getMinMaxValuesFromCsvColumn(csvData, "column"), [3, 3]);
 			});
 
+			q.test('check getPointsFromRow does country_code ok', function() {
+				var row = {start: "EG", middle: "", end: "GB"},
+					locationColumns = [
+						{locationType: "country_code", name: "start"},
+						{locationType: "country_code", name: "middle"},
+						{locationType: "country_code", name: "end"}
+					];
+				var points = csv.getPointsFromRow(row, locationColumns);
+				q.equal(points.length, 2);
+				q.equal(points[0].toString(), "EG");
+				q.equal(points[1].toString(), "GB");
+			});
+
+			q.test('check getPointsFromRow does country_code_list ok', function() {
+				var row = {start: "EG, IT", middle: "", end: "GB"},
+					locationColumns = [
+						{locationType: "country_code_list", name: "start"},
+						{locationType: "country_code_list", name: "middle"},
+						{locationType: "country_code_list", name: "end"}
+					];
+				var points = csv.getPointsFromRow(row, locationColumns);
+				q.equal(points.length, 3);
+				q.equal(points[0].toString(), "EG");
+				q.equal(points[1].toString(), "IT");
+				q.equal(points[2].toString(), "GB");
+			});
 		};
 		return {run: run};
 	}

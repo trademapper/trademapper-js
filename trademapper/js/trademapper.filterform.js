@@ -306,7 +306,7 @@ define(["d3"], function(d3) {
 				this.addCategoryField(categoryFieldset, filters, categoryFilters[i]);
 			}
 
-			/* TODO:
+			/* TODO: numeric filter - how does it mesh with quantity column?
 			var numericFieldset = formElement.append("fieldset")
 				.attr("class", "filters-group group-numeric");
 			*/

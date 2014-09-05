@@ -118,7 +118,7 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre"], functio
 	}
 
 	// TODO:
-	// * highlight country
+	// * highlight country - border outline when country hovered/clicked on ...
 	// * clear country highlights
 	// * chloropeth/ colour countries
 

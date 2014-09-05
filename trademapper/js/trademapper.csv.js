@@ -148,7 +148,8 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 		for (var key in filterSpec) {
 			if (filterSpec.hasOwnProperty(key) && filterSpec[key].type === "location") {
 				locationType = filterSpec[key].locationType;
-				if (locationType === "country_code") {
+				if (locationType === "country_code" ||
+						locationType === "country_code_list") {
 					locationColumns.push({
 						name: key,
 						locationType: locationType,
@@ -164,8 +165,40 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 		return locationColumns;
 	},
 
+	addCountryCodeToPoints: function(countryCode, points) {
+		if (countryCode === "" || countryCode === "XX") {
+			return;
+		}
+		var country = new route.PointCountry(countryCode);
+		if (country.point !== undefined) {
+			points.push(country);
+		} else if (this.loadingCsv) {
+			this.loadErrors.unknownCountries[countryCode] = true;
+		}
+	},
+
+	getPointsFromRow: function(row, locationColumns) {
+		var i, j, points = [];
+		for (i = 0; i < locationColumns.length; i++) {
+			var locationType = locationColumns[i].locationType;
+			if (locationType === "country_code") {
+				var countryCode = row[locationColumns[i].name].trim();
+				this.addCountryCodeToPoints(countryCode, points);
+			} else if (locationType === "country_code_list") {
+				var countryCodes = row[locationColumns[i].name].split(",");
+				for (j = 0; j < countryCodes.length; j++) {
+					this.addCountryCodeToPoints(countryCodes[j].trim(), points);
+				}
+			} else {
+				// TODO: deal with lat/long
+				console.log("unknown locationType: " + locationType);
+			}
+		}
+		return points;
+	},
+
 	csvToRoutes: function(csvData, filterValues, filterSpec) {
-		var points, quantity, row, locationType,
+		var points, quantity, row,
 			locationColumns = this.extractLocationColumns(filterSpec),
 			routes = new route.RouteCollection();
 
@@ -184,24 +217,7 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 				continue;
 			}
 
-			points = [];
-			for (var j = 0; j < locationColumns.length; j++) {
-				locationType = locationColumns[j].locationType;
-				if (locationType === "country_code") {
-					var countryCode = row[locationColumns[j].name].trim();
-					if (countryCode.length > 0 && countryCode !== 'XX') {
-						var country = new route.PointCountry(countryCode);
-						if (country.point !== undefined) {
-							points.push(country);
-						} else if (this.loadingCsv) {
-							this.loadErrors.unknownCountries[countryCode] = true;
-						}
-					}
-				} else {
-					// TODO: deal with lat/long
-					console.log("unknown locationType: " + locationType);
-				}
-			}
+			points = this.getPointsFromRow(row, locationColumns);
 			routes.addRoute(new route.Route(points, quantity));
 		}
 
@@ -396,14 +412,14 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 			"Countries of export/re-export": {
 				type: "location",
 				locationOrder: 1,
-				locationType: "country_code",
+				locationType: "country_code_list",
 				multiselect: true
 			},
 			"Countries of transit": {
 				// TODO: handle the fact this could have multiple country codes!
 				type: "location",
 				locationOrder: 2,
-				locationType: "country_code",
+				locationType: "country_code_list",
 				multiselect: true
 			},
 			"Country of destina-tion/im-port": {

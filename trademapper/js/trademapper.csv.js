@@ -152,10 +152,22 @@ define(['d3', 'trademapper.route', 'util'], function(d3, route, util) {
 		return true;
 	},
 
+	getOrCreateLatLongLocationColumn: function(locationColumns, order) {
+		var filteredObjs = locationColumns.filter(function(e) { return e.order === order; });
+		if (filteredObjs.length === 1) {
+			return filteredObjs[0];
+		} else {
+			var newObj = {locationType: "latlong", order: order};
+			locationColumns.push(newObj);
+			return newObj;
+		}
+	},
+
 	extractLocationColumns: function(filterSpec) {
 		var locationType, locationColumns = [];
 		for (var key in filterSpec) {
-			if (filterSpec.hasOwnProperty(key) && filterSpec[key].type === "location") {
+			if (filterSpec.hasOwnProperty(key) &&
+					(filterSpec[key].type === "location" || filterSpec[key].type === "location_extra")) {
 				locationType = filterSpec[key].locationType;
 				if (locationType === "country_code" ||
 						locationType === "country_code_list") {
@@ -164,8 +176,17 @@ define(['d3', 'trademapper.route', 'util'], function(d3, route, util) {
 						locationType: locationType,
 						order: filterSpec[key].locationOrder
 					});
+				} else if (["latLongName", "latitude", "longitude"].indexOf(locationType) !== -1) {
+					var order = filterSpec[key].locationOrder;
+					var locationObj = this.getOrCreateLatLongLocationColumn(locationColumns, order);
+					if (locationType === "latLongName") {
+						locationObj.name = key;
+					} else if (locationType === "latitude") {
+						locationObj.latitude = key;
+					} else if (locationType === "longitude") {
+						locationObj.longitude = key;
+					}
 				} else {
-					// TODO: deal with lat/long
 					console.log("unknown locationType: " + locationType);
 				}
 			}
@@ -198,6 +219,11 @@ define(['d3', 'trademapper.route', 'util'], function(d3, route, util) {
 				for (j = 0; j < countryCodes.length; j++) {
 					this.addCountryCodeToPoints(countryCodes[j].trim(), points);
 				}
+			} else if (locationType === "latlong") {
+				var name = row[locationColumns[i].name];
+				var latitude = parseFloat(row[locationColumns[i].latitude]);
+				var longitude = parseFloat(row[locationColumns[i].longitude]);
+				points.push(new route.PointNameLatLong(name, latitude, longitude));
 			} else {
 				// TODO: deal with lat/long
 				console.log("unknown locationType: " + locationType);
@@ -322,14 +348,20 @@ define(['d3', 'trademapper.route', 'util'], function(d3, route, util) {
 					filters[column].min = minmax[0];
 					filters[column].max = minmax[1];
 				} else if (filterSpec[column].type === "location") {
-					if (filterSpec[column].locationType === "country_code") {
+					if (filterSpec[column].locationType === "country_code" ||
+							filterSpec[column].locationType === "latLongName") {
 						filters[column].values = this.getUniqueValuesFromCsvColumn(csvData, column);
 					} else if (filterSpec[column].locationType === "country_code_list") {
 						filters[column].values = this.getUniqueCommaSeparatedValuesFromCsvColumn(csvData, column);
 						filters[column].multiValueColumn = true;
+					} else if (filterSpec[column].locationType === "latitude" ||
+							filterSpec[column].locationType === "longitude") {
+						// do nothing, handled by latLongName column
 					} else {
 						console.log("Unknown locationType: " + filterSpec[column].locationType);
 					}
+				} else if (filterSpec[column].type === "location_extra") {
+					// do nothing - handled by the corresponding location column
 				} else if (filterSpec[column].type === "year") {
 					minmax = this.getMinMaxValuesFromCsvColumn(csvData, column);
 					filters[column].min = minmax[0];
@@ -507,12 +539,105 @@ define(['d3', 'trademapper.route', 'util'], function(d3, route, util) {
 				// TODO: sample file has no data for this column
 				type: "ignore"
 			}
+		},
+
+		birdsmuggler: {
+			// the header of the dummy bird smuggling is
+			// Species,Quantity,Origin,Origin Lat,Origin Long,Transit 1,Transit 1 Lat,Transit 1 Long,Transit 2,Transit 2 Lat,Transit 2 Long,Transit 3,Transit 3 Lat,Transit 3 Long,Destination,Destination Lat,Destination long
+			"Species": {
+				type: "text",
+				multiselect: true
+			},
+			"Quantity": {
+				type: "quantity"
+			},
+			"Origin": {
+				type: "location",
+				locationOrder: 1,
+				locationType: "latLongName",
+				multiselect: true
+			},
+			"Origin Lat": {
+				type: "location_extra",
+				locationOrder: 1,
+				locationType: "latitude"
+			},
+			"Origin Long": {
+				type: "location_extra",
+				locationOrder: 1,
+				locationType: "longitude"
+			},
+			"Transit 1": {
+				type: "location",
+				locationOrder: 2,
+				locationType: "latLongName",
+				multiselect: true
+			},
+			"Transit 1 Lat": {
+				type: "location_extra",
+				locationOrder: 2,
+				locationType: "latitude"
+			},
+			"Transit 1 Long": {
+				type: "location_extra",
+				locationOrder: 2,
+				locationType: "longitude"
+			},
+			"Transit 2": {
+				type: "location",
+				locationOrder: 3,
+				locationType: "latLongName",
+				multiselect: true
+			},
+			"Transit 2 Lat": {
+				type: "location_extra",
+				locationOrder: 3,
+				locationType: "latitude"
+			},
+			"Transit 2 Long": {
+				type: "location_extra",
+				locationOrder: 3,
+				locationType: "longitude"
+			},
+			"Transit 3": {
+				type: "location",
+				locationOrder: 4,
+				locationType: "latLongName",
+				multiselect: true
+			},
+			"Transit 3 Lat": {
+				type: "location_extra",
+				locationOrder: 4,
+				locationType: "latitude"
+			},
+			"Transit 3 Long": {
+				type: "location_extra",
+				locationOrder: 4,
+				locationType: "longitude"
+			},
+			"Destination": {
+				type: "location",
+				locationOrder: 5,
+				locationType: "latLongName",
+				multiselect: true
+			},
+			"Destination Lat": {
+				type: "location_extra",
+				locationOrder: 5,
+				locationType: "latitude"
+			},
+			"Destination long": {
+				type: "location_extra",
+				locationOrder: 5,
+				locationType: "longitude"
+			}
 		}
 	},
 
 	csvHeaderToType: {
 		"year,app,family,taxon,importer,exporter,origin,importerreportedquantity,exporterreportedquantity,term,unit,purpose,source": "cites",
-		"etisrefno,seizureyear,seizuredate,sourceofdata,agencyresponsibleforseizure,activity,placeofdiscovery,cityofdiscovery,countryofdiscovery,countriesoforigin,countriesofexportreexport,countriesoftransit,countryofdestinationimport,rawivorynopcs,rawivorywtkg,workedivorynopcs,workedivorywtkg,ivorycomment,othercontrabandseized,modeoftransport,methodofconcealment,methodofdetection,suspectsnationalities,additionalinformation": "etis"
+		"etisrefno,seizureyear,seizuredate,sourceofdata,agencyresponsibleforseizure,activity,placeofdiscovery,cityofdiscovery,countryofdiscovery,countriesoforigin,countriesofexportreexport,countriesoftransit,countryofdestinationimport,rawivorynopcs,rawivorywtkg,workedivorynopcs,workedivorywtkg,ivorycomment,othercontrabandseized,modeoftransport,methodofconcealment,methodofdetection,suspectsnationalities,additionalinformation": "etis",
+		"species,quantity,origin,originlat,originlong,transit1,transit1lat,transit1long,transit2,transit2lat,transit2long,transit3,transit3lat,transit3long,destination,destinationlat,destinationlong": "birdsmuggler"
 	}
 
 	};

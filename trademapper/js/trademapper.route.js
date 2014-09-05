@@ -14,12 +14,23 @@ define([], function() {
 
 	function PointLatLong(latitude, longitude) {
 		this.type = "latlong";
-		this.latlong = [latitude, longitude];
+		this.latlong = [longitude, latitude];
 		this.point = latLongToPointFunc(this.latlong);
 	}
 
 	PointLatLong.prototype.toString = function() {
 		return this.latlong[0] + '-' + this.latlong[1];
+	};
+
+	function PointNameLatLong(name, latitude, longitude) {
+		this.type = "namelatlong";
+		this.name = name;
+		this.latlong = [longitude, latitude];
+		this.point = latLongToPointFunc(this.latlong);
+	}
+
+	PointNameLatLong.prototype.toString = function() {
+		return this.name;
 	};
 
 	function PointCountry(countryCode) {
@@ -206,6 +217,7 @@ define([], function() {
 		setCountryGetPointFunc: setCountryGetPointFunc,
 		setLatLongToPointFunc: setLatLongToPointFunc,
 		PointLatLong: PointLatLong,
+		PointNameLatLong: PointNameLatLong,
 		PointCountry: PointCountry,
 		Route: Route,
 		RouteCollection: RouteCollection

@@ -7,7 +7,9 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 	csvFilterLoadedCallback: null,
 	errorCallback: null,
 	loadingCsv: false,
-	unknownPoints: {},
+	loadErrors: {
+		unknownCountries: {}
+	},
 	csvFile: null,
 
 	init: function(dataLoadedCallback, filterLoadedCallback, error_callback) {
@@ -40,6 +42,16 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 			moduleThis.loadingCsv = false;
 		};
 		reader.readAsText(this.csvFile);
+	},
+
+	loadErrorsToStrings: function() {
+		var errorMsgs = [],
+			unknownCountries = Object.keys(this.loadErrors.unknownCountries);
+		if (unknownCountries.length > 0) {
+			unknownCountries.sort();
+			errorMsgs.push("Unknown country codes: " + unknownCountries.join(", "));
+		}
+		return errorMsgs;
 	},
 
 	autodetectCsvType: function(firstLine) {
@@ -93,26 +105,28 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 	},
 
 	filterPasses: function(row, filterValues) {
-		var filter, filterName;
+		var filter, filterName, rowValue;
 		for (filterName in filterValues) {
 			if (filterValues.hasOwnProperty(filterName)) {
 				filter = filterValues[filterName];
+				rowValue = row[filterName].trim();
 
 				if (filterName === "quantityColumn") {
 					// do nothing - don't filter on this column
 				}
 				else if (filter.type === "category-single") {
 					// if any value is allowed, skip this filter
-					if (filter.any === false && row[filterName] != filter.value) {
+					if (filter.any === false && rowValue != filter.value) {
 						return false;
 					}
 				} else if (filter.type === "category-multi") {
 					// if any value is allowed, skip this filter
-					if (filter.any === false && filter.valueList.indexOf(row[filterName]) === -1) {
+					if (filter.any === false && filter.valueList.indexOf(rowValue === -1)) {
 						return false;
 					}
 				} else if (filter.type === "year") {
-					if (row[filterName] < filter.minValue || row[filterName] > filter.maxValue) {
+					rowValue = parseInt(rowValue);
+					if (rowValue < filter.minValue || rowValue > filter.maxValue) {
 						return false;
 					}
 				} else if (filter.type === "numeric") {
@@ -150,8 +164,8 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 			locationColumns = this.extractLocationColumns(filterSpec),
 			routes = new route.RouteCollection();
 
-		// only reset/update the unknownPoints when loading the CSV
-		if (this.loadingCsv) { this.unknownPoints = {}; }
+		// only reset/update the unknownCountries when loading the CSV
+		if (this.loadingCsv) { this.loadErrors.unknownCountries = {}; }
 
 		for (var i = 0; i < csvData.length; i++) {
 			row = csvData[i];
@@ -169,13 +183,14 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 			for (var j = 0; j < locationColumns.length; j++) {
 				locationType = locationColumns[j].locationType;
 				if (locationType === "country_code") {
-					var countryCode = row[locationColumns[j].name];
-					if (countryCode.length === 2 && countryCode !== 'XX') {
+					var countryCode = row[locationColumns[j].name].trim();
+					if (countryCode.length > 0 && countryCode !== 'XX') {
 						var country = new route.PointCountry(countryCode);
-						if (country.point === undefined && this.loadingCsv) {
-							this.unknownPoints[countryCode] = true;
+						if (country.point !== undefined) {
+							points.push(country);
+						} else if (this.loadingCsv) {
+							this.loadErrors.unknownCountries[countryCode] = true;
 						}
-						points.push(country);
 					}
 				} else {
 					// TODO: deal with lat/long

@@ -1,5 +1,5 @@
 
-define(['d3', 'trademapper.route'], function(d3, route) {
+define(['d3', 'trademapper.route', 'util'], function(d3, route, util) {
 	"use strict";
 	return {
 	fileInputElement: null,
@@ -105,7 +105,7 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 	},
 
 	filterPasses: function(row, filterValues) {
-		var filter, filterName, rowValue;
+		var filter, filterName, rowValue, rowValueList;
 		for (filterName in filterValues) {
 			if (filterValues.hasOwnProperty(filterName)) {
 				filter = filterValues[filterName];
@@ -122,8 +122,17 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 				} else if (filter.type === "category-multi") {
 					rowValue = row[filterName].trim();
 					// if any value is allowed, skip this filter
-					if (filter.any === false && filter.valueList.indexOf(rowValue) === -1) {
-						return false;
+					if (filter.any === false) {
+						if (filter.multiValueColumn) {
+							rowValueList = rowValue.split(",").map(function(s) { return s.trim(); });
+							if (util.intersection(filter.valueList, rowValueList).length === 0) {
+								return false;
+							}
+						} else {
+							if (filter.valueList.indexOf(rowValue) === -1) {
+								return false;
+							}
+						}
 					}
 				} else if (filter.type === "year") {
 					rowValue = parseInt(row[filterName]);
@@ -263,6 +272,23 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 		return distinct.sort();
 	},
 
+	getUniqueCommaSeparatedValuesFromCsvColumn: function(csvData, column) {
+		var valueList, value,
+			unique = {},  // to track what we've already got
+			distinct = [];
+		for (var i = 0; i < csvData.length; i++) {
+			valueList = csvData[i][column].split(",");
+			for (var j = 0; j < valueList.length; j++) {
+				value = valueList[j].trim();
+				if (typeof(unique[value]) === "undefined") {
+					distinct.push(value);
+					unique[value] = true;
+				}
+			}
+		}
+		return distinct.sort();
+	},
+
 	csvToFilters: function(csvData, filterSpec) {
 		var minmax, filters = {Quantity: {type: "quantity", values: []}};
 		for (var column in filterSpec) {
@@ -279,7 +305,8 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 				}
 
 				filters[column] = {
-					type: filterSpec[column].type
+					type: filterSpec[column].type,
+					multiValueColumn: false
 				};
 				if (filterSpec[column].hasOwnProperty("multiselect")) {
 					filters[column].multiselect = filterSpec[column].multiselect;
@@ -292,7 +319,14 @@ define(['d3', 'trademapper.route'], function(d3, route) {
 					filters[column].min = minmax[0];
 					filters[column].max = minmax[1];
 				} else if (filterSpec[column].type === "location") {
-					filters[column].values = this.getUniqueValuesFromCsvColumn(csvData, column);
+					if (filterSpec[column].locationType === "country_code") {
+						filters[column].values = this.getUniqueValuesFromCsvColumn(csvData, column);
+					} else if (filterSpec[column].locationType === "country_code_list") {
+						filters[column].values = this.getUniqueCommaSeparatedValuesFromCsvColumn(csvData, column);
+						filters[column].multiValueColumn = true;
+					} else {
+						console.log("Unknown locationType: " + filterSpec[column].locationType);
+					}
 				} else if (filterSpec[column].type === "year") {
 					minmax = this.getMinMaxValuesFromCsvColumn(csvData, column);
 					filters[column].min = minmax[0];

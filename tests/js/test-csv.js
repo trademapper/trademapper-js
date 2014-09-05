@@ -201,6 +201,19 @@ define(
 				q.deepEqual(csv.getUniqueValuesFromCsvColumn(csvData, "column"), ["", "a", "b"]);
 			});
 
+			q.test('check getUniqueCommaSeparatedValuesFromCsvColumn', function() {
+				var csvData = [
+					{"column": "b"},
+					{"column": "a"},
+					{"column": "a,b"},
+					{"column": "a,b"},
+					{"column": "b , a"},
+					{"column": ""},
+					{"column": "a"},
+				];
+				q.deepEqual(csv.getUniqueCommaSeparatedValuesFromCsvColumn(csvData, "column"), ["", "a", "b"]);
+			});
+
 			q.test('check getMinMaxValuesFromCsvColumn deals with numbers', function() {
 				var csvData = [
 					{"column": "1"},

@@ -96,6 +96,7 @@ define(["d3"], function(d3) {
 					moduleThis.filterValues[columnName].any = false;
 					moduleThis.filterValues[columnName].valueList = [this.value];
 				}
+				moduleThis.filterValues[columnName].multiValueColumn = filters[columnName].multiValueColumn;
 				moduleThis.formChangedCallback(columnName);
 			});
 
@@ -214,6 +215,7 @@ define(["d3"], function(d3) {
 						moduleThis.filterValues[columnName].value = this.value;
 					}
 				}
+				moduleThis.filterValues[columnName].multiValueColumn = filters[columnName].multiValueColumn;
 				moduleThis.formChangedCallback(columnName);
 			});
 

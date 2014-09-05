@@ -280,6 +280,9 @@ define(["d3"], function(d3) {
 			var i, locationFilters, locationFieldset, yearFilters,
 				categoryFilters, categoryFieldset;
 
+			// reset the filter values
+			this.filterValues = {};
+
 			// TODO: recreate country filter stuff
 			locationFieldset = this.addLocationFieldset(formElement);
 			locationFilters = this.getFilterNamesForType(filters, ["location"]);

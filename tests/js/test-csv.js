@@ -15,6 +15,7 @@ define(
 				errorMessage = message;
 			},
 			initialFilterValue = {quantityColumn: {value: "Exporter reported quantity"}},
+			csvUnknown = "Year,Species,Start,End\n2010,Unicorn,Narnia,Atlantis",
 			csvHeader = "Year,App.,Family,Taxon,Importer,Exporter,Origin," +
 				"Importer reported quantity,Exporter reported quantity," +
 				"Term,Unit,Purpose,Source\n",
@@ -46,7 +47,7 @@ define(
 			q.test('check error message for unknown csv type', function() {
 				returnedCsv = null;
 				errorMessage = null;
-				csv.processCSVString(csvMinimal, "unknown");
+				csv.processCSVString(csvUnknown);
 				var routes = csv.filterDataAndReturnRoutes("unknown", returnedCsv, {});
 
 				q.equal(routes, null);
@@ -56,7 +57,7 @@ define(
 			q.test('check csv parsing for one line CSV without origin', function() {
 				returnedCsv = null;
 				errorMessage = null;
-				csv.processCSVString(csvOneLine, "cites");
+				csv.processCSVString(csvOneLine);
 
 				q.equal(errorMessage, null);
 				q.notEqual(returnedCsv, null);
@@ -71,7 +72,7 @@ define(
 			q.test('check csv parsing for one line CSV with origin', function() {
 				returnedCsv = null;
 				errorMessage = null;
-				csv.processCSVString(csvOneLine3Points, "cites");
+				csv.processCSVString(csvOneLine3Points);
 
 				q.equal(errorMessage, null);
 				q.notEqual(returnedCsv, null);
@@ -87,7 +88,7 @@ define(
 			q.test('check csv parsing for multiline CSV', function() {
 				returnedCsv = null;
 				errorMessage = null;
-				csv.processCSVString(csvEightLine, "cites");
+				csv.processCSVString(csvEightLine);
 
 				q.equal(errorMessage, null);
 				q.notEqual(returnedCsv, null);
@@ -100,7 +101,7 @@ define(
 			q.test('check csv filter extraction for multiline CSV', function() {
 				returnedFilters = null;
 				errorMessage = null;
-				csv.processCSVString(csvEightLine, "cites");
+				csv.processCSVString(csvEightLine);
 
 				q.equal(errorMessage, null);
 				q.notEqual(returnedFilters, null);
@@ -138,7 +139,7 @@ define(
 						"Exporter": {
 							multiselect: true,
 							type: "location",
-							values: ["ZW", "BW", "NA", "ZA"]
+							values: ["BW", "NA", "ZA", "ZW"]
 						},
 						"Origin": {
 							multiselect: true,
@@ -148,7 +149,7 @@ define(
 						"Term": {
 							multiselect: true,
 							type: "text",
-							values: ["tusks", "ivory carvings"]
+							values: ["ivory carvings", "tusks"]
 						},
 						"Unit": {
 							multiselect: false,
@@ -158,7 +159,7 @@ define(
 						"Purpose": {
 							multiselect: true,
 							type: "text",
-							values: ["T", "H", "P"]
+							values: ["H", "P", "T"]
 						},
 						"Source": {
 							multiselect: true,
@@ -186,6 +187,44 @@ define(
 			q.test('check autodetectCsvType matches text with hyphens', function() {
 				csv.csvHeaderToType["text,match,withhyphens"] = "test-hyphen";
 				q.equal(csv.autodetectCsvType("text,match,with-hyphens"), "test-hyphen");
+			});
+
+			q.test('check getUniqueValuesFromCsvColumn', function() {
+				var csvData = [
+					{"column": "b"},
+					{"column": "a"},
+					{"column": "a "},
+					{"column": "b"},
+					{"column": ""},
+					{"column": "a"},
+				];
+				q.deepEqual(csv.getUniqueValuesFromCsvColumn(csvData, "column"), ["", "a", "b"]);
+			});
+
+			q.test('check getMinMaxValuesFromCsvColumn deals with numbers', function() {
+				var csvData = [
+					{"column": "1"},
+					{"column": "3.3"},
+					{"column": "2.3 "},
+					{"column": "-1"},
+					{"column": "0"},
+				];
+				q.deepEqual(csv.getMinMaxValuesFromCsvColumn(csvData, "column"), [-1, 3.3]);
+			});
+
+			q.test('check getMinMaxValuesFromCsvColumn deals with no rows', function() {
+				var csvData = [];
+				q.deepEqual(csv.getMinMaxValuesFromCsvColumn(csvData, "column"), [0, 0]);
+			});
+
+			q.test('check getMinMaxValuesFromCsvColumn deals with one blank row', function() {
+				var csvData = [ {"column": ""} ];
+				q.deepEqual(csv.getMinMaxValuesFromCsvColumn(csvData, "column"), [0, 0]);
+			});
+
+			q.test('check getMinMaxValuesFromCsvColumn deals with one numeric row', function() {
+				var csvData = [ {"column": "3"} ];
+				q.deepEqual(csv.getMinMaxValuesFromCsvColumn(csvData, "column"), [3, 3]);
 			});
 
 		};

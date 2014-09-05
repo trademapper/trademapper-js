@@ -235,7 +235,8 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 		var center, terminals;
 		var ctAndMax = collection.getCenterTerminalList();
 		this.centerTerminals = ctAndMax.centerTerminalList;
-		this.maxSourceQuantity = ctAndMax.maxSourceQuantity;
+		// round to 2 significant digits
+		this.maxSourceQuantity = parseFloat(ctAndMax.maxSourceQuantity.toPrecision(2));
 
 		this.flowmap.clearSpiralPaths();
 		this.clearPoints();
@@ -282,7 +283,7 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 				strokeWidth = this.minArrowWidth;
 				value = (this.maxSourceQuantity * this.minArrowWidth) / this.maxArrowWidth;
 			}
-			valueText = value.toFixed(1);
+			valueText = value.toFixed(0);
 			if (i === 3) {
 				valueText = "< " + valueText;
 			}

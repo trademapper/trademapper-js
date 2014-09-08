@@ -10,9 +10,9 @@ define(
 			setReturnedFilters = function(csvType, csvData, filters) {
 				returnedFilters = filters;
 			},
-			errorMessage,
-			setErrorMessage = function(message) {
-				errorMessage = message;
+			errorMessageList,
+			setErrorMessage = function() {
+				errorMessageList = csv.loadErrorsToStrings();
 			},
 			initialFilterValue = {quantityColumn: {value: "Exporter reported quantity"}},
 			csvUnknown = "Year,Species,Start,End\n2010,Unicorn,Narnia,Atlantis",
@@ -47,20 +47,20 @@ define(
 
 			q.test('check error message for unknown csv type', function() {
 				returnedCsv = null;
-				errorMessage = null;
+				errorMessageList = null;
 				csv.processCSVString(csvUnknown);
 				var routes = csv.filterDataAndReturnRoutes("unknown", returnedCsv, {});
 
 				q.equal(routes, null);
-				q.notEqual(errorMessage, null);
+				q.notEqual(errorMessageList, null);
 			});
 
 			q.test('check csv parsing for one line CSV without origin', function() {
 				returnedCsv = null;
-				errorMessage = null;
+				errorMessageList = null;
 				csv.processCSVString(csvOneLine);
 
-				q.equal(errorMessage, null);
+				q.equal(errorMessageList, null);
 				q.notEqual(returnedCsv, null);
 				var routes = csv.filterDataAndReturnRoutes("cites", returnedCsv, initialFilterValue);
 				var routeList = routes.getRoutes();
@@ -72,10 +72,10 @@ define(
 
 			q.test('check csv parsing for one line CSV with origin', function() {
 				returnedCsv = null;
-				errorMessage = null;
+				errorMessageList = null;
 				csv.processCSVString(csvOneLine3Points);
 
-				q.equal(errorMessage, null);
+				q.equal(errorMessageList, null);
 				q.notEqual(returnedCsv, null);
 				var routes = csv.filterDataAndReturnRoutes("cites", returnedCsv, initialFilterValue);
 				var routeList = routes.getRoutes();
@@ -88,10 +88,10 @@ define(
 
 			q.test('check csv parsing for multiline CSV', function() {
 				returnedCsv = null;
-				errorMessage = null;
+				errorMessageList = null;
 				csv.processCSVString(csvEightLine);
 
-				q.equal(errorMessage, null);
+				q.equal(errorMessageList, null);
 				q.notEqual(returnedCsv, null);
 				var routes = csv.filterDataAndReturnRoutes("cites", returnedCsv, initialFilterValue);
 				var routeList = routes.getRoutes();
@@ -101,10 +101,10 @@ define(
 
 			q.test('check csv filter extraction for multiline CSV', function() {
 				returnedFilters = null;
-				errorMessage = null;
+				errorMessageList = null;
 				csv.processCSVString(csvEightLine);
 
-				q.equal(errorMessage, null);
+				q.equal(errorMessageList, null);
 				q.notEqual(returnedFilters, null);
 				q.deepEqual(returnedFilters,
 					{

@@ -8,6 +8,7 @@ define(['d3', 'trademapper.route', 'util'], function(d3, route, util) {
 	errorCallback: null,
 	loadingCsv: false,
 	loadErrors: {
+		unknownCSVFormat: [],
 		unknownCountries: {}
 	},
 	csvFile: null,
@@ -47,6 +48,7 @@ define(['d3', 'trademapper.route', 'util'], function(d3, route, util) {
 	loadErrorsToStrings: function() {
 		var errorMsgs = [],
 			unknownCountries = Object.keys(this.loadErrors.unknownCountries);
+		errorMsgs = errorMsgs.concat(this.loadErrors.unknownCSVFormat);
 		if (unknownCountries.length > 0) {
 			unknownCountries.sort();
 			errorMsgs.push("Unknown country codes: " + unknownCountries.join(", "));
@@ -61,6 +63,11 @@ define(['d3', 'trademapper.route', 'util'], function(d3, route, util) {
 		if (this.csvHeaderToType.hasOwnProperty(firstLine)) {
 			return this.csvHeaderToType[firstLine];
 		}
+		// etis might not have all columns - let's hope the reference
+		// number has made it in
+		if (firstLine.indexOf("etisreferencenumber") !== -1) {
+			return "etis";
+		}
 	},
 
 	/*
@@ -73,7 +80,8 @@ define(['d3', 'trademapper.route', 'util'], function(d3, route, util) {
 			var csvData = d3.csv.parse(fileText);
 			this.processParsedCSV(csvData, csvType);
 		} else {
-			console.log("unknown CSV header: " + firstLine);
+			this.loadErrors.unknownCSVFormat.push("unknown CSV header: " + firstLine);
+			this.errorCallback();
 		}
 	},
 
@@ -89,7 +97,8 @@ define(['d3', 'trademapper.route', 'util'], function(d3, route, util) {
 
 	processParsedCSV: function(csvData, csvType) {
 		if (!this.filterSpec.hasOwnProperty(csvType)) {
-			this.errorCallback("unknown csvType: " + csvType);
+			this.loadErrors.unknownCSVFormat.push("no filter spec for csv type: " + csvType);
+			this.errorCallback();
 		}
 		var filters = this.csvToFilters(csvData, this.filterSpec[csvType]);
 		this.csvFilterLoadedCallback(csvType, csvData, filters);
@@ -98,7 +107,8 @@ define(['d3', 'trademapper.route', 'util'], function(d3, route, util) {
 
 	filterDataAndReturnRoutes: function(csvType, csvData, filterValues) {
 		if (!this.filterSpec.hasOwnProperty(csvType)) {
-			this.errorCallback("unknown csvType: " + csvType);
+			this.loadErrors.unknownCSVFormat.push("no filter spec for csv type: " + csvType);
+			this.errorCallback();
 			return null;
 		}
 		return this.csvToRoutes(csvData, filterValues, this.filterSpec[csvType]);

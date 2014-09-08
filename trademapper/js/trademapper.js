@@ -114,8 +114,6 @@ define(
 		fileInputParent.appendChild(this.fileInputElement[0][0]);
 		csv.setFileInputElement(this.fileInputElement);
 
-		this.formElement.append("fieldset").attr("class", "filters-group csv-load-errors");
-
 		filterform.createFormFromFilters(this.formElement, filters);
 	},
 
@@ -192,9 +190,8 @@ define(
 		}
 	},
 
-	csvLoadErrorCallback: function(msg) {
-		// TODO: show the error to the user
-		console.log(msg);
+	csvLoadErrorCallback: function() {
+		this.reportCsvLoadErrors();
 	}
 
 	};

@@ -41,6 +41,7 @@ define(
 					csv.init(setReturnedCsv, setReturnedFilters, setErrorMessage);
 					// we also need to be able to create points
 					route.setCountryGetPointFunc(function() { return [8, 9]; });
+					route.setLatLongToPointFunc(function(latlong) { return latlong; });
 				}
 			});
 
@@ -277,7 +278,132 @@ define(
 				q.equal(points[1].toString(), "IT");
 				q.equal(points[2].toString(), "GB");
 			});
+
+			q.test('check getPointsFromRow does latlong ok', function() {
+				var row = {
+						start: "savannah",
+						start_lat: "1.23",
+						start_long: "2.34",
+						middle: "warehouse",
+						middle_lat: "3.45",
+						middle_long: "4.56",
+						end: "medicine man",
+						end_lat: "5.67",
+						end_long: "6.78"
+					},
+					locationColumns = [
+						{locationType: "latlong", name: "start", latitude: "start_lat", longitude: "start_long"},
+						{locationType: "latlong", name: "middle", latitude: "middle_lat", longitude: "middle_long"},
+						{locationType: "latlong", name: "end", latitude: "end_lat", longitude: "end_long"}
+					];
+
+			var points = csv.getPointsFromRow(row, locationColumns);
+
+			q.equal(points.length, 3);
+			q.equal(points[0].toString(), "savannah");
+			q.deepEqual(points[0].latlong, [2.34, 1.23]);
+			q.equal(points[1].toString(), "warehouse");
+			q.deepEqual(points[1].latlong, [4.56, 3.45]);
+			q.equal(points[2].toString(), "medicine man");
+			q.deepEqual(points[2].latlong, [6.78, 5.67]);
+			});
+
+			q.test('check extractLocationColumns gets country_code columns', function() {
+				var filterSpec = {
+					col1: {
+						type: "location",
+						locationOrder: 1,
+						locationType: "country_code"
+					},
+					col2: {
+						type: "location",
+						locationOrder: 2,
+						locationType: "country_code_list"
+					},
+					col3: {
+						type: "ignore",
+						locationOrder: 3,
+						locationType: "country_code"
+					}
+				};
+
+				var columns = csv.extractLocationColumns(filterSpec);
+
+				q.deepEqual(columns, [
+					{
+						name: "col1",
+						locationType: "country_code",
+						order: 1
+					},
+					{
+						name: "col2",
+						locationType: "country_code_list",
+						order: 2
+					}
+				]);
+			});
+
+			q.test('check extractLocationColumns gets latlong columns', function() {
+				var filterSpec = {
+					col1name: {
+						type: "location",
+						locationOrder: 1,
+						locationType: "latLongName"
+					},
+					col1lat: {
+						type: "location",
+						locationOrder: 1,
+						locationType: "latitude"
+					},
+					col1long: {
+						type: "location",
+						locationOrder: 1,
+						locationType: "longitude"
+					},
+					col2name: {
+						type: "location",
+						locationOrder: 2,
+						locationType: "latLongName"
+					},
+					col2lat: {
+						type: "location",
+						locationOrder: 2,
+						locationType: "latitude"
+					},
+					col2long: {
+						type: "location",
+						locationOrder: 2,
+						locationType: "longitude"
+					},
+					col3: {
+						type: "ignore",
+						locationOrder: 3,
+						locationType: "country_code"
+					}
+				};
+
+				var columns = csv.extractLocationColumns(filterSpec);
+
+				q.deepEqual(columns, [
+					{
+						name: "col1name",
+						locationType: "latlong",
+						latitude: "col1lat",
+						longitude: "col1long",
+						order: 1
+					},
+					{
+						name: "col2name",
+						locationType: "latlong",
+						latitude: "col2lat",
+						longitude: "col2long",
+						order: 2
+					}
+				]);
+			});
+
 		};
+
 		return {run: run};
 	}
 );

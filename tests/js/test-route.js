@@ -15,8 +15,8 @@ define(
 			q.test('check PointLatLong sets point using latLongToPointFunc', function() {
 				route.setLatLongToPointFunc(function() { return [3, 4]; });
 				var point = new route.PointLatLong(5, 6);
-				q.equal(point.latlong[0], 5, 'The x of latlong should be 5');
-				q.equal(point.latlong[1], 6, 'The y of latlong should be 6');
+				q.equal(point.latlong[0], 6, 'The x of latlong should be 6');
+				q.equal(point.latlong[1], 5, 'The y of latlong should be 5');
 				q.equal(point.point[0], 3, 'The x of point should be 3');
 				q.equal(point.point[1], 4, 'The y of point should be 4');
 			});
@@ -166,16 +166,16 @@ define(
 					[
 						{
 							center: {
-								lat: 2.34,
-								lng: 3.45,
+								lat: 3.45,
+								lng: 2.34,
 								quantity: 10,
 								point: pointL1
 							},
 							terminals: [
 								{
 									point: pointL2,
-									lat: 4.56,
-									lng: 5.67,
+									lat: 5.67,
+									lng: 4.56,
 									quantity: 10
 								}
 							]
@@ -194,32 +194,32 @@ define(
 					[
 						{
 							center: {
-								lat: 2.34,
-								lng: 3.45,
+								lat: 3.45,
+								lng: 2.34,
 								quantity: 10,
 								point: pointL1
 							},
 							terminals: [
 								{
 									point: pointL2,
-									lat: 4.56,
-									lng: 5.67,
+									lat: 5.67,
+									lng: 4.56,
 									quantity: 10
 								}
 							]
 						},
 						{
 							center: {
-								lat: 4.56,
-								lng: 5.67,
+								lat: 5.67,
+								lng: 4.56,
 								quantity: 10,
 								point: pointL2
 							},
 							terminals: [
 								{
 									point: pointL3,
-									lat: 6.78,
-									lng: 7.89,
+									lat: 7.89,
+									lng: 6.78,
 									quantity: 10
 								}
 							]
@@ -241,22 +241,22 @@ define(
 					[
 						{
 							center: {
-								lat: 2.34,
-								lng: 3.45,
+								lat: 3.45,
+								lng: 2.34,
 								quantity: 30,
 								point: pointL1
 							},
 							terminals: [
 								{
 									point: pointL2,
-									lat: 4.56,
-									lng: 5.67,
+									lat: 5.67,
+									lng: 4.56,
 									quantity: 10
 								},
 								{
 									point: pointL3,
-									lat: 6.78,
-									lng: 7.89,
+									lat: 7.89,
+									lng: 6.78,
 									quantity: 20
 								}
 							]
@@ -278,38 +278,38 @@ define(
 					[
 						{
 							center: {
-								lat: 2.34,
-								lng: 3.45,
+								lat: 3.45,
+								lng: 2.34,
 								quantity: 10,
 								point: pointL1
 							},
 							terminals: [
 								{
 									point: pointL2,
-									lat: 4.56,
-									lng: 5.67,
+									lat: 5.67,
+									lng: 4.56,
 									quantity: 10
 								}
 							]
 						},
 						{
 							center: {
-								lat: 4.56,
-								lng: 5.67,
+								lat: 5.67,
+								lng: 4.56,
 								quantity: 30,
 								point: pointL2
 							},
 							terminals: [
 								{
 									point: pointL3,
-									lat: 6.78,
-									lng: 7.89,
+									lat: 7.89,
+									lng: 6.78,
 									quantity: 10
 								},
 								{
 									point: pointL4,
-									lat: 8.90,
-									lng: 9.01,
+									lat: 9.01,
+									lng: 8.90,
 									quantity: 20
 								}
 							]

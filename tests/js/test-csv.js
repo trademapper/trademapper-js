@@ -112,56 +112,67 @@ define(
 							values: ["Importer reported quantity", "Exporter reported quantity"]
 						},
 						"Year": {
+							multiValueColumn: false,
 							type: "year",
 							min: 2003,
 							max: 2003
 						},
 						"App.": {
+							multiValueColumn: false,
 							multiselect: true,
 							type: "text",
 							values: ["II"]
 						},
 						"Family": {
+							multiValueColumn: false,
 							multiselect: true,
 							type: "text",
 							values: ["Elephantidae"]
 						},
 						"Taxon": {
+							multiValueColumn: false,
 							multiselect: true,
 							type: "text",
 							values: ["Loxodonta africana"]
 						},
 						"Importer": {
+							multiValueColumn: false,
 							multiselect: true,
 							type: "location",
 							values: ["AE", "AR", "AT"]
 						},
 						"Exporter": {
+							multiValueColumn: false,
 							multiselect: true,
 							type: "location",
 							values: ["BW", "NA", "ZA", "ZW"]
 						},
 						"Origin": {
+							multiValueColumn: false,
 							multiselect: true,
 							type: "location",
 							values: ["", "BW"]
 						},
 						"Term": {
+							multiValueColumn: false,
 							multiselect: true,
 							type: "text",
 							values: ["ivory carvings", "tusks"]
 						},
 						"Unit": {
+							multiValueColumn: false,
 							multiselect: false,
 							type: "text",
 							values: [""]
 						},
 						"Purpose": {
+							multiValueColumn: false,
 							multiselect: true,
 							type: "text",
 							values: ["H", "P", "T"]
 						},
 						"Source": {
+							multiValueColumn: false,
 							multiselect: true,
 							type: "text",
 							values: ["W"]

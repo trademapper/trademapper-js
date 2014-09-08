@@ -37,6 +37,7 @@ define(['trademapper.csv.definition', 'trademapper.route', 'util', 'd3'], functi
 	},
 
 	loadCSVFile: function() {
+		this.resetLoadErrors();
 		this.csvFile = this.fileInputElement[0][0].files[0];
 
 		var reader = new FileReader();

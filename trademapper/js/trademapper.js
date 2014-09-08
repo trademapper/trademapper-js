@@ -8,11 +8,12 @@ define(
 		"trademapper.filterform",
 		"trademapper.mapper",
 		"trademapper.route",
+		"util",
 		"d3",
 		"text!../fragments/filterskeleton.html",
 		"text!../fragments/csvonlyskeleton.html"
 	],
-	function(arrows, csv, filterform, mapper, route,
+	function(arrows, csv, filterform, mapper, route, util,
 			 d3, filterSkeleton, csvOnlySkeleton) {
 	"use strict";
 
@@ -25,6 +26,7 @@ define(
 	tmsvg: null,
 	currentCsvData: null,
 	currentCsvType: null,
+	queryString: null,
 
 	defaultConfig: {
 			ratio: 0.6,
@@ -37,6 +39,7 @@ define(
 		},
 
 	init: function(mapId, formElementId, tmConfig) {
+		this.queryString = util.queryString();
 		this.mapRootElement = d3.select(mapId);
 		this.formElement = d3.select(formElementId);
 		this.setConfigDefaults(tmConfig);

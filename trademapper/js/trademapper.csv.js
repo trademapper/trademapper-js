@@ -386,6 +386,10 @@ define(['trademapper.csv.definition', 'trademapper.route', 'util', 'd3'], functi
 				if (filterSpec[column].hasOwnProperty("multiselect")) {
 					filters[column].multiselect = filterSpec[column].multiselect;
 				}
+				if (filterSpec[column].hasOwnProperty("shortName")) {
+					filters[column].shortName = filterSpec[column].shortName;
+				}
+
 				// TODO: add textmapping? date?
 				if (filterSpec[column].type === "text") {
 					filters[column].values = this.getUniqueValuesFromCsvColumn(csvData, column);

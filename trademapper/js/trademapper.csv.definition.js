@@ -120,12 +120,14 @@ define([], function() {
 				"Cty Dis": {
 					// TODO: seizing/discovery is a point already on the route
 					// need to decide how to show this
+					shortName: "Country Discovered",
 					type: "ignore"
 				},
 				"Cty Org": {
 					// TODO: strictly the countries here are in parallel, not series
 					// don't know how to display.  So we need to report multiple countries
 					// as an error
+					shortName: "Origin",
 					type: "location",
 					locationOrder: 1,
 					locationType: "country_code",
@@ -140,18 +142,21 @@ define([], function() {
 					type: "ignore"
 				},
 				"Cty Exp": {
+					shortName: "Exporter",
 					type: "location",
 					locationOrder: 2,
 					locationType: "country_code_list",
 					multiselect: true
 				},
 				"Cty Tra": {
+					shortName: "Transit",
 					type: "location",
 					locationOrder: 3,
 					locationType: "country_code_list",
 					multiselect: true
 				},
 				"Cty Des": {
+					shortName: "Destination",
 					type: "location",
 					locationOrder: 4,
 					locationType: "country_code",
@@ -162,6 +167,7 @@ define([], function() {
 					multiselect: true
 				},
 				"Raw Iv No. Pcs": {
+					shortName: "Raw Ivory No. Pieces",
 					type: "quantity"
 				},
 				"Raw Iv Wt (kg)": {
@@ -223,6 +229,7 @@ define([], function() {
 					multiselect: true
 				},
 				"Susp Nat": {
+					shortName: "Suspects Nationality",
 					type: "text",
 					multiselect: true
 				},

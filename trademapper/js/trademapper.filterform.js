@@ -62,12 +62,13 @@ define(["d3"], function(d3) {
 		addLocationField: function(fieldset, filters, columnName) {
 			var cName = this.columnNameToClassName(columnName);
 			var values = filters[columnName].values;
+			var textName = filters[columnName].hasOwnProperty("shortName") ? filters[columnName].shortName : columnName;
 
 			var locationP = fieldset.append("p")
 				.attr("class", "form-item location-" + cName);
 			locationP.append("label")
 				.attr("for", cName + "-location-select")
-				.text(columnName);
+				.text(textName);
 			var locationSelect = locationP.append("select")
 				.attr("id", cName + "-location-select")
 				.attr("class", "multiselect");
@@ -75,10 +76,10 @@ define(["d3"], function(d3) {
 			if (values.length > 1) {
 				locationSelect.append("option")
 					.attr("value", this.anyString)
-					.text("Any " + columnName);
+					.text("Any " + textName);
 			}
 			for (var i = 0; i < values.length; i++) {
-				var textValue = values[i] ? values[i] : "<Blank " + columnName + ">";
+				var textValue = values[i] ? values[i] : "<Blank " + textName + ">";
 				locationSelect.append("option")
 					.attr("value", values[i])
 					.text(textValue);
@@ -169,6 +170,7 @@ define(["d3"], function(d3) {
 
 		addCategoryField: function(fieldset, filters, columnName) {
 			var cName = this.columnNameToClassName(columnName);
+			var textName = filters[columnName].hasOwnProperty("shortName") ? filters[columnName].shortName : columnName;
 			var values = filters[columnName].values;
 			var multiselect = filters[columnName].multiselect;
 
@@ -176,7 +178,7 @@ define(["d3"], function(d3) {
 				.attr("class", "form-item category-" + cName);
 			categoryP.append("label")
 				.attr("for", cName + "-select")
-				.text(columnName);
+				.text(textName);
 			var categorySelect = categoryP.append("select")
 				.attr("id", cName + "-select");
 			if (multiselect) {
@@ -186,10 +188,10 @@ define(["d3"], function(d3) {
 			if (values.length > 1) {
 				categorySelect.append("option")
 					.attr("value", this.anyString)
-					.text("Any " + columnName);
+					.text("Any " + textName);
 			}
 			for (var i = 0; i < values.length; i++) {
-				var textValue = values[i] ? values[i] : "<Blank " + columnName + ">";
+				var textValue = values[i] ? values[i] : "<Blank " + textName + ">";
 				categorySelect.append("option")
 					.attr("value", values[i])
 					.text(textValue);

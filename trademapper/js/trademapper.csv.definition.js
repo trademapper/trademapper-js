@@ -67,61 +67,61 @@ define([], function() {
 				// the header of the ETIS CSV is:
 				// "ETIS Reference Number ","Folio Number ","Status ","Date of last update ","Date of information ","Year of seizure ","Date of seizure ","Sources ","Agencies ","Source reliability ","Data completeness ranking ","Activities ","Where discovered - place ","Where discovered - city ","Where discovered - country ","Countries of origin ","Countries of origin (raw ivory) ","Countries of origin (worked ivory) ","Countries of export/re-export ","Countries of transit ","Country of destination/import ","Elephant species ","Raw ivory - # tusks/pieces ","Raw ivory - weight (kg) ","Worked ivory - # pieces ","Worked ivory - weight (kg) ","Ivory comment ","Hide/skin - #pieces ","Hide/skin - weight (kg) ","Hide product - pieces ","Hide product - weight (kg) ","Hide product - type ","Other elephant products - pieces ","Other elephant products - weight (kg) ","Other elephant products ","Other contraband ","Estimated value of seizure ","Mode of transport ","Method of concealment ","Method of detection ","Suspects' nationalities ","Additional information ","Mode of data collection ","Internal reference code "
 				// ETIS Ref. No.,Seizure Year,Seizure Date,Source of Data,Agency responsible for seizure,Activity,Place of discovery,City of discovery,Country of Discov-ery,Countries of origin,Countries of export/re-export,Countries of transit,Country of destina-tion/im-port,Raw Ivory No. Pcs,Raw Ivory  Wt (kg),Worked Ivory No. Pcs,Worked Ivory Wt (kg),Ivory Comment,Other Contraband Seized,Mode of Transport,Method of Concealment,Method of Detection,Suspects' Nationalities,Additional Information
-				"ETIS Reference Number ": {
+				"ETIS Reference Number": {
 					type: "ignore"
 				},
-				"Folio Number ": {
+				"Folio Number": {
 					type: "ignore"
 				},
-				"Status ": {
+				"Status": {
 					type: "ignore"
 				},
-				"Date of last update ": {
+				"Date of last update": {
 					type: "ignore"
 				},
-				"Date of information ": {
+				"Date of information": {
 					type: "ignore"
 				},
-				"Year of seizure ": {
+				"Year of seizure": {
 					type: "year"
 				},
-				"Date of seizure ": {
+				"Date of seizure": {
 					type: "ignore"
 				},
-				"Sources ": {
+				"Sources": {
 					type: "text",
 					multiselect: true
 				},
-				"Agencies ": {
+				"Agencies": {
 					type: "text",
 					multiselect: true
 				},
-				"Source reliability ": {
+				"Source reliability": {
 					type: "text",
 					multiselect: true
 				},
-				"Data completeness ranking ": {
+				"Data completeness ranking": {
 					type: "text",
 					multiselect: true
 				},
-				"Activities ": {
+				"Activities": {
 					type: "text_list",
 					multiselect: true
 				},
-				"Where discovered - place ": {
+				"Where discovered - place": {
 					type: "text",
 					multiselect: true
 				},
-				"Where discovered - city ": {
+				"Where discovered - city": {
 					type: "text",
 					multiselect: true
 				},
-				"Where discovered - country ": {
+				"Where discovered - country": {
 					// TODO: seizing/discovery is a point already on the route
 					// need to decide how to show this
 					type: "ignore"
 				},
-				"Countries of origin ": {
+				"Countries of origin": {
 					// TODO: strictly the countries here are in parallel, not series
 					// don't know how to display.  So we need to report multiple countries
 					// as an error
@@ -130,105 +130,105 @@ define([], function() {
 					locationType: "country_code",
 					multiselect: true
 				},
-				"Countries of origin (raw ivory) ": {
+				"Countries of origin (raw ivory)": {
 					type: "ignore"
 				},
-				"Countries of origin (worked ivory) ": {
+				"Countries of origin (worked ivory)": {
 					type: "ignore"
 				},
-				"Countries of export/re-export ": {
+				"Countries of export/re-export": {
 					type: "location",
 					locationOrder: 2,
 					locationType: "country_code_list",
 					multiselect: true
 				},
-				"Countries of transit ": {
+				"Countries of transit": {
 					type: "location",
 					locationOrder: 3,
 					locationType: "country_code_list",
 					multiselect: true
 				},
-				"Country of destination/import ": {
+				"Country of destination/import": {
 					type: "location",
 					locationOrder: 4,
 					locationType: "country_code",
 					multiselect: true
 				},
-				"Elephant species ": {
+				"Elephant species": {
 					type: "text",
 					multiselect: true
 				},
-				"Raw ivory - # tusks/pieces ": {
+				"Raw ivory - # tusks/pieces": {
 					type: "quantity"
 				},
-				"Raw ivory - weight (kg) ": {
+				"Raw ivory - weight (kg)": {
 					type: "quantity"
 				},
-				"Worked ivory - # pieces ": {
+				"Worked ivory - # pieces": {
 					type: "quantity"
 				},
-				"Worked ivory - weight (kg) ": {
+				"Worked ivory - weight (kg)": {
 					type: "quantity"
 				},
-				"Ivory comment ": {
+				"Ivory comment": {
 					type: "ignore"
 				},
-				"Hide/skin - #pieces ": {
+				"Hide/skin - #pieces": {
 					type: "quantity"
 				},
-				"Hide/skin - weight (kg) ": {
+				"Hide/skin - weight (kg)": {
 					type: "quantity"
 				},
-				"Hide product - pieces ": {
+				"Hide product - pieces": {
 					type: "quantity"
 				},
-				"Hide product - weight (kg) ": {
+				"Hide product - weight (kg)": {
 					type: "quantity"
 				},
-				"Hide product - type ": {
+				"Hide product - type": {
 					type: "text",
 					multiselect: true
 				},
-				"Other elephant products - pieces ": {
+				"Other elephant products - pieces": {
 					type: "quantity"
 				},
-				"Other elephant products - weight (kg) ": {
+				"Other elephant products - weight (kg)": {
 					type: "quantity"
 				},
-				"Other elephant products ": {
+				"Other elephant products": {
 					type: "ignore"
 				},
-				"Other contraband ": {
+				"Other contraband": {
 					type: "text",
 					multiselect: true
 				},
-				"Estimated value of seizure ": {
+				"Estimated value of seizure": {
 					// think about what to do with money - treat as quantity?
 					type: "ignore"
 				},
-				"Mode of transport ": {
+				"Mode of transport": {
 					type: "text",
 					multiselect: true
 				},
-				"Method of concealment ": {
+				"Method of concealment": {
 					type: "text",
 					multiselect: true
 				},
-				"Method of detection ": {
+				"Method of detection": {
 					type: "text_list",
 					multiselect: true
 				},
-				"Suspects' nationalities ": {
+				"Suspects' nationalities": {
 					type: "text",
 					multiselect: true
 				},
-				"Additional information ": {
+				"Additional information": {
 					type: "ignore"
 				},
-				"Mode of data collection ": {
+				"Mode of data collection": {
 					type: "ignore"
 				},
-				"Internal reference code ": {
+				"Internal reference code": {
 					type: "ignore"
 				}
 			},

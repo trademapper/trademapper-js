@@ -71,7 +71,7 @@ define(['trademapper.csv.definition', 'trademapper.route', 'util', 'd3'], functi
 		}
 		// etis might not have all columns - let's hope the reference
 		// number has made it in
-		if (firstLine.indexOf("etisreferencenumber") !== -1) {
+		if (firstLine.indexOf("etisidno") !== -1) {
 			return "etis";
 		}
 	},

@@ -10,9 +10,8 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 	arrowColours: null,
 	minArrowWidth: null,
 	maxArrowWidth: null,
-	maxRouteQuantity: null,
+	maxQuantity: null,
 	centerTerminals: null,
-	maxSourceQuantity: null,
 
 	/*
 	 * Save the svg we use for later user
@@ -83,7 +82,7 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 	},
 
 	getArrowWidth: function(route) {
-		var width = (route.quantity / this.maxRouteQuantity) * this.maxArrowWidth;
+		var width = (route.quantity / this.maxQuantity) * this.maxArrowWidth;
 		return Math.max(width, this.minArrowWidth);
 	},
 
@@ -113,7 +112,7 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 	drawRouteCollectionPlainArrows: function(collection, pointRoles) {
 		this.clearArrows();
 		this.clearPoints();
-		this.maxRouteQuantity = collection.maxQuantity();
+		this.maxQuantity = collection.maxQuantity();
 		var routeList = collection.getRoutes();
 		for (var i = 0; i < routeList.length; i++) {
 			if (routeList[i].points.length >= 2) {
@@ -238,11 +237,11 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 		var ctAndMax = collection.getCenterTerminalList();
 		this.centerTerminals = ctAndMax.centerTerminalList;
 		// round to 2 significant digits
-		this.maxSourceQuantity = parseFloat(ctAndMax.maxSourceQuantity.toPrecision(2));
+		this.maxQuantity = parseFloat(ctAndMax.maxSourceQuantity.toPrecision(2));
 
 		this.flowmap.clearSpiralPaths();
 		this.clearPoints();
-		this.flowmap.setMaxQuantity(this.maxSourceQuantity);
+		this.flowmap.setMaxQuantity(this.maxQuantity);
 
 		for (var i = 0; i < this.centerTerminals.length; i++) {
 			center = this.centerTerminals[i].center;
@@ -274,16 +273,16 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 		for (i = 0; i < 4; i++) {
 			if (i === 0) {
 				strokeWidth = this.maxArrowWidth;
-				value = this.maxSourceQuantity;
+				value = this.maxQuantity;
 			} else if (i === 1) {
 				strokeWidth = this.maxArrowWidth * 0.5;
-				value = this.maxSourceQuantity * 0.5;
+				value = this.maxQuantity * 0.5;
 			} else if (i === 2) {
 				strokeWidth = this.maxArrowWidth * 0.25;
-				value = this.maxSourceQuantity * 0.25;
+				value = this.maxQuantity * 0.25;
 			} else {
 				strokeWidth = this.minArrowWidth;
-				value = (this.maxSourceQuantity * this.minArrowWidth) / this.maxArrowWidth;
+				value = (this.maxQuantity * this.minArrowWidth) / this.maxArrowWidth;
 			}
 			valueText = value.toFixed(0);
 			if (i === 3) {
@@ -309,7 +308,7 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 
 		// Now add a legend for the circles
 		circleX = lineLength + (margin * 3) +
-			this.maxSourceQuantity.toFixed(1).length * 8;
+			this.maxQuantity.toFixed(1).length * 8;
 		circleY = svgHeight - 50;
 		this.drawPoint(circleX, circleY, "source", "legend");
 		this.mapsvg.append("text")

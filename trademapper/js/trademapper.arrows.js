@@ -112,7 +112,7 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 	drawRouteCollectionPlainArrows: function(collection, pointRoles) {
 		this.clearArrows();
 		this.clearPoints();
-		this.maxQuantity = collection.maxQuantity();
+		this.maxQuantity = parseFloat(collection.maxQuantity().toPrecision(2));
 		var routeList = collection.getRoutes();
 		for (var i = 0; i < routeList.length; i++) {
 			if (routeList[i].points.length >= 2) {

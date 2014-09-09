@@ -202,13 +202,18 @@ define([], function() {
 		}
 	};
 
-	RouteCollection.prototype.maxQuantity = function() {
+	RouteCollection.prototype.maxQuantity = function(minRouteLength) {
+		minRouteLength = minRouteLength !== undefined ? minRouteLength : 2;
 		var routeList = this.getRoutes();
 		if (routeList.length === 0) {
 			return 0;
 		} else {
 			return Math.max.apply(null, routeList.map(function(aRoute) {
-				return aRoute.quantity;
+				if (aRoute.points.length >= minRouteLength) {
+					return aRoute.quantity;
+				} else {
+					return 0;
+				}
 			}));
 		}
 	};

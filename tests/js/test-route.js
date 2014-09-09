@@ -126,11 +126,31 @@ define(
 				q.equal(collection.maxQuantity(), 0);
 			});
 
-			q.test('check RouteCollection maxQuantity returns 0 when it has one route', function() {
+			q.test('check RouteCollection maxQuantity returns value when it has one route', function() {
 				var collection = new route.RouteCollection(),
 					route1 = new route.Route([pointC1, pointC2], 20);
 				collection.addRoute(route1);
 				q.equal(collection.maxQuantity(), 20);
+			});
+
+			q.test('check RouteCollection maxQuantity ignores single point routes by default', function() {
+				var collection = new route.RouteCollection(),
+					route1 = new route.Route([pointC1, pointC2], 20),
+					route2 = new route.Route([pointC1], 200);
+				collection.addRoute(route1);
+				collection.addRoute(route2);
+				q.equal(collection.maxQuantity(), 20);
+			});
+
+			q.test('check RouteCollection maxQuantity can include single point routes', function() {
+				var collection = new route.RouteCollection(),
+					route1 = new route.Route([pointC1, pointC2], 20),
+					route2 = new route.Route([pointC1], 200),
+					route3 = new route.Route([], 2000);
+				collection.addRoute(route1);
+				collection.addRoute(route2);
+				collection.addRoute(route3);
+				q.equal(collection.maxQuantity(1), 200);
 			});
 
 			q.test('check RouteCollection maxQuantity returns max when it has multiple routes', function() {

@@ -76,6 +76,38 @@ define(['trademapper.csv.definition', 'trademapper.route', 'util', 'd3'], functi
 		}
 	},
 
+	trimCsvColumnNames: function(csvString) {
+		// TODO: what if a column name includes \n ?!?!
+		// split on commas - but use d3 for proper parsing
+		var i,
+			csvHeaderLine = csvString.substring(0, csvString.indexOf("\n")),
+			csvHeaders = d3.csv.parseRows(csvHeaderLine)[0],
+			quotesPresent = csvHeaderLine.indexOf('"') !== -1,
+			newCsvHeaders = [];
+
+		for (i = 0; i < csvHeaders.length; i++) {
+			var header = csvHeaders[i];
+
+			// trim whitespace
+			header = header.trim();
+
+			newCsvHeaders.push(header);
+		}
+		// put quotes back if they were there
+		if (quotesPresent) {
+			for (i = 0; i < newCsvHeaders.length; i++) {
+				newCsvHeaders[i] = '"' + newCsvHeaders[i] + '"';
+			}
+		}
+
+		// replace original csv header string
+		var csvWithoutHeaders = csvString.slice(csvString.indexOf("\n"));
+		var newCsvHeader = newCsvHeaders.join(",");
+		csvString = newCsvHeader + csvWithoutHeaders;
+
+		return csvString;
+	},
+
 	/*
 	 * make a RouteCollection from a CSV string
 	 */
@@ -83,6 +115,7 @@ define(['trademapper.csv.definition', 'trademapper.route', 'util', 'd3'], functi
 		var firstLine = fileText.substring(0, fileText.indexOf("\n"));
 		var csvType = this.autodetectCsvType(firstLine);
 		if (csvType) {
+			fileText = this.trimCsvColumnNames(fileText);
 			var csvData = d3.csv.parse(fileText);
 			this.processParsedCSV(csvData, csvType);
 		} else {
@@ -335,10 +368,10 @@ define(['trademapper.csv.definition', 'trademapper.route', 'util', 'd3'], functi
 		var minmax, filters = {Quantity: {type: "quantity", values: []}};
 		for (var column in filterSpec) {
 			if (filterSpec.hasOwnProperty(column)) {
-				if (filterSpec[column].type === "ignore") {
-					// do nothing
-					continue;
-				}
+				// skip columns not present in data
+				if (!csvData[0].hasOwnProperty(column)) { continue; }
+				// skip the ignore column
+				if (filterSpec[column].type === "ignore") { continue; }
 
 				if (filterSpec[column].type === "quantity") {
 					// quantity columns just get added to a list

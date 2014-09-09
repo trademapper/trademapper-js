@@ -402,6 +402,27 @@ define(
 				]);
 			});
 
+			q.test('check trimCsvColumnNames does not alter good csv', function() {
+				var csvString = "x x,y,z\n1,2",
+					newCsvString = csv.trimCsvColumnNames(csvString);
+
+				q.equal(newCsvString, csvString);
+			});
+
+			q.test('check trimCsvColumnNames trims spaces from column names', function() {
+				var csvString = "x x , y ,z\n1,2",
+					newCsvString = csv.trimCsvColumnNames(csvString);
+
+				q.equal(newCsvString, "x x,y,z\n1,2");
+			});
+
+			q.test('check trimCsvColumnNames trims spaces from quoted column names', function() {
+				var csvString = '"x,and x "," y ","z"\n1,2',
+					newCsvString = csv.trimCsvColumnNames(csvString);
+
+				q.equal(newCsvString, '"x,and x","y","z"\n1,2');
+			});
+
 			// TODO: tests for:
 			// * filterPasses()
 			// * csvToFilters()

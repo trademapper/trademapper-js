@@ -35,7 +35,8 @@ define(
 				pathEnd: "orange"
 			},
 			minArrowWidth: 1,
-			maxArrowWidth: 30
+			maxArrowWidth: 30,
+			arrowType: "plain-arrows"  // could be "plain-arrows" or "spiral-tree"
 		},
 
 	init: function(mapId, formElementId, tmConfig) {
@@ -133,7 +134,13 @@ define(
 
 		var pointRoles = routes.getPointRoles();
 		// now draw the routes
-		arrows.drawRouteCollectionSpiralTree(routes, pointRoles);
+		if (this.config.arrowType === "plain-arrows") {
+			arrows.drawRouteCollectionPlainArrows(routes, pointRoles);
+		} else if (this.config.arrowType === "spiral-tree") {
+			arrows.drawRouteCollectionSpiralTree(routes, pointRoles);
+		} else {
+			console.log("unknown config.arrowType: " + this.config.arrowType);
+		}
 		arrows.drawLegend();
 		// colour in the countries that are trading
 		mapper.colorTradingCountries(pointRoles);

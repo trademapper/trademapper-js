@@ -9,6 +9,6 @@ require.config({
 // once loaded, get to work
 require(["d3", "trademapper", "domReady!"], function(d3, tm, doc) {
 	"use strict";
-	var config = {width:1600};
+	var config = {width:1600, arrowType:"plain-arrows"};
 	tm.init("#trademapper", "#form-filters", config);
 });

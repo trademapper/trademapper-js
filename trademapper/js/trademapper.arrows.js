@@ -105,13 +105,14 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 				.datum(route.points)
 				.attr("class", "route-arrow")
 				.attr("d", routeline)
-				.attr("marker-end", "url(#markerArrow)")
+				.attr("marker-end", "url(#markerArrowNarrow)")
 				.attr("stroke", "url(#route-grad)")
 				.attr("stroke-width", this.getArrowWidth(route));
 	},
 
-	drawRouteCollectionPlainArrows: function(collection) {
+	drawRouteCollectionPlainArrows: function(collection, pointRoles) {
 		this.clearArrows();
+		this.clearPoints();
 		this.maxRouteQuantity = collection.maxQuantity();
 		var routeList = collection.getRoutes();
 		for (var i = 0; i < routeList.length; i++) {
@@ -119,6 +120,7 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 				this.drawRoute(routeList[i]);
 			}
 		}
+		this.drawPointRoles(pointRoles);
 	},
 
 	drawPoint: function(x, y, pointType, extraclass) {

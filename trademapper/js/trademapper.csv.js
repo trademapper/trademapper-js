@@ -301,6 +301,7 @@ define(['trademapper.csv.definition', 'trademapper.route', 'util', 'd3'], functi
 
 	csvToRoutes: function(csvData, filterValues, filterSpec) {
 		var points, quantity, row,
+			filteredRowCount = 0,
 			locationColumns = this.extractLocationColumns(filterSpec),
 			routes = new route.RouteCollection();
 
@@ -321,8 +322,10 @@ define(['trademapper.csv.definition', 'trademapper.route', 'util', 'd3'], functi
 
 			points = this.getPointsFromRow(row, locationColumns, i);
 			routes.addRoute(new route.Route(points, quantity));
+			filteredRowCount++;
 		}
 
+		console.log("Filtered rows: " + filteredRowCount + ", total rows: " + csvData.length);
 		return routes;
 	},
 

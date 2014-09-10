@@ -126,7 +126,7 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 		var gradient, denominator, x1, x2, y1, y2,
 			start = route.points[0].point,
 			end = route.points[route.points.length-1].point,
-			gradientId = "route-grad-" + route.toString('').toLowerCase().replace(/[^\w]/g, '');
+			gradientId = "route-grad-" + route.toHtmlId();
 
 		// normalise the variables - all numbers must be between 0 and 1
 		denominator = Math.max(Math.abs(start[0] - end[0]), Math.abs(start[1] - end[1]));
@@ -170,11 +170,13 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 		this.mapsvg
 			.append("path")
 				.datum(route.points)
-				.attr("class", "route-arrow")
+				.attr("class", "route-arrow " + route.toHtmlId())
 				.attr("d", this.dForRoute(route))
 				.attr("marker-end", markerEnd)
 				.attr("stroke", "url(#" + gradientId + ")")
-				.attr("stroke-width", arrowWidth);
+				.attr("stroke-width", arrowWidth)
+				.on('mouseover', this.createPlainMouseOverFunc(route))
+				.on('mouseout', this.genericMouseOutPath);
 	},
 
 	drawRouteCollectionPlainArrows: function(collection, pointRoles) {
@@ -245,7 +247,37 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 		d3.selectAll(".tradenode").remove();
 	},
 
-	genericMouseOverPath: function(ctIndex) {
+	plainMouseOverPath: function(route) {
+		// first make the paths stand out, and clear any old paths
+		d3.selectAll(".traderoute-highlight").classed("traderoute-highlight", false);
+		var allpath = d3.selectAll(".route-arrow." + route.toHtmlId());
+		allpath.classed("traderoute-highlight", true);
+
+		// now do the tooltip
+		var tooltiptext = '<span class="tooltip-source">Route:</span><br />' +
+			'<span class="tooltip-dest"><em>' + route.toString() + '</em></span><br />' +
+			'<span class="tooltip-dest">Quantity: <em>' + route.quantity + '</em></span>';
+
+		this.tooltip.html(tooltiptext);
+
+		var box = d3.select("#mapcanvas")[0][0].getBoundingClientRect();
+		this.tooltip
+			.style("width", "17em")
+			.style("height", "5em")
+			.style("left", (d3.event.pageX - box.left + 10) + "px")
+			.style("top", (d3.event.pageY - box.top - 100) + "px");
+
+		this.tooltip.transition()
+			.duration(200)
+			.style("opacity", 0.9);
+	},
+
+	createPlainMouseOverFunc: function(route) {
+		var moduleThis = this;
+		return function() { moduleThis.plainMouseOverPath(route); };
+	},
+
+	flowmapMouseOverPath: function(ctIndex) {
 		var center = this.centerTerminals[ctIndex].center;
 		var terminals = this.centerTerminals[ctIndex].terminals;
 		// sort, largest quantity first (hence the order swap)
@@ -280,6 +312,11 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 			.style("opacity", 0.9);
 	},
 
+	createFlowmapMouseOverFunc: function(ctIndex) {
+		var moduleThis = this;
+		return function() { moduleThis.flowmapMouseOverPath(ctIndex); };
+	},
+
 	genericMouseOutPath: function() {
 		return;
 		// TODO: decide what behaviour we want on mouseOut
@@ -293,11 +330,6 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 		this.tooltip.transition()
 			.duration(200)
 			.style("opacity", 0);
-	},
-
-	createMouseOverFunc: function(ctIndex) {
-		var moduleThis = this;
-		return function() { moduleThis.genericMouseOverPath(ctIndex); };
 	},
 
 	drawRouteCollectionSpiralTree: function(collection, pointRoles) {
@@ -316,7 +348,7 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 			terminals = this.centerTerminals[i].terminals;
 			// set up flowmap settings for this path
 			this.flowmap.extraSpiralClass = "traderoute center-" + center.point.toString();
-			this.flowmap.mouseOverFunc = this.createMouseOverFunc(i);
+			this.flowmap.mouseOverFunc = this.createFlowmapMouseOverFunc(i);
 			this.flowmap.mouseOutFunc = this.genericMouseOutPath;
 
 			// now do preprocess and drawing

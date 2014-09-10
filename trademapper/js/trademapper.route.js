@@ -56,6 +56,10 @@ define([], function() {
 		return this.points.map(function(p){return p.toString();}).join(joinStr);
 	};
 
+	Route.prototype.toHtmlId = function() {
+		return this.toString('').toLowerCase().replace(/[^\w]/g, '');
+	};
+
 	function RouteCollection() {
 		this.routes = {};
 	}

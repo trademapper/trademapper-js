@@ -52,12 +52,22 @@ define(['trademapper.csv.definition', 'trademapper.route', 'util', 'd3'], functi
 	},
 
 	loadErrorsToStrings: function() {
-		var errorMsgs = [],
+		var countryInfo, errorMsgs = [],
 			unknownCountries = Object.keys(this.loadErrors.unknownCountries);
 		errorMsgs = errorMsgs.concat(this.loadErrors.unknownCSVFormat);
-		if (unknownCountries.length > 0) {
-			unknownCountries.sort();
-			errorMsgs.push("Unknown country codes: " + unknownCountries.join(", "));
+		unknownCountries.sort();
+		for (var i = 0; i < unknownCountries.length; i++) {
+			countryInfo = this.loadErrors.unknownCountries[unknownCountries[i]];
+			if (countryInfo.columnType === "single" && unknownCountries[i].length > 2) {
+				errorMsgs.push('Multiple country codes found when only one expected: "' +
+						unknownCountries[i] +
+						'" (row ' + countryInfo.rowIndex +
+						', column "' + countryInfo.columnName + '")');
+			} else {
+				errorMsgs.push('Unknown country code "' + unknownCountries[i] +
+						'" (row ' + countryInfo.rowIndex +
+						', column "' + countryInfo.columnName + '")');
+			}
 		}
 		return errorMsgs;
 	},
@@ -244,7 +254,7 @@ define(['trademapper.csv.definition', 'trademapper.route', 'util', 'd3'], functi
 		return locationColumns;
 	},
 
-	addCountryCodeToPoints: function(countryCode, points) {
+	addCountryCodeToPoints: function(countryCode, points, rowIndex, columnName, columnType) {
 		if (countryCode === "" || countryCode === "XX") {
 			return;
 		}
@@ -252,21 +262,29 @@ define(['trademapper.csv.definition', 'trademapper.route', 'util', 'd3'], functi
 		if (country.point !== undefined) {
 			points.push(country);
 		} else if (this.loadingCsv) {
-			this.loadErrors.unknownCountries[countryCode] = true;
+			// Note we will end up with only one rowIndex/columnName for each
+			// missing country, even if it appears more than once.
+			this.loadErrors.unknownCountries[countryCode] = {
+				rowIndex: rowIndex,
+				columnName: columnName,
+				columnType: columnType
+			};
 		}
 	},
 
-	getPointsFromRow: function(row, locationColumns) {
+	getPointsFromRow: function(row, locationColumns, rowIndex) {
 		var i, j, points = [];
 		for (i = 0; i < locationColumns.length; i++) {
 			var locationType = locationColumns[i].locationType;
 			if (locationType === "country_code") {
 				var countryCode = row[locationColumns[i].name].trim();
-				this.addCountryCodeToPoints(countryCode, points);
+				this.addCountryCodeToPoints(
+					countryCode, points, rowIndex, locationColumns[i].name, "single");
 			} else if (locationType === "country_code_list") {
 				var countryCodes = row[locationColumns[i].name].split(",");
 				for (j = 0; j < countryCodes.length; j++) {
-					this.addCountryCodeToPoints(countryCodes[j].trim(), points);
+					this.addCountryCodeToPoints(
+						countryCodes[j].trim(), points, rowIndex, locationColumns[i].name, "list");
 				}
 			} else if (locationType === "latlong") {
 				var name = row[locationColumns[i].name];
@@ -301,7 +319,7 @@ define(['trademapper.csv.definition', 'trademapper.route', 'util', 'd3'], functi
 				continue;
 			}
 
-			points = this.getPointsFromRow(row, locationColumns);
+			points = this.getPointsFromRow(row, locationColumns, i);
 			routes.addRoute(new route.Route(points, quantity));
 		}
 

@@ -52,8 +52,8 @@ define([], function() {
 		this.quantity = quantity || 1;
 	}
 
-	Route.prototype.toString = function() {
-		return this.points.map(function(p){return p.toString();}).join();
+	Route.prototype.toString = function(joinStr) {
+		return this.points.map(function(p){return p.toString();}).join(joinStr);
 	};
 
 	function RouteCollection() {

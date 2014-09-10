@@ -83,18 +83,6 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 			.append("path")
 				.attr("d", "M 0 0 L 10 5 L 0 10 z")
 				.attr("class", "route-arrow-head-narrow");
-
-		// now add a gradient
-		var gradient = this.svgdefs.append("linearGradient")
-			.attr("id", "route-grad");
-		gradient.append("stop")
-			.attr("offset", "0%")
-			.attr("stop-color", this.arrowColours.pathStart)
-			.attr("stop-opacity", "0.5");
-		gradient.append("stop")
-			.attr("offset", "100%")
-			.attr("stop-color", this.arrowColours.pathEnd)
-			.attr("stop-opacity", "0.5");
 	},
 
 	setUpFlowmap: function() {
@@ -134,11 +122,42 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 		}
 	},
 
+	addGradientForRoute: function(route) {
+		var gradient, denominator, x1, x2, y1, y2,
+			start = route.points[0].point,
+			end = route.points[route.points.length-1].point,
+			gradientId = "route-grad-" + route.toString('');
+
+		// normalise the variables - all numbers must be between 0 and 1
+		denominator = Math.max(Math.abs(start[0] - end[0]), Math.abs(start[1] - end[1]));
+		x1 = (start[0] - Math.min(start[0], end[0])) / denominator;
+		y1 = (start[1] - Math.min(start[1], end[1])) / denominator;
+		x2 = (end[0] - Math.min(start[0], end[0])) / denominator;
+		y2 = (end[1] - Math.min(start[1], end[1])) / denominator;
+
+		gradient = this.svgdefs.append("linearGradient")
+			.attr("id", gradientId)
+			.attr("x1", x1)
+			.attr("y1", y1)
+			.attr("x2", x2)
+			.attr("y2", y2);
+		gradient.append("stop")
+			.attr("offset", "0%")
+			.attr("stop-color", this.arrowColours.pathStart)
+			.attr("stop-opacity", "0.5");
+		gradient.append("stop")
+			.attr("offset", "100%")
+			.attr("stop-color", this.arrowColours.pathEnd)
+			.attr("stop-opacity", "0.5");
+
+		return gradientId;
+	},
+
 	/*
 	 * Draw a route - the route argument is basically a list of points
 	 */
 	drawRoute: function(route) {
-		var markerEnd,
+		var markerEnd, gradientId,
 			arrowWidth = this.getArrowWidth(route);
 		if (arrowWidth < this.narrowWideStrokeThreshold) {
 			markerEnd = "url(#markerPlainArrowNarrow)";
@@ -146,13 +165,15 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 			markerEnd = "url(#markerPlainArrowWide)";
 		}
 
+		gradientId = this.addGradientForRoute(route);
+
 		this.mapsvg
 			.append("path")
 				.datum(route.points)
 				.attr("class", "route-arrow")
 				.attr("d", this.dForRoute(route))
 				.attr("marker-end", markerEnd)
-				.attr("stroke", "url(#route-grad)")
+				.attr("stroke", "url(#" + gradientId + ")")
 				.attr("stroke-width", arrowWidth);
 	},
 

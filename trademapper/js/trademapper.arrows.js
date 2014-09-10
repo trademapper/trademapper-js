@@ -126,7 +126,7 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 		var gradient, denominator, x1, x2, y1, y2,
 			start = route.points[0].point,
 			end = route.points[route.points.length-1].point,
-			gradientId = "route-grad-" + route.toString('');
+			gradientId = "route-grad-" + route.toString('').toLowerCase().replace(/[^\w]/g, '');
 
 		// normalise the variables - all numbers must be between 0 and 1
 		denominator = Math.max(Math.abs(start[0] - end[0]), Math.abs(start[1] - end[1]));

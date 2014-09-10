@@ -12,6 +12,7 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 	maxArrowWidth: null,
 	maxQuantity: null,
 	centerTerminals: null,
+	narrowWideStrokeThreshold: 3,  // used for deciding whether to use arrows inside or outside line
 
 	/*
 	 * Save the svg we use for later user
@@ -32,31 +33,59 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 		this.svgdefs = this.mapsvg.select("defs");
 		// first add arrow head
 		this.svgdefs.append("marker")
-				.attr("id", "markerArrowWide")
+				.attr("id", "markerSpiralTreeArrowWide")
 				.attr("viewBox", "0 0 10 10")
 				.attr("markerUnits", "strokeWidth")
 				//.attr("markerUnits", "userSpaceOnUse")
 				.attr("refX", "7")
 				.attr("refY", "5")
-				.attr("markerWidth", "1")
-				.attr("markerHeight", "1.3")
+				.attr("markerWidth", "0.7")
+				.attr("markerHeight", "1.4")
 				.attr("orient", "auto")
 			.append("path")
 				.attr("d", "M 9 2 L 3 5 L 9 8 z")
 				.attr("class", "route-arrow-head-wide");
 
 		this.svgdefs.append("marker")
-				.attr("id", "markerArrowNarrow")
+				.attr("id", "markerSpiralTreeArrowNarrow")
 				.attr("viewBox", "0 0 10 10")
 				//.attr("markerUnits", "strokeWidth")
 				.attr("markerUnits", "userSpaceOnUse")
 				.attr("refX", "7")
 				.attr("refY", "5")
-				.attr("markerWidth", "6")
+				.attr("markerWidth", "4")
 				.attr("markerHeight", "8")
 				.attr("orient", "auto")
 			.append("path")
 				.attr("d", "M 10 0 L 0 5 L 10 10 z")
+				.attr("class", "route-arrow-head-narrow");
+
+		this.svgdefs.append("marker")
+				.attr("id", "markerPlainArrowWide")
+				.attr("viewBox", "0 0 10 10")
+				.attr("markerUnits", "strokeWidth")
+				//.attr("markerUnits", "userSpaceOnUse")
+				.attr("refX", "17")
+				.attr("refY", "5")
+				.attr("markerWidth", "0.8")
+				.attr("markerHeight", "1.4")
+				.attr("orient", "auto")
+			.append("path")
+				.attr("d", "M 1 2 L 10 5 L 1 8 z")
+				.attr("class", "route-arrow-head-wide");
+
+		this.svgdefs.append("marker")
+				.attr("id", "markerPlainArrowNarrow")
+				.attr("viewBox", "0 0 10 10")
+				//.attr("markerUnits", "strokeWidth")
+				.attr("markerUnits", "userSpaceOnUse")
+				.attr("refX", "20")
+				.attr("refY", "5")
+				.attr("markerWidth", "4")
+				.attr("markerHeight", "8")
+				.attr("orient", "auto")
+			.append("path")
+				.attr("d", "M 0 0 L 10 5 L 0 10 z")
 				.attr("class", "route-arrow-head-narrow");
 
 		// now add a gradient
@@ -77,8 +106,9 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 		this.flowmap.extraSpiralClass = "traderoute";
 		this.flowmap.setOpacity(0.5);
 		this.flowmap.setNodeDrawable(false);
-		this.flowmap.markerStart.wide = "url(#markerArrowWide)";
-		this.flowmap.markerStart.narrow = "url(#markerArrowNarrow)";
+		this.flowmap.markerStart.wide = "url(#markerSpiralTreeArrowWide)";
+		this.flowmap.markerStart.narrow = "url(#markerSpiralTreeArrowNarrow)";
+		this.flowmap.narrowWideStrokeThreshold = this.narrowWideStrokeThreshold;
 	},
 
 	getArrowWidth: function(route) {
@@ -112,14 +142,22 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 	 * Draw a route - the route argument is basically a list of points
 	 */
 	drawRoute: function(route) {
+		var markerEnd,
+			arrowWidth = this.getArrowWidth(route);
+		if (arrowWidth < this.narrowWideStrokeThreshold) {
+			markerEnd = "url(#markerPlainArrowNarrow)";
+		} else {
+			markerEnd = "url(#markerPlainArrowWide)";
+		}
+
 		this.mapsvg
 			.append("path")
 				.datum(route.points)
 				.attr("class", "route-arrow")
 				.attr("d", this.dForRoute(route))
-				.attr("marker-end", "url(#markerArrowNarrow)")
+				.attr("marker-end", markerEnd)
 				.attr("stroke", "url(#route-grad)")
-				.attr("stroke-width", this.getArrowWidth(route));
+				.attr("stroke-width", arrowWidth);
 	},
 
 	drawRouteCollectionPlainArrows: function(collection, pointRoles) {

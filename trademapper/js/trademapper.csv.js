@@ -255,7 +255,7 @@ define(['trademapper.csv.definition', 'trademapper.route', 'util', 'd3'], functi
 	},
 
 	addCountryCodeToPoints: function(countryCode, points, rowIndex, columnName, columnType) {
-		if (countryCode === "" || countryCode === "XX") {
+		if (countryCode === "") {
 			return;
 		}
 		var country = new route.PointCountry(countryCode);

@@ -90,20 +90,33 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 		d3.selectAll('.route-arrow').remove();
 	},
 
+	dForRoute: function(route) {
+		if (route.points.length === 2) {
+			// do a link arc
+			var start = route.points[0].point,
+				end = route.points[1].point,
+				dx = start[0] - end[0],
+				dy = start[1] - end[1],
+				dr = Math.sqrt(dx*dx + dy*dy);
+			return "M" + start[0] + "," + start[1] + "A" + dr + "," + dr +
+				" 0 0,1 " + end[0] + "," + end[1];
+		} else {
+			return d3.svg.line()
+				.interpolate("monotone")
+				.x(function(d) { return d.point[0]; })
+				.y(function(d) { return d.point[1]; });
+		}
+	},
+
 	/*
-	 * Draw a route - the route argument is basically a list of point
+	 * Draw a route - the route argument is basically a list of points
 	 */
 	drawRoute: function(route) {
-		var routeline = d3.svg.line()
-			.interpolate("monotone")
-			.x(function(d) { return d.point[0]; })
-			.y(function(d) { return d.point[1]; });
-
 		this.mapsvg
 			.append("path")
 				.datum(route.points)
 				.attr("class", "route-arrow")
-				.attr("d", routeline)
+				.attr("d", this.dForRoute(route))
 				.attr("marker-end", "url(#markerArrowNarrow)")
 				.attr("stroke", "url(#route-grad)")
 				.attr("stroke-width", this.getArrowWidth(route));

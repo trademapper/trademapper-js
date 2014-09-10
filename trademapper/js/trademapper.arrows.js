@@ -247,29 +247,34 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 		d3.selectAll(".tradenode").remove();
 	},
 
-	plainMouseOverPath: function(route) {
+	genericMouseOverPath: function(pathSelector, tooltiptext, tooltipWidth, tooltipHeight) {
 		// first make the paths stand out, and clear any old paths
 		d3.selectAll(".traderoute-highlight").classed("traderoute-highlight", false);
-		var allpath = d3.selectAll(".route-arrow." + route.toHtmlId());
+		var allpath = d3.selectAll(pathSelector);
 		allpath.classed("traderoute-highlight", true);
-
-		// now do the tooltip
-		var tooltiptext = '<span class="tooltip-source">Route:</span><br />' +
-			'<span class="tooltip-dest"><em>' + route.toString() + '</em></span><br />' +
-			'<span class="tooltip-dest">Quantity: <em>' + route.quantity + '</em></span>';
 
 		this.tooltip.html(tooltiptext);
 
 		var box = d3.select("#mapcanvas")[0][0].getBoundingClientRect();
 		this.tooltip
-			.style("width", "17em")
-			.style("height", "5em")
+			.style("width", tooltipWidth)
+			.style("height", tooltipHeight)
 			.style("left", (d3.event.pageX - box.left + 10) + "px")
 			.style("top", (d3.event.pageY - box.top - 100) + "px");
 
 		this.tooltip.transition()
 			.duration(200)
 			.style("opacity", 0.9);
+	},
+
+	plainMouseOverPath: function(route) {
+		// now do the tooltip
+		var pathSelector = ".route-arrow." + route.toHtmlId(),
+			tooltiptext = '<span class="tooltip-source">Route:</span><br />' +
+			'<span class="tooltip-dest"><em>' + route.toString() + '</em></span><br />' +
+			'<span class="tooltip-dest">Quantity: <em>' + route.quantity + '</em></span>';
+
+		this.genericMouseOverPath(pathSelector, tooltiptext, "17em", "5em");
 	},
 
 	createPlainMouseOverFunc: function(route) {
@@ -278,18 +283,16 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 	},
 
 	flowmapMouseOverPath: function(ctIndex) {
-		var center = this.centerTerminals[ctIndex].center;
-		var terminals = this.centerTerminals[ctIndex].terminals;
+		var tooltiptext,
+			center = this.centerTerminals[ctIndex].center,
+			terminals = this.centerTerminals[ctIndex].terminals,
+			pathSelector = ".traderoute.center-" + center.point.toString(),
+			tooltipWidth = 1.5 * (1 + terminals.length) + "em";
+
 		// sort, largest quantity first (hence the order swap)
 		terminals.sort(function(a, b) { return b.quantity - a.quantity; });
 
-		// first make the paths stand out, and clear any old paths
-		d3.selectAll(".traderoute-highlight").classed("traderoute-highlight", false);
-		var allpath = d3.selectAll(".traderoute.center-" + center.point.toString());
-		allpath.classed("traderoute-highlight", true);
-
-		// now do the tooltip
-		var tooltiptext = '<span class="tooltip-source">Source: ' +
+		tooltiptext = '<span class="tooltip-source">Source: ' +
 			center.point.toString() + '</span>';
 
 		for (var i = 0; i < terminals.length; i++) {
@@ -298,18 +301,7 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 				terminals[i].quantity.toFixed(1) + '</em></span>';
 		}
 
-		this.tooltip.html(tooltiptext);
-
-		var box = d3.select("#mapcanvas")[0][0].getBoundingClientRect();
-		this.tooltip
-			.style("width", "17em")
-			.style("height", 1.5*(1 + terminals.length) + "em")
-			.style("left", (d3.event.pageX - box.left + 10) + "px")
-			.style("top", (d3.event.pageY - box.top - 100) + "px");
-
-		this.tooltip.transition()
-			.duration(200)
-			.style("opacity", 0.9);
+		this.genericMouseOverPath(pathSelector, tooltiptext, "17em", tooltipWidth);
 	},
 
 	createFlowmapMouseOverFunc: function(ctIndex) {

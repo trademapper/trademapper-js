@@ -65,7 +65,7 @@ define(['trademapper.csv.definition', 'trademapper.route', 'util', 'd3'], functi
 						', column "' + countryInfo.columnName + '")');
 			} else {
 				errorMsgs.push('Unknown country code "' + unknownCountries[i] +
-						'" (row ' + countryInfo.rowIndex +
+						'" (eg. row ' + countryInfo.rowIndex +
 						', column "' + countryInfo.columnName + '")');
 			}
 		}

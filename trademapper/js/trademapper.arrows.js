@@ -190,7 +190,7 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 		this.drawPointRoles(pointRoles);
 	},
 
-	drawPoint: function(x, y, pointType, extraclass) {
+	drawPoint: function(x, y, pointType, extraclass, svgContainer) {
 		var size, htmlClass;
 		if (pointType == "source") {
 			size = 5;
@@ -208,7 +208,7 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 			htmlClass = "tradenode " + pointType;
 		}
 
-		this.mapsvg.append("circle")
+		svgContainer.append("circle")
 			.attr("cx", x)
 			.attr("cy", y)
 			.attr("r", size)
@@ -220,7 +220,7 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 			console.log("point.point undefined for " + point.toString());
 			return;
 		}
-		this.drawPoint(point.point[0], point.point[1], pointType);
+		this.drawPoint(point.point[0], point.point[1], pointType, "", this.mapsvg);
 	},
 
 	drawPointRoles: function(pointRoles) {
@@ -329,7 +329,7 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 	
 	drawLegend: function() {
 		// use parseFloat as the height has "px" at the end
-		var i, strokeWidth, value, valueText, circleX, circleY,
+		var gLegend, i, strokeWidth, value, valueText, circleX, circleY,
 			margin = 10,
 			lineLength = this.maxArrowWidth + 10,
 			svgHeight = 430,  // from viewbox - TODO: get this properly
@@ -359,7 +359,8 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 
 			lineVertical = lineVertical - (Math.max(strokeWidth, 8) + margin);
 
-			this.mapsvg.append("line")
+			gLegend = this.mapsvg.append("g").attr("class", "legend");
+			gLegend.append("line")
 				.attr("x1", margin)
 				.attr("y1", lineVertical)
 				.attr("x2", margin + lineLength)
@@ -367,7 +368,7 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 				.attr("stroke-width", strokeWidth)
 				.attr("class", "legend traderoute");
 
-			this.mapsvg.append("text")
+			gLegend.append("text")
 				.attr("x", lineLength + (margin * 2))
 				.attr("y", lineVertical + 5)
 				.attr("class", "legend traderoute-label")
@@ -378,24 +379,24 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 		circleX = lineLength + (margin * 3) +
 			this.maxQuantity.toFixed(1).length * 8;
 		circleY = svgHeight - 50;
-		this.drawPoint(circleX, circleY, "source", "legend");
-		this.mapsvg.append("text")
+		this.drawPoint(circleX, circleY, "source", "legend", gLegend);
+		gLegend.append("text")
 			.attr("x", circleX + 10)
 			.attr("y", circleY + 5)
 			.attr("class", "legend tradenode-label")
 			.text("Source");
 
 		circleY = circleY - 25;
-		this.drawPoint(circleX, circleY, "transit", "legend");
-		this.mapsvg.append("text")
+		this.drawPoint(circleX, circleY, "transit", "legend", gLegend);
+		gLegend.append("text")
 			.attr("x", circleX + 10)
 			.attr("y", circleY + 5)
 			.attr("class", "legend tradenode-label")
 			.text("Transit");
 
 		circleY = circleY - 25;
-		this.drawPoint(circleX, circleY, "dest", "legend");
-		this.mapsvg.append("text")
+		this.drawPoint(circleX, circleY, "dest", "legend", gLegend);
+		gLegend.append("text")
 			.attr("x", circleX + 10)
 			.attr("y", circleY + 5)
 			.attr("class", "legend tradenode-label")

@@ -275,13 +275,16 @@ span.showhide {
 	fill-opacity: 1;
 }
 
-.tradenode.source {
+.tradenode.origin {
 	fill: #000000;
+}
+.tradenode.exporter {
+	fill: #808000;
 }
 .tradenode.transit {
 	fill: #008080;
 }
-.tradenode.dest {
+.tradenode.importer {
 	fill: #FF6600;
 }
 

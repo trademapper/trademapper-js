@@ -1,5 +1,5 @@
 
-define(["d3", "spiralTree"], function(d3, spiralTree) {
+define(["d3", "spiralTree", "trademapper.route"], function(d3, spiralTree, tmroute) {
 	"use strict";
 	return {
 	mapsvg: null,
@@ -196,36 +196,31 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 	},
 
 	drawPoint: function(x, y, pointType, extraclass, svgContainer) {
-		var size, htmlClass;
-		if (pointType == "source") {
-			size = 5;
-		} else if (pointType == "transit") {
-			size = 4;
-		} else if (pointType == "dest") {
-			size = 3;
-		} else {
+		var pointTypeSize = {
+				origin: 6,
+				exporter: 5,
+				transit: 4,
+				importer: 3
+			};
+
+		if (!pointTypeSize.hasOwnProperty(pointType)) {
 			console.log("unknown pointType: " + pointType);
 			return;
-		}
-		if (extraclass) {
-			htmlClass = "tradenode " + pointType + " " + extraclass;
-		} else {
-			htmlClass = "tradenode " + pointType;
 		}
 
 		svgContainer.append("circle")
 			.attr("cx", x)
 			.attr("cy", y)
-			.attr("r", size)
-			.attr("class", htmlClass);
+			.attr("r", pointTypeSize[pointType])
+			.attr("class", "tradenode " + pointType + " " + extraclass);
 	},
 
-	drawPointRole: function(point, pointType) {
-		if (point.point === undefined) {
-			console.log("point.point undefined for " + point.toString());
+	drawPointRole: function(point, pointType, pointName) {
+		if (point === undefined) {
+			console.log("point undefined for " + pointName);
 			return;
 		}
-		this.drawPoint(point.point[0], point.point[1], pointType, "", this.mapsvg);
+		this.drawPoint(point[0], point[1], pointType, "", this.mapsvg);
 	},
 
 	drawPointRoles: function(pointRoles) {
@@ -234,14 +229,11 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 
 		for (var i = 0; i < pointKeys.length; i++) {
 			pointInfo = pointRoles[pointKeys[i]];
-			if (pointInfo.source) {
-				this.drawPointRole(pointInfo.point, "source");
-			}
-			if (pointInfo.transit) {
-				this.drawPointRole(pointInfo.point, "transit");
-			}
-			if (pointInfo.dest) {
-				this.drawPointRole(pointInfo.point, "dest");
+			for (var j = 0; j < tmroute.locationRoles.length; j++) {
+				var role = tmroute.locationRoles[j];
+				if (pointInfo.roles.roles[role]) {
+					this.drawPointRole(pointInfo.point, role, pointKeys[i]);
+				}
 			}
 		}
 	},
@@ -383,6 +375,16 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 
 		this.drawPointRoles(pointRoles);
 	},
+
+	drawPointRoleLabel: function(role, gLegend, circleX, circleY) {
+		var roleLabel = role.charAt(0).toUpperCase() + role.slice(1);
+		this.drawPoint(circleX, circleY, role, "legend", gLegend);
+		gLegend.append("text")
+			.attr("x", circleX + 10)
+			.attr("y", circleY + 5)
+			.attr("class", "legend tradenode-label")
+			.text(roleLabel);
+	},
 	
 	drawLegend: function() {
 		// use parseFloat as the height has "px" at the end
@@ -435,29 +437,12 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 		// Now add a legend for the circles
 		circleX = lineLength + (margin * 3) +
 			this.maxQuantity.toFixed(1).length * 8;
-		circleY = svgHeight - 50;
-		this.drawPoint(circleX, circleY, "source", "legend", gLegend);
-		gLegend.append("text")
-			.attr("x", circleX + 10)
-			.attr("y", circleY + 5)
-			.attr("class", "legend tradenode-label")
-			.text("Source");
+		circleY = svgHeight;
 
-		circleY = circleY - 25;
-		this.drawPoint(circleX, circleY, "transit", "legend", gLegend);
-		gLegend.append("text")
-			.attr("x", circleX + 10)
-			.attr("y", circleY + 5)
-			.attr("class", "legend tradenode-label")
-			.text("Transit");
-
-		circleY = circleY - 25;
-		this.drawPoint(circleX, circleY, "dest", "legend", gLegend);
-		gLegend.append("text")
-			.attr("x", circleX + 10)
-			.attr("y", circleY + 5)
-			.attr("class", "legend tradenode-label")
-			.text("Destination");
+		for (i = tmroute.locationRoles.length-1; i >= 0; i--) {
+			circleY -= 25;
+			this.drawPointRoleLabel(tmroute.locationRoles[i], gLegend, circleX, circleY);
+		}
 	}
 
 	};

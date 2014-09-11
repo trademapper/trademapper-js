@@ -4,6 +4,7 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 	return {
 	mapsvg: null,
 	pathTooltip: null,
+	highlightedPath: null,
 	config: null,
 	svgdefs: null,
 	flowmap: null,
@@ -13,6 +14,8 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 	maxQuantity: null,
 	centerTerminals: null,
 	narrowWideStrokeThreshold: 3,  // used for deciding whether to use arrows inside or outside line
+	normalOpacity: 0.4,
+	highlightOpacity: 1,
 
 	/*
 	 * Save the svg we use for later user
@@ -88,7 +91,7 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 	setUpFlowmap: function() {
 		this.flowmap = new spiralTree.SpiralTree(this.mapsvg, function(xy) { return [xy[1], xy[0]]; });
 		this.flowmap.extraSpiralClass = "traderoute";
-		this.flowmap.setOpacity(0.5);
+		this.flowmap.setOpacity(this.normalOpacity);
 		this.flowmap.setNodeDrawable(false);
 		this.flowmap.markerStart.wide = "url(#markerSpiralTreeArrowWide)";
 		this.flowmap.markerStart.narrow = "url(#markerSpiralTreeArrowNarrow)";
@@ -144,11 +147,11 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 		gradient.append("stop")
 			.attr("offset", "0%")
 			.attr("stop-color", this.arrowColours.pathStart)
-			.attr("stop-opacity", "0.5");
+			.attr("stop-opacity", this.normalOpacity);
 		gradient.append("stop")
 			.attr("offset", "100%")
 			.attr("stop-color", this.arrowColours.pathEnd)
-			.attr("stop-opacity", "0.5");
+			.attr("stop-opacity", this.normalOpacity);
 
 		return gradientId;
 	},
@@ -262,11 +265,25 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 			.style("opacity", 0.9);
 	},
 
+	setPathOpacity: function(routeHtmlId, opacity) {
+		if (!routeHtmlId) { return; }
+		var i, gradientStops = document.querySelectorAll("#route-grad-" + routeHtmlId + " > stop");
+		for (i = 0; i < gradientStops.length; i++) {
+			gradientStops[i].setAttribute("stop-opacity", opacity);
+		}
+	},
+
 	plainMouseOverPath: function(route) {
+		// clear the last non-transparent path
+		this.setPathOpacity(this.highlightedPath, this.normalOpacity);
+		// make the path non-transparent
+		this.highlightedPath = route.toHtmlId();
+		this.setPathOpacity(this.highlightedPath, this.highlightOpacity);
+
 		// now do the tooltip
 		var pathSelector = ".route-arrow." + route.toHtmlId(),
 			tooltipHeight = 1.6 * (2 + route.points.length) + "em",
-			tooltiptext = '<div class="tooltip-summary">'
+			tooltiptext = '<div class="tooltip-summary">';
 
 		tooltiptext += '<span class="tooltip-quantity">' + route.quantity + '</span>';
 		tooltiptext += '<span class="tooltip-total">Total quantity on route:</span><br />';
@@ -285,6 +302,14 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 	createPlainMouseOverFunc: function(route) {
 		var moduleThis = this;
 		return function() { moduleThis.plainMouseOverPath(route); };
+	},
+
+	plainMouseOutPath: function() {
+		return;
+		// TODO: decide what behaviour we want on mouseOut
+		this.setPathOpacity(this.highlightedPath, this.normalOpacity);
+		this.highlightedPath = null;
+		this.clearTooltip();
 	},
 
 	flowmapMouseOverPath: function(ctIndex) {
@@ -319,18 +344,16 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 		return function() { moduleThis.flowmapMouseOverPath(ctIndex); };
 	},
 
-	genericMouseOutPath: function() {
+	flowmapMouseOutPath: function() {
 		return;
 		// TODO: decide what behaviour we want on mouseOut
 		d3.selectAll(".traderoute-highlight").classed("traderoute-highlight", false);
-		this.pathTooltip.transition()
-			.duration(500)
-			.style("opacity", 0);
+		this.clearTooltip();
 	},
 
 	clearTooltip: function() {
 		this.pathTooltip.transition()
-			.duration(200)
+			.duration(500)
 			.style("opacity", 0);
 	},
 

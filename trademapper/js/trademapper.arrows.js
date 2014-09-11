@@ -3,7 +3,7 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 	"use strict";
 	return {
 	mapsvg: null,
-	tooltip: null,
+	pathTooltip: null,
 	config: null,
 	svgdefs: null,
 	flowmap: null,
@@ -20,13 +20,13 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 	 */
 	init: function(svgElement, tooltipElement, colours, minWidth, maxWidth) {
 		this.mapsvg = svgElement;
-		this.tooltip = tooltipElement;
+		this.pathTooltip = tooltipElement;
 		this.arrowColours = colours;
 		this.minArrowWidth = minWidth;
 		this.maxArrowWidth = maxWidth;
 		this.addDefsToSvg();
 		this.setUpFlowmap();
-		this.tooltip.style("opacity", 0);
+		this.pathTooltip.style("opacity", 0);
 	},
 
 	addDefsToSvg: function() {
@@ -247,22 +247,17 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 		d3.selectAll(".tradenode").remove();
 	},
 
-	genericMouseOverPath: function(pathSelector, tooltiptext, tooltipWidth, tooltipHeight) {
-		// first make the paths stand out, and clear any old paths
-		d3.selectAll(".traderoute-highlight").classed("traderoute-highlight", false);
-		var allpath = d3.selectAll(pathSelector);
-		allpath.classed("traderoute-highlight", true);
-
-		this.tooltip.html(tooltiptext);
-
+	showPathTooltip: function(tooltiptext, tooltipWidth, tooltipHeight) {
 		var box = d3.select("#mapcanvas")[0][0].getBoundingClientRect();
-		this.tooltip
+
+		this.pathTooltip
 			.style("width", tooltipWidth)
 			.style("height", tooltipHeight)
 			.style("left", (d3.event.pageX - box.left + 10) + "px")
-			.style("top", (d3.event.pageY - box.top - 100) + "px");
+			.style("top", (d3.event.pageY - box.top - 100) + "px")
+			.html(tooltiptext);
 
-		this.tooltip.transition()
+		this.pathTooltip.transition()
 			.duration(200)
 			.style("opacity", 0.9);
 	},
@@ -284,7 +279,7 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 		}
 		tooltiptext += '</div>';
 
-		this.genericMouseOverPath(pathSelector, tooltiptext, "17em", tooltipHeight);
+		this.showPathTooltip(tooltiptext, "17em", tooltipHeight);
 	},
 
 	createPlainMouseOverFunc: function(route) {
@@ -299,6 +294,11 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 			pathSelector = ".traderoute.center-" + center.point.toString(),
 			tooltipHeight = 1.5 * (1 + terminals.length) + "em";
 
+		// first make the paths stand out, and clear any old paths
+		d3.selectAll(".traderoute-highlight").classed("traderoute-highlight", false);
+		var allpath = d3.selectAll(pathSelector);
+		allpath.classed("traderoute-highlight", true);
+
 		// sort, largest quantity first (hence the order swap)
 		terminals.sort(function(a, b) { return b.quantity - a.quantity; });
 
@@ -311,7 +311,7 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 				terminals[i].quantity.toFixed(1) + '</em></span>';
 		}
 
-		this.genericMouseOverPath(pathSelector, tooltiptext, "17em", tooltipHeight);
+		this.showPathTooltip(tooltiptext, "17em", tooltipHeight);
 	},
 
 	createFlowmapMouseOverFunc: function(ctIndex) {
@@ -323,13 +323,13 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 		return;
 		// TODO: decide what behaviour we want on mouseOut
 		d3.selectAll(".traderoute-highlight").classed("traderoute-highlight", false);
-		this.tooltip.transition()
+		this.pathTooltip.transition()
 			.duration(500)
 			.style("opacity", 0);
 	},
 
 	clearTooltip: function() {
-		this.tooltip.transition()
+		this.pathTooltip.transition()
 			.duration(200)
 			.style("opacity", 0);
 	},

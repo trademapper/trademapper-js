@@ -288,6 +288,9 @@ define(["d3"], function(d3) {
 			// TODO: recreate country filter stuff
 			locationFieldset = this.addLocationFieldset(formElement);
 			locationFilters = this.getFilterNamesForType(filters, ["location"]);
+			locationFilters.sort(function(a, b) {
+				return filters[a].locationOrder - filters[b].locationOrder;
+			});
 			for (i = 0; i < locationFilters.length; i++) {
 				this.addLocationField(locationFieldset, filters, locationFilters[i]);
 			}

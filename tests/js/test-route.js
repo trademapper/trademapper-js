@@ -5,6 +5,23 @@ define(
 		var pointL1, pointL2, pointL3, pointL4, pointC1, pointC2, pointC3, pointC4;
 
 		var run = function() {
+			q.module("RolesCollection module", {
+			});
+
+			q.test('check RolesCollection rolesArray and rolesString with one role', function() {
+				var roles = new route.RolesCollection("exporter");
+				q.deepEqual(roles.toArray(), ["exporter"]);
+				q.equal(roles.toString(), "exporter");
+			});
+
+			q.test('check RolesCollection rolesArray and rolesString with two roles', function() {
+				var roles = new route.RolesCollection("exporter");
+				roles.addRole("importer");
+				roles.addRole("exporter");
+				q.deepEqual(roles.toArray(), ["exporter", "importer"]);
+				q.equal(roles.toString(), "exporter,importer");
+			});
+
 			q.module("PointLatLong module", {
 				setup: function() {
 					// set a default function - required before we can create points
@@ -93,6 +110,29 @@ define(
 				var route2 = new route.Route([pointL1, pointC2, pointC1], 20);
 
 				q.notEqual(route1.toString(), route2.toString());
+			});
+
+			q.test('check Route doesn\'t combine consecutive points with different string', function() {
+				var pOrigin = new route.PointCountry("KE", "origin"),
+					pExporter = new route.PointCountry("ZW", "exporter"),
+					pImporter = new route.PointCountry("TH", "importer"),
+					route1 = new route.Route([pOrigin, pExporter, pImporter], 20);
+
+				q.equal(route1.points.length, 3);
+				q.deepEqual(route1.points[0].roles.toArray(), ["origin"]);
+				q.deepEqual(route1.points[1].roles.toArray(), ["exporter"]);
+				q.deepEqual(route1.points[2].roles.toArray(), ["importer"]);
+			});
+
+			q.test('check Route combines consecutive points with same string', function() {
+				var pOrigin = new route.PointCountry("ZW", "origin"),
+					pExporter = new route.PointCountry("ZW", "exporter"),
+					pImporter = new route.PointCountry("TH", "importer"),
+					route1 = new route.Route([pOrigin, pExporter, pImporter], 20);
+
+				q.equal(route1.points.length, 2);
+				q.deepEqual(route1.points[0].roles.toArray(), ["origin", "exporter"]);
+				q.deepEqual(route1.points[1].roles.toArray(), ["importer"]);
 			});
 
 			q.test('check RouteCollection adds new routes not in it currently', function() {

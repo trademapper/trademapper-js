@@ -3,6 +3,7 @@ define([], function() {
 	"use strict";
 	// this is done to avoid circular dependencies
 	var countryGetPointFunc, latLongToPointFunc,
+	locationRoles = ["origin", "exporter", "transit", "importer"],
 
 	setLatLongToPointFunc = function(func) {
 		latLongToPointFunc = func;
@@ -12,9 +13,45 @@ define([], function() {
 		countryGetPointFunc = func;
 	};
 
+	function RolesCollection(role) {
+		this.roles = {};
+		for (var i = 0; i < locationRoles.length; i++) {
+			this.roles[locationRoles[i]] = false;
+		}
+		this.addRole(role);
+	}
+
+	RolesCollection.prototype.addRole = function(role) {
+		if (this.roles.hasOwnProperty(role)) {
+			this.roles[role] = true;
+		} else {
+			console.log("Unknown role for point: " + role);
+		}
+	};
+
+	RolesCollection.prototype.addRoles = function(roleArray) {
+		for (var i = 0; i < roleArray.length; i++) {
+			this.addRole(roleArray[i]);
+		}
+	};
+
+	RolesCollection.prototype.toArray = function() {
+		var outArray = [];
+		for (var i = 0; i < locationRoles.length; i++) {
+			if (this.roles[locationRoles[i]]) {
+				outArray.push(locationRoles[i]);
+			}
+		}
+		return outArray;
+	};
+
+	RolesCollection.prototype.toString = function() {
+		return this.toArray().join(",");
+	};
+
 	function PointLatLong(role, latitude, longitude) {
+		this.roles = new RolesCollection(role);
 		this.type = "latlong";
-		this.role = role;
 		this.latlong = [longitude, latitude];
 		this.point = latLongToPointFunc(this.latlong);
 	}
@@ -24,9 +61,9 @@ define([], function() {
 	};
 
 	function PointNameLatLong(name, role, latitude, longitude) {
+		this.roles = new RolesCollection(role);
 		this.type = "namelatlong";
 		this.name = name;
-		this.role = role;
 		this.latlong = [longitude, latitude];
 		this.point = latLongToPointFunc(this.latlong);
 	}
@@ -36,8 +73,8 @@ define([], function() {
 	};
 
 	function PointCountry(countryCode, role) {
+		this.roles = new RolesCollection(role);
 		this.type = "country";
-		this.role = role;
 		this.countryCode = countryCode;
 		this.point = countryGetPointFunc(countryCode);
 	}
@@ -51,8 +88,22 @@ define([], function() {
 	 * quantity is the volume of trade
 	 */
 	function Route(points, quantity) {
-		this.points = points;
 		this.quantity = quantity || 1;
+
+		if (points.length === 0) {
+			this.points = [];
+		} else {
+			this.points = [points[0]];
+			for (var i = 1; i < points.length; i++) {
+				// if last of this.points has same roles string as next of points
+				var lastThisPoint = this.points.slice(-1)[0];
+				if (lastThisPoint.toString() === points[i].toString()) {
+					lastThisPoint.roles.addRoles(points[i].roles.toArray());
+				} else {
+					this.points.push(points[i]);
+				}
+			}
+		}
 	}
 
 	Route.prototype.toString = function(joinStr) {
@@ -228,6 +279,7 @@ define([], function() {
 	return {
 		setCountryGetPointFunc: setCountryGetPointFunc,
 		setLatLongToPointFunc: setLatLongToPointFunc,
+		RolesCollection: RolesCollection,
 		PointLatLong: PointLatLong,
 		PointNameLatLong: PointNameLatLong,
 		PointCountry: PointCountry,

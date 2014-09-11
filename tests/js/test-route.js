@@ -3,7 +3,7 @@ define(
 	function(q, route, d3) {
 		"use strict";
 		var pointL1, pointL2, pointL3, pointL4, pointC1, pointC2, pointC3, pointC4,
-			pointC1o, pointC1e, pointC2i;
+			pointC1o, pointC1e, pointC2i, pointC2e, pointC2t;
 
 		var run = function() {
 			q.module("RolesCollection module", {
@@ -404,96 +404,91 @@ define(
 				setup: function() {
 					// set a default function - required before we can create points
 					route.setCountryGetPointFunc(function() { return [8, 9]; });
-					pointC1 = new route.PointCountry("ZA", "importer");
-					pointC2 = new route.PointCountry("GB", "importer");
-					pointC3 = new route.PointCountry("ZW", "importer");
+					pointC1 = new route.PointCountry("ZA", "origin");
+					pointC2e = new route.PointCountry("ZW", "exporter");
+					pointC2t = new route.PointCountry("ZW", "transit");
+					pointC3 = new route.PointCountry("GB", "importer");
 					pointC4 = new route.PointCountry("AR", "importer");
 				}
 			});
 
-			q.test('check getPointRoles sets source and dest for one two-stop route', function() {
+			q.test('check getPointRoles sets combined roles for one two-stop route', function() {
 				var pointRoles,
 					collection = new route.RouteCollection(),
-					route1 = new route.Route([pointC1, pointC2], 10);
+					route1 = new route.Route([pointC1, pointC3], 10);
 				collection.addRoute(route1);
 				pointRoles = collection.getPointRoles();
-				q.deepEqual(pointRoles, {
-					"ZA": {
-						point: pointC1,
-						source: true,
-						transit: false,
-						dest: false
-					},
-					"GB": {
-						point: pointC2,
-						source: false,
-						transit: false,
-						dest: true
-					}
+				q.deepEqual(pointRoles["ZA"].roles.roles, {
+					origin: true,
+					exporter: false,
+					transit: false,
+					importer: false
+				});
+				q.deepEqual(pointRoles["GB"].roles.roles, {
+					origin: false,
+					exporter: false,
+					transit: false,
+					importer: true
 				});
 			});
 
-			q.test('check getPointRoles sets source, transit and dest for one three-stop route', function() {
+			q.test('check getPointRoles sets combined roles for one three-stop route', function() {
 				var pointRoles,
 					collection = new route.RouteCollection(),
-					route1 = new route.Route([pointC1, pointC2, pointC3], 10);
+					route1 = new route.Route([pointC1, pointC2t, pointC3], 10);
 				collection.addRoute(route1);
 				pointRoles = collection.getPointRoles();
-				q.deepEqual(pointRoles, {
-					"ZA": {
-						point: pointC1,
-						source: true,
-						transit: false,
-						dest: false
-					},
-					"GB": {
-						point: pointC2,
-						source: false,
-						transit: true,
-						dest: false
-					},
-					"ZW": {
-						point: pointC3,
-						source: false,
-						transit: false,
-						dest: true
-					}
+				q.deepEqual(pointRoles["ZA"].roles.roles, {
+					origin: true,
+					exporter: false,
+					transit: false,
+					importer: false
+				});
+				q.deepEqual(pointRoles["ZW"].roles.roles, {
+					origin: false,
+					exporter: false,
+					transit: true,
+					importer: false
+				});
+				q.deepEqual(pointRoles["GB"].roles.roles, {
+					origin: false,
+					exporter: false,
+					transit: false,
+					importer: true
 				});
 			});
 
-			q.test('check getPointRoles sets source, transit and dest for overlapping two-stop and three-stop route', function() {
+			q.test('check getPointRoles sets combined roles for overlapping two-stop and three-stop route', function() {
 				var pointRoles,
 					collection = new route.RouteCollection(),
-					route1 = new route.Route([pointC1, pointC2, pointC3], 10),
-					route2 = new route.Route([pointC2, pointC4], 20);
+					route1 = new route.Route([pointC1, pointC2t, pointC3], 10),
+					route2 = new route.Route([pointC2e, pointC4], 20);
 				collection.addRoute(route1);
 				collection.addRoute(route2);
 				pointRoles = collection.getPointRoles();
-				q.deepEqual(pointRoles, {
-					"ZA": {
-						point: pointC1,
-						source: true,
-						transit: false,
-						dest: false
-					},
-					"GB": {
-						point: pointC2,
-						source: true,
-						transit: true,
-						dest: false
-					},
-					"ZW": {
-						point: pointC3,
-						source: false,
-						transit: false,
-						dest: true
-					},
-					"AR": {
-						point: pointC4,
-						source: false,
-						transit: false,
-						dest: true
-					}
+				q.deepEqual(pointRoles["ZA"].roles.roles, {
+					origin: true,
+					exporter: false,
+					transit: false,
+					importer: false
+				});
+				q.deepEqual(pointRoles["ZW"].roles.roles, {
+					origin: false,
+					exporter: true,
+					transit: true,
+					importer: false
+				});
+				q.deepEqual(pointRoles["GB"].roles.roles, {
+					origin: false,
+					exporter: false,
+					transit: false,
+					importer: true
+				});
+				q.deepEqual(pointRoles["AR"].roles.roles, {
+					origin: false,
+					exporter: false,
+					transit: false,
+					importer: true
 				});
 			});
 

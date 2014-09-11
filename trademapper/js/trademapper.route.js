@@ -18,7 +18,9 @@ define([], function() {
 		for (var i = 0; i < locationRoles.length; i++) {
 			this.roles[locationRoles[i]] = false;
 		}
-		this.addRole(role);
+		if (role) {
+			this.addRole(role);
+		}
 	}
 
 	RolesCollection.prototype.addRole = function(role) {
@@ -219,7 +221,7 @@ define([], function() {
 
 	/*
 	 * Create an object with a key for each point, and for each point
-	 * record whether it is a source, transit and/or destination node.
+	 * record whether it is an origin, importer, transit and/or exporter
 	 */
 	RouteCollection.prototype.getPointRoles = function() {
 		var i, j, route, pointName,
@@ -232,19 +234,11 @@ define([], function() {
 				pointName = route.points[j].toString();
 				if (!pointRoles.hasOwnProperty(pointName)) {
 					pointRoles[pointName] = {
-						point: route.points[j],
-						source: false,
-						transit: false,
-						dest: false
+						point: route.points[j].point,
+						roles: new RolesCollection()
 					};
 				}
-				if (j === 0) {
-					pointRoles[pointName].source = true;
-				} else if (j === route.points.length - 1) {
-					pointRoles[pointName].dest = true;
-				} else {
-					pointRoles[pointName].transit = true;
-				}
+				pointRoles[pointName].roles.addRoles(route.points[j].roles.toArray());
 			}
 		}
 		return pointRoles;
@@ -283,6 +277,7 @@ define([], function() {
 	return {
 		setCountryGetPointFunc: setCountryGetPointFunc,
 		setLatLongToPointFunc: setLatLongToPointFunc,
+		locationRoles: locationRoles,
 		RolesCollection: RolesCollection,
 		PointLatLong: PointLatLong,
 		PointNameLatLong: PointNameLatLong,

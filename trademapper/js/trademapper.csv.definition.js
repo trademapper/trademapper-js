@@ -51,6 +51,7 @@ define([], function() {
 				},
 				"Unit": {
 					type: "text",
+					isUnit: true,
 					multiselect: false  // doesn't make sense to have multiselect
 				},
 				"Purpose": {

@@ -443,6 +443,15 @@ define(['trademapper.csv.definition', 'trademapper.route', 'util', 'd3'], functi
 			}
 		}
 		return filters;
+	},
+
+	/*
+	 * find the unit - so we can display it
+	 */
+	getUnit: function(filterValues) {
+		// TODO: first check if any column is marked as isUnit
+		// - if so use the currently selected choice from that column
+		// - else use the currently selected value of the quantity column
 	}
 
 	};

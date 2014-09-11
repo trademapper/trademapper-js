@@ -198,7 +198,8 @@ span.showhide {
 
 
 
-.form-item.location-exporter {background-color: #008080;}
+.form-item.location-exporter {background-color: #808000;}
+.form-item.location-transit {background-color: #008080;}
 .form-item.location-importer {background-color: #FF6600;}
 
 /*---Year Group selectors--*/

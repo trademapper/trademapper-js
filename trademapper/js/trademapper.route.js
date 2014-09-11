@@ -12,8 +12,9 @@ define([], function() {
 		countryGetPointFunc = func;
 	};
 
-	function PointLatLong(latitude, longitude) {
+	function PointLatLong(role, latitude, longitude) {
 		this.type = "latlong";
+		this.role = role;
 		this.latlong = [longitude, latitude];
 		this.point = latLongToPointFunc(this.latlong);
 	}
@@ -22,9 +23,10 @@ define([], function() {
 		return this.latlong[0] + '-' + this.latlong[1];
 	};
 
-	function PointNameLatLong(name, latitude, longitude) {
+	function PointNameLatLong(name, role, latitude, longitude) {
 		this.type = "namelatlong";
 		this.name = name;
+		this.role = role;
 		this.latlong = [longitude, latitude];
 		this.point = latLongToPointFunc(this.latlong);
 	}
@@ -33,8 +35,9 @@ define([], function() {
 		return this.name;
 	};
 
-	function PointCountry(countryCode) {
+	function PointCountry(countryCode, role) {
 		this.type = "country";
+		this.role = role;
 		this.countryCode = countryCode;
 		this.point = countryGetPointFunc(countryCode);
 	}

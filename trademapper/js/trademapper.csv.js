@@ -217,7 +217,10 @@ define(['trademapper.csv.definition', 'trademapper.route', 'util', 'd3'], functi
 		if (filteredObjs.length === 1) {
 			return filteredObjs[0];
 		} else {
-			var newObj = {locationType: "latlong", order: order};
+			var newObj = {
+				locationType: "latlong",
+				order: order
+			};
 			locationColumns.push(newObj);
 			return newObj;
 		}
@@ -234,6 +237,7 @@ define(['trademapper.csv.definition', 'trademapper.route', 'util', 'd3'], functi
 					locationColumns.push({
 						name: key,
 						locationType: locationType,
+						locationRole: filterSpec[key].locationRole,
 						order: filterSpec[key].locationOrder
 					});
 				} else if (["latLongName", "latitude", "longitude"].indexOf(locationType) !== -1) {
@@ -241,6 +245,7 @@ define(['trademapper.csv.definition', 'trademapper.route', 'util', 'd3'], functi
 					var locationObj = this.getOrCreateLatLongLocationColumn(locationColumns, order);
 					if (locationType === "latLongName") {
 						locationObj.name = key;
+						locationObj.locationRole = filterSpec[key].locationRole;
 					} else if (locationType === "latitude") {
 						locationObj.latitude = key;
 					} else if (locationType === "longitude") {
@@ -255,11 +260,11 @@ define(['trademapper.csv.definition', 'trademapper.route', 'util', 'd3'], functi
 		return locationColumns;
 	},
 
-	addCountryCodeToPoints: function(countryCode, points, rowIndex, columnName, columnType) {
+	addCountryCodeToPoints: function(countryCode, role, points, rowIndex, columnName, columnType) {
 		if (countryCode === "") {
 			return;
 		}
-		var country = new route.PointCountry(countryCode);
+		var country = new route.PointCountry(countryCode, role);
 		if (country.point !== undefined) {
 			points.push(country);
 		} else if (this.loadingCsv) {
@@ -276,22 +281,28 @@ define(['trademapper.csv.definition', 'trademapper.route', 'util', 'd3'], functi
 	getPointsFromRow: function(row, locationColumns, rowIndex) {
 		var i, j, points = [];
 		for (i = 0; i < locationColumns.length; i++) {
-			var locationType = locationColumns[i].locationType;
+			var locationType = locationColumns[i].locationType,
+				locName = locationColumns[i].name,
+				role = locationColumns[i].locationRole;
+
 			if (locationType === "country_code") {
 				var countryCode = row[locationColumns[i].name].trim();
 				this.addCountryCodeToPoints(
-					countryCode, points, rowIndex, locationColumns[i].name, "single");
+					countryCode, role, points, rowIndex, locName, "single");
+
 			} else if (locationType === "country_code_list") {
 				var countryCodes = row[locationColumns[i].name].split(",");
 				for (j = 0; j < countryCodes.length; j++) {
 					this.addCountryCodeToPoints(
-						countryCodes[j].trim(), points, rowIndex, locationColumns[i].name, "list");
+						countryCodes[j].trim(), role, points, rowIndex, locName, "list");
 				}
+
 			} else if (locationType === "latlong") {
 				var name = row[locationColumns[i].name];
 				var latitude = parseFloat(row[locationColumns[i].latitude]);
 				var longitude = parseFloat(row[locationColumns[i].longitude]);
-				points.push(new route.PointNameLatLong(name, latitude, longitude));
+				points.push(new route.PointNameLatLong(name, role, latitude, longitude));
+
 			} else {
 				// TODO: deal with lat/long
 				console.log("unknown locationType: " + locationType);

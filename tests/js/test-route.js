@@ -14,7 +14,7 @@ define(
 
 			q.test('check PointLatLong sets point using latLongToPointFunc', function() {
 				route.setLatLongToPointFunc(function() { return [3, 4]; });
-				var point = new route.PointLatLong(5, 6);
+				var point = new route.PointLatLong("exporter", 5, 6);
 				q.equal(point.latlong[0], 6, 'The x of latlong should be 6');
 				q.equal(point.latlong[1], 5, 'The y of latlong should be 5');
 				q.equal(point.point[0], 3, 'The x of point should be 3');
@@ -22,15 +22,15 @@ define(
 			});
 
 			q.test('check PointLatLong toString() includes lat and long', function() {
-				var point = new route.PointLatLong(5.34, 6.12);
+				var point = new route.PointLatLong("exporter", 5.34, 6.12);
 				var pointString = point.toString();
 				q.ok(pointString.indexOf("5.34") > -1);
 				q.ok(pointString.indexOf("6.12") > -1);
 			});
 
 			q.test('check PointLatLong toString() is same for two points with same lat/long', function() {
-				var point1 = new route.PointLatLong(5.34, 6.12);
-				var point2 = new route.PointLatLong(5.34, 6.12);
+				var point1 = new route.PointLatLong("exporter", 5.34, 6.12);
+				var point2 = new route.PointLatLong("exporter", 5.34, 6.12);
 				q.equal(point1.toString(), point2.toString());
 			});
 
@@ -42,21 +42,21 @@ define(
 			});
 
 			q.test('check PointCountry sets point using countryGetPointFunc', function() {
-				var point = new route.PointCountry("GB");
+				var point = new route.PointCountry("GB", "importer");
 				q.equal("GB", point.countryCode, 'The countryCode should be "GB"');
 				q.equal(8, point.point[0], 'The x of point should be 8');
 				q.equal(9, point.point[1], 'The y of point should be 9');
 			});
 
 			q.test('check PointCountry toString() includes country code', function() {
-				var point = new route.PointCountry("KE");
+				var point = new route.PointCountry("KE", "importer");
 				var pointString = point.toString();
 				q.ok(pointString.indexOf("KE") > -1);
 			});
 
 			q.test('check PointCountry toString() is same for two points with same country code', function() {
-				var point1 = new route.PointCountry("ZA");
-				var point2 = new route.PointCountry("ZA");
+				var point1 = new route.PointCountry("ZA", "importer");
+				var point2 = new route.PointCountry("ZA", "importer");
 				q.equal(point1.toString(), point2.toString());
 			});
 
@@ -65,10 +65,10 @@ define(
 					// set a default function - required before we can create points
 					route.setLatLongToPointFunc(function() { return [3, 4]; });
 					route.setCountryGetPointFunc(function() { return [8, 9]; });
-					pointL1 = new route.PointLatLong(5.34, 6.12);
-					pointL2 = new route.PointLatLong(5.34, 6.12);
-					pointC1 = new route.PointCountry("ZA");
-					pointC2 = new route.PointCountry("GB");
+					pointL1 = new route.PointLatLong("exporter", 5.34, 6.12);
+					pointL2 = new route.PointLatLong("exporter", 5.34, 6.12);
+					pointC1 = new route.PointCountry("ZA", "importer");
+					pointC2 = new route.PointCountry("GB", "importer");
 				}
 			});
 
@@ -168,10 +168,10 @@ define(
 				setup: function() {
 					// set a default function - required before we can create points
 					route.setLatLongToPointFunc(function(latlong) { return [latlong[0], latlong[1]]; });
-					pointL1 = new route.PointLatLong(2.34, 3.45);
-					pointL2 = new route.PointLatLong(4.56, 5.67);
-					pointL3 = new route.PointLatLong(6.78, 7.89);
-					pointL4 = new route.PointLatLong(8.90, 9.01);
+					pointL1 = new route.PointLatLong("exporter", 2.34, 3.45);
+					pointL2 = new route.PointLatLong("exporter", 4.56, 5.67);
+					pointL3 = new route.PointLatLong("exporter", 6.78, 7.89);
+					pointL4 = new route.PointLatLong("exporter", 8.90, 9.01);
 				}
 			});
 
@@ -341,10 +341,10 @@ define(
 				setup: function() {
 					// set a default function - required before we can create points
 					route.setCountryGetPointFunc(function() { return [8, 9]; });
-					pointC1 = new route.PointCountry("ZA");
-					pointC2 = new route.PointCountry("GB");
-					pointC3 = new route.PointCountry("ZW");
-					pointC4 = new route.PointCountry("AR");
+					pointC1 = new route.PointCountry("ZA", "importer");
+					pointC2 = new route.PointCountry("GB", "importer");
+					pointC3 = new route.PointCountry("ZW", "importer");
+					pointC4 = new route.PointCountry("AR", "importer");
 				}
 			});
 

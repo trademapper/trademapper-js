@@ -140,18 +140,27 @@ define(
 							multiValueColumn: false,
 							multiselect: true,
 							type: "location",
+							locationType: "country_code",
+							locationOrder: 3,
+							locationRole: "importer",
 							values: ["AE", "AR", "AT"]
 						},
 						"Exporter": {
 							multiValueColumn: false,
 							multiselect: true,
 							type: "location",
+							locationType: "country_code",
+							locationOrder: 2,
+							locationRole: "exporter",
 							values: ["BW", "NA", "ZA", "ZW"]
 						},
 						"Origin": {
 							multiValueColumn: false,
 							multiselect: true,
 							type: "location",
+							locationType: "country_code",
+							locationOrder: 1,
+							locationRole: "origin",
 							values: ["", "BW"]
 						},
 						"Term": {
@@ -164,6 +173,7 @@ define(
 							multiValueColumn: false,
 							multiselect: false,
 							type: "text",
+							isUnit: true,
 							values: [""]
 						},
 						"Purpose": {
@@ -313,16 +323,19 @@ define(
 					col1: {
 						type: "location",
 						locationOrder: 1,
+						locationRole: "origin",
 						locationType: "country_code"
 					},
 					col2: {
 						type: "location",
 						locationOrder: 2,
+						locationRole: "exporter",
 						locationType: "country_code_list"
 					},
 					col3: {
 						type: "ignore",
 						locationOrder: 3,
+						locationRole: "importer",
 						locationType: "country_code"
 					}
 				};
@@ -333,11 +346,13 @@ define(
 					{
 						name: "col1",
 						locationType: "country_code",
+						locationRole: "origin",
 						order: 1
 					},
 					{
 						name: "col2",
 						locationType: "country_code_list",
+						locationRole: "exporter",
 						order: 2
 					}
 				]);
@@ -348,6 +363,7 @@ define(
 					col1name: {
 						type: "location",
 						locationOrder: 1,
+						locationRole: "origin",
 						locationType: "latLongName"
 					},
 					col1lat: {
@@ -363,6 +379,7 @@ define(
 					col2name: {
 						type: "location",
 						locationOrder: 2,
+						locationRole: "exporter",
 						locationType: "latLongName"
 					},
 					col2lat: {
@@ -378,6 +395,7 @@ define(
 					col3: {
 						type: "ignore",
 						locationOrder: 3,
+						locationRole: "importer",
 						locationType: "country_code"
 					}
 				};
@@ -388,6 +406,7 @@ define(
 					{
 						name: "col1name",
 						locationType: "latlong",
+						locationRole: "origin",
 						latitude: "col1lat",
 						longitude: "col1long",
 						order: 1
@@ -395,6 +414,7 @@ define(
 					{
 						name: "col2name",
 						locationType: "latlong",
+						locationRole: "exporter",
 						latitude: "col2lat",
 						longitude: "col2long",
 						order: 2

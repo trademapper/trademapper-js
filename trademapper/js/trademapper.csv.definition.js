@@ -25,18 +25,21 @@ define([], function() {
 					type: "location",
 					locationOrder: 3,
 					locationType: "country_code",
+					locationRole: "importer",
 					multiselect: true
 				},
 				"Exporter": {
 					type: "location",
 					locationOrder: 2,
 					locationType: "country_code",
+					locationRole: "exporter",
 					multiselect: true
 				},
 				"Origin": {
 					type: "location",
 					locationOrder: 1,
 					locationType: "country_code",
+					locationRole: "origin",
 					multiselect: true
 				},
 				"Importer reported quantity": {
@@ -132,6 +135,7 @@ define([], function() {
 					type: "location",
 					locationOrder: 1,
 					locationType: "country_code",
+					locationRole: "origin",
 					multiselect: true
 				},
 				"Raw country codes": {
@@ -147,6 +151,7 @@ define([], function() {
 					type: "location",
 					locationOrder: 2,
 					locationType: "country_code_list",
+					locationRole: "exporter",
 					multiselect: true
 				},
 				"Cty Tra": {
@@ -154,6 +159,7 @@ define([], function() {
 					type: "location",
 					locationOrder: 3,
 					locationType: "country_code_list",
+					locationRole: "transit",
 					multiselect: true
 				},
 				"Cty Des": {
@@ -161,6 +167,7 @@ define([], function() {
 					type: "location",
 					locationOrder: 4,
 					locationType: "country_code",
+					locationRole: "importer",
 					multiselect: true
 				},
 				"Species": {
@@ -259,6 +266,7 @@ define([], function() {
 					type: "location",
 					locationOrder: 1,
 					locationType: "latLongName",
+					locationRole: "origin",
 					multiselect: true
 				},
 				"Origin Lat": {
@@ -275,6 +283,7 @@ define([], function() {
 					type: "location",
 					locationOrder: 2,
 					locationType: "latLongName",
+					locationRole: "transit",
 					multiselect: true
 				},
 				"Transit 1 Lat": {
@@ -291,6 +300,7 @@ define([], function() {
 					type: "location",
 					locationOrder: 3,
 					locationType: "latLongName",
+					locationRole: "transit",
 					multiselect: true
 				},
 				"Transit 2 Lat": {
@@ -307,6 +317,7 @@ define([], function() {
 					type: "location",
 					locationOrder: 4,
 					locationType: "latLongName",
+					locationRole: "transit",
 					multiselect: true
 				},
 				"Transit 3 Lat": {
@@ -323,6 +334,7 @@ define([], function() {
 					type: "location",
 					locationOrder: 5,
 					locationType: "latLongName",
+					locationRole: "importer",
 					multiselect: true
 				},
 				"Destination Lat": {

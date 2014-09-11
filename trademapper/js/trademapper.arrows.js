@@ -277,7 +277,7 @@ define(["d3", "spiralTree", "trademapper.route"], function(d3, spiralTree, tmrou
 			tooltipHeight = 1.6 * (2 + route.points.length) + "em",
 			tooltiptext = '<div class="tooltip-summary">';
 
-		tooltiptext += '<span class="tooltip-quantity">' + route.quantity + '</span>';
+		tooltiptext += '<span class="tooltip-quantity">' + Math.round(route.quantity).toLocaleString() + '</span>';
 		tooltiptext += '<span class="tooltip-total">Total quantity on route:</span><br />';
 		// TODO: add units
 		//tooltiptext += '<span class="tooltip-units">' + 'Any Unit' + '</span>';
@@ -325,7 +325,7 @@ define(["d3", "spiralTree", "trademapper.route"], function(d3, spiralTree, tmrou
 		for (var i = 0; i < terminals.length; i++) {
 			tooltiptext += '<br /><span class="tooltip-dest">to: <em>' +
 				terminals[i].point.toString() + '</em> : ' + '<em>' +
-				terminals[i].quantity.toFixed(1) + '</em></span>';
+				Math.round(terminals[i].quantity).toLocaleString() + '</em></span>';
 		}
 
 		this.showPathTooltip(tooltiptext, "17em", tooltipHeight);

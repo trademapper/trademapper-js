@@ -323,3 +323,14 @@ span.tooltip-source {
 span.tooltip-dest {
 	color: white;
 }
+
+span.tooltip-quantity {
+	font-size:1.3em;
+	font-weight:bold;
+	color:#6D6E72;
+	float:right;
+}
+
+p.tooltip-location {
+	margin:0.4em 0;
+}

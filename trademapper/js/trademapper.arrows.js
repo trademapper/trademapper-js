@@ -270,11 +270,13 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 	plainMouseOverPath: function(route) {
 		// now do the tooltip
 		var pathSelector = ".route-arrow." + route.toHtmlId(),
-			tooltipHeight = 1.5 * (4 + route.points.length) + "em",
-			tooltiptext = '<div><span class="tooltip-total">Total quantity on route:</span><br />';
+			tooltipHeight = 1.6 * (2 + route.points.length) + "em",
+			tooltiptext = '<div class="tooltip-summary">'
 
-		tooltiptext += '<span class="tooltip-units">' + 'Any Unit' + '</span>';
 		tooltiptext += '<span class="tooltip-quantity">' + route.quantity + '</span>';
+		tooltiptext += '<span class="tooltip-total">Total quantity on route:</span><br />';
+		// TODO: add units
+		//tooltiptext += '<span class="tooltip-units">' + 'Any Unit' + '</span>';
 		tooltiptext += '</div><div class="tooltip-pointlist">';
 
 		for (var i = 0; i < route.points.length; i++) {

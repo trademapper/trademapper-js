@@ -9,6 +9,7 @@ define(['trademapper.csv.definition', 'trademapper.route', 'util', 'd3'], functi
 	loadingCsv: false,
 	loadErrors: null,
 	csvFile: null,
+	filters: null,
 
 	init: function(dataLoadedCallback, filterLoadedCallback, error_callback) {
 		this.csvDataLoadedCallback = dataLoadedCallback;
@@ -149,8 +150,8 @@ define(['trademapper.csv.definition', 'trademapper.route', 'util', 'd3'], functi
 			this.loadErrors.unknownCSVFormat.push("no filter spec for csv type: " + csvType);
 			this.errorCallback();
 		}
-		var filters = this.csvToFilters(csvData, csvdefs.filterSpec[csvType]);
-		this.csvFilterLoadedCallback(csvType, csvData, filters);
+		this.filters = this.csvToFilters(csvData, csvdefs.filterSpec[csvType]);
+		this.csvFilterLoadedCallback(csvType, csvData, this.filters);
 		this.csvDataLoadedCallback(csvType, csvData);
 	},
 
@@ -400,15 +401,11 @@ define(['trademapper.csv.definition', 'trademapper.route', 'util', 'd3'], functi
 					continue;
 				}
 
-				filters[column] = {
-					type: filterSpec[column].type,
-					multiValueColumn: false
-				};
-				if (filterSpec[column].hasOwnProperty("multiselect")) {
-					filters[column].multiselect = filterSpec[column].multiselect;
-				}
-				if (filterSpec[column].hasOwnProperty("shortName")) {
-					filters[column].shortName = filterSpec[column].shortName;
+				filters[column] = {multiValueColumn: false};
+				for (var attr in filterSpec[column]) {
+					if (filterSpec[column].hasOwnProperty(attr)) {
+						filters[column][attr] = filterSpec[column][attr];
+					}
 				}
 
 				// TODO: add textmapping? date?

@@ -270,11 +270,19 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 	plainMouseOverPath: function(route) {
 		// now do the tooltip
 		var pathSelector = ".route-arrow." + route.toHtmlId(),
-			tooltiptext = '<span class="tooltip-source">Route:</span><br />' +
-			'<span class="tooltip-dest"><em>' + route.toString() + '</em></span><br />' +
-			'<span class="tooltip-dest">Quantity: <em>' + route.quantity + '</em></span>';
+			tooltipHeight = 1.5 * (4 + route.points.length) + "em",
+			tooltiptext = '<div><span class="tooltip-total">Total quantity on route:</span><br />';
 
-		this.genericMouseOverPath(pathSelector, tooltiptext, "17em", "5em");
+		tooltiptext += '<span class="tooltip-units">' + 'Any Unit' + '</span>';
+		tooltiptext += '<span class="tooltip-quantity">' + route.quantity + '</span>';
+		tooltiptext += '</div><div class="tooltip-pointlist">';
+
+		for (var i = 0; i < route.points.length; i++) {
+			tooltiptext += '<p class="tooltip-location">' + route.points[i].toString() + '</p>';
+		}
+		tooltiptext += '</div>';
+
+		this.genericMouseOverPath(pathSelector, tooltiptext, "17em", tooltipHeight);
 	},
 
 	createPlainMouseOverFunc: function(route) {
@@ -287,7 +295,7 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 			center = this.centerTerminals[ctIndex].center,
 			terminals = this.centerTerminals[ctIndex].terminals,
 			pathSelector = ".traderoute.center-" + center.point.toString(),
-			tooltipWidth = 1.5 * (1 + terminals.length) + "em";
+			tooltipHeight = 1.5 * (1 + terminals.length) + "em";
 
 		// sort, largest quantity first (hence the order swap)
 		terminals.sort(function(a, b) { return b.quantity - a.quantity; });
@@ -301,7 +309,7 @@ define(["d3", "spiralTree"], function(d3, spiralTree) {
 				terminals[i].quantity.toFixed(1) + '</em></span>';
 		}
 
-		this.genericMouseOverPath(pathSelector, tooltiptext, "17em", tooltipWidth);
+		this.genericMouseOverPath(pathSelector, tooltiptext, "17em", tooltipHeight);
 	},
 
 	createFlowmapMouseOverFunc: function(ctIndex) {

@@ -253,7 +253,11 @@ define([], function() {
 	RouteCollection.prototype.addRoute = function(route) {
 		var routeName = route.toString();
 		if (this.routes.hasOwnProperty(routeName)) {
-			this.routes[routeName].quantity += route.quantity;
+			var thisRoute = this.routes[routeName];
+			thisRoute.quantity += route.quantity;
+			for (var i = 0; i < thisRoute.points.length; i++) {
+				thisRoute.points[i].roles.addRoles(route.points[i].roles.toArray());
+			}
 		}
 		else {
 			this.routes[routeName] = route;

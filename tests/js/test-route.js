@@ -2,7 +2,8 @@ define(
 	['QUnit', 'trademapper.route', 'd3'],
 	function(q, route, d3) {
 		"use strict";
-		var pointL1, pointL2, pointL3, pointL4, pointC1, pointC2, pointC3, pointC4;
+		var pointL1, pointL2, pointL3, pointL4, pointC1, pointC2, pointC3, pointC4,
+			pointC1o, pointC1e, pointC2i;
 
 		var run = function() {
 			q.module("RolesCollection module", {
@@ -83,7 +84,6 @@ define(
 					route.setLatLongToPointFunc(function() { return [3, 4]; });
 					route.setCountryGetPointFunc(function() { return [8, 9]; });
 					pointL1 = new route.PointLatLong("exporter", 5.34, 6.12);
-					pointL2 = new route.PointLatLong("exporter", 5.34, 6.12);
 					pointC1 = new route.PointCountry("ZA", "importer");
 					pointC2 = new route.PointCountry("GB", "importer");
 				}
@@ -202,6 +202,29 @@ define(
 				collection.addRoute(route2);
 				collection.addRoute(route3);
 				q.equal(collection.maxQuantity(), 30);
+			});
+
+			q.module("RouteCollection combining roles module", {
+				setup: function() {
+					// set a default function - required before we can create points
+					route.setCountryGetPointFunc(function() { return [8, 9]; });
+					pointC1o = new route.PointCountry("ZA", "origin");
+					pointC1e = new route.PointCountry("ZA", "exporter");
+					pointC2i = new route.PointCountry("GB", "importer");
+				}
+			});
+
+			q.test('check RouteCollection combines routes and roles', function() {
+				var collection = new route.RouteCollection(),
+					route1 = new route.Route([pointC1o, pointC2i], 10),
+					route2 = new route.Route([pointC1e, pointC2i], 30);
+				collection.addRoute(route1);
+				collection.addRoute(route2);
+				q.equal(1, collection.routeCount());
+				q.equal(collection.maxQuantity(), 40);
+				var routeOut = collection.getRoutes()[0];
+				q.equal(routeOut.points[0].roles.toString(), "origin,exporter");
+				q.equal(routeOut.points[1].roles.toString(), "importer");
 			});
 
 			q.module("LatLongIdentity module", {

@@ -65,7 +65,7 @@ define(["d3"], function(d3) {
 			var textName = filters[columnName].hasOwnProperty("shortName") ? filters[columnName].shortName : columnName;
 
 			var locationP = fieldset.append("p")
-				.attr("class", "form-item location-" + cName);
+				.attr("class", "form-item location-" + filters[columnName].locationRole);
 			locationP.append("label")
 				.attr("for", cName + "-location-select")
 				.text(textName);

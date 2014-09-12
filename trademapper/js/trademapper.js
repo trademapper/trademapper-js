@@ -134,7 +134,7 @@ define(
 		}
 
 		var pointRoles = routes.getPointRoles();
-		this.currentUnit = csv.getUnit(filterform.filterValues);
+		this.currentUnit = csv.getUnit(this.currentCsvType, filterform.filterValues);
 		arrows.currentUnit = this.currentUnit;
 		// now draw the routes
 		if (this.config.arrowType === "plain-arrows") {

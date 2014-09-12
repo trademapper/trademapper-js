@@ -459,13 +459,14 @@ define(['trademapper.csv.definition', 'trademapper.route', 'util', 'd3'], functi
 	/*
 	 * find the unit - so we can display it
 	 */
-	getUnit: function(filterValues) {
+	getUnit: function(csvType, filterValues) {
 		var unit = null;
+		var filterSpec = csvdefs.filterSpec[csvType];
 		// first check if any column is marked as isUnit
-		for (var filterName in filterValues) {
-			if (filterValues.hasOwnProperty(filterName)) {
+		for (var filterName in filterSpec) {
+			if (filterSpec.hasOwnProperty(filterName)) {
 				// - if so use the currently selected choice from that column
-				if (filterValues[filterName].isUnit) {
+				if (filterSpec[filterName].isUnit) {
 					if (filterValues[filterName].any) {
 						unit = "Any Unit";
 					} else if (filterValues[filterName].multiselect) {
@@ -473,6 +474,10 @@ define(['trademapper.csv.definition', 'trademapper.route', 'util', 'd3'], functi
 					} else {
 						unit = filterValues[filterName].value;
 					}
+					if (unit === "") {
+						unit = "&lt;Blank " + filterName + "&gt;";
+					}
+					break;
 				}
 			}
 		}

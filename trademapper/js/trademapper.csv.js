@@ -460,9 +460,27 @@ define(['trademapper.csv.definition', 'trademapper.route', 'util', 'd3'], functi
 	 * find the unit - so we can display it
 	 */
 	getUnit: function(filterValues) {
-		// TODO: first check if any column is marked as isUnit
-		// - if so use the currently selected choice from that column
+		var unit = null;
+		// first check if any column is marked as isUnit
+		for (var filterName in filterValues) {
+			if (filterValues.hasOwnProperty(filterName)) {
+				// - if so use the currently selected choice from that column
+				if (filterValues[filterName].isUnit) {
+					if (filterValues[filterName].any) {
+						unit = "Any Unit";
+					} else if (filterValues[filterName].multiselect) {
+						unit = filterValues[filterName].valueList.join(", ");
+					} else {
+						unit = filterValues[filterName].value;
+					}
+				}
+			}
+		}
 		// - else use the currently selected value of the quantity column
+		if (!unit) {
+			unit = filterValues.quantityColumn.value;
+		}
+		return unit;
 	}
 
 	};

@@ -16,6 +16,7 @@ define(["d3", "spiralTree", "trademapper.route"], function(d3, spiralTree, tmrou
 	narrowWideStrokeThreshold: 3,  // used for deciding whether to use arrows inside or outside line
 	normalOpacity: 0.4,
 	highlightOpacity: 1,
+	currentUnit: "Any Unit",
 
 	/*
 	 * Save the svg we use for later user
@@ -274,13 +275,12 @@ define(["d3", "spiralTree", "trademapper.route"], function(d3, spiralTree, tmrou
 
 		// now do the tooltip
 		var pathSelector = ".route-arrow." + route.toHtmlId(),
-			tooltipHeight = 1.6 * (2 + route.points.length) + "em",
+			tooltipHeight = 1.6 * (2.5 + route.points.length) + "em",
 			tooltiptext = '<div class="tooltip-summary">';
 
 		tooltiptext += '<span class="tooltip-quantity">' + Math.round(route.quantity).toLocaleString() + '</span>';
 		tooltiptext += '<span class="tooltip-total">Total quantity on route:</span><br />';
-		// TODO: add units
-		//tooltiptext += '<span class="tooltip-units">' + 'Any Unit' + '</span>';
+		tooltiptext += '<span class="tooltip-units">Unit: ' + this.currentUnit + '</span>';
 		tooltiptext += '</div><div class="tooltip-pointlist">';
 
 		for (var i = 0; i < route.points.length; i++) {
@@ -320,7 +320,8 @@ define(["d3", "spiralTree", "trademapper.route"], function(d3, spiralTree, tmrou
 		terminals.sort(function(a, b) { return b.quantity - a.quantity; });
 
 		tooltiptext = '<span class="tooltip-source">Source: ' +
-			center.point.toString() + '</span>';
+			center.point.toString() + '</span>' +
+			'<span class="tooltip-units">Unit: ' + this.currentUnit + '</span>';
 
 		for (var i = 0; i < terminals.length; i++) {
 			tooltiptext += '<br /><span class="tooltip-dest">to: <em>' +

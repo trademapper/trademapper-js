@@ -26,6 +26,7 @@ define(
 	tmsvg: null,
 	currentCsvData: null,
 	currentCsvType: null,
+	currentUnit: null,
 	queryString: null,
 
 	defaultConfig: {
@@ -134,6 +135,7 @@ define(
 
 		var pointRoles = routes.getPointRoles();
 		this.currentUnit = csv.getUnit(filterform.filterValues);
+		arrows.currentUnit = this.currentUnit;
 		// now draw the routes
 		if (this.config.arrowType === "plain-arrows") {
 			arrows.drawRouteCollectionPlainArrows(routes, pointRoles);

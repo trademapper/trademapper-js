@@ -247,7 +247,7 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, spiralTre
 
 	addDragToPathTooltip: function() {
 		// inspired by http://jsfiddle.net/wfbY8/737/
-		var offX, offY,
+		var offX, offY, box, maxTop, maxLeft,
 		moduleThis = this,
 		mouseUp = function() {
 			window.removeEventListener("mousemove", divMove, true);
@@ -256,12 +256,20 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, spiralTre
 			var div = document.querySelector(moduleThis.pathTooltipSelector);
 			offY = e.clientY - parseInt(div.offsetTop);
 			offX = e.clientX - parseInt(div.offsetLeft);
+			box = document.querySelector("#mapcanvas").getBoundingClientRect();
+			maxTop = box.bottom - box.top;
+			maxLeft = box.right - box.left;
 			window.addEventListener("mousemove", divMove, true);
 		},
 		divMove = function(e) {
-			var div = document.querySelector(moduleThis.pathTooltipSelector);
-			div.style.top = (e.clientY - offY) + "px";
-			div.style.left = (e.clientX - offX) + "px";
+			var div = document.querySelector(moduleThis.pathTooltipSelector),
+				divH = div.clientHeight,
+				divW = div.clientWidth,
+				newTop = Math.max(0, Math.min(maxTop - divH, (e.clientY - offY))),
+				newLeft = Math.max(0, Math.min(maxLeft - divW, (e.clientX - offX)));
+
+			div.style.top = newTop + "px";
+			div.style.left = newLeft + "px";
 		};
 
 		document.querySelector("p.tooltip-header").addEventListener("mousedown", mouseDown, false);
@@ -270,16 +278,26 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, spiralTre
 
 	showPathTooltip: function(tooltiptext, tooltipWidth, tooltipHeight) {
 		var moduleThis = this,
-			box = util.getOffsetRect(document.querySelector("#mapcanvas"));
+			box = util.getPageOffsetRect(document.querySelector("#mapcanvas"));
 
 		tooltiptext = '<p class="tooltip-header"><span class="tooltip-close">X</span></p>' + tooltiptext;
 
 		this.pathTooltip
 			.style("width", tooltipWidth)
 			.style("height", tooltipHeight)
-			.style("left", (d3.event.pageX - box.left) + "px")
-			.style("top", (d3.event.pageY - box.top + 30) + "px")
 			.html(tooltiptext);
+
+		// make sure we're not outside the box
+		var maxTop = box.bottom - box.top,
+			maxLeft = box.right - box.left,
+			divTooltip = document.querySelector(moduleThis.pathTooltipSelector),
+			divH = divTooltip.clientHeight,
+			divW = divTooltip.clientWidth,
+			newTop = Math.max(0, Math.min(maxTop - divH, (d3.event.pageY - box.top + 30))),
+			newLeft = Math.max(0, Math.min(maxLeft - divW, (d3.event.pageX - box.left)));
+		this.pathTooltip
+			.style("top", newTop + "px")
+			.style("left", newLeft + "px");
 
 		this.addDragToPathTooltip();
 

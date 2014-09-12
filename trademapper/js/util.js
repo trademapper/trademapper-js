@@ -13,13 +13,15 @@ define([], function() {
 			return ret;
 		},
 
-		getOffsetRect: function(elem) {
+		getPageOffsetRect: function(elem) {
 			var box = elem.getBoundingClientRect();
 
-			var top  = box.top +  window.pageYOffset;
-			var left = box.left + window.pageXOffset;
-
-			return { top: Math.round(top), left: Math.round(left) };
+			return {
+				top:    Math.round(box.top + window.pageYOffset),
+				bottom: Math.round(box.bottom + window.pageYOffset),
+				left:   Math.round(box.left + window.pageXOffset),
+				right:  Math.round(box.right + window.pageXOffset)
+			};
 		},
 
 		// from http://stackoverflow.com/a/979995/3189

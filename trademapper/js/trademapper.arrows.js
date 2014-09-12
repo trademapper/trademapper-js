@@ -3,11 +3,13 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, spiralTre
 	"use strict";
 	return {
 	mapsvg: null,
+	zoomg: null,
+	arrowg: null,
+	svgdefs: null,
+	config: null,
 	pathTooltipSelector: null,
 	pathTooltip: null,
 	highlightedPath: null,
-	config: null,
-	svgdefs: null,
 	flowmap: null,
 	arrowColours: null,
 	minArrowWidth: null,
@@ -23,8 +25,11 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, spiralTre
 	 * Save the svg we use for later user
 	 * Add the arrow head to defs/marker in the SVG
 	 */
-	init: function(svgElement, tooltipSelector, colours, minWidth, maxWidth) {
+	init: function(svgElement, zoomg, svgDefs, tooltipSelector, colours, minWidth, maxWidth) {
 		this.mapsvg = svgElement;
+		this.zoomg = zoomg;
+		this.arrowg = this.zoomg.append("g").attr("class", "arrows");
+		this.svgdefs = svgDefs;
 		this.pathTooltipSelector = tooltipSelector;
 		this.pathTooltip = d3.select(tooltipSelector);
 		this.arrowColours = colours;
@@ -36,7 +41,6 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, spiralTre
 	},
 
 	addDefsToSvg: function() {
-		this.svgdefs = this.mapsvg.select("defs");
 		// first add arrow head
 		this.svgdefs.append("marker")
 				.attr("id", "markerSpiralTreeArrowWide")
@@ -92,7 +96,7 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, spiralTre
 	},
 
 	setUpFlowmap: function() {
-		this.flowmap = new spiralTree.SpiralTree(this.mapsvg, function(xy) { return [xy[1], xy[0]]; });
+		this.flowmap = new spiralTree.SpiralTree(this.zoomg, function(xy) { return [xy[1], xy[0]]; });
 		this.flowmap.extraSpiralClass = "traderoute";
 		this.flowmap.setOpacity(this.normalOpacity);
 		this.flowmap.setNodeDrawable(false);
@@ -173,16 +177,15 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, spiralTre
 
 		gradientId = this.addGradientForRoute(route);
 
-		this.mapsvg
-			.append("path")
-				.datum(route.points)
-				.attr("class", "route-arrow " + route.toHtmlId())
-				.attr("d", this.dForRoute(route))
-				.attr("marker-end", markerEnd)
-				.attr("stroke", "url(#" + gradientId + ")")
-				.attr("stroke-width", arrowWidth)
-				.on('mouseover', this.createPlainMouseOverFunc(route))
-				.on('mouseout', this.genericMouseOutPath);
+		this.arrowg.append("path")
+			.datum(route.points)
+			.attr("class", "route-arrow " + route.toHtmlId())
+			.attr("d", this.dForRoute(route))
+			.attr("marker-end", markerEnd)
+			.attr("stroke", "url(#" + gradientId + ")")
+			.attr("stroke-width", arrowWidth)
+			.on('mouseover', this.createPlainMouseOverFunc(route))
+			.on('mouseout', this.genericMouseOutPath);
 	},
 
 	drawRouteCollectionPlainArrows: function(collection, pointRoles) {
@@ -223,7 +226,7 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, spiralTre
 			console.log("point undefined for " + pointName);
 			return;
 		}
-		this.drawPoint(point[0], point[1], pointType, "", this.mapsvg);
+		this.drawPoint(point[0], point[1], pointType, "", this.arrowg);
 	},
 
 	drawPointRoles: function(pointRoles) {

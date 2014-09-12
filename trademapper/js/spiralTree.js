@@ -77,9 +77,7 @@ function SpiralTree(layerId_, projection_) {
 			.translate([480, 400]);
 	}
 
-	// TODO: make this optional?
-	this.spiralTreeLayer = this.layerId;
-		//.append("g");
+	this.spiralTreeLayer = this.layerId.append("g").attr("class", "flowmap");
 
 	this.varyStrokeWidth = true;	//spiral line width
 	this.strokeWidth = 1;	//spiral line width

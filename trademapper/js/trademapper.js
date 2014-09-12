@@ -61,9 +61,11 @@ define(
 		this.tooltipElement = this.mapRootElement.append("div")
 			.attr("id", "maptooltip");
 
-		arrows.init(this.tmsvg, '#maptooltip', this.config.arrowColours,
-			this.config.minArrowWidth, this.config.maxArrowWidth);
+		// need to init mapper before arrows otherwise the map is on top of
+		// the arrows
 		mapper.init(this.zoomg, this.svgDefs, this.config);
+		arrows.init(this.tmsvg, this.zoomg, this.svgDefs, '#maptooltip', this.config.arrowColours,
+			this.config.minArrowWidth, this.config.maxArrowWidth);
 
 		// set up the various callbacks we need to link things together
 		var moduleThis = this;

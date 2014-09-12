@@ -247,7 +247,7 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, spiralTre
 
 	addDragToPathTooltip: function() {
 		// inspired by http://jsfiddle.net/wfbY8/737/
-		var offX, offY, box, maxTop, maxLeft,
+		var offX, offY, box,
 		moduleThis = this,
 		mouseUp = function() {
 			window.removeEventListener("mousemove", divMove, true);
@@ -256,17 +256,15 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, spiralTre
 			var div = document.querySelector(moduleThis.pathTooltipSelector);
 			offY = e.clientY - parseInt(div.offsetTop);
 			offX = e.clientX - parseInt(div.offsetLeft);
-			box = document.querySelector("#mapcanvas").getBoundingClientRect();
-			maxTop = box.bottom - box.top;
-			maxLeft = box.right - box.left;
+			box = document.querySelector("#mapcanvas").parentNode.getBoundingClientRect();
 			window.addEventListener("mousemove", divMove, true);
 		},
 		divMove = function(e) {
 			var div = document.querySelector(moduleThis.pathTooltipSelector),
 				divH = div.clientHeight,
 				divW = div.clientWidth,
-				newTop = Math.max(0, Math.min(maxTop - divH, (e.clientY - offY))),
-				newLeft = Math.max(0, Math.min(maxLeft - divW, (e.clientX - offX)));
+				newTop = Math.max(0, Math.min(box.height - divH, (e.clientY - offY))),
+				newLeft = Math.max(0, Math.min(box.width - divW, (e.clientX - offX)));
 
 			div.style.top = newTop + "px";
 			div.style.left = newLeft + "px";
@@ -278,7 +276,8 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, spiralTre
 
 	showPathTooltip: function(tooltiptext, tooltipWidth, tooltipHeight) {
 		var moduleThis = this,
-			box = util.getPageOffsetRect(document.querySelector("#mapcanvas"));
+			box = util.getPageOffsetRect(document.querySelector("#mapcanvas")),
+			containerBox = document.querySelector("#mapcanvas").parentNode.getBoundingClientRect();
 
 		tooltiptext = '<p class="tooltip-header"><span class="tooltip-close">X</span></p>' + tooltiptext;
 
@@ -288,13 +287,11 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, spiralTre
 			.html(tooltiptext);
 
 		// make sure we're not outside the box
-		var maxTop = box.bottom - box.top,
-			maxLeft = box.right - box.left,
-			divTooltip = document.querySelector(moduleThis.pathTooltipSelector),
+		var divTooltip = document.querySelector(moduleThis.pathTooltipSelector),
 			divH = divTooltip.clientHeight,
 			divW = divTooltip.clientWidth,
-			newTop = Math.max(0, Math.min(maxTop - divH, (d3.event.pageY - box.top + 30))),
-			newLeft = Math.max(0, Math.min(maxLeft - divW, (d3.event.pageX - box.left)));
+			newTop = Math.max(0, Math.min(containerBox.height - divH, (d3.event.pageY - box.top + 30))),
+			newLeft = Math.max(0, Math.min(containerBox.width - divW, (d3.event.pageX - box.left)));
 		this.pathTooltip
 			.style("top", newTop + "px")
 			.style("left", newLeft + "px");

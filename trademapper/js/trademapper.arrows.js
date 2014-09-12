@@ -324,7 +324,16 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, spiralTre
 		tooltiptext += '</div><div class="tooltip-pointlist">';
 
 		for (var i = 0; i < route.points.length; i++) {
-			tooltiptext += '<p class="tooltip-location">' + route.points[i].toString() + '</p>';
+			tooltiptext += '<p class="tooltip-location">' + route.points[i].toString();
+			var pointRoles = route.points[i].roles.toArray();
+			for (var j = 0; j < tmroute.locationRoles.length; j++) {
+				var role = tmroute.locationRoles[j];
+				if (pointRoles.indexOf(role) !== -1) {
+					tooltiptext += ' <span class="location-role-icon ' + role + '">' +
+						role.charAt(0).toUpperCase() + '</span>';
+				}
+			}
+			tooltiptext += '</p>';
 		}
 		tooltiptext += '</div>';
 

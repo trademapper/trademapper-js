@@ -294,12 +294,13 @@ span.showhide {
 	fill:#ff6600;
 }
 
-.tooltip-close-container {
+.tooltip-header {
 	margin:0 0 2px 0;
 	height:1.3em;
 	border-bottom-width:1px;
 	border-bottom-color:grey;
 	border-bottom-style:groove;
+	cursor:pointer;
 }
 
 .tooltip-close {

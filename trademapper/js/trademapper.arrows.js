@@ -3,6 +3,7 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, spiralTre
 	"use strict";
 	return {
 	mapsvg: null,
+	pathTooltipSelector: null,
 	pathTooltip: null,
 	highlightedPath: null,
 	config: null,
@@ -22,9 +23,10 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, spiralTre
 	 * Save the svg we use for later user
 	 * Add the arrow head to defs/marker in the SVG
 	 */
-	init: function(svgElement, tooltipElement, colours, minWidth, maxWidth) {
+	init: function(svgElement, tooltipSelector, colours, minWidth, maxWidth) {
 		this.mapsvg = svgElement;
-		this.pathTooltip = tooltipElement;
+		this.pathTooltipSelector = tooltipSelector;
+		this.pathTooltip = d3.select(tooltipSelector);
 		this.arrowColours = colours;
 		this.minArrowWidth = minWidth;
 		this.maxArrowWidth = maxWidth;
@@ -243,11 +245,44 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, spiralTre
 		d3.selectAll(".tradenode").remove();
 	},
 
+	dragmovePathTooltip: function() {
+		d3.select("#maptooltip")
+			.style("left", d3.event.x + "px")
+			.style("top", d3.event.y + "px");
+	},
+
+	addDragToPathTooltip: function() {
+		var offX, offY,
+		moduleThis = this,
+		mouseUp = function() {
+			window.removeEventListener("mousemove", divMove, true);
+		},
+		mouseDown = function(e) {
+			var div = document.querySelector(moduleThis.pathTooltipSelector);
+			offY = e.clientY - parseInt(div.offsetTop);
+			offX = e.clientX - parseInt(div.offsetLeft);
+			window.addEventListener("mousemove", divMove, true);
+		},
+		divMove = function(e) {
+			var div = document.querySelector(moduleThis.pathTooltipSelector);
+			div.style.top = (e.clientY - offY) + "px";
+			div.style.left = (e.clientX - offX) + "px";
+		};
+
+		document.querySelector("p.tooltip-header").addEventListener("mousedown", mouseDown, false);
+		window.addEventListener("mouseup", mouseUp, false);
+	},
+
 	showPathTooltip: function(tooltiptext, tooltipWidth, tooltipHeight) {
 		var moduleThis = this,
 			box = util.getOffsetRect(document.querySelector("#mapcanvas"));
 
-		tooltiptext = '<p class="tooltip-close-container"><span class="tooltip-close">X</span></p>' + tooltiptext;
+		// add stuff to drag the div
+		//var drag = d3.behavior.drag()
+			//.origin(function(d) { return d; })
+			//.on("drag", moduleThis.dragmovePathTooltip);
+
+		tooltiptext = '<p class="tooltip-header"><span class="tooltip-close">X</span></p>' + tooltiptext;
 
 		this.pathTooltip
 			.style("width", tooltipWidth)
@@ -256,6 +291,11 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, spiralTre
 			.style("top", (d3.event.pageY - box.top + 30) + "px")
 			.html(tooltiptext);
 
+		//d3.select("p.tooltip-header")
+			//.call(drag);
+		this.addDragToPathTooltip();
+
+		// add the close button
 		d3.select("span.tooltip-close")
 			.on("click", function() { moduleThis.clearTooltip(); });
 

@@ -58,7 +58,7 @@ define(
 		this.tooltipElement = this.mapRootElement.append("div")
 			.attr("id", "maptooltip");
 
-		arrows.init(this.tmsvg, this.tooltipElement, this.config.arrowColours,
+		arrows.init(this.tmsvg, '#maptooltip', this.config.arrowColours,
 			this.config.minArrowWidth, this.config.maxArrowWidth);
 		mapper.init(this.tmsvg, this.config);
 

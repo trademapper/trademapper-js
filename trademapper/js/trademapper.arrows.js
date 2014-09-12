@@ -245,12 +245,6 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, spiralTre
 		d3.selectAll(".tradenode").remove();
 	},
 
-	dragmovePathTooltip: function() {
-		d3.select("#maptooltip")
-			.style("left", d3.event.x + "px")
-			.style("top", d3.event.y + "px");
-	},
-
 	addDragToPathTooltip: function() {
 		// inspired by http://jsfiddle.net/wfbY8/737/
 		var offX, offY,
@@ -446,6 +440,7 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, spiralTre
 
 		// clear any old legend
 		d3.selectAll(".legend").remove();
+		gLegend = this.mapsvg.append("g").attr("class", "legend");
 
 		for (i = 0; i < 4; i++) {
 			if (i === 0) {
@@ -468,7 +463,6 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, spiralTre
 
 			lineVertical = lineVertical - (Math.max(strokeWidth, 8) + margin);
 
-			gLegend = this.mapsvg.append("g").attr("class", "legend");
 			gLegend.append("line")
 				.attr("x1", margin)
 				.attr("y1", lineVertical)

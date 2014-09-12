@@ -24,6 +24,8 @@ define(
 	tooltipElement: null,
 	fileInputElement: null,
 	tmsvg: null,
+	svgDefs: null,
+	zoomg: null,
 	currentCsvData: null,
 	currentCsvType: null,
 	currentUnit: null,
@@ -54,13 +56,14 @@ define(
 			.attr("id", "mapcanvas")
 			.attr("class", "map-svg flow")
 			.attr("viewBox", "0 -30 1500 700");
-		this.tmsvg.append("defs");
+		this.svgDefs = this.tmsvg.append("defs");
+		this.zoomg = this.tmsvg.append("g").attr("class", "zoomgroup");
 		this.tooltipElement = this.mapRootElement.append("div")
 			.attr("id", "maptooltip");
 
 		arrows.init(this.tmsvg, '#maptooltip', this.config.arrowColours,
 			this.config.minArrowWidth, this.config.maxArrowWidth);
-		mapper.init(this.tmsvg, this.config);
+		mapper.init(this.zoomg, this.svgDefs, this.config);
 
 		// set up the various callbacks we need to link things together
 		var moduleThis = this;

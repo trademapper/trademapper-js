@@ -4,7 +4,9 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre"], functio
 
 	return {
 
-	mapsvg: null,
+	zoomg: null,
+	mapg: null,
+	svgDefs: null,
 	config: null,
 	countries: null,
 	borders: null,
@@ -17,8 +19,9 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre"], functio
 	 * caches svg reference
 	 * decodes countries and borders and draws them
 	 */
-	init: function(svgElement, mapConfig) {
-		this.mapsvg = svgElement;
+	init: function(svgZoomg, svgDefs, mapConfig) {
+		this.zoomg = svgZoomg;
+		this.svgDefs = svgDefs;
 		this.config = mapConfig;
 
 		this.addPatternDefs();
@@ -35,7 +38,10 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre"], functio
 		this.disputedborders = topojson.mesh(disputedareas, disputedareas.objects.disputeunit,
 			function(a, b) { return true; });
 
-		this.mapsvg.selectAll(".subunit")
+		this.mapg = this.zoomg.append("g")
+			.attr("class", "mapgroup");
+
+		this.mapg.selectAll(".subunit")
 			.data(this.countries)
 			.enter()
 				.append("path")
@@ -45,12 +51,12 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre"], functio
 				//.on("mouseover", hoverCountry)
 				//.on("mouseout", unhoverCountry);
 
-		this.mapsvg.append("path")
+		this.mapg.append("path")
 			.datum(this.borders)
 			.attr("d", this.pathmaker)
 			.attr("class", "country-border");
 
-		this.mapsvg.selectAll(".disputed")
+		this.mapg.selectAll(".disputed")
 			.data(this.disputed)
 			.enter()
 				.append("path")
@@ -58,16 +64,25 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre"], functio
 				.attr("class", function(d) { return "disputed " + d.id; })
 				.attr("fill", "url(#diagonalHatch)");
 
-		this.mapsvg.append("path")
+		this.mapg.append("path")
 			.datum(this.disputedborders)
 			.attr("d", this.pathmaker)
 			.attr("class", "disputed-border");
+
+		var moduleThis = this,
+		zoomed = function() {
+			// TODO: put map in group so it can be zoomed separate to legend etc
+			moduleThis.mapg.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+		},
+		zoom = d3.behavior.zoom()
+			//.scaleExtent([1, 10])
+			.on("zoom", zoomed);
+		this.zoomg.call(zoom);
 	},
 
 	addPatternDefs: function() {
 		// from http://stackoverflow.com/a/14500054/3189
-		var svgdefs = this.mapsvg.select("defs");
-		svgdefs.append("pattern")
+		this.svgDefs.append("pattern")
 				.attr("id", "diagonalHatch")
 				.attr("patternUnits", "userSpaceOnUse")
 				.attr("width", "4")
@@ -87,7 +102,7 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre"], functio
 	},
 
 	colorTradingCountries: function(countryObj) {
-		this.mapsvg.selectAll(".country")
+		this.mapg.selectAll(".country")
 			.classed("trading", function(d) {
 				if (countryObj.hasOwnProperty(d.id)) {
 					return true;
@@ -98,7 +113,7 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre"], functio
 	},
 
 	resetCountryColors: function() {
-		this.mapsvg.selectAll(".country")
+		this.mapg.selectAll(".country")
 			.classed("trading", false);
 	},
 

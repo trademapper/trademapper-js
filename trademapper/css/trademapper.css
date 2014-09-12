@@ -198,8 +198,8 @@ span.showhide {
 
 
 
-.form-item.location-exporter {background-color: #808000;}
-.form-item.location-transit {background-color: #008080;}
+.form-item.location-exporter {background-color: #45689f;}
+.form-item.location-transit {background-color: #1a8f82;}
 .form-item.location-importer {background-color: #FF6600;}
 
 /*---Year Group selectors--*/
@@ -276,17 +276,22 @@ span.showhide {
 	fill-opacity: 1;
 }
 
+.route-plain-arrow-head-narrow {
+	fill: #ff6600;
+	fill-opacity: 1;
+}
+
 .tradenode.origin {
 	fill: #000000;
 }
 .tradenode.exporter {
-	fill: #808000;
+	fill: #45689f;
 }
 .tradenode.transit {
-	fill: #008080;
+	fill: #1a8f82;
 }
 .tradenode.importer {
-	fill: #FF6600;
+	fill: #ff6600;
 }
 
 /*----------Tooltip---

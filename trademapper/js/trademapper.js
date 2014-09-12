@@ -33,10 +33,10 @@ define(
 			ratio: 0.6,
 			arrowColours: {
 				pathStart: "black",
-				pathEnd: "orange"
+				pathEnd: "#ff6600"
 			},
 			minArrowWidth: 1,
-			maxArrowWidth: 30,
+			maxArrowWidth: 25,
 			arrowType: "plain-arrows"  // could be "plain-arrows" or "spiral-tree"
 		},
 

@@ -86,7 +86,7 @@ define(["d3", "spiralTree", "trademapper.route"], function(d3, spiralTree, tmrou
 				.attr("orient", "auto")
 			.append("path")
 				.attr("d", "M 0 0 L 10 5 L 0 10 z")
-				.attr("class", "route-arrow-head-narrow");
+				.attr("class", "route-plain-arrow-head-narrow");
 	},
 
 	setUpFlowmap: function() {

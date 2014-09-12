@@ -1,5 +1,5 @@
 
-define(["d3", "spiralTree", "trademapper.route"], function(d3, spiralTree, tmroute) {
+define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, spiralTree, tmroute, util) {
 	"use strict";
 	return {
 	mapsvg: null,
@@ -244,13 +244,13 @@ define(["d3", "spiralTree", "trademapper.route"], function(d3, spiralTree, tmrou
 	},
 
 	showPathTooltip: function(tooltiptext, tooltipWidth, tooltipHeight) {
-		var box = d3.select("#mapcanvas")[0][0].getBoundingClientRect();
+		var box = util.getOffsetRect(document.querySelector("#mapcanvas"));
 
 		this.pathTooltip
 			.style("width", tooltipWidth)
 			.style("height", tooltipHeight)
-			.style("left", (d3.event.pageX - box.left + 10) + "px")
-			.style("top", (d3.event.pageY - box.top - 100) + "px")
+			.style("left", (d3.event.pageX - box.left) + "px")
+			.style("top", (d3.event.pageY - box.top + 30) + "px")
 			.html(tooltiptext);
 
 		this.pathTooltip.transition()

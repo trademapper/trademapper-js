@@ -13,6 +13,15 @@ define([], function() {
 			return ret;
 		},
 
+		getOffsetRect: function(elem) {
+			var box = elem.getBoundingClientRect();
+
+			var top  = box.top +  window.pageYOffset;
+			var left = box.left + window.pageXOffset;
+
+			return { top: Math.round(top), left: Math.round(left) };
+		},
+
 		// from http://stackoverflow.com/a/979995/3189
 		queryString: function () {
 			// This function is anonymous, is executed immediately and

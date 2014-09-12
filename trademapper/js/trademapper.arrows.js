@@ -244,7 +244,10 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, spiralTre
 	},
 
 	showPathTooltip: function(tooltiptext, tooltipWidth, tooltipHeight) {
-		var box = util.getOffsetRect(document.querySelector("#mapcanvas"));
+		var moduleThis = this,
+			box = util.getOffsetRect(document.querySelector("#mapcanvas"));
+
+		tooltiptext = '<p class="tooltip-close-container"><span class="tooltip-close">X</span></p>' + tooltiptext;
 
 		this.pathTooltip
 			.style("width", tooltipWidth)
@@ -252,6 +255,9 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, spiralTre
 			.style("left", (d3.event.pageX - box.left) + "px")
 			.style("top", (d3.event.pageY - box.top + 30) + "px")
 			.html(tooltiptext);
+
+		d3.select("span.tooltip-close")
+			.on("click", function() { moduleThis.clearTooltip(); });
 
 		this.pathTooltip.transition()
 			.duration(200)
@@ -275,7 +281,7 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, spiralTre
 
 		// now do the tooltip
 		var pathSelector = ".route-arrow." + route.toHtmlId(),
-			tooltipHeight = 1.6 * (2.5 + route.points.length) + "em",
+			tooltipHeight = 1.6 * (4 + route.points.length) + "em",
 			tooltiptext = '<div class="tooltip-summary">';
 
 		tooltiptext += '<span class="tooltip-quantity">' + Math.round(route.quantity).toLocaleString() + '</span>';
@@ -309,7 +315,7 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, spiralTre
 			center = this.centerTerminals[ctIndex].center,
 			terminals = this.centerTerminals[ctIndex].terminals,
 			pathSelector = ".traderoute.center-" + center.point.toString(),
-			tooltipHeight = 1.5 * (1 + terminals.length) + "em";
+			tooltipHeight = 1.5 * (3 + terminals.length) + "em";
 
 		// first make the paths stand out, and clear any old paths
 		d3.selectAll(".traderoute-highlight").classed("traderoute-highlight", false);

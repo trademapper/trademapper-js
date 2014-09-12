@@ -282,18 +282,39 @@ span.showhide {
 }
 
 .tradenode.origin {
-	fill: #000000;
+	fill:#000000;
 }
 .tradenode.exporter {
-	fill: #45689f;
+	fill:#45689f;
 }
 .tradenode.transit {
-	fill: #1a8f82;
+	fill:#1a8f82;
 }
 .tradenode.importer {
-	fill: #ff6600;
+	fill:#ff6600;
 }
 
+.tooltip-close-container {
+	margin:0 0 2px 0;
+	height:1.3em;
+	border-bottom-width:1px;
+	border-bottom-color:grey;
+	border-bottom-style:groove;
+}
+
+.tooltip-close {
+	float:right;
+	padding:0 0.2em;
+	border-width:1px;
+	border-color:black;
+	border-style:solid;
+	cursor:pointer;
+}
+
+.tooltip-close:hover {
+	background-color:black;
+	color:white;
+}
 /*----------Tooltip---
  =====================================*/
 
@@ -301,7 +322,7 @@ span.showhide {
     background: none repeat scroll 0 0 rgba(255, 255, 255, 0.8);
     border: 2px solid rgba(0, 0, 0, 0.5);
     box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.2);
-    padding: 1em;
+    padding: 0 1em 1em 1em;
     position: absolute;
     min-height:8em;
 }

@@ -252,6 +252,7 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, spiralTre
 	},
 
 	addDragToPathTooltip: function() {
+		// inspired by http://jsfiddle.net/wfbY8/737/
 		var offX, offY,
 		moduleThis = this,
 		mouseUp = function() {
@@ -277,11 +278,6 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, spiralTre
 		var moduleThis = this,
 			box = util.getOffsetRect(document.querySelector("#mapcanvas"));
 
-		// add stuff to drag the div
-		//var drag = d3.behavior.drag()
-			//.origin(function(d) { return d; })
-			//.on("drag", moduleThis.dragmovePathTooltip);
-
 		tooltiptext = '<p class="tooltip-header"><span class="tooltip-close">X</span></p>' + tooltiptext;
 
 		this.pathTooltip
@@ -291,8 +287,6 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, spiralTre
 			.style("top", (d3.event.pageY - box.top + 30) + "px")
 			.html(tooltiptext);
 
-		//d3.select("p.tooltip-header")
-			//.call(drag);
 		this.addDragToPathTooltip();
 
 		// add the close button

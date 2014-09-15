@@ -83,8 +83,11 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre"], functio
 		zoomed = function() {
 			// TODO: put map in group so it can be zoomed separate to legend etc
 			moduleThis.zoomg.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+			d3.selectAll(".country-border").attr("stroke-width", (1/d3.event.scale).toString());
 		},
 		zoom = d3.behavior.zoom()
+			.translate([0, 0])
+			.scale(1)
 			.scaleExtent([1, 10])
 			.on("zoom", zoomed);
 		this.zoomg.call(zoom);

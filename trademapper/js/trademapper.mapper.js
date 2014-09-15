@@ -35,8 +35,9 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre"], functio
 		this.borders = topojson.mesh(mapdata, mapdata.objects.subunits,
 			function(a, b) { return true; });
 		this.disputed = topojson.feature(disputedareas, disputedareas.objects.disputeunit).features;
-		this.disputedborders = topojson.mesh(disputedareas, disputedareas.objects.disputeunit,
-			function(a, b) { return true; });
+		// don't need to draw disputed borders
+		/*this.disputedborders = topojson.mesh(disputedareas, disputedareas.objects.disputeunit,
+			function(a, b) { return true; });*/
 
 		this.mapg = this.zoomg.append("g")
 			.attr("class", "mapgroup");
@@ -64,10 +65,11 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre"], functio
 				.attr("class", function(d) { return "disputed " + d.id; })
 				.attr("fill", "url(#diagonalHatch)");
 
-		this.mapg.append("path")
+		// don't need to draw disputed borders
+		/*this.mapg.append("path")
 			.datum(this.disputedborders)
 			.attr("d", this.pathmaker)
-			.attr("class", "disputed-border");
+			.attr("class", "disputed-border");*/
 
 		var moduleThis = this,
 		zoomed = function() {

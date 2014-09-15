@@ -227,6 +227,10 @@ span.showhide {
 /*	overflow:visible;*/
 }
 
+.mapocean {
+	fill: #f8fffc;
+}
+
 .country { fill: #DFDFDF; }
 
 .country.trading { fill: #b1c73e; }

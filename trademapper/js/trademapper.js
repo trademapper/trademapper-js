@@ -59,6 +59,13 @@ define(
 			.attr("viewBox", "0 -30 1500 700");
 		this.svgDefs = this.tmsvg.append("defs");
 		this.zoomg = this.tmsvg.append("g").attr("class", "zoomgroup");
+		// append a background rectangle so mouse scroll zoom works over sea
+		this.zoomg.append("rect")
+			.attr("width", "100%")
+			.attr("height", "100%")
+			.attr("y", "-150")
+			.attr("class", "mapocean");
+
 		this.controlg = this.tmsvg.append("g").attr("class", "controlgroup");
 		this.tooltipElement = this.mapRootElement.append("div")
 			.attr("id", "maptooltip");

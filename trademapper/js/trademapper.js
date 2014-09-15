@@ -131,6 +131,7 @@ define(
 	showFilteredCsv: function() {
 		this.showNowWorking();
 		arrows.clearTooltip();
+		mapper.resetZoom();
 		var routes = csv.filterDataAndReturnRoutes(
 			this.currentCsvType, this.currentCsvData, filterform.filterValues);
 		if (!routes) {

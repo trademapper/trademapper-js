@@ -25,7 +25,11 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre"], functio
 		this.config = mapConfig;
 
 		this.addPatternDefs();
+		this.drawMap();
+		this.setupZoom();
+	},
 
+	drawMap: function() {
 		this.projection = d3.geo.mercator();
 			//.scale(mapWidth/1.25)
 			//.translate([mapWidth/4, mapHeight/2+10]);
@@ -70,16 +74,25 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre"], functio
 			.datum(this.disputedborders)
 			.attr("d", this.pathmaker)
 			.attr("class", "disputed-border");*/
+	},
 
+	setupZoom: function() {
 		var moduleThis = this,
 		zoomed = function() {
 			// TODO: put map in group so it can be zoomed separate to legend etc
 			moduleThis.zoomg.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
 		},
 		zoom = d3.behavior.zoom()
-			//.scaleExtent([1, 10])
+			.scaleExtent([1, 10])
 			.on("zoom", zoomed);
 		this.zoomg.call(zoom);
+
+		// and add some controls to allow zooming - html or svg?
+		// add + and - text bits, function to change the scale thing
+	},
+
+	resetZoom: function () {
+		this.zoomg.attr("transform", "");
 	},
 
 	addPatternDefs: function() {

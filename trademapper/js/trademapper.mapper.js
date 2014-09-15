@@ -6,6 +6,7 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre"], functio
 
 	zoomg: null,
 	mapg: null,
+	controlg: null,
 	svgDefs: null,
 	config: null,
 	countries: null,
@@ -19,8 +20,9 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre"], functio
 	 * caches svg reference
 	 * decodes countries and borders and draws them
 	 */
-	init: function(svgZoomg, svgDefs, mapConfig) {
+	init: function(svgZoomg, controlg, svgDefs, mapConfig) {
 		this.zoomg = svgZoomg;
+		this.controlg = controlg;
 		this.svgDefs = svgDefs;
 		this.config = mapConfig;
 

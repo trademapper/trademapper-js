@@ -26,6 +26,7 @@ define(
 	tmsvg: null,
 	svgDefs: null,
 	zoomg: null,
+	controlg: null,
 	currentCsvData: null,
 	currentCsvType: null,
 	currentUnit: null,
@@ -58,12 +59,13 @@ define(
 			.attr("viewBox", "0 -30 1500 700");
 		this.svgDefs = this.tmsvg.append("defs");
 		this.zoomg = this.tmsvg.append("g").attr("class", "zoomgroup");
+		this.controlg = this.tmsvg.append("g").attr("class", "controlgroup");
 		this.tooltipElement = this.mapRootElement.append("div")
 			.attr("id", "maptooltip");
 
 		// need to init mapper before arrows otherwise the map is on top of
 		// the arrows
-		mapper.init(this.zoomg, this.svgDefs, this.config);
+		mapper.init(this.zoomg, this.controlg, this.svgDefs, this.config);
 		arrows.init(this.tmsvg, this.zoomg, this.svgDefs, '#maptooltip', this.config.arrowColours,
 			this.config.minArrowWidth, this.config.maxArrowWidth);
 

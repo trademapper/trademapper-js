@@ -252,6 +252,11 @@ span.showhide {
 	stroke-linejoin: round;
 }
 
+.legend-background {
+	fill: #f8f8f8;
+	opacity: 0.6;
+}
+
 .legend.traderoute {
 	stroke: #6D6E72;
 	opacity: 0.6;

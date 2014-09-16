@@ -464,12 +464,22 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, spiralTre
 		var gLegend, i, strokeWidth, value, valueText, circleX, circleY,
 			margin = 10,
 			lineLength = this.maxArrowWidth + 10,
+			maxWidth = this.maxArrowWidth,
+			roundUpWidth = function (factor) { return Math.max(maxWidth*factor, 8); },
+			legendHeight = Math.max(110, margin*4 + 8 + roundUpWidth(1) + roundUpWidth(0.5) + roundUpWidth(0.25)),
+			legendWidth = lineLength + margin*4 + 10 + this.maxQuantity.toFixed(1).length*8 + 80,
 			svgHeight = 430,  // from viewbox - TODO: get this properly
 			lineVertical = svgHeight;
 
 		// clear any old legend
 		d3.selectAll(".legend").remove();
 		gLegend = this.mapsvg.append("g").attr("class", "legend");
+		gLegend.append("rect")
+			.attr("x", 5)
+			.attr("y", svgHeight - (margin/2) - legendHeight)
+			.attr("width", legendWidth)
+			.attr("height", legendHeight)
+			.attr("class", "legend legend-background");
 
 		for (i = 0; i < 4; i++) {
 			if (i === 0) {

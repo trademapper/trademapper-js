@@ -17,7 +17,6 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, spiralTre
 	maxQuantity: null,
 	centerTerminals: null,
 	narrowWideStrokeThreshold: 3,  // used for deciding whether to use arrows inside or outside line
-	normalOpacity: 0.4,
 	highlightOpacity: 1,
 	currentUnit: "Any Unit",
 
@@ -93,12 +92,28 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, spiralTre
 			.append("path")
 				.attr("d", "M 0 0 L 10 5 L 0 10 z")
 				.attr("class", "route-plain-arrow-head-narrow");
+
+		// this is for the legend
+		var legendGradient = this.svgdefs.append("linearGradient")
+			.attr("id", "legendGradient");
+			/*.attr("x1", 0)
+			.attr("y1", 0)
+			.attr("x2", 1)
+			.attr("y2", 0);*/
+		legendGradient.append("stop")
+			.attr("offset", "0%")
+			.attr("stop-color", this.arrowColours.pathStart)
+			.attr("stop-opacity", this.arrowColours.opacity);
+		legendGradient.append("stop")
+			.attr("offset", "100%")
+			.attr("stop-color", this.arrowColours.pathEnd)
+			.attr("stop-opacity", this.arrowColours.opacity);
 	},
 
 	setUpFlowmap: function() {
 		this.flowmap = new spiralTree.SpiralTree(this.zoomg, function(xy) { return [xy[1], xy[0]]; });
-		this.flowmap.extraSpiralClass = "traderoute";
-		this.flowmap.setOpacity(this.normalOpacity);
+		this.flowmap.extraSpiralClass = "traderoute zoompath";
+		this.flowmap.setOpacity(this.arrowColours.opacity);
 		this.flowmap.setNodeDrawable(false);
 		this.flowmap.markerStart.wide = "url(#markerSpiralTreeArrowWide)";
 		this.flowmap.markerStart.narrow = "url(#markerSpiralTreeArrowNarrow)";
@@ -154,11 +169,11 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, spiralTre
 		gradient.append("stop")
 			.attr("offset", "0%")
 			.attr("stop-color", this.arrowColours.pathStart)
-			.attr("stop-opacity", this.normalOpacity);
+			.attr("stop-opacity", this.arrowColours.opacity);
 		gradient.append("stop")
 			.attr("offset", "100%")
 			.attr("stop-color", this.arrowColours.pathEnd)
-			.attr("stop-opacity", this.normalOpacity);
+			.attr("stop-opacity", this.arrowColours.opacity);
 
 		return gradientId;
 	},
@@ -178,12 +193,13 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, spiralTre
 		gradientId = this.addGradientForRoute(route);
 
 		this.arrowg.append("path")
-			.datum(route.points)
-			.attr("class", "route-arrow " + route.toHtmlId())
+			.datum(route)
+			.attr("class", "route-arrow zoompath " + route.toHtmlId())
 			.attr("d", this.dForRoute(route))
 			.attr("marker-end", markerEnd)
 			.attr("stroke", "url(#" + gradientId + ")")
 			.attr("stroke-width", arrowWidth)
+			.attr("data-origwidth", arrowWidth)
 			.on('mouseover', this.createPlainMouseOverFunc(route))
 			.on('mouseout', this.genericMouseOutPath);
 	},
@@ -320,7 +336,7 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, spiralTre
 
 	plainMouseOverPath: function(route) {
 		// clear the last non-transparent path
-		this.setPathOpacity(this.highlightedPath, this.normalOpacity);
+		this.setPathOpacity(this.highlightedPath, this.arrowColours.opacity);
 		// make the path non-transparent
 		this.highlightedPath = route.toHtmlId();
 		this.setPathOpacity(this.highlightedPath, this.highlightOpacity);
@@ -371,7 +387,7 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, spiralTre
 	plainMouseOutPath: function() {
 		return;
 		// TODO: decide what behaviour we want on mouseOut
-		this.setPathOpacity(this.highlightedPath, this.normalOpacity);
+		this.setPathOpacity(this.highlightedPath, this.arrowColours.opacity);
 		this.highlightedPath = null;
 		this.clearTooltip();
 	},
@@ -437,7 +453,7 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, spiralTre
 			center = this.centerTerminals[i].center;
 			terminals = this.centerTerminals[i].terminals;
 			// set up flowmap settings for this path
-			this.flowmap.extraSpiralClass = "traderoute center-" + center.point.toString();
+			this.flowmap.extraSpiralClass = "traderoute zoompath center-" + center.point.toString();
 			this.flowmap.mouseOverFunc = this.createFlowmapMouseOverFunc(i);
 			this.flowmap.mouseOutFunc = this.genericMouseOutPath;
 
@@ -462,20 +478,22 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, spiralTre
 	drawLegend: function() {
 		// use parseFloat as the height has "px" at the end
 		var gLegend, i, strokeWidth, value, valueText, circleX, circleY,
+			xOffset = 100,
 			margin = 10,
 			lineLength = this.maxArrowWidth + 10,
 			maxWidth = this.maxArrowWidth,
 			roundUpWidth = function (factor) { return Math.max(maxWidth*factor, 8); },
 			legendHeight = Math.max(110, margin*4 + 8 + roundUpWidth(1) + roundUpWidth(0.5) + roundUpWidth(0.25)),
 			legendWidth = lineLength + margin*4 + 10 + this.maxQuantity.toFixed(1).length*8 + 80,
-			svgHeight = 430,  // from viewbox - TODO: get this properly
+			//svgHeight = 430,  // from viewbox - TODO: get this properly
+			svgHeight = 0,
 			lineVertical = svgHeight;
 
 		// clear any old legend
 		d3.selectAll(".legend").remove();
 		gLegend = this.mapsvg.append("g").attr("class", "legend");
 		gLegend.append("rect")
-			.attr("x", 5)
+			.attr("x", 5 + xOffset)
 			.attr("y", svgHeight - (margin/2) - legendHeight)
 			.attr("width", legendWidth)
 			.attr("height", legendHeight)
@@ -502,23 +520,23 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, spiralTre
 
 			lineVertical = lineVertical - (Math.max(strokeWidth, 8) + margin);
 
-			gLegend.append("line")
-				.attr("x1", margin)
-				.attr("y1", lineVertical)
-				.attr("x2", margin + lineLength)
-				.attr("y2", lineVertical)
-				.attr("stroke-width", strokeWidth)
+			gLegend.append("rect")
+				.attr("x", margin + xOffset)
+				.attr("y", lineVertical - (strokeWidth/2))
+				.attr("width", lineLength)
+				.attr("height", strokeWidth)
+				.attr("fill", "url(#legendGradient)")
 				.attr("class", "legend traderoute");
 
 			gLegend.append("text")
-				.attr("x", lineLength + (margin * 2))
+				.attr("x", lineLength + xOffset + (margin * 2))
 				.attr("y", lineVertical + 5)
 				.attr("class", "legend traderoute-label")
 				.text(valueText);
 		}
 
 		// Now add a legend for the circles
-		circleX = lineLength + (margin * 3) +
+		circleX = lineLength + xOffset + (margin * 3) +
 			this.maxQuantity.toFixed(1).length * 8;
 		circleY = svgHeight;
 

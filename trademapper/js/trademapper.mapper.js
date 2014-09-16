@@ -84,6 +84,12 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre"], functio
 			// TODO: put map in group so it can be zoomed separate to legend etc
 			moduleThis.zoomg.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
 			d3.selectAll(".country-border").attr("stroke-width", (1/d3.event.scale).toString());
+			// change the width of the paths after zoom
+			d3.selectAll(".zoompath").each(function(d, i) {
+				this.setAttribute(
+					"stroke-width",
+					(this.attributes["data-origwidth"].value/d3.event.scale).toString());
+			});
 		},
 		zoom = d3.behavior.zoom()
 			.translate([0, 0])

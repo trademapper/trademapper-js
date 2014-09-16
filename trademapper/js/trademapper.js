@@ -98,6 +98,20 @@ define(
 			}
 		}
 
+		if (this.queryString.hasOwnProperty("arrowtype")) {
+			if (['plain-arrows', 'spiral-tree'].indexOf(this.queryString.arrowtype) !== -1) {
+				this.config.arrowType = this.queryString.arrowtype;
+			} else {
+				console.log("Unknown arrowtype in query string: " + this.queryString.arrowtype);
+			}
+		}
+		if (this.queryString.hasOwnProperty("maxarrowwidth")) {
+			var maxArrowWidth = parseInt(this.queryString.maxarrowwidth);
+			if (maxArrowWidth > 0) {
+				this.config.maxArrowWidth = maxArrowWidth;
+			}
+		}
+
 		// work out some stuff from the size of the element we're attached to
 		if (!this.config.hasOwnProperty("width")) {
 			this.config.width = parseInt(this.mapRootElement.style('width'));

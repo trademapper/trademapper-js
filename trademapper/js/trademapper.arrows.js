@@ -327,7 +327,6 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, spiralTre
 
 		// now do the tooltip
 		var pathSelector = ".route-arrow." + route.toHtmlId(),
-			tooltipHeight = 1.6 * (4 + route.points.length) + "em",
 			tooltiptext = '<div class="tooltip-summary">';
 
 		tooltiptext += '<span class="tooltip-quantity">' + Math.round(route.quantity).toLocaleString() + '</span>';
@@ -335,20 +334,32 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, spiralTre
 		tooltiptext += '<span class="tooltip-units">Unit: ' + this.currentUnit + '</span>';
 		tooltiptext += '</div><div class="tooltip-pointlist">';
 
-		for (var i = 0; i < route.points.length; i++) {
-			tooltiptext += '<p class="tooltip-location">' + route.points[i].toString();
-			var pointRoles = route.points[i].roles.toArray();
-			for (var j = 0; j < tmroute.locationRoles.length; j++) {
-				var role = tmroute.locationRoles[j];
-				if (pointRoles.indexOf(role) !== -1) {
-					tooltiptext += ' <span class="location-role-icon ' + role + '">' +
-						role.charAt(0).toUpperCase() + '</span>';
+		var makePointFilter = function(role) {
+			return function(point) {
+				return point.roles.roles[role];
+			};
+		};
+
+		var rolesUsed = 0;
+		for (var i = 0; i < tmroute.locationRoles.length; i++) {
+			var role = tmroute.locationRoles[i],
+				pointsWithRole = route.points.filter(makePointFilter(role));
+
+			if (pointsWithRole.length) {
+				rolesUsed++;
+				tooltiptext += '<p class="tooltip-location">' + 
+					'<span class="location-role-icon ' + role + '" title="' + role + '">' +
+					role.charAt(0).toUpperCase() + '</span>';
+				for (var j = 0; j < pointsWithRole.length; j++) {
+					tooltiptext += ' <span class="location-role-country ' +
+						pointsWithRole[j] + '">' + pointsWithRole[j] + '</span>';
 				}
+				tooltiptext += '</p>';
 			}
-			tooltiptext += '</p>';
 		}
 		tooltiptext += '</div>';
 
+		var tooltipHeight = 1.6 * (4 + rolesUsed) + "em";
 		this.showPathTooltip(tooltiptext, "17em", tooltipHeight);
 	},
 

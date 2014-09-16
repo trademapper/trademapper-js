@@ -43,6 +43,7 @@ a, a img, img a:focus, a:active {
 	max-width:1320px;
 	margin:0 auto;
 	padding:0 20px;
+	position:relative;
 }
 
 .inner * {
@@ -127,6 +128,7 @@ a, a img, img a:focus, a:active {
 	background-color:#177F73;
 	padding:1em;
 	margin-bottom:0;
+	margin-top:0.5em;
 }
 
 #csv-load-error-details {

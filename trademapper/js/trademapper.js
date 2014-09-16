@@ -11,16 +11,17 @@ define(
 		"util",
 		"d3",
 		"text!../fragments/filterskeleton.html",
-		"text!../fragments/csvonlyskeleton.html"
+		"text!../fragments/csvformskeleton.html"
 	],
 	function(arrows, csv, filterform, mapper, route, util,
-			 d3, filterSkeleton, csvOnlySkeleton) {
+			 d3, filterSkeleton, csvFormSkeleton) {
 	"use strict";
 
 	return {
 	config: null,
 	mapRootElement: null,
-	formElement: null,
+	fileFormElement: null,
+	filterFormElement: null,
 	tooltipElement: null,
 	fileInputElement: null,
 	tmsvg: null,
@@ -43,10 +44,11 @@ define(
 			arrowType: "plain-arrows"  // could be "plain-arrows" or "spiral-tree"
 		},
 
-	init: function(mapId, formElementId, tmConfig) {
+	init: function(mapId, fileFormElementId, filterFormElementId, tmConfig) {
 		this.queryString = util.queryString();
 		this.mapRootElement = d3.select(mapId);
-		this.formElement = d3.select(formElementId);
+		this.fileFormElement = d3.select(fileFormElementId);
+		this.filterFormElement = d3.select(filterFormElementId);
 		this.setConfigDefaults(tmConfig);
 
 		this.createCsvOnlyForm();
@@ -130,21 +132,16 @@ define(
 	},
 
 	createCsvOnlyForm: function() {
-		this.formElement.html(csvOnlySkeleton);
-		this.fileInputElement = this.formElement.select("#fileinput");
+		this.fileFormElement.html(csvFormSkeleton);
+		this.fileInputElement = this.fileFormElement.select("#fileinput");
 		csv.setFileInputElement(this.fileInputElement);
 	},
 
 	createFilterForm: function(filters) {
 		// generate the form for playing with the data
-		this.formElement.html(filterSkeleton + csvOnlySkeleton);
-		var fileInput = document.querySelector(".filters-group.group-fileinput > p > input#fileinput");
-		var fileInputParent = fileInput.parentNode;
-		fileInputParent.removeChild(fileInput);
-		fileInputParent.appendChild(this.fileInputElement[0][0]);
-		csv.setFileInputElement(this.fileInputElement);
+		this.filterFormElement.html(filterSkeleton);
 
-		filterform.createFormFromFilters(this.formElement, filters);
+		filterform.createFormFromFilters(this.filterFormElement, filters);
 	},
 
 	filterLoadedCallback: function(csvType, csvData, filters) {

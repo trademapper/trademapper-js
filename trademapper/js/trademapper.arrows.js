@@ -93,6 +93,22 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, spiralTre
 			.append("path")
 				.attr("d", "M 0 0 L 10 5 L 0 10 z")
 				.attr("class", "route-plain-arrow-head-narrow");
+
+		// this is for the legend
+		var legendGradient = this.svgdefs.append("linearGradient")
+			.attr("id", "legendGradient");
+			/*.attr("x1", 0)
+			.attr("y1", 0)
+			.attr("x2", 1)
+			.attr("y2", 0);*/
+		legendGradient.append("stop")
+			.attr("offset", "0%")
+			.attr("stop-color", this.arrowColours.pathStart)
+			.attr("stop-opacity", this.normalOpacity);
+		legendGradient.append("stop")
+			.attr("offset", "100%")
+			.attr("stop-color", this.arrowColours.pathEnd)
+			.attr("stop-opacity", this.normalOpacity);
 	},
 
 	setUpFlowmap: function() {
@@ -505,12 +521,12 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, spiralTre
 
 			lineVertical = lineVertical - (Math.max(strokeWidth, 8) + margin);
 
-			gLegend.append("line")
-				.attr("x1", margin + xOffset)
-				.attr("y1", lineVertical)
-				.attr("x2", margin + xOffset + lineLength)
-				.attr("y2", lineVertical)
-				.attr("stroke-width", strokeWidth)
+			gLegend.append("rect")
+				.attr("x", margin + xOffset)
+				.attr("y", lineVertical - (strokeWidth/2))
+				.attr("width", lineLength)
+				.attr("height", strokeWidth)
+				.attr("fill", "url(#legendGradient)")
 				.attr("class", "legend traderoute");
 
 			gLegend.append("text")

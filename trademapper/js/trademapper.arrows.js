@@ -347,7 +347,7 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, spiralTre
 
 			if (pointsWithRole.length) {
 				rolesUsed++;
-				tooltiptext += '<p class="tooltip-location">' + 
+				tooltiptext += '<p class="tooltip-location ' + role + '">' + 
 					'<span class="location-role-icon ' + role + '" title="' + role + '">' +
 					role.charAt(0).toUpperCase() + '</span>';
 				for (var j = 0; j < pointsWithRole.length; j++) {

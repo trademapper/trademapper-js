@@ -64,6 +64,8 @@ define(
 		this.zoomg = this.tmsvg.append("g").attr("class", "zoomgroup");
 		// append a background rectangle so mouse scroll zoom works over sea
 		this.zoomg.append("rect")
+			.attr("width", "150%")
+			.attr("height", "150%")
 			.attr("y", "-150")
 			.attr("class", "mapocean");
 

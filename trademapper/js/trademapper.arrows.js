@@ -193,7 +193,7 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, spiralTre
 		gradientId = this.addGradientForRoute(route);
 
 		this.arrowg.append("path")
-			.datum(route)
+			.datum(route.points)
 			.attr("class", "route-arrow zoompath " + route.toHtmlId())
 			.attr("d", this.dForRoute(route))
 			.attr("marker-end", markerEnd)
@@ -363,8 +363,8 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, spiralTre
 
 			if (pointsWithRole.length) {
 				rolesUsed++;
-				tooltiptext += '<p class="tooltip-location ' + role + '">' + 
-					'<span class="location-role-icon ' + role + '" title="' + role + '">' +
+				tooltiptext += '<p class="tooltip-location ' + role + '" title="' + role + '">' +
+					'<span class="location-role-icon ' + role + '">' +
 					role.charAt(0).toUpperCase() + '</span>';
 				for (var j = 0; j < pointsWithRole.length; j++) {
 					tooltiptext += ' <span class="location-role-country ' +

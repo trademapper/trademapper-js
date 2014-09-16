@@ -38,7 +38,7 @@ define(
 			arrowColours: {
 				opacity: 0.4,
 				pathStart: "black",
-				pathEnd: "#ff6600"
+				pathEnd: "#aaaaaa"
 			},
 			minArrowWidth: 1,
 			maxArrowWidth: 25,

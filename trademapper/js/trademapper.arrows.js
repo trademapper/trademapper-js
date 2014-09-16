@@ -17,7 +17,6 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, spiralTre
 	maxQuantity: null,
 	centerTerminals: null,
 	narrowWideStrokeThreshold: 3,  // used for deciding whether to use arrows inside or outside line
-	normalOpacity: 0.4,
 	highlightOpacity: 1,
 	currentUnit: "Any Unit",
 
@@ -104,17 +103,17 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, spiralTre
 		legendGradient.append("stop")
 			.attr("offset", "0%")
 			.attr("stop-color", this.arrowColours.pathStart)
-			.attr("stop-opacity", this.normalOpacity);
+			.attr("stop-opacity", this.arrowColours.opacity);
 		legendGradient.append("stop")
 			.attr("offset", "100%")
 			.attr("stop-color", this.arrowColours.pathEnd)
-			.attr("stop-opacity", this.normalOpacity);
+			.attr("stop-opacity", this.arrowColours.opacity);
 	},
 
 	setUpFlowmap: function() {
 		this.flowmap = new spiralTree.SpiralTree(this.zoomg, function(xy) { return [xy[1], xy[0]]; });
 		this.flowmap.extraSpiralClass = "traderoute zoompath";
-		this.flowmap.setOpacity(this.normalOpacity);
+		this.flowmap.setOpacity(this.arrowColours.opacity);
 		this.flowmap.setNodeDrawable(false);
 		this.flowmap.markerStart.wide = "url(#markerSpiralTreeArrowWide)";
 		this.flowmap.markerStart.narrow = "url(#markerSpiralTreeArrowNarrow)";
@@ -170,11 +169,11 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, spiralTre
 		gradient.append("stop")
 			.attr("offset", "0%")
 			.attr("stop-color", this.arrowColours.pathStart)
-			.attr("stop-opacity", this.normalOpacity);
+			.attr("stop-opacity", this.arrowColours.opacity);
 		gradient.append("stop")
 			.attr("offset", "100%")
 			.attr("stop-color", this.arrowColours.pathEnd)
-			.attr("stop-opacity", this.normalOpacity);
+			.attr("stop-opacity", this.arrowColours.opacity);
 
 		return gradientId;
 	},
@@ -337,7 +336,7 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, spiralTre
 
 	plainMouseOverPath: function(route) {
 		// clear the last non-transparent path
-		this.setPathOpacity(this.highlightedPath, this.normalOpacity);
+		this.setPathOpacity(this.highlightedPath, this.arrowColours.opacity);
 		// make the path non-transparent
 		this.highlightedPath = route.toHtmlId();
 		this.setPathOpacity(this.highlightedPath, this.highlightOpacity);
@@ -388,7 +387,7 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, spiralTre
 	plainMouseOutPath: function() {
 		return;
 		// TODO: decide what behaviour we want on mouseOut
-		this.setPathOpacity(this.highlightedPath, this.normalOpacity);
+		this.setPathOpacity(this.highlightedPath, this.arrowColours.opacity);
 		this.highlightedPath = null;
 		this.clearTooltip();
 	},

@@ -36,6 +36,7 @@ define(
 	defaultConfig: {
 			ratio: 0.6,
 			arrowColours: {
+				opacity: 0.4,
 				pathStart: "black",
 				pathEnd: "#ff6600"
 			},

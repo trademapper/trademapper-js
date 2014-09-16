@@ -13,6 +13,7 @@ body {
 	margin:0;
 	min-width:290px;
 	padding:0;
+	background-color:#1A8F82;
 }
 
 * {
@@ -74,7 +75,6 @@ a, a img, img a:focus, a:active {
 
 #mapinfo {
     border: medium none;
-    margin-top:2em;
 }
 
 #mapinfo body {
@@ -549,10 +549,14 @@ p.tooltip-location {
 /*----------Disclaimer-------------------
  =====================================*/
 
+.info.row > .inner {
+	padding:0 10px;
+}
+
 footer.row {
     background-color: #1a8f82;
     clear: both;
-    padding: 10px 0 30px;
+    padding: 10px 0 0;
     font-size:0.9em;
 }
 

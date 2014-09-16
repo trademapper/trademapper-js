@@ -468,7 +468,8 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, spiralTre
 			roundUpWidth = function (factor) { return Math.max(maxWidth*factor, 8); },
 			legendHeight = Math.max(110, margin*4 + 8 + roundUpWidth(1) + roundUpWidth(0.5) + roundUpWidth(0.25)),
 			legendWidth = lineLength + margin*4 + 10 + this.maxQuantity.toFixed(1).length*8 + 80,
-			svgHeight = 430,  // from viewbox - TODO: get this properly
+			//svgHeight = 430,  // from viewbox - TODO: get this properly
+			svgHeight = 0,
 			lineVertical = svgHeight;
 
 		// clear any old legend

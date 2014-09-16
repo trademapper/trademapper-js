@@ -10,7 +10,7 @@ body {
 	font-family: Arial,"liberation sans", Helvetica, sans-serif;
 	font-size:85%;
 	color:#6D6E72;
-	margin:1em 0;
+	margin:0;
 	min-width:290px;
 	padding:0;
 }
@@ -31,12 +31,22 @@ a, a img, img a {
 /*----------General Layout---
  =====================================*/
 
-#map-wrapper,
-#mapinfo {
+.row {
+	width:100%;
+}
+
+.inner {
 	max-width:1280px;
-	display:block;
 	margin:0 auto;
-	overflow:hidden;
+}
+
+.inner * {
+	display:block;
+	position:relative;
+	-webkit-box-sizing: border-box;
+	   -moz-box-sizing:border-box;
+	     -o-box-sizing:border-box;
+	        box-sizing: border-box;
 }
 
 #mapheader {
@@ -44,30 +54,24 @@ a, a img, img a {
 }
 
 #filter-panel {
-	width:20%;
+	width:30%;
 	float:left;
 	position:relative;
 	display:block;
 }
 
+#branding {
+	width:30%;
+	float:left;
+	margin:0;
+}
+
 #trademapper {
-    display: block;
-    float: left;
-    height: 600px;
-    overflow: hidden;
+	display:block;
+	float:right;
     position: relative;
-    width: 80%;
+    width: 70%;
 }
-
-
-#map-wrapper {
-    background-color: #d6d8d3;
-    border: 5px solid #6d6e72;
-    display: block;
-    position: relative;
-    z-index: 1;
-}
-
 
 #mapinfo {
     border: medium none;
@@ -78,39 +82,30 @@ a, a img, img a {
 	padding:0;
 }
 
-.disclaimer {
-	clear:both;
+/*----------Header--------------------
+ =====================================*/
+
+.header.row {
+	background-color:#1A8F82;
+}
+.branding {
+    color: #fff;
+    padding: 20px 0;
+}
+.logo {
+    margin: 0;
+    width: 100%;
+}
+.logo img {
+	width:100%;
 }
 
-.disclaimer > p {
-	background-color: #6d6e72;
-	clear: both;
-	color: #ddd;
-	display: block;
-	font-size: 0.8em;
-	margin: 0;
-	padding: 0.5em 0 0.1em;
-}
 
-.disclaimer > p > a {
-	color: #4DB8FF;
-}
-
-/*----------Filter Panel---
+/*----------Filter Panel--------------
  =====================================*/
 
 #filter-panel {
 	background-color:#D6D8D3;
-}
-
-.logo {
-    background-color:#6D6E72;
-    color: #fff;
-    margin: 0;
-    padding: 0.5em;
-}
-.logo img {
-	width:100%;
 }
 
 .csv-load-errors.haserror {
@@ -215,11 +210,14 @@ span.showhide {
 
 .year-to > label {padding-left: 1em;}
 
-/*----------Map---
+/*----------Map-----------------------
  =====================================*/
 
+.map.row {
+	background-color:#eee;
+}
+
 #trademapper {
-    box-shadow: 5px 0 5px rgba(0, 0, 0, 0.4) inset;
     background-color:#fff;
 }
 
@@ -368,4 +366,25 @@ span.tooltip-quantity {
 
 p.tooltip-location {
 	margin:0.4em 0;
+}
+
+/*----------Disclaimer-------------------
+ =====================================*/
+
+.disclaimer.row {
+	clear:both;
+	background-color: #6d6e72;
+}
+
+.disclaimer > p {
+	clear: both;
+	color: #ddd;
+	display: block;
+	font-size: 0.8em;
+	margin: 0;
+	padding: 0.5em 0 0.1em;
+}
+
+.disclaimer > p > a {
+	color: #4DB8FF;
 }

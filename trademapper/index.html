@@ -7,20 +7,36 @@
 	<script data-main="js/main" src="js/require.js"></script>
 </head>
 <body>
+	
 	<div id="map-wrapper">
-		<aside id="filter-panel">
-			<header class="branding">
-				<h1 class="logo"><img alt="trademapper" src="images/logo-on-dark.png" /></h1>
+		<div class="header row">
+			<header id="header" class="inner" >
+				<div class="branding">
+					<h1 class="logo"><img alt="trademapper" src="images/logo-on-dark.png" /></h1>
+				</div>
 			</header>
-			<form id="form-filters">
-			</form>
-		</aside>
-		<div id="trademapper">
 		</div>
-		<div class="disclaimer">
-			<p><strong>Disclaimer:</strong> The map shown is from data from <a href="http://www.naturalearthdata.com/">naturalearthdata.com</a> and doesn't imply an opinion of the legal status of borders/territories.</p>
+		<div class="map row">
+			<div class="inner">
+				<aside id="filter-panel" class="aside col">
+					<form id="form-filters">
+					</form>
+				</aside>
+				<div id="trademapper" class="map col"></div>
+			</div>
+		</div>
+		<div class="disclaimer row">
+			<div class="inner">	
+				<div class="disclaimer">
+					<p><strong>Disclaimer:</strong> The map shown is from data from <a href="http://www.naturalearthdata.com/">naturalearthdata.com</a> and doesn't imply an opinion of the legal status of borders/territories.</p>
+				</div>
+			</div>
 		</div>
 	</div>
-	<iframe id="mapinfo" scrolling="no" width="100%" height="500" src="https://docs.google.com/document/d/1OpUXeMIkP5xuznUYEZuG_H7Vu3r93HA56Cg0I7gH4qI/pub?embedded=true"></iframe>
+	<div class="info row">
+		<div class="inner">
+		<iframe id="mapinfo" scrolling="no" width="100%" height="500" src="https://docs.google.com/document/d/1OpUXeMIkP5xuznUYEZuG_H7Vu3r93HA56Cg0I7gH4qI/pub?embedded=true"></iframe>
+		</div>
+	</div>
 </body>
 </html>

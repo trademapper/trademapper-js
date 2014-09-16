@@ -462,6 +462,7 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, spiralTre
 	drawLegend: function() {
 		// use parseFloat as the height has "px" at the end
 		var gLegend, i, strokeWidth, value, valueText, circleX, circleY,
+			xOffset = 100,
 			margin = 10,
 			lineLength = this.maxArrowWidth + 10,
 			maxWidth = this.maxArrowWidth,
@@ -476,7 +477,7 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, spiralTre
 		d3.selectAll(".legend").remove();
 		gLegend = this.mapsvg.append("g").attr("class", "legend");
 		gLegend.append("rect")
-			.attr("x", 5)
+			.attr("x", 5 + xOffset)
 			.attr("y", svgHeight - (margin/2) - legendHeight)
 			.attr("width", legendWidth)
 			.attr("height", legendHeight)
@@ -504,22 +505,22 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, spiralTre
 			lineVertical = lineVertical - (Math.max(strokeWidth, 8) + margin);
 
 			gLegend.append("line")
-				.attr("x1", margin)
+				.attr("x1", margin + xOffset)
 				.attr("y1", lineVertical)
-				.attr("x2", margin + lineLength)
+				.attr("x2", margin + xOffset + lineLength)
 				.attr("y2", lineVertical)
 				.attr("stroke-width", strokeWidth)
 				.attr("class", "legend traderoute");
 
 			gLegend.append("text")
-				.attr("x", lineLength + (margin * 2))
+				.attr("x", lineLength + xOffset + (margin * 2))
 				.attr("y", lineVertical + 5)
 				.attr("class", "legend traderoute-label")
 				.text(valueText);
 		}
 
 		// Now add a legend for the circles
-		circleX = lineLength + (margin * 3) +
+		circleX = lineLength + xOffset + (margin * 3) +
 			this.maxQuantity.toFixed(1).length * 8;
 		circleY = svgHeight;
 

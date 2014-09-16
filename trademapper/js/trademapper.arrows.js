@@ -359,7 +359,7 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, spiralTre
 		}
 		tooltiptext += '</div>';
 
-		var tooltipHeight = 1.6 * (4 + rolesUsed) + "em",
+		var tooltipHeight = 1.6 * (4 + rolesUsed) + "em";
 		this.showPathTooltip(tooltiptext, "17em", tooltipHeight);
 	},
 

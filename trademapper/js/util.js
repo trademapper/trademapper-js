@@ -30,6 +30,10 @@ define([], function() {
 			// the return value is assigned to QueryString!
 			var query_string = {};
 			var query = window.location.search.substring(1);
+			// remove trailing /
+			if (query.slice(-1) === '/') {
+				query = query.slice(0, -1);
+			}
 			var vars = query.split("&");
 			for (var i = 0; i < vars.length; i++) {
 				var pair = vars[i].split("=");

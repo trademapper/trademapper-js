@@ -364,6 +364,7 @@ SpiralTree.prototype.drawSpiralSegment = function (point, tValue, sign, opacity,
 		.attr('fill', 'none')
 		.attr('stroke-linecap', "round")
 		.attr('stroke-width', strokeWidth)
+		.attr("data-origwidth", strokeWidth)
 		.attr('opacity', this.getOpacity(opacity, point));
 	if (this.markerStart[strokeType]) {
 		segment.attr("marker-start", this.markerStart[strokeType]);

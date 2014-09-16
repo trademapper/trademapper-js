@@ -97,7 +97,7 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, spiralTre
 
 	setUpFlowmap: function() {
 		this.flowmap = new spiralTree.SpiralTree(this.zoomg, function(xy) { return [xy[1], xy[0]]; });
-		this.flowmap.extraSpiralClass = "traderoute";
+		this.flowmap.extraSpiralClass = "traderoute zoompath";
 		this.flowmap.setOpacity(this.normalOpacity);
 		this.flowmap.setNodeDrawable(false);
 		this.flowmap.markerStart.wide = "url(#markerSpiralTreeArrowWide)";
@@ -178,12 +178,13 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, spiralTre
 		gradientId = this.addGradientForRoute(route);
 
 		this.arrowg.append("path")
-			.datum(route.points)
-			.attr("class", "route-arrow " + route.toHtmlId())
+			.datum(route)
+			.attr("class", "route-arrow zoompath " + route.toHtmlId())
 			.attr("d", this.dForRoute(route))
 			.attr("marker-end", markerEnd)
 			.attr("stroke", "url(#" + gradientId + ")")
 			.attr("stroke-width", arrowWidth)
+			.attr("data-origwidth", arrowWidth)
 			.on('mouseover', this.createPlainMouseOverFunc(route))
 			.on('mouseout', this.genericMouseOutPath);
 	},
@@ -437,7 +438,7 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, spiralTre
 			center = this.centerTerminals[i].center;
 			terminals = this.centerTerminals[i].terminals;
 			// set up flowmap settings for this path
-			this.flowmap.extraSpiralClass = "traderoute center-" + center.point.toString();
+			this.flowmap.extraSpiralClass = "traderoute zoompath center-" + center.point.toString();
 			this.flowmap.mouseOverFunc = this.createFlowmapMouseOverFunc(i);
 			this.flowmap.mouseOutFunc = this.genericMouseOutPath;
 

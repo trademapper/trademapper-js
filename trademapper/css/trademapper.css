@@ -45,7 +45,6 @@ a, a img, img a:focus, a:active {
 }
 
 .inner * {
-	display:block;
 	position:relative;
 	-webkit-box-sizing: border-box;
 	   -moz-box-sizing:border-box;
@@ -183,17 +182,17 @@ span.showhide {
 /*---Map Title--*/
 
 #title {
-    background-color: transparent;
+    background-color: white;
     border: medium none;
     color: #177f73;
     font-family: sans-serif;
     font-size: 1.3em;
     font-weight: bold;
-    height: 2.5em;
-    padding: 0;
+    height: 4em;
+    margin: 0 0 15px;
+    padding: 0.5em;
     resize: none;
     width: 100%;
-    margin:0;
 }
 
 /*---Filter Group selectors--*/
@@ -401,11 +400,12 @@ span.showhide {
  =====================================*/
 
 #maptooltip {
-    background: none repeat scroll 0 0 rgba(255, 255, 255, 0.8);
+    background: none repeat scroll 0 0 rgba(255, 255, 255, 0.9);
     border: 5px solid rgba(0, 0, 0, 0.8);
     box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.2);
     position: absolute;
     min-height:8em;
+    display:table;
 }
 
 #maptooltip > span {
@@ -435,24 +435,22 @@ span.tooltip-dest {
 	color: white;
 }
 
-span.tooltip-quantity {
-	font-size:1.3em;
-	font-weight:bold;
-	color:#6D6E72;
-	float:right;
-}
-
 .tooltip-header {
     background-color: #333;
     border: medium none;
+    border-radius: 10px 10px 0 0;
     cursor: pointer;
-    height: 28px;
+    height: 23px;
     margin: 0;
     padding: 5px;
     position: absolute;
-    right: -5px;
-    top: -28px;
+    right: 0;
+    top: -23px;
     width: 5em;
+}
+
+.tooltip-header:hover{
+	cursor:move;
 }
 
 .tooltip-close {
@@ -471,7 +469,9 @@ span.tooltip-quantity {
 }
 
 .tooltip-summary {
-    padding: 10px;
+    float: left;
+    padding: 10px 10px 0;
+    width: 100%;
 }
 
 .tooltip-total {
@@ -479,6 +479,8 @@ span.tooltip-quantity {
     display: block;
     float: left;
     font-weight: bold;
+    line-height: 1em;
+    margin-bottom: 0.5em;
     width: 50%;
 }
 
@@ -486,9 +488,20 @@ span.tooltip-quantity {
     clear: both;
     color: #555;
     display: block;
-    float: left;
-    font-size: 0.8em;
+    float: right;
+    font-size: 0.7em;
+    text-align: right;
     width: 50%;
+}
+
+.tooltip-quantity {
+    color: #8f9f31;
+    float: right;
+    font-size: 2.5em;
+    font-weight: bold;
+    position: absolute;
+    right: 10px;
+    top:5px;
 }
 
 .tooltip-pointlist {
@@ -498,40 +511,68 @@ span.tooltip-quantity {
 
 p.tooltip-location {
 	margin:0.4em 0;
-	padding-left:30px;
+	padding-left:35px;
+	line-height:30px;
+	width:50%;
+	float:left;
 }
 
 .tooltip-location:before {
-    background-color: #555;
+    background-color: #333;
+    background-image: url("../images/icon-origin.svg");
+    background-position: 7px 7px;
+    background-repeat: no-repeat;
+    background-size: 16px auto;
+    border-radius: 50%;
     content: "";
     display: block;
-    height: 20px;
+    height: 30px;
     left: 0;
     position: absolute;
-    width: 20px;
+    width: 30px;
 }
 
 .location-role-icon {
     display: none;
 }
 
+
+.tooltip-location.exporter:before {background-color: #45689f; background-image: url("../images/icon-exporter.svg");}
+.tooltip-location.transit:before {background-color: #1A8F82; background-image: url("../images/icon-transit.svg");}
+.tooltip-location.importer:before {background-color: #FF6600; background-image: url("../images/icon-importer.svg");}
+
+.location-role-country {
+    color: #555;
+    font-size: 1.2em;
+    font-weight: bold;
+}
 /*----------Disclaimer-------------------
  =====================================*/
 
-.disclaimer.row {
-	clear:both;
-	background-color: #6d6e72;
+footer.row {
+    background-color: #1a8f82;
+    clear: both;
+    padding: 10px 0 30px;
+    font-size:0.9em;
 }
 
-.disclaimer > p {
+.disclaimer {
 	clear: both;
-	color: #ddd;
+	color: #eee;
 	display: block;
-	font-size: 0.8em;
 	margin: 0;
 	padding: 0.5em 0 0.1em;
+	width:80%;
+	float:left;
 }
 
-.disclaimer > p > a {
-	color: #4DB8FF;
+.built-by {
+	width:20%;
+	float:right;
+	color:#eee;
+	text-align:right;
+}
+
+.disclaimer a, .built-by a {
+	color:#fff;
 }

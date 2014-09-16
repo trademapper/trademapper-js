@@ -33,10 +33,13 @@ a, a img, img a {
 
 .row {
 	width:100%;
+	display:block;
+	clear:both;
+	float:left;
 }
 
 .inner {
-	max-width:1280px;
+	max-width:1320px;
 	margin:0 auto;
 }
 
@@ -49,10 +52,6 @@ a, a img, img a {
 	        box-sizing: border-box;
 }
 
-#mapheader {
-	height: 100px;
-}
-
 #filter-panel {
 	width:30%;
 	float:left;
@@ -60,7 +59,7 @@ a, a img, img a {
 	display:block;
 }
 
-#branding {
+.branding {
 	width:30%;
 	float:left;
 	margin:0;
@@ -71,6 +70,7 @@ a, a img, img a {
 	float:right;
     position: relative;
     width: 70%;
+    overflow:visible;
 }
 
 #mapinfo {
@@ -88,6 +88,11 @@ a, a img, img a {
 .header.row {
 	background-color:#1A8F82;
 }
+
+#mapheader {
+	height: 100px;
+}
+
 .branding {
     color: #fff;
     padding: 20px 0;
@@ -105,7 +110,7 @@ a, a img, img a {
  =====================================*/
 
 #filter-panel {
-	background-color:#D6D8D3;
+	
 }
 
 .csv-load-errors.haserror {
@@ -215,14 +220,16 @@ span.showhide {
 
 .map.row {
 	background-color:#eee;
+	padding:20px 0;
 }
 
 #trademapper {
     background-color:#fff;
 }
 
-.map-svg {
-/*	overflow:visible;*/
+#mapcanvas {
+	width:100%;
+	height:100%;
 }
 
 .mapocean {

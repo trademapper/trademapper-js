@@ -56,13 +56,11 @@ define(
 			.attr("height", this.config.height)
 			.attr("id", "mapcanvas")
 			.attr("class", "map-svg flow")
-			.attr("viewBox", "0 -30 1500 700");
+			.attr("viewBox", "70 -100 900 500");
 		this.svgDefs = this.tmsvg.append("defs");
 		this.zoomg = this.tmsvg.append("g").attr("class", "zoomgroup");
 		// append a background rectangle so mouse scroll zoom works over sea
 		this.zoomg.append("rect")
-			.attr("width", "100%")
-			.attr("height", "100%")
 			.attr("y", "-150")
 			.attr("class", "mapocean");
 

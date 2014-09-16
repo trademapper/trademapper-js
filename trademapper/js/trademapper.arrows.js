@@ -193,7 +193,7 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, spiralTre
 		gradientId = this.addGradientForRoute(route);
 
 		this.arrowg.append("path")
-			.datum(route)
+			.datum(route.points)
 			.attr("class", "route-arrow zoompath " + route.toHtmlId())
 			.attr("d", this.dForRoute(route))
 			.attr("marker-end", markerEnd)

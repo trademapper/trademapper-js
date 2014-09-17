@@ -162,6 +162,10 @@ span.showhide {
 .intro {
     padding-right: 30px;
 }
+
+#introtext{
+	border:none;
+}
 .intro > p > a {
 	display:block;
 	clear:both;
@@ -172,6 +176,10 @@ span.showhide {
 }
 
 /*--Social Share--*/
+
+.social-share {
+    margin-left: 0.5em;
+}
 
 .ss-share {
     list-style: none outside none;

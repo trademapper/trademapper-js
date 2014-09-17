@@ -178,7 +178,14 @@ span.showhide {
 /*--Social Share--*/
 
 .social-share {
-    margin-left: 0.5em;
+    margin-left: 0;
+    margin-top: 1em;
+}
+
+.social-share h3 {
+    float: left;
+    margin-right: 20px;
+    margin-top: 0;
 }
 
 .ss-share {

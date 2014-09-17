@@ -158,12 +158,17 @@ span.showhide {
 
 /*----------Filter Panel--------------
  =====================================*/
+
 .intro {
     padding-right: 30px;
 }
 .intro > p > a {
 	display:block;
 	clear:both;
+}
+
+.csv-data-loaded .intro {
+	display:none;
 }
 
 /*--Social Share--*/

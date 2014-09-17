@@ -27,6 +27,12 @@ a, a img, img a:focus, a:active {
 	outline-style:none;
 	outline:none;
 	border:none;
+	color:#FF6600;
+	text-decoration:none;
+}
+
+a:hover {
+	color:#333;
 }
 
 /*----------General Layout---
@@ -152,7 +158,41 @@ span.showhide {
 
 /*----------Filter Panel--------------
  =====================================*/
+.intro {
+    padding-right: 30px;
+}
+.intro > p > a {
+	display:block;
+	clear:both;
+}
 
+/*--Social Share--*/
+
+.ss-share {
+    list-style: none outside none;
+    margin: 0;
+    padding-bottom: 0.5em;
+    padding-left: 0;
+}
+
+.ss-share-item {
+    display: inline;
+    margin-right: 0.25em;
+}
+
+.ss-share-link {
+    background-image: url("../images/social-share-icons-sprite.png");
+    background-repeat: no-repeat;
+    display: inline-block;
+    height: 25px;
+    width: 25px;
+}
+
+.ico-twitter {
+    background-position: 25% center;
+}
+
+/*---Filter Groups --*/
 
 #filter-panel .filters-group {
     border: none;
@@ -567,7 +607,7 @@ footer.row {
 	color: #eee;
 	display: block;
 	margin: 0;
-	padding: 0.5em 0 0.1em;
+	padding: 0;
 	width:80%;
 	float:left;
 }

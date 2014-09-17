@@ -307,7 +307,7 @@ span.showhide {
 }
 
 .form-item.location-exporter {background-color: #45689f;}
-.form-item.location-transit {background-color: #1a8f82;}
+.form-item.location-transit {background-color: #20AF9F;}
 .form-item.location-importer {background-color: #FF6600;}
 
 .group-location > .form-item {
@@ -382,7 +382,7 @@ span.showhide {
 }
 
 .mapocean {
-	fill: #f8fffc;
+	fill: #fff;
 }
 
 .country { fill: #DFDFDF; }
@@ -450,7 +450,7 @@ span.showhide {
 	fill:#45689f;
 }
 .tradenode.transit {
-	fill:#1a8f82;
+	fill:#20AF9F;
 }
 .tradenode.importer {
 	fill:#ff6600;
@@ -600,7 +600,7 @@ p.tooltip-location {
 
 
 .tooltip-location.exporter:before {background-color: #45689f; background-image: url("../images/icon-exporter.svg");}
-.tooltip-location.transit:before {background-color: #1A8F82; background-image: url("../images/icon-transit.svg");}
+.tooltip-location.transit:before {background-color: #20AF9F; background-image: url("../images/icon-transit.svg");}
 .tooltip-location.importer:before {background-color: #FF6600; background-image: url("../images/icon-importer.svg");}
 
 .location-role-country {

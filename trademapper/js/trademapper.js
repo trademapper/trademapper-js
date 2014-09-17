@@ -34,11 +34,11 @@ define(
 	queryString: null,
 
 	defaultConfig: {
-			ratio: 0.6,
+			ratio: 0.86,
 			arrowColours: {
-				opacity: 0.4,
-				pathStart: "black",
-				pathEnd: "#666666"
+				opacity: 0.6,
+				pathStart: "rgba(0,0,0,1)",
+				pathEnd: "rgba(0,0,0,0.4)"
 			},
 			minArrowWidth: 1,
 			maxArrowWidth: 25,

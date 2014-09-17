@@ -220,9 +220,9 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, spiralTre
 	drawPoint: function(x, y, pointType, extraclass, svgContainer) {
 		var pointTypeSize = {
 				origin: 6,
-				exporter: 5,
-				transit: 4,
-				importer: 3
+				exporter: 4.5,
+				transit: 3.2,
+				importer: 2.5
 			};
 
 		if (!pointTypeSize.hasOwnProperty(pointType)) {

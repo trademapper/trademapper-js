@@ -114,6 +114,12 @@ define(
 				this.config.maxArrowWidth = maxArrowWidth;
 			}
 		}
+		if (this.queryString.hasOwnProperty("minarrowwidth")) {
+			var minArrowWidth = parseInt(this.queryString.minarrowwidth);
+			if (minArrowWidth > 0) {
+				this.config.minArrowWidth = minArrowWidth;
+			}
+		}
 
 		// work out some stuff from the size of the element we're attached to
 		if (!this.config.hasOwnProperty("width")) {

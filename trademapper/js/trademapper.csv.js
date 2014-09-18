@@ -139,8 +139,8 @@ define(['trademapper.csv.definition', 'trademapper.route', 'util', 'd3'], functi
 		// TODO: work out csvType from csvData???
 		this.loadingCsv = true;
 		var moduleThis = this;
-		d3.csv(url, null, function(csvData, csvType) {
-			moduleThis.processParsedCSV(csvData);
+		d3.csv(url, null, function(csvData) {
+			moduleThis.processParsedCSV(csvData, csvType);
 		});
 		this.loadingCsv = false;
 	},

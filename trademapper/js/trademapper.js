@@ -95,6 +95,11 @@ define(
 		route.setCountryGetPointFunc(function(countryCode) {return mapper.countryCentrePoint(countryCode);});
 		route.setLatLongToPointFunc(function(latLong) {return mapper.latLongToPoint(latLong);});
 		filterform.formChangedCallback = function(columnName) {return moduleThis.filterformChangedCallback(columnName); };
+
+		if (this.queryString.hasOwnProperty("loadcsv") &&
+				this.queryString.hasOwnProperty("csvtype")) {
+			this.loadCsvFromUrl();
+		}
 	},
 
 	setConfigDefaults: function(tmConfig) {
@@ -134,6 +139,12 @@ define(
 		if (!this.config.hasOwnProperty("height")) {
 			this.config.height = this.config.width * this.config.ratio;
 		}
+	},
+
+	loadCsvFromUrl: function() {
+		var csvUrl = this.queryString.loadcsv,
+			csvType = this.queryString.csvtype;
+		csv.processCSVURL(csvUrl, csvType);
 	},
 
 	showNowWorking: function() {

@@ -474,7 +474,7 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, spiralTre
 		// use parseFloat as the height has "px" at the end
 		var gLegend, i, strokeWidth, value, valueText, circleX, circleY,
 			xOffset = 5,
-			yOffset = -120,
+			yOffset = -80,
 			margin = 10,
 			lineLength = this.maxArrowWidth + 10,
 			maxWidth = this.maxArrowWidth,

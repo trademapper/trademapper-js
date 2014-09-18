@@ -14,6 +14,7 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, spiralTre
 	arrowColours: null,
 	minArrowWidth: null,
 	maxArrowWidth: null,
+	pointTypeSize: null,
 	maxQuantity: null,
 	centerTerminals: null,
 	narrowWideStrokeThreshold: 3,  // used for deciding whether to use arrows inside or outside line
@@ -24,7 +25,7 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, spiralTre
 	 * Save the svg we use for later user
 	 * Add the arrow head to defs/marker in the SVG
 	 */
-	init: function(svgElement, zoomg, svgDefs, tooltipSelector, colours, minWidth, maxWidth) {
+	init: function(svgElement, zoomg, svgDefs, tooltipSelector, colours, minWidth, maxWidth, pointTypeSize) {
 		this.mapsvg = svgElement;
 		this.zoomg = zoomg;
 		this.arrowg = this.zoomg.append("g").attr("class", "arrows");
@@ -34,6 +35,7 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, spiralTre
 		this.arrowColours = colours;
 		this.minArrowWidth = minWidth;
 		this.maxArrowWidth = maxWidth;
+		this.pointTypeSize = pointTypeSize;
 		this.addDefsToSvg();
 		this.setUpFlowmap();
 		this.pathTooltip.style("opacity", 0);
@@ -218,14 +220,7 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, spiralTre
 	},
 
 	drawPoint: function(x, y, pointType, extraclass, svgContainer) {
-		var pointTypeSize = {
-				origin: 6,
-				exporter: 4.5,
-				transit: 3.2,
-				importer: 2.5
-			};
-
-		if (!pointTypeSize.hasOwnProperty(pointType)) {
+		if (!this.pointTypeSize.hasOwnProperty(pointType)) {
 			console.log("unknown pointType: " + pointType);
 			return;
 		}
@@ -233,7 +228,7 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, spiralTre
 		svgContainer.append("circle")
 			.attr("cx", x)
 			.attr("cy", y)
-			.attr("r", pointTypeSize[pointType])
+			.attr("r", this.pointTypeSize[pointType])
 			.attr("class", "tradenode " + pointType + " " + extraclass);
 	},
 

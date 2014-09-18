@@ -40,6 +40,12 @@ define(
 				pathStart: "rgba(0,0,0,1)",
 				pathEnd: "rgba(0,0,0,0.4)"
 			},
+			pointTypeSize: {
+				origin: 6,
+				exporter: 4.5,
+				transit: 3.2,
+				importer: 2.5
+			},
 			minArrowWidth: 1,
 			maxArrowWidth: 25,
 			arrowType: "plain-arrows"  // could be "plain-arrows" or "spiral-tree"
@@ -77,7 +83,7 @@ define(
 		// the arrows
 		mapper.init(this.zoomg, this.controlg, this.svgDefs, this.config);
 		arrows.init(this.tmsvg, this.zoomg, this.svgDefs, '#maptooltip', this.config.arrowColours,
-			this.config.minArrowWidth, this.config.maxArrowWidth);
+			this.config.minArrowWidth, this.config.maxArrowWidth, this.config.pointTypeSize);
 
 		// set up the various callbacks we need to link things together
 		var moduleThis = this;

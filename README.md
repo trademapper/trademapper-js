@@ -26,7 +26,7 @@ with dry numerical data in a spreadsheet.
 But ultimately, TradeMapper is not limited to wildlife data - it can map
 international trade of any variety.
 
-![TradeMapper in action](https://github.com/trademapper-js/trademapper/raw/master/screenshot/trademapper.png)
+![TradeMapper in action](https://raw.githubusercontent.com/trademapper/trademapper-js/master/screenshot/trademapper.png)
 
 Playing with the code
 ---------------------

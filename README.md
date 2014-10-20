@@ -39,9 +39,9 @@ You can see some [test data preloaded](http://trademapper.aptivate.org/?csvtype=
 Or you can open `trademapper/index.html` in your browser.
 
 After that you'll need some data to load.  Currently TradeMapper accepts data in
-CSV format from the CITES and ETIS databases.  You can
-[download CITES data](http://trade.cites.org/) using the linked form, and then
-import it into TradeMapper.
+CSV format from the CITES and ETIS databases.  You can [download CITES
+data](http://trade.cites.org/), and then import it into TradeMapper.  The CSV
+data never leaves your computer.
 
 Making your own version
 -----------------------
@@ -49,7 +49,6 @@ Making your own version
 TradeMapper is designed so it can be included in other sites.  With your own
 HTML file, CSS and a main.js file, you can pull in the rest of TradeMapper and
 have it embedded in your own site.
-
 
 Running the tests
 -----------------

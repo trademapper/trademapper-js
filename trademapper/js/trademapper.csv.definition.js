@@ -252,7 +252,7 @@ define([], function() {
 				}
 			},
 
-			birdsmuggler: {
+			seizure: {
 				// the header of the dummy bird smuggling is
 				// Species,Quantity,Origin,Origin Lat,Origin Long,Transit 1,Transit 1 Lat,Transit 1 Long,Transit 2,Transit 2 Lat,Transit 2 Long,Transit 3,Transit 3 Lat,Transit 3 Long,Destination,Destination Lat,Destination long
 				"Species": {
@@ -353,7 +353,7 @@ define([], function() {
 		csvHeaderToType: {
 			"year,app,family,taxon,importer,exporter,origin,importerreportedquantity,exporterreportedquantity,term,unit,purpose,source": "cites",
 			"etisidno,folionumber,statusid,updatedat,reportdate,seizureyear,seizuredate,sourceofdata,agency,sourcegrade,datarank,activities,discoveredplace,discoveredcity,ctydis,ctyorg,rawcountrycodes,workedcountrycodes,ctyexp,ctytra,ctydes,species,rawivnopcs,rawivwtkg,workedivnopcs,workedivwtkg,ivorycomment,hideskinnopcs,hideskinwtkg,hideproductnopcs,hideproductwtkg,hideproduct,othernopcs,otherwtkg,otherproducttype,othercontraband,estimatedvalue,modeoftransport,methodofconcealment,detectionmethods,suspnat,additionalinformation,modeofdatacollection,internalreferencecode": "etis",
-			"species,quantity,origin,originlat,originlong,transit1,transit1lat,transit1long,transit2,transit2lat,transit2long,transit3,transit3lat,transit3long,destination,destinationlat,destinationlong": "birdsmuggler"
+			"species,quantity,origin,originlat,originlong,transit1,transit1lat,transit1long,transit2,transit2lat,transit2long,transit3,transit3lat,transit3long,destination,destinationlat,destinationlong": "seizure"
 		}
 
 	};

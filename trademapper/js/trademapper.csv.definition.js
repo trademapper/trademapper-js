@@ -3,6 +3,42 @@ define([], function() {
 	return {
 
 		filterSpec: {
+			ocds: {
+				// For the experiment with OCDS data
+                // OCID,Buyer,BuyerCountry,Importer,SupplierCountry,Exporter,Value,Currency
+				"OCID": {
+					type: "text"
+				},
+				"Buyer.": {
+					type: "text",
+				},
+				"Importer": {
+					type: "location",
+					locationOrder: 2,
+					locationType: "country_code",
+					locationRole: "importer",
+				},
+				"BuyerCountry": {
+					type: "text",
+				},
+				"Exporter": {
+					type: "location",
+					locationOrder: 1,
+					locationType: "country_code",
+					locationRole: "exporter",
+				},
+				"SupplierCountry": {
+					type: "text",
+				},
+				"Value": {
+					type: "quantity"
+				},
+				"Currency": {
+					type: "text",
+					isUnit: true,
+				}
+			},
+
 			cites: {
 				// the header of the CITES CSV is:
 				// Year,App.,Family,Taxon,Importer,Exporter,Origin,Importer reported quantity,Exporter reported quantity,Term,Unit,Purpose,Source
@@ -351,6 +387,7 @@ define([], function() {
 		},
 
 		csvHeaderToType: {
+            "ocid,buyer,buyercountry,importer,suppliercountry,exporter,value,currency": "ocds",
 			"year,app,family,taxon,importer,exporter,origin,importerreportedquantity,exporterreportedquantity,term,unit,purpose,source": "cites",
 			"etisidno,folionumber,statusid,updatedat,reportdate,seizureyear,seizuredate,sourceofdata,agency,sourcegrade,datarank,activities,discoveredplace,discoveredcity,ctydis,ctyorg,rawcountrycodes,workedcountrycodes,ctyexp,ctytra,ctydes,species,rawivnopcs,rawivwtkg,workedivnopcs,workedivwtkg,ivorycomment,hideskinnopcs,hideskinwtkg,hideproductnopcs,hideproductwtkg,hideproduct,othernopcs,otherwtkg,otherproducttype,othercontraband,estimatedvalue,modeoftransport,methodofconcealment,detectionmethods,suspnat,additionalinformation,modeofdatacollection,internalreferencecode": "etis",
 			"species,quantity,origin,originlat,originlong,transit1,transit1lat,transit1long,transit2,transit2lat,transit2long,transit3,transit3lat,transit3long,destination,destinationlat,destinationlong": "seizure"

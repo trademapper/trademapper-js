@@ -1,5 +1,5 @@
 
-define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, spiralTree, tmroute, util) {
+define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, flowmap, tmroute, util) {
 	"use strict";
 	return {
 	mapsvg: null,
@@ -44,7 +44,7 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, spiralTre
 	addDefsToSvg: function() {
 		// first add arrow head
 		this.svgdefs.append("marker")
-				.attr("id", "markerSpiralTreeArrowWide")
+				.attr("id", "markerFlowmapTreeArrowWide")
 				.attr("viewBox", "0 0 10 10")
 				.attr("markerUnits", "strokeWidth")
 				.attr("refX", "7")
@@ -57,7 +57,7 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, spiralTre
 				.attr("class", "route-arrow-head-wide");
 
 		this.svgdefs.append("marker")
-				.attr("id", "markerSpiralTreeArrowNarrow")
+				.attr("id", "markerFlowmapTreeArrowNarrow")
 				.attr("viewBox", "0 0 10 10")
 				.attr("markerUnits", "userSpaceOnUse")
 				.attr("refX", "7")
@@ -113,12 +113,12 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, spiralTre
 	},
 
 	setUpFlowmap: function() {
-		this.flowmap = new spiralTree.SpiralTree(this.zoomg, function(xy) { return [xy[1], xy[0]]; });
-		this.flowmap.extraSpiralClass = "traderoute zoompath";
+		this.flowmap = new flowmap.SpiralTree(this.zoomg, function(xy) { return [xy[1], xy[0]]; });
+		this.flowmap.extraFlowmapClass = "traderoute zoompath";
 		this.flowmap.setOpacity(this.arrowColours.opacity);
 		this.flowmap.setNodeDrawable(false);
-		this.flowmap.markerStart.wide = "url(#markerSpiralTreeArrowWide)";
-		this.flowmap.markerStart.narrow = "url(#markerSpiralTreeArrowNarrow)";
+		this.flowmap.markerStart.wide = "url(#markerFlowmapTreeArrowWide)";
+		this.flowmap.markerStart.narrow = "url(#markerFlowmapTreeArrowNarrow)";
 		this.flowmap.narrowWideStrokeThreshold = this.narrowWideStrokeThreshold;
 	},
 
@@ -433,7 +433,7 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, spiralTre
 			.style("opacity", 0);
 	},
 
-	drawRouteCollectionSpiralTree: function(collection, pointRoles) {
+	drawRouteCollectionFlowmap: function(collection, pointRoles) {
 		var center, terminals;
 		var ctAndMax = collection.getCenterTerminalList();
 		this.centerTerminals = ctAndMax.centerTerminalList;

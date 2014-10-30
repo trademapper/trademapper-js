@@ -48,7 +48,7 @@ define(
 			},
 			minArrowWidth: 1,
 			maxArrowWidth: 25,
-			arrowType: "plain-arrows"  // could be "plain-arrows" or "spiral-tree"
+			arrowType: "plain-arrows"  // could be "plain-arrows" or "flowmap"
 		},
 
 	init: function(mapId, fileFormElementId, filterFormElementId, tmConfig) {
@@ -113,7 +113,10 @@ define(
 		}
 
 		if (this.queryString.hasOwnProperty("arrowtype")) {
-			if (['plain-arrows', 'spiral-tree'].indexOf(this.queryString.arrowtype) !== -1) {
+			if (this.queryString.arrowtype === "spiral-tree") {
+				// convert legacy name to new name
+				this.config.arrowType = "flowmap";
+			} else if (['plain-arrows', 'flowmap'].indexOf(this.queryString.arrowtype) !== -1) {
 				this.config.arrowType = this.queryString.arrowtype;
 			} else {
 				console.log("Unknown arrowtype in query string: " + this.queryString.arrowtype);
@@ -189,8 +192,8 @@ define(
 		// now draw the routes
 		if (this.config.arrowType === "plain-arrows") {
 			arrows.drawRouteCollectionPlainArrows(routes, pointRoles);
-		} else if (this.config.arrowType === "spiral-tree") {
-			arrows.drawRouteCollectionSpiralTree(routes, pointRoles);
+		} else if (this.config.arrowType === "flowmap") {
+			arrows.drawRouteCollectionFlowmap(routes, pointRoles);
 		} else {
 			console.log("unknown config.arrowType: " + this.config.arrowType);
 		}

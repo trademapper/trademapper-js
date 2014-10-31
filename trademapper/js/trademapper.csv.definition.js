@@ -3,6 +3,83 @@ define([], function() {
 	return {
 
 		filterSpec: {
+            iati: {
+                // my iati file has the following columns:
+                //from,default-currency_for_amounts,total_commitments,total_disbursements,total_reimbursements,total_expenditure,start-planned_iso-date,start-planned,start-actual_iso-date,start-actual,end-planned_iso-date,end-planned,end-actual_iso-date,end-actual,implementing-organisations,recipient-country_codes,recipient-countries,activity-status,collaboration-type,default-aid-type
+                "from": {
+					type: "location",
+					locationOrder: 1,
+					locationType: "country_code",
+					locationRole: "exporter",
+                },
+                "default-currency_for_amounts": {
+					type: "text",
+					isUnit: true,
+                },
+                "total_commitments": {
+					type: "quantity"
+				},
+                "total_disbursements": {
+					type: "quantity"
+				},
+                "total_reimbursements": {
+					type: "quantity"
+				},
+                "total_expenditure": {
+					type: "quantity"
+				},
+                "start-planned_iso-date": {
+					type: "ignore"
+				},
+                "start-planned": {
+					type: "ignore"
+				},
+                "Start-actual-year": {
+					type: "year"
+				},
+                "start-actual": {
+					type: "ignore"
+				},
+                "end-planned_iso-date": {
+					type: "ignore"
+				},
+                "end-planned": {
+					type: "ignore"
+				},
+                "end-actual_iso-date": {
+					type: "ignore"
+				},
+                "end-actual": {
+					type: "ignore"
+				},
+                "implementing-organisations": {
+					type: "text_list",
+					multiselect: true
+				},
+                "recipient-country_codes": {
+					type: "location",
+					locationOrder: 2,
+					locationType: "country_code",
+					locationRole: "importer",
+				},
+                "recipient-countries": {
+					type: "text_list",
+					multiselect: true
+				},
+                "activity-status": {
+					type: "text_list",
+					multiselect: true
+				},
+                "collaboration-type": {
+					type: "text_list",
+					multiselect: true
+				},
+                "default-aid-type": {
+					type: "text_list",
+					multiselect: true
+				},
+			},
+
 			ocds: {
 				// For the experiment with OCDS data
                 // OCID,Buyer,BuyerCountry,Importer,SupplierCountry,Exporter,Value,Currency
@@ -387,6 +464,7 @@ define([], function() {
 		},
 
 		csvHeaderToType: {
+            "from,defaultcurrency_for_amounts,total_commitments,total_disbursements,total_reimbursements,total_expenditure,startplanned_isodate,startplanned,startactualyear,startactual,endplanned_isodate,endplanned,endactual_isodate,endactual,implementingorganisations,recipientcountry_codes,recipientcountries,activitystatus,collaborationtype,defaultaidtype": "iati",
             "ocid,buyer,buyercountry,importer,suppliercountry,exporter,value,currency": "ocds",
 			"year,app,family,taxon,importer,exporter,origin,importerreportedquantity,exporterreportedquantity,term,unit,purpose,source": "cites",
 			"etisidno,folionumber,statusid,updatedat,reportdate,seizureyear,seizuredate,sourceofdata,agency,sourcegrade,datarank,activities,discoveredplace,discoveredcity,ctydis,ctyorg,rawcountrycodes,workedcountrycodes,ctyexp,ctytra,ctydes,species,rawivnopcs,rawivwtkg,workedivnopcs,workedivwtkg,ivorycomment,hideskinnopcs,hideskinwtkg,hideproductnopcs,hideproductwtkg,hideproduct,othernopcs,otherwtkg,otherproducttype,othercontraband,estimatedvalue,modeoftransport,methodofconcealment,detectionmethods,suspnat,additionalinformation,modeofdatacollection,internalreferencecode": "etis",

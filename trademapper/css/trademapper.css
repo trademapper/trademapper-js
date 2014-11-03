@@ -639,6 +639,10 @@ footer.row {
 	text-align:right;
 }
 
-.disclaimer a, .built-by a {
+.help-text {
+	color:#eee;
+}
+
+.disclaimer a, .built-by a, .help-text a {
 	color:#fff;
 }

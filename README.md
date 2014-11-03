@@ -34,6 +34,8 @@ international trade of any variety.
 Digging deeper
 --------------
 
+Join our [google group](https://groups.google.com/d/forum/trademapper).
+
 We have more detailed information on the [wiki](https://github.com/trademapper/trademapper-js/wiki), including:
 
 * [How to use TradeMapper](https://github.com/trademapper/trademapper-js/wiki/How-to-use-trademapper)

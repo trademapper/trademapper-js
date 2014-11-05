@@ -1,5 +1,21 @@
 /*
  * The main trademapper library
+ *
+ * trademapper.js is the main file - it loads and configures the other
+ * trademapper files, including setting callbacks.  It is set up by calling
+ * the `init()` function which takes the following arguments:
+ * 
+ * - mapId - the id of the HTML element where the map should be inserted
+ * - fileFormElementId - the id of the HTML element where the file form should
+ *   be inserted.  (The file form is the form where you specify the file to use).
+ * - filterFormElementId - the id of the HTML element where the filter form
+ *   should be inserted.  (The filter form allows you to filter the data once it
+ *   is loaded, so only a subset of the data is displayed on the map).
+ * - config - an object with various other config elements.  An empty object is fine.
+ * 
+ * The config has default values which can be seen in the `defaultConfig` object
+ * 
+ * The init function also checks the URL parameters.
  */
 define(
 	[

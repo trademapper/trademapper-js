@@ -1,5 +1,5 @@
 
-define(['trademapper.csv.definition', 'trademapper.route', 'util', 'd3', 'json-proxy'], function(csvdefs, route, util, d3, jsonpProxy) {
+define(['trademapper.csv.definition', 'trademapper.route', 'util', 'd3', 'corsproxy'], function(csvdefs, route, util, d3, corsProxy) {
 	"use strict";
 
 	return {
@@ -64,13 +64,13 @@ define(['trademapper.csv.definition', 'trademapper.route', 'util', 'd3', 'json-p
 
 	loadCSVUrl: function() {
 		var url = this.urlInputElement.node().value;
+		var moduleThis = this;
 		if(url && url.length > 0) {
-			console.log("here");
-			d3.xhr(jsonProxy(url), function (error, req) {
-				if(error) {
-					console.log("download failed.");
+			d3.xhr(corsProxy(url), function (error, req) {
+				if(error || req.status !== 200) {
+					console.log("unable to download", error, req);
 				} else {
-					console.log("downloaded: ", req);
+					moduleThis.processCSVString(req.response);
 				}
 			});
 		};

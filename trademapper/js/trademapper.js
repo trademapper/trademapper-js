@@ -111,6 +111,7 @@ define(
 		route.setCountryGetPointFunc(function(countryCode) {return mapper.countryCentrePoint(countryCode);});
 		route.setLatLongToPointFunc(function(latLong) {return mapper.latLongToPoint(latLong);});
 		filterform.formChangedCallback = function(columnName) {return moduleThis.filterformChangedCallback(columnName); };
+		this.setUpAsideToggle();
 
 		if (this.queryString.hasOwnProperty("loadcsv") &&
 				this.queryString.hasOwnProperty("csvtype")) {
@@ -158,6 +159,18 @@ define(
 		if (!this.config.hasOwnProperty("height")) {
 			this.config.height = this.config.width * this.config.ratio;
 		}
+	},
+
+	setUpAsideToggle: function() {
+		// TODO: make the document element id configurable
+		var filterToggle = document.getElementById('filter-toggle'),
+			filterPanel = document.getElementById('filter-panel'),
+			className = 'toggled';
+
+		filterToggle.onclick = function() {
+			var currentClasses = filterPanel.classList;
+			filterPanel.classList.toggle(className);
+		};
 	},
 
 	loadCsvFromUrl: function() {

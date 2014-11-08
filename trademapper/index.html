@@ -23,22 +23,6 @@
 			<div class="inner cf">
 				<aside id="filter-panel" class="aside col">
 					<button class="toggle" id="filter-toggle">Show or hide</button>
-					<script>
-						(function(){
-							var filterToggle = document.getElementById('filter-toggle'),
-								filterPanel = document.getElementById('filter-panel'),
-								className = 'toggled';
-
-							filterToggle.onclick = toggle;
-
-							function toggle() {
-								var currentClasses = filterPanel.classList;
-								
-								filterPanel.classList.toggle(className);
-							}
-
-						})();
-					</script>
 					<div class="intro">
 						<iframe id="introtext" scrolling="no" width="100%" height="200" src="https://docs.google.com/document/d/19RSVdHfnLM5T7cA_q6-psYOS5rwnTGPOuTDTs7o9UeM/pub?embedded=true"></iframe>
 					</div>

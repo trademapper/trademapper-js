@@ -36,7 +36,7 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre"], functio
 		var hash = {};
 		this.countries.forEach(function(e){
 			hash[e.id]=e.properties.name;
-		})
+		});
 		this.countryCodeToName = hash;
 	},
 

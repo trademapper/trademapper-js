@@ -33,7 +33,19 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre"], functio
 	},
 
 	makeCountryNameHash: function(){
-		var hash = {};
+		/* CITES uses some non-ISO codes for location, starting with X.
+		Source: http://trade.cites.org/cites_trade_guidelines/en-CITES_Trade_Database_Guide.pdf
+		*/
+		var hash = {
+			"XA": "French Antilles",
+			"XC": "Caribbean",
+			"XE": "Europe",
+			"XF": "Africa",
+			"XM": "South America",
+			"XS": "Asia",
+			"XV": "Various",
+			"XX": "Unknown"
+		};
 		this.countries.forEach(function(e){
 			hash[e.id]=e.properties.name;
 		});

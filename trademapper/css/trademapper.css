@@ -13,7 +13,7 @@ body {
 	margin:0;
 	min-width:290px;
 	padding:0;
-	background-color:#1A8F82;
+	background-color:#006957;
 }
 
 * {
@@ -92,7 +92,7 @@ a:hover {
  =====================================*/
 
 .header.row {
-	background-color:#1A8F82;
+	background-color:#006957;
 }
 
 /*---Branding--*/
@@ -616,7 +616,7 @@ p.tooltip-location {
 }
 
 footer.row {
-    background-color: #1a8f82;
+    background-color: #006957;
     clear: both;
     padding: 10px 0 0;
     font-size:0.9em;

@@ -180,7 +180,21 @@ define(
 							multiValueColumn: false,
 							multiselect: true,
 							type: "text",
-							values: ["H", "P", "T"]
+							values: ["H", "P", "T"],
+							verboseNames: {
+								"B": "Captive breeding / artificial propagation",
+								"E": "Educational",
+								"G": "Botanical garden",
+								"H": "Hunting trophy",
+								"L": "Law enforcement / judicial / forensic",
+								"M": "Medical (including biomedical research)",
+								"N": "Reintroduction / introduction into wild",
+								"P": "Personal",
+								"Q": "Circus or travelling exhibition",
+								"S": "Scientific",
+								"T": "Commercial",
+								"Z": "Zoo"
+							}
 						},
 						"Source": {
 							multiValueColumn: false,

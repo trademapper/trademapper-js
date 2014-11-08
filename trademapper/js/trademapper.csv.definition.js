@@ -172,7 +172,22 @@ define([], function() {
 				},
 				"Purpose": {
 					type: "text",
-					multiselect: true
+					multiselect: true,
+					verboseNames: {
+						// Source: http://trade.cites.org/cites_trade_guidelines/en-CITES_Trade_Database_Guide.pdf
+						"B": "Captive breeding / artificial propagation",
+						"E": "Educational",
+						"G": "Botanical garden",
+						"H": "Hunting trophy",
+						"L": "Law enforcement / judicial / forensic",
+						"M": "Medical (including biomedical research)",
+						"N": "Reintroduction / introduction into wild",
+						"P": "Personal",
+						"Q": "Circus or travelling exhibition",
+						"S": "Scientific",
+						"T": "Commercial",
+						"Z": "Zoo"
+					}
 				},
 				"Source": {
 					type: "text",

@@ -246,14 +246,16 @@ span.showhide {
 }
 
 /*---Filter Groups --*/
-
+.filters-group {
+    z-index: 2000;
+}
 #filter-panel .filters-group {
     border: none;
     clear: both;
+    font-size: 0.8em;
     margin: 0;
     padding: 0.5em 2em 0.5em 0;
     width: 100%;
-    font-size:0.8em;
 }
 
 #filter-panel .filters-group.group-title {

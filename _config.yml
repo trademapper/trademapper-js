@@ -2,7 +2,7 @@
 title: Trademapper
 description: > # this means to ignore newlines until "baseurl:"
   Trademapper is an awesome way of visualising trade from, to, between different countries.
-baseurl: "trademapper-js" # the subpath of your site, e.g. /blog/
+baseurl: "" # the subpath of your site, e.g. /blog/
 url: "http://trademapper.github.io/trademapper-js" # the base hostname & protocol for your site
 github_username:  trademapper
 

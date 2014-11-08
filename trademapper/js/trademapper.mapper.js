@@ -1,4 +1,3 @@
-
 define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre"], function(d3, topojson, mapdata, disputedareas, countryCentre) {
 	"use strict";
 
@@ -10,6 +9,7 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre"], functio
 	svgDefs: null,
 	config: null,
 	countries: null,
+	countryCodeToName: null,
 	borders: null,
 	disputed: null,
 	disputedborders: null,
@@ -29,6 +29,17 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre"], functio
 		this.addPatternDefs();
 		this.drawMap();
 		this.setupZoom();
+		this.makeCountryNameHash();
+	},
+
+	makeCountryNameHash: function(){
+		console.log('making hash');
+		var hash = {};
+		this.countries.forEach(function(e){
+			hash[e.id]=e.properties.name;
+		})
+		this.countryCodeToName = hash;
+		console.log(this.countryCodeToName);
 	},
 
 	drawMap: function() {

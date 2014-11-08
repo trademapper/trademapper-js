@@ -184,7 +184,7 @@ define(
 		// generate the form for playing with the data
 		this.filterFormElement.html(filterSkeleton);
 
-		filterform.createFormFromFilters(this.filterFormElement, filters);
+		filterform.createFormFromFilters(this.filterFormElement, filters, mapper.countryCodeToName);
 	},
 
 	filterLoadedCallback: function(csvType, csvData, filters) {

@@ -59,7 +59,7 @@ define(["d3"], function(d3) {
 			return fieldset;
 		},
 
-		addLocationField: function(fieldset, filters, columnName) {
+		addLocationField: function(fieldset, filters, columnName, countryCodeToName) {
 			var cName = this.columnNameToClassName(columnName);
 			var values = filters[columnName].values;
 			var textName = filters[columnName].hasOwnProperty("shortName") ? filters[columnName].shortName : columnName;
@@ -79,7 +79,7 @@ define(["d3"], function(d3) {
 					.text("Any " + textName);
 			}
 			for (var i = 0; i < values.length; i++) {
-				var textValue = values[i] ? values[i] : "<Blank " + textName + ">";
+				var textValue = countryCodeToName[values[i]] || values[i] || "<Blank " + textName + ">";
 				locationSelect.append("option")
 					.attr("value", values[i])
 					.text(textValue);
@@ -278,7 +278,7 @@ define(["d3"], function(d3) {
 			};
 		},
 
-		createFormFromFilters: function(formElement, filters) {
+		createFormFromFilters: function(formElement, filters, countryCodeToName) {
 			var i, locationFilters, locationFieldset, yearFilters,
 				categoryFilters, categoryFieldset;
 
@@ -292,7 +292,7 @@ define(["d3"], function(d3) {
 				return filters[a].locationOrder - filters[b].locationOrder;
 			});
 			for (i = 0; i < locationFilters.length; i++) {
-				this.addLocationField(locationFieldset, filters, locationFilters[i]);
+				this.addLocationField(locationFieldset, filters, locationFilters[i], countryCodeToName);
 			}
 
 			yearFilters = this.getFilterNamesForType(filters, ["year"]);

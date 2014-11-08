@@ -1,7 +1,9 @@
 
-define(['trademapper.csv.definition', 'trademapper.route', 'util', 'd3'], function(csvdefs, route, util, d3) {
+define(['trademapper.csv.definition', 'trademapper.route', 'util', 'd3', 'json-proxy'], function(csvdefs, route, util, d3, jsonpProxy) {
 	"use strict";
+
 	return {
+
 	fileInputElement: null,
 	csvDataLoadedCallback: null,
 	csvFilterLoadedCallback: null,
@@ -37,7 +39,7 @@ define(['trademapper.csv.definition', 'trademapper.route', 'util', 'd3'], functi
 		this.urlInputElement = urlInput;
 		if(this.button !== null) {
 			var moduleThis = this;
-			button.on("click", function () { alert("click"); return false;});
+			button.on("click", function () { moduleThis.loadCSVUrl(); });
 		}
 	},
 
@@ -60,11 +62,19 @@ define(['trademapper.csv.definition', 'trademapper.route', 'util', 'd3'], functi
 		reader.readAsText(this.csvFile);
 	},
 
-	// loadCSVUrl: function() {
-	// 	d3.xhr("http://example.com", "text/plain", function (data) {
-	// 		console.log("loaded: " + data);
-	// 	});
-	// },
+	loadCSVUrl: function() {
+		var url = this.urlInputElement.node().value;
+		if(url && url.length > 0) {
+			console.log("here");
+			d3.xhr(jsonProxy(url), function (error, req) {
+				if(error) {
+					console.log("download failed.");
+				} else {
+					console.log("downloaded: ", req);
+				}
+			});
+		};
+	},
 
 	loadErrorsToStrings: function() {
 		var countryInfo, errorMsgs = [],

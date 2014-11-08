@@ -179,7 +179,7 @@ define(
 		this.fileInputElement = this.fileFormElement.select("#fileinput");
 		csv.setFileInputElement(this.fileInputElement);
 		csv.setUrlInputElement(this.fileFormElement.select("#urlinput"),
-													 this.fileFormElement.select("#url-download-button"));
+		 											 this.fileFormElement.select("#url-download-button"));
 	},
 
 	createFilterForm: function(filters) {

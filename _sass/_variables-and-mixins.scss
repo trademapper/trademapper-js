@@ -1,0 +1,151 @@
+// -----------------------------------------------------------------
+// colours
+// -----------------------------------------------------------------
+
+$lightgrey: #eee;
+$grey: #ccc;
+
+
+// -----------------------------------------------------------------------------
+// Fonts
+//
+//	Syntax:	font( [icon/heading/serif], font-size, line-height, font-weight)
+// -----------------------------------------------------------------------------
+@mixin font($value: sans-serif, $font-size: 1em, $line-height: 1.5, $font-weight: 100) {
+
+	@if $value == 'icon' {
+		font: $font-weight #{$font-size}/#{$line-height} 'SS Pika', 'SS Social', cursive;
+	}
+
+	@elseif $value == 'heading' {
+		font: $font-weight #{$font-size}/#{$line-height} 'Comfortaa', 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	}
+
+	@else if $value == 'sans-serif' {
+		font: $font-weight #{$font-size}/#{$line-height} 'Fira Sans', 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	}
+
+	@else if $value == 'mono' {
+		font: $font-weight #{$font-size}/#{$line-height} 'Fira Mono', monospace;
+	}
+
+	@else {
+		font: $font-weight #{$font-size}/#{$line-height} Georgia, 'Times New Roman', serif;
+	}
+}
+
+@mixin font-smoothing($value: 'on') {
+    @if $value == 'on' {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+    @else {
+        -webkit-font-smoothing: subpixel-antialiased;
+        -moz-osx-font-smoothing: auto;
+    }
+}
+
+
+// -----------------------------------------------------------------------------
+//Away with the prefixes!
+//------------------------------------------------------------------------------
+
+// .animation(animation-name | animation-duration | animation-timing-function | animation-delay | animation-iteration-count | animation-direction | animation-fill-mode , […]*)
+@mixin animation($anmtn: ani 1s 0 0 infinite linear){
+        -webkit-animation: $anmtn;
+        -moz-animation: $anmtn;
+        -opera-animation: $anmtn;
+    animation: $anmtn;
+}
+
+@mixin backface-visibility( $bckfc-vsblty: hidden ) {
+		-moz-backface-visibility: $bckfc-vsblty;
+		-ms-backface-visibility: $bckfc-vsblty;
+		-webkit-backface-visibility: $bckfc-vsblty;
+	backface-visibility: $bckfc-vsblty;
+}
+
+@mixin background-size($bckgrndsz){
+		-moz-background-size: $bckgrndsz;
+		-webkit-background-size: $bckgrndsz;
+		-o-background-size: $bckgrndsz;
+	background-size: $bckgrndsz;
+}
+
+@mixin box-sizing($bb: border-box){
+		-moz-box-sizing: $bb;
+		-webkit-box-sizing: $bb;
+		-o-box-sizing: $bb;
+	box-sizing: $bb;
+}
+
+@mixin border-radius($br: 0.15rem) {
+		-moz-border-radius: $br;
+		-webkit-border-radius: $br;
+		-o-border-radius: $br;
+	border-radius: $br;
+}
+
+@mixin box-shadow($shadow: $black 0 0 0.5em) {
+		-webkit-box-shadow: $shadow;
+		-moz-box-shadow: $shadow;
+	box-shadow: $shadow;
+}
+
+@mixin gradient ($start-colour: fade($base-black, 100), $end-colour: fade($base-black, 0), $base-colour: $green-light) {
+		background: -webkit-gradient(linear, left top, left bottom, from($start-colour), to($end-colour));
+		background: -webkit-linear-gradient(top, $start-colour, $end-colour);
+		background: -moz-linear-gradient(top, $start-colour, $end-colour);
+		background: -ms-linear-gradient(top, $start-colour, $end-colour);
+		background: -o-linear-gradient(top, $start-colour, $end-colour);
+	background: linear-gradient(top, $start-colour, $end-colour);
+	background-color: $base-colour;
+}
+
+@mixin linear-gradient($start-colour, $end-colour) {
+		background-image: -webkit-gradient(linear, left top, left bottom, from($start-colour), to($end-colour));
+		background-image: -webkit-linear-gradient(top, $start-colour, $end-colour);
+		background-image: -moz-linear-gradient(top, $start-colour, $end-colour);
+		background-image: -ms-linear-gradient(top, $start-colour, $end-colour);
+		background-image: -o-linear-gradient(top, $start-colour, $end-colour);
+	background-image: linear-gradient(top, $start-colour, $end-colour);
+}
+
+@mixin transition($trnstn: all 300ms ease-in-out) {
+		-moz-transition: $trnstn;
+		-webkit-transition: $trnstn;
+		-o-transition: $trnstn;
+		-ms-transition: $trnstn;
+	transition: $trnstn;
+}
+
+@mixin transform($trnsfrm: scale(1.1)){
+		-moz-transform: $trnsfrm;
+		-o-transform: $trnsfrm;
+		-ms-transform: $trnsfrm;
+		-webkit-transform: $trnsfrm;
+	transform: $trnsfrm;
+}
+
+@mixin transform-origin($trnsfrm-styl: 50% 50%){
+		-moz-transform-origin: $trnsfrm-styl;
+		-o-transform-origin: $trnsfrm-styl;
+		-ms-transform-origin: $trnsfrm-styl;
+		-webkit-transform-origin: $trnsfrm-styl;
+	transform-origin: $trnsfrm-styl;
+}
+
+@mixin transform-style($trnsfrm-styl: preserve-3d){
+		-moz-transform-style: $trnsfrm-styl;
+		-o-transform-style: $trnsfrm-styl;
+		-ms-transform-style: $trnsfrm-styl;
+		-webkit-transform-style: $trnsfrm-styl;
+	transform-style: $trnsfrm-styl;
+}
+
+@mixin perspective($prspctv: 75em) {
+		-moz-perspective: $prspctv;
+		-ms-perspective: $prspctv;
+		-webkit-perspective: $prspctv;
+	perspective: $prspctv;
+}

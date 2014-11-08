@@ -10,6 +10,7 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre"], functio
 	config: null,
 	countries: null,
 	countryCodeToName: null,
+	countryCodeToInfo: null,
 	borders: null,
 	disputed: null,
 	disputedborders: null,
@@ -33,11 +34,19 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre"], functio
 	},
 
 	makeCountryNameHash: function(){
-		var hash = {};
+		var nameHash = {};
+		var infoHash = {};
 		this.countries.forEach(function(e){
-			hash[e.id]=e.properties.name;
+			nameHash[e.id]=e.properties.name;
+			var infoObj={};
+			infoObj.name=e.properties.name;
+			infoObj.formal_en=e.properties.formal_en;
+			infoObj.region_un=e.properties.region_un;
+			infoObj.region_wb=e.properties.region_wb;
+			infoHash[e.id]=infoObj;
 		})
-		this.countryCodeToName = hash;
+		this.countryCodeToName = nameHash;
+		this.countryCodeToInfo = infoHash;
 	},
 
 	drawMap: function() {

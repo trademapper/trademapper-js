@@ -191,7 +191,13 @@ define(["d3"], function(d3) {
 					.text("Any " + textName);
 			}
 			for (var i = 0; i < values.length; i++) {
-				var textValue = values[i] ? values[i] : "<Blank " + textName + ">";
+				var textValue;
+				if (filters[columnName].hasOwnProperty("verboseNames")) {
+					// If verboseNames exists for this column, use values[i] to look up the verbose name to use as textValue.
+					textValue = filters[columnName].verboseNames[values[i]] || values[i] || "<Blank " + textName + ">";
+				} else {
+					textValue = values[i] || "<Blank " + textName + ">";
+				}
 				categorySelect.append("option")
 					.attr("value", values[i])
 					.text(textValue);

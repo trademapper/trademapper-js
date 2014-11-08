@@ -273,6 +273,11 @@ span.showhide {
     width: 50%;
 }
 
+.form-item > input[type="button"] {
+    width: auto;
+    float: none;
+}
+
 /*---Location Group Selectors--*/
 
 .group-location > p {

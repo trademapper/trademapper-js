@@ -8,9 +8,9 @@
 </head>
 <body>
 	
-	<div id="map-wrapper">
+	<div id="map-wrapper cf">
 		<div class="header row">
-			<header class="inner" >
+			<header class="inner cf" >
 				<div class="branding">
 					<h1 class="logo"><img alt="trademapper" src="images/logo-on-dark.png" /></h1>
 				</div>
@@ -20,8 +20,25 @@
 			</header>
 		</div>
 		<div class="map row">
-			<div class="inner">
+			<div class="inner cf">
 				<aside id="filter-panel" class="aside col">
+					<button class="toggle" id="filter-toggle">Show or hide</button>
+					<script>
+						(function(){
+							var filterToggle = document.getElementById('filter-toggle'),
+								filterPanel = document.getElementById('filter-panel'),
+								className = 'toggled';
+
+							filterToggle.onclick = toggle;
+
+							function toggle() {
+								var currentClasses = filterPanel.classList;
+								
+								filterPanel.classList.toggle(className);
+							}
+
+						})();
+					</script>
 					<div class="intro">
 						<iframe id="introtext" scrolling="no" width="100%" height="200" src="https://docs.google.com/document/d/19RSVdHfnLM5T7cA_q6-psYOS5rwnTGPOuTDTs7o9UeM/pub?embedded=true"></iframe>
 					</div>

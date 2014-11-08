@@ -23,6 +23,17 @@ body {
 		     box-sizing:border-box;
 }
 
+/* Clearfix for fixing containers that have floated elements in them
+   ----------------------------------------------------------------- */
+.cf:before,
+.cf:after {
+    display: table;
+    content: ' ';
+}
+.cf:after {
+    clear: both;
+}
+
 a, a img, img a:focus, a:active {
 	outline-style:none;
 	outline:none;
@@ -39,32 +50,49 @@ a:hover {
  =====================================*/
 
 .row {
-	width:100%;
-	display:block;
-	clear:both;
-	float:left;
+	width: 100%;
+	display: block;
+	clear: both;
+	float: left;
 }
 
 .inner {
-	max-width:1320px;
-	margin:0 auto;
-	padding:0 20px;
-	position:relative;
+	margin: 0 auto;
+	position: relative;
 }
 
 .inner * {
 	position:relative;
-	-webkit-box-sizing: border-box;
-	   -moz-box-sizing:border-box;
-	     -o-box-sizing:border-box;
-	        box-sizing: border-box;
 }
 
 #filter-panel {
-	width:30%;
-	float:left;
-	position:relative;
+    background: rgba(255, 255, 255, 0.85);
 	display:block;
+    height: 100%;
+    padding: 0 0 0 10px;
+    position: absolute;
+    transition: all 300ms ease-out;
+    width: 30%;
+    z-index: 200;
+}
+
+#filter-panel.toggled {
+    transform: translateX( -100% );
+}
+
+.toggle {
+    background: orange;
+    border: 0;
+    cursor: pointer;
+    bottom: 0;
+    position: absolute;
+    right: -44px;
+    top: 0;
+    width: 44px;
+    z-index: 100;
+}
+.toggle:hover {
+    background: lightgreen;
 }
 
 .branding {
@@ -74,10 +102,12 @@ a:hover {
 }
 
 #trademapper {
-	display:block;
-	float:right;
+	display: block;
+	float: right;
+    height: 85vh;
     position: relative;
-    width: 70%;
+    width: 100%;
+    z-index: 100;
 }
 
 #mapinfo {
@@ -99,14 +129,17 @@ a:hover {
 
 .branding {
     color: #fff;
-    padding: 20px 0;
+    padding: 10px 0;
 }
 .logo {
     margin: 0;
     width: 100%;
 }
 .logo img {
-	width:100%;
+    display: block;
+    height: 48px;
+    margin: 10px auto;
+	width: auto;
 }
 
 /*---File Select--*/
@@ -114,7 +147,7 @@ a:hover {
 .user-actions {
 	width:70%;
 	float:right;
-	padding:20px 0 20px 20px;
+	padding:10px 0 10px 20px;
 	color:#fff;
 }
 .group-fileinput,
@@ -366,7 +399,6 @@ span.showhide {
 
 .map.row {
 	background-color:#eee;
-	padding:20px 0;
 }
 
 #trademapper {

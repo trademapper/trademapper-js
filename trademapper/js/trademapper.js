@@ -112,8 +112,7 @@ define(
 		route.setLatLongToPointFunc(function(latLong) {return mapper.latLongToPoint(latLong);});
 		filterform.formChangedCallback = function(columnName) {return moduleThis.filterformChangedCallback(columnName); };
 
-		if (this.queryString.hasOwnProperty("loadcsv") &&
-				this.queryString.hasOwnProperty("csvtype")) {
+		if (this.queryString.hasOwnProperty("loadcsv")) {
 			this.loadCsvFromUrl();
 		}
 	},
@@ -161,9 +160,8 @@ define(
 	},
 
 	loadCsvFromUrl: function() {
-		var csvUrl = this.queryString.loadcsv,
-			csvType = this.queryString.csvtype;
-		csv.processCSVURL(csvUrl, csvType);
+		var csvUrl = decodeURIComponent(this.queryString.loadcsv);
+		csv.loadCSVUrl(csvUrl);
 	},
 
 	showNowWorking: function() {

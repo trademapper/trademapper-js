@@ -62,8 +62,10 @@ define(['trademapper.csv.definition', 'trademapper.route', 'util', 'd3', 'corspr
 		reader.readAsText(this.csvFile);
 	},
 
-	loadCSVUrl: function() {
-		var url = this.urlInputElement.node().value;
+	loadCSVUrl: function(url) {
+		if(!url) {
+			url = this.urlInputElement.node().value;
+		}
 		var moduleThis = this;
 		if(url && url.length > 0) {
 			d3.xhr(corsProxy(url), function (error, req) {

@@ -76,11 +76,6 @@ a:hover {
     z-index: 200;
 }
 
-#filter:hover {
-    transform: translateX( -900% );
-
-}
-
 #filter-panel.toggled {
     transform: translateX( -100% );
 }

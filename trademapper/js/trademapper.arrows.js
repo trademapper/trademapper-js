@@ -1,5 +1,5 @@
 
-define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, flowmap, tmroute, util) {
+define(["d3", "spiralTree", "trademapper.route", "util", "trademapper.mapper"], function(d3, flowmap, tmroute, util, tmmapper) {
 	"use strict";
 	return {
 	mapsvg: null,
@@ -363,7 +363,8 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, flowmap, 
 					role.charAt(0).toUpperCase() + '</span>';
 				for (var j = 0; j < pointsWithRole.length; j++) {
 					tooltiptext += ' <span class="location-role-country ' +
-						pointsWithRole[j] + '">' + pointsWithRole[j] + '</span>';
+						
+						pointsWithRole[j] + '" title="'+ tmmapper.countryCodeToInfo[pointsWithRole[j]].formal_en+'">' + pointsWithRole[j] + '</span>';
 				}
 				tooltiptext += '</p>';
 			}

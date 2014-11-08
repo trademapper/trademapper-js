@@ -33,21 +33,8 @@
 
 							function toggle() {
 								var currentClasses = filterPanel.classList;
-
-								if (filterPanel.classList) {
-									filterPanel.classList.toggle(className);
-								} 
-								else {
-									var classes = filterPanel.className.split(' ');
-									var existingIndex = classes.indexOf(className);
-
-									if (existingIndex >= 0)
-										classes.splice(existingIndex, 1);
-										else
-										classes.push(className);
-
-										filterPanel.className = classes.join(' ');
-								}
+								
+								filterPanel.classList.toggle(className);
 							}
 
 						})();

@@ -16,7 +16,7 @@ The data is downloaded as a csv from the trade database maintained by CITES. Mos
 
 ### Why use Trademapper?
 
-One of the advantages of using a tool like Trademapper is that people can bring their own data to visualise and potentially can find data to match campaigns and local issues that matter to them as well. Teams are constantly working to devise interoperable and open processes to allow Trademapper to be customsised for users in different areas (finance, aid) to map flows of their data as well. 
+One of the advantages of using a tool like Trademapper is that people can bring their own data to visualise and potentially can find data to match campaigns and local issues that matter to them as well. Teams are constantly working to devise interoperable and open processes to allow Trademapper to be customised for users in different areas (finance, aid) to map flows of their data as well. 
 
 ### Who might want to consider using this?
 

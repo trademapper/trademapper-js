@@ -33,6 +33,14 @@ define(['trademapper.csv.definition', 'trademapper.route', 'util', 'd3'], functi
 		}
 	},
 
+	setUrlInputElement: function(urlInput, button) {
+		this.urlInputElement = urlInput;
+		if(this.button !== null) {
+			var moduleThis = this;
+			button.on("click", function () { alert("click"); return false;});
+		}
+	},
+
 	setSuccessCallback: function(success_callback) {
 		this.csvDataLoadedCallback = success_callback;
 	},
@@ -51,6 +59,12 @@ define(['trademapper.csv.definition', 'trademapper.route', 'util', 'd3'], functi
 		};
 		reader.readAsText(this.csvFile);
 	},
+
+	// loadCSVUrl: function() {
+	// 	d3.xhr("http://example.com", "text/plain", function (data) {
+	// 		console.log("loaded: " + data);
+	// 	});
+	// },
 
 	loadErrorsToStrings: function() {
 		var countryInfo, errorMsgs = [],

@@ -113,8 +113,7 @@ define(
 		filterform.formChangedCallback = function(columnName) {return moduleThis.filterformChangedCallback(columnName); };
 		this.setUpAsideToggle();
 
-		if (this.queryString.hasOwnProperty("loadcsv") &&
-				this.queryString.hasOwnProperty("csvtype")) {
+		if (this.queryString.hasOwnProperty("loadcsv")) {
 			this.loadCsvFromUrl();
 		}
 	},
@@ -174,9 +173,8 @@ define(
 	},
 
 	loadCsvFromUrl: function() {
-		var csvUrl = this.queryString.loadcsv,
-			csvType = this.queryString.csvtype;
-		csv.processCSVURL(csvUrl, csvType);
+		var csvUrl = decodeURIComponent(this.queryString.loadcsv);
+		csv.loadCSVUrl(csvUrl);
 	},
 
 	showNowWorking: function() {
@@ -191,6 +189,8 @@ define(
 		this.fileFormElement.html(csvFormSkeleton);
 		this.fileInputElement = this.fileFormElement.select("#fileinput");
 		csv.setFileInputElement(this.fileInputElement);
+		csv.setUrlInputElement(this.fileFormElement.select("#urlinput"),
+		 											 this.fileFormElement.select("#url-download-button"));
 	},
 
 	createFilterForm: function(filters) {

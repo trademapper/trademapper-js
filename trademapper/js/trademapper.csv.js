@@ -1,7 +1,9 @@
 
-define(['trademapper.csv.definition', 'trademapper.route', 'util', 'd3'], function(csvdefs, route, util, d3) {
+define(['trademapper.csv.definition', 'trademapper.route', 'util', 'd3', 'corsproxy'], function(csvdefs, route, util, d3, corsProxy) {
 	"use strict";
+
 	return {
+
 	fileInputElement: null,
 	csvDataLoadedCallback: null,
 	csvFilterLoadedCallback: null,
@@ -33,6 +35,14 @@ define(['trademapper.csv.definition', 'trademapper.route', 'util', 'd3'], functi
 		}
 	},
 
+	setUrlInputElement: function(urlInput, button) {
+		this.urlInputElement = urlInput;
+		if(this.button !== null) {
+			var moduleThis = this;
+			button.on("click", function () { moduleThis.loadCSVUrl(); });
+		}
+	},
+
 	setSuccessCallback: function(success_callback) {
 		this.csvDataLoadedCallback = success_callback;
 	},
@@ -50,6 +60,22 @@ define(['trademapper.csv.definition', 'trademapper.route', 'util', 'd3'], functi
 			moduleThis.loadingCsv = false;
 		};
 		reader.readAsText(this.csvFile);
+	},
+
+	loadCSVUrl: function(url) {
+		if(!url) {
+			url = this.urlInputElement.node().value;
+		}
+		var moduleThis = this;
+		if(url && url.length > 0) {
+			d3.xhr(corsProxy(url), function (error, req) {
+				if(error || req.status !== 200) {
+					console.log("unable to download", error, req);
+				} else {
+					moduleThis.processCSVString(req.response);
+				}
+			});
+		};
 	},
 
 	loadErrorsToStrings: function() {

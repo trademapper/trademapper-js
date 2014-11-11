@@ -10,6 +10,7 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre"], functio
 	config: null,
 	countries: null,
 	countryCodeToName: null,
+	countryCodeToInfo: null,
 	borders: null,
 	disputed: null,
 	disputedborders: null,
@@ -32,11 +33,11 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre"], functio
 		this.makeCountryNameHash();
 	},
 
-	makeCountryNameHash: function(){
+	makeCountryNameHash: function() {
 		/* CITES uses some non-ISO codes for location, starting with X.
 		Source: http://trade.cites.org/cites_trade_guidelines/en-CITES_Trade_Database_Guide.pdf
 		*/
-		var hash = {
+		var nameHash = {
 			"XA": "French Antilles",
 			"XC": "Caribbean",
 			"XE": "Europe",
@@ -46,10 +47,18 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre"], functio
 			"XV": "Various",
 			"XX": "Unknown"
 		};
-		this.countries.forEach(function(e){
-			hash[e.id]=e.properties.name;
+		var infoHash = {};
+		this.countries.forEach(function(e) {
+			nameHash[e.id] = e.properties.name;
+			infoHash[e.id] = {
+				name: e.properties.name,
+				formal_en: e.properties.formal_en,
+				region_un: e.properties.region_un,
+				region_wb: e.properties.region_wb
+			};
 		});
-		this.countryCodeToName = hash;
+		this.countryCodeToName = nameHash;
+		this.countryCodeToInfo = infoHash;
 	},
 
 	drawMap: function() {

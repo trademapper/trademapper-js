@@ -99,7 +99,8 @@ define(
 		// the arrows
 		mapper.init(this.zoomg, this.controlg, this.svgDefs, this.config);
 		arrows.init(this.tmsvg, this.zoomg, this.svgDefs, '#maptooltip', this.config.arrowColours,
-			this.config.minArrowWidth, this.config.maxArrowWidth, this.config.pointTypeSize);
+			this.config.minArrowWidth, this.config.maxArrowWidth, this.config.pointTypeSize,
+			mapper.countryCodeToInfo);
 
 		// set up the various callbacks we need to link things together
 		var moduleThis = this;
@@ -196,7 +197,6 @@ define(
 	createFilterForm: function(filters) {
 		// generate the form for playing with the data
 		this.filterFormElement.html(filterSkeleton);
-
 		filterform.createFormFromFilters(this.filterFormElement, filters, mapper.countryCodeToName);
 	},
 

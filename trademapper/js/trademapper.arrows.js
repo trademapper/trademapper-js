@@ -1,5 +1,5 @@
 
-define(["d3", "spiralTree", "trademapper.route", "util", "trademapper.mapper"], function(d3, flowmap, tmroute, util, tmmapper) {
+define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, flowmap, tmroute, util) {
 	"use strict";
 	return {
 	mapsvg: null,
@@ -15,6 +15,7 @@ define(["d3", "spiralTree", "trademapper.route", "util", "trademapper.mapper"], 
 	minArrowWidth: null,
 	maxArrowWidth: null,
 	pointTypeSize: null,
+	countryCodeToInfo: null,
 	maxQuantity: null,
 	centerTerminals: null,
 	narrowWideStrokeThreshold: 3,  // used for deciding whether to use arrows inside or outside line
@@ -25,7 +26,7 @@ define(["d3", "spiralTree", "trademapper.route", "util", "trademapper.mapper"], 
 	 * Save the svg we use for later user
 	 * Add the arrow head to defs/marker in the SVG
 	 */
-	init: function(svgElement, zoomg, svgDefs, tooltipSelector, colours, minWidth, maxWidth, pointTypeSize) {
+	init: function(svgElement, zoomg, svgDefs, tooltipSelector, colours, minWidth, maxWidth, pointTypeSize, countryCodeToInfo) {
 		this.mapsvg = svgElement;
 		this.zoomg = zoomg;
 		this.arrowg = this.zoomg.append("g").attr("class", "arrows");
@@ -36,6 +37,7 @@ define(["d3", "spiralTree", "trademapper.route", "util", "trademapper.mapper"], 
 		this.minArrowWidth = minWidth;
 		this.maxArrowWidth = maxWidth;
 		this.pointTypeSize = pointTypeSize;
+		this.countryCodeToInfo = countryCodeToInfo;
 		this.addDefsToSvg();
 		this.setUpFlowmap();
 		this.pathTooltip.style("opacity", 0);
@@ -362,9 +364,13 @@ define(["d3", "spiralTree", "trademapper.route", "util", "trademapper.mapper"], 
 					'<span class="location-role-icon ' + role + '">' +
 					role.charAt(0).toUpperCase() + '</span>';
 				for (var j = 0; j < pointsWithRole.length; j++) {
+					var titleAttr = '',
+						countryCode = pointsWithRole[j];
+					if (this.countryCodeToInfo.hasOwnProperty(countryCode)) {
+						titleAttr = ' title="' + this.countryCodeToInfo[countryCode].formal_en + '"';
+					}
 					tooltiptext += ' <span class="location-role-country ' +
-						
-						pointsWithRole[j] + '" title="'+ tmmapper.countryCodeToInfo[pointsWithRole[j]].formal_en+'">' + pointsWithRole[j] + '</span>';
+						countryCode + '"' + titleAttr + '>' + countryCode + '</span>';
 				}
 				tooltiptext += '</p>';
 			}

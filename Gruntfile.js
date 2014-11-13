@@ -4,13 +4,13 @@ module.exports = function(grunt) {
 
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
-        
+
         //Compile sass to css
         sass: {
             dist: {
                 src: sourceDir + 'styles/**/*.scss',
                 dest: buildDir + 'css/trademapper.css'
-            } 
+            }
         },
 
         //Watch files for changes, then run given task
@@ -18,9 +18,9 @@ module.exports = function(grunt) {
             sass: {
                 files: [sourceDir + 'styles/**/*.scss'],
                 tasks: ['sass']
-            } 
+            }
         },
-        
+
         //Copy source files to build dir
         copy: {
             dist: {
@@ -31,12 +31,15 @@ module.exports = function(grunt) {
                         'images/**/*.jpg',
                         'images/**/*.png',
                         'images/**/*.gif',
-                        'images/**/*.svg'
+                        'images/**/*.svg',
+                        'fonts/*',
+                        'styles/*.css',
+                        'styles/*.css.map'
                     ],
                     dest: buildDir
                 }]
             },
-        }        
+        }
     });
 
     grunt.loadNpmTasks('grunt-contrib-copy');
@@ -44,4 +47,4 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-watch');
 
     grunt.registerTask('default',['copy', 'watch']);
-}
+};

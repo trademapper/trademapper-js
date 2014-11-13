@@ -580,22 +580,7 @@ p.tooltip-location {
 /*----------Options Dialog--------------
  =====================================*/
 #map-options {
-  z-index: 2000;
-  background: none repeat scroll 0 0 rgba(255, 255, 255, 0.9); }
-
-/*
-    background: none repeat scroll 0 0 rgba(255, 255, 255, 0.9);
-    border: 5px solid rgba(0, 0, 0, 0.8);
-    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.2);
-    position: absolute;
-    min-height:8em;
-    display:table;
-}
-
-#map-options {
-    display: none;
-}
-
+  z-index: 2000; }
 
 /*----------Disclaimer-------------------
  =====================================*/

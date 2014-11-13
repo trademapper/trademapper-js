@@ -26,11 +26,15 @@ define(
 		"trademapper.route",
 		"util",
 		"d3",
+		"jquery",
 		"text!../fragments/filterskeleton.html",
-		"text!../fragments/csvformskeleton.html"
+		"text!../fragments/csvformskeleton.html",
+		"text!../fragments/toolbarskeleton.html",
+		"text!../fragments/options-skeleton.html"
 	],
 	function(arrows, csv, filterform, mapper, route, util,
-			 d3, filterSkeleton, csvFormSkeleton) {
+			 d3, $,
+			 filterSkeleton, csvFormSkeleton, toolbarSkeleton, optionsSkeleton) {
 	"use strict";
 
 	return {
@@ -38,7 +42,9 @@ define(
 	mapRootElement: null,
 	fileFormElement: null,
 	filterFormElement: null,
+	toolbarElement: null,
 	tooltipElement: null,
+	optionsElement: null,
 	fileInputElement: null,
 	tmsvg: null,
 	svgDefs: null,
@@ -76,6 +82,10 @@ define(
 
 		this.createCsvOnlyForm();
 
+		this.toolbarElement = this.mapRootElement.append("div")
+			.attr("id", "map-toolbar")
+			.html(toolbarSkeleton);
+
 		this.tmsvg = this.mapRootElement.insert("svg")
 			.attr("width", this.config.width)
 			.attr("height", this.config.height)
@@ -90,10 +100,17 @@ define(
 			.attr("height", "150%")
 			.attr("y", "-150")
 			.attr("class", "mapocean");
-
 		this.controlg = this.tmsvg.append("g").attr("class", "controlgroup");
+
 		this.tooltipElement = this.mapRootElement.append("div")
 			.attr("id", "maptooltip");
+		this.optionsElement = d3.select('body').append("div")
+		//this.optionsElement = this.mapRootElement.append("div")
+			.attr("id", "map-options")
+			.attr("class", "modal fade")
+			.attr("role", "dialog")
+			.attr("aria-hidden", "true")
+			.html(optionsSkeleton);
 
 		// need to init mapper before arrows otherwise the map is on top of
 		// the arrows
@@ -113,6 +130,7 @@ define(
 		route.setLatLongToPointFunc(function(latLong) {return mapper.latLongToPoint(latLong);});
 		filterform.formChangedCallback = function(columnName) {return moduleThis.filterformChangedCallback(columnName); };
 		this.setUpAsideToggle();
+		this.setUpOptionsDialog();
 
 		if (this.queryString.hasOwnProperty("loadcsv")) {
 			this.loadCsvFromUrl();
@@ -164,12 +182,22 @@ define(
 	setUpAsideToggle: function() {
 		// TODO: make the document element id configurable
 		var filterToggle = document.getElementById('filter-toggle'),
-			filterPanel = document.getElementById('filter-panel'),
-			className = 'toggled';
+			filterPanel = document.getElementById('filter-panel');
 
 		filterToggle.onclick = function() {
-			var currentClasses = filterPanel.classList;
-			filterPanel.classList.toggle(className);
+			filterPanel.classList.toggle('toggled');
+		};
+	},
+
+	setUpOptionsDialog: function() {
+		var optionsSpan = document.querySelector('.tool-icons > .options'),
+			optionsPanel = $('#map-options');
+			//optionsPanel = document.getElementById('map-options');
+
+		optionsSpan.onclick = function() {
+			//optionsPanel.classList.remove('hidden');
+			optionsPanel.modal('show');
+			// the options panel will have it's own close button
 		};
 	},
 
@@ -191,7 +219,7 @@ define(
 		this.fileInputElement = this.fileFormElement.select("#fileinput");
 		csv.setFileInputElement(this.fileInputElement);
 		csv.setUrlInputElement(this.fileFormElement.select("#urlinput"),
-		 											 this.fileFormElement.select("#url-download-button"));
+							this.fileFormElement.select("#url-download-button"));
 	},
 
 	createFilterForm: function(filters) {

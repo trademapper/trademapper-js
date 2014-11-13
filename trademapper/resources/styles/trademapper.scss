@@ -118,6 +118,24 @@ a:hover {
 	padding:0;
 }
 
+#map-toolbar {
+}
+
+.tool-icons.left-tools {
+    float: left;
+}
+
+.tool-icons.right-tools {
+    float: right;
+}
+
+.tool-icons > .options:before {
+    background-image: url("../images/gear.svg");
+    background-position: 10px 10px;
+    background-repeat: no-repeat;
+    padding-left: 40px;
+}
+
 /*----------Header--------------------
  =====================================*/
 
@@ -647,6 +665,13 @@ p.tooltip-location {
     font-size: 1.2em;
     font-weight: bold;
 }
+
+/*----------Options Dialog--------------
+ =====================================*/
+#map-options {
+    z-index: 2000;
+}
+
 /*----------Disclaimer-------------------
  =====================================*/
 

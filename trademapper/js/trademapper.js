@@ -186,6 +186,11 @@ define(
 
 		filterToggle.onclick = function() {
 			filterPanel.classList.toggle('toggled');
+			if (filterPanel.classList.contains('toggled')) {
+				filterToggle.textContent = "Show filters";
+			} else {
+				filterToggle.textContent = "Hide filters";
+			}
 		};
 	},
 

@@ -10,13 +10,23 @@ body {
   margin: 0;
   min-width: 290px;
   padding: 0;
-  background-color: #1A8F82; }
+  background-color: #006957; }
 
 * {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   -o-box-sizing: border-box;
   box-sizing: border-box; }
+
+/* Clearfix for fixing containers that have floated elements in them
+   ----------------------------------------------------------------- */
+.cf:before,
+.cf:after {
+  display: table;
+  content: ' '; }
+
+.cf:after {
+  clear: both; }
 
 a, a img, img a:focus, a:active {
   outline-style: none;
@@ -37,23 +47,38 @@ a:hover {
   float: left; }
 
 .inner {
-  max-width: 1320px;
   margin: 0 auto;
-  padding: 0 20px;
   position: relative; }
 
 .inner * {
-  position: relative;
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  -o-box-sizing: border-box;
-  box-sizing: border-box; }
+  position: relative; }
 
 #filter-panel {
+  background: rgba(255, 255, 255, 0.85);
+  display: block;
+  height: 100%;
+  padding: 0 0 0 10px;
+  position: absolute;
+  transition: all 300ms ease-out;
   width: 30%;
-  float: left;
-  position: relative;
-  display: block; }
+  z-index: 200; }
+
+#filter-panel.toggled {
+  transform: translateX(-100%); }
+
+.toggle {
+  background: orange;
+  border: 0;
+  cursor: pointer;
+  bottom: 0;
+  position: absolute;
+  right: -44px;
+  top: 0;
+  width: 44px;
+  z-index: 100; }
+
+.toggle:hover {
+  background: lightgreen; }
 
 .branding {
   width: 30%;
@@ -63,8 +88,10 @@ a:hover {
 #trademapper {
   display: block;
   float: right;
+  height: 85vh;
   position: relative;
-  width: 70%; }
+  width: 100%;
+  z-index: 100; }
 
 #mapinfo {
   border: medium none; }
@@ -75,25 +102,28 @@ a:hover {
 /*----------Header--------------------
  =====================================*/
 .header.row {
-  background-color: #1A8F82; }
+  background-color: #006957; }
 
 /*---Branding--*/
 .branding {
   color: #fff;
-  padding: 20px 0; }
+  padding: 10px 0; }
 
 .logo {
   margin: 0;
   width: 100%; }
 
 .logo img {
-  width: 100%; }
+  display: block;
+  height: 48px;
+  margin: 10px auto;
+  width: auto; }
 
 /*---File Select--*/
 .user-actions {
   width: 70%;
   float: right;
-  padding: 20px 0 20px 20px;
+  padding: 10px 0 10px 20px;
   color: #fff; }
 
 .group-fileinput,
@@ -180,13 +210,16 @@ span.showhide {
   background-position: 25% center; }
 
 /*---Filter Groups --*/
+.filters-group {
+  z-index: 2000; }
+
 #filter-panel .filters-group {
   border: none;
   clear: both;
+  font-size: 0.8em;
   margin: 0;
   padding: 0.5em 2em 0.5em 0;
-  width: 100%;
-  font-size: 0.8em; }
+  width: 100%; }
 
 #filter-panel .filters-group.group-title {
   padding: 0;
@@ -228,6 +261,10 @@ span.showhide {
 .form-item > input {
   float: right;
   width: 50%; }
+
+.form-item > input[type="button"] {
+  width: auto;
+  float: none; }
 
 /*---Location Group Selectors--*/
 .group-location > p {
@@ -313,8 +350,7 @@ span.showhide {
 /*----------Map-----------------------
  =====================================*/
 .map.row {
-  background-color: #eee;
-  padding: 20px 0; }
+  background-color: #eee; }
 
 #trademapper {
   background-color: #fff;
@@ -535,7 +571,7 @@ p.tooltip-location {
   padding: 0 10px; }
 
 footer.row {
-  background-color: #1a8f82;
+  background-color: #006957;
   clear: both;
   padding: 10px 0 0;
   font-size: 0.9em; }
@@ -560,3 +596,5 @@ footer.row {
 
 .disclaimer a, .built-by a, .help-text a {
   color: #fff; }
+
+/*# sourceMappingURL=trademapper.css.map */

@@ -68,7 +68,8 @@ define(['trademapper.csv.definition', 'trademapper.route', 'util', 'd3', 'corspr
 		}
 		var moduleThis = this;
 		if(url && url.length > 0) {
-			d3.xhr(corsProxy(url), function (error, req) {
+			//d3.xhr(corsProxy(url), function (error, req) {
+			d3.xhr(url, function (error, req) {
 				if(error || req.status !== 200) {
 					console.log("unable to download", error, req);
 				} else {

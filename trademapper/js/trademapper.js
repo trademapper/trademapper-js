@@ -2,8 +2,12 @@
  * The main trademapper library
  *
  * trademapper.js is the main file - it loads and configures the other
- * trademapper files, including setting callbacks.  It is set up by calling
- * the `init()` function which takes the following arguments:
+ * trademapper files, including setting callbacks.
+ *
+ * INITIALISATION
+ *
+ * It is set up by calling the `init()` function which takes the following
+ * arguments:
  *
  * - mapId - the id of the HTML element where the map should be inserted
  * - fileFormElementId - the id of the HTML element where the file form should
@@ -15,7 +19,54 @@
  *
  * The config has default values which can be seen in the `defaultConfig` object
  *
- * The init function also checks the URL parameters.
+ * The init function:
+ *
+ * - caches the URL parameters and dom elements
+ * - creates the form to load the CSV, the SVG element for the map, the slider
+ *   and the tooltip
+ * - calls init for mapper, arrows and csv, and pokes callbacks into route
+ *   and filterform
+ * - sets up the toggle for the sidebar and the year slider
+ * - finally, if there is a URL parameter, it loads a CSV file from that URL
+ *
+ * CONTROL FLOW
+ *
+ * There is a listener on the form element to load a CSV.  When that form is
+ * filled in, the csv module:
+ *
+ * - loads the csv using d3
+ * - finds the csv type (and hence filterSpec) and from them it constructs the
+ *   filters object
+ * - calls filterLoadedCallback() with the csvData and the filters object -
+ *   this is used to initialise the filterform, which then maintains its own
+ *   filterValues object based on the filters object and the values set in the
+ *   form by the user.
+ * - calls csvLoadedCallback().  That caches the csvData and then calls
+ *   showFilteredCsv() to actually display the data - see below.
+ *
+ * The filterform listens for any change on the constituent parts of its form.  On
+ * any change it will update its filterValues and then call filterformChangedCallback()
+ * which again calls showFilteredCsv()
+ *
+ * The slider also listens for any change to its value.  It will then make a copy
+ * of the filterform values, update the year range, and of course call showFilteredCsv()
+ *
+ * showFilteredCsv() is the heart of displaying and re-displaying the data.  It calls
+ * the csv module to convert the csv data into an aggregated RouteCollection based
+ * on filterform.filterValues.  The arrows module is then used to draw the
+ * RouteCollection and the legend.  Finally mapper is used to colour in the
+ * countries involved in the trade.
+ *
+ * DATA STRUCTURES
+ *
+ * So the key data structures are:
+ *
+ * - filterSpec - a specification for the filters for a type of CSV.  It is
+ *   used, along with the data from a CSV file to generate the filters.
+ * - filters - a specification based on the filterSpec and the actual
+ *   values found in a particular CSV.  It is used to generated the various
+ *   filters in the UI.
+ * - filterValues - the current values of the filters specified in the UI
  */
 define([
 	"jquery",
@@ -29,7 +80,8 @@ define([
 	"text!../fragments/filterskeleton.html",
 	"text!../fragments/csvformskeleton.html",
 	"text!../fragments/yearsliderskeleton.html",
-	// these requires extend the existing modules
+	// these requires extend the existing modules so do them last and don't
+	// bother giving them variables in the function call.
 	"bootstrap-switch",
 	"d3.slider"
 ],

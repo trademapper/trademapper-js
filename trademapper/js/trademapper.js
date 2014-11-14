@@ -62,11 +62,16 @@
  * So the key data structures are:
  *
  * - filterSpec - a specification for the filters for a type of CSV.  It is
- *   used, along with the data from a CSV file to generate the filters.
+ *   used, along with the data from a CSV file to generate the filters.  See
+ *   trademapper.csv.definition.js for some filterSpec examples.
  * - filters - a specification based on the filterSpec and the actual
  *   values found in a particular CSV.  It is used to generated the various
- *   filters in the UI.
+ *   filters in the UI.  Search for returnedFilters in tests/js/test-csv.js
+ *   to see an example of the filters data structure.
  * - filterValues - the current values of the filters specified in the UI
+ *
+ * All these have the CSV column name as the main key, and they vary in what
+ * they store for each column name.
  */
 define([
 	"jquery",

@@ -53,6 +53,7 @@ function($, d3, arrows, csv, filterform, mapper, route, util,
 	controlg: null,
 	currentCsvData: null,
 	currentCsvType: null,
+	minMaxYear: [0, 0],
 	currentUnit: null,
 	queryString: null,
 
@@ -199,7 +200,7 @@ function($, d3, arrows, csv, filterform, mapper, route, util,
 			selectedYear = minYear;
 		}
 		// TODO: make real callback method
-		var setYearCallback = null;
+		var setYearCallback = function() {};
 		var sliderDiv = d3.select(".change-over-time.year-slider");
 		sliderDiv.selectAll("*").remove();
 		this.yearSlider = sliderDiv.call(
@@ -241,6 +242,8 @@ function($, d3, arrows, csv, filterform, mapper, route, util,
 	},
 
 	filterLoadedCallback: function(csvType, csvData, filters) {
+		this.minMaxYear = csv.getMinMaxYear(filters);
+		this.setYearSlider(this.minMaxYear[0], this.minMaxYear[1]);
 		this.createFilterForm(filters);
 	},
 

@@ -23,6 +23,7 @@ define(
 		"trademapper.csv",
 		"trademapper.filterform",
 		"trademapper.mapper",
+		"trademapper.optionform",
 		"trademapper.route",
 		"util",
 		"d3",
@@ -32,7 +33,7 @@ define(
 		"text!../fragments/toolbarskeleton.html",
 		"text!../fragments/options-skeleton.html"
 	],
-	function(arrows, csv, filterform, mapper, route, util,
+	function(arrows, csv, filterform, mapper, optionform, route, util,
 			 d3, $,
 			 filterSkeleton, csvFormSkeleton, toolbarSkeleton, optionsSkeleton) {
 	"use strict";
@@ -197,10 +198,9 @@ define(
 	setUpOptionsDialog: function() {
 		var optionsSpan = document.querySelector('.tool-icons > .options'),
 			optionsPanel = $('#map-options');
-			//optionsPanel = document.getElementById('map-options');
 
 		optionsSpan.onclick = function() {
-			//optionsPanel.classList.remove('hidden');
+			// TODO: pass in current values of config to options
 			optionsPanel.modal('show');
 			// the options panel will have it's own close button
 		};

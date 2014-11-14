@@ -1,0 +1,45 @@
+<div class="overlay">
+  <div class="overlay__content customcsv">
+    <h2>Custom CSV Importer</h2>
+    <!--<label for="csv-has-headers">Has headers</label>-->
+    <!--<input id="csv-has-headers" type="checkbox" >-->
+
+    <table class="customcsv__table customcsv__table--hasheader">
+      <thead>
+        <tr class="customcsv__headers">
+          {{~it.headers :header}}
+          <th><div>{{=header}}</div></th>
+          {{~}}
+        </tr>
+        <tr class="js-customcsv__options">
+          {{~it.headers :header}}
+          <th>
+            <div class="customcsv__select-container">
+              {{~it.selects :select}}
+              <select class="customcsv__select--{{=select.type}}" name="{{=select.type}}">
+                {{~select.options :option}}
+                <option value="{{=option.value}}">{{=option.text}}</option>
+                {{~}}
+              </select>
+              {{~}}
+            </div>
+          </th>
+          {{~}}
+        </tr>
+      </thead>
+      <tbody>
+          {{~it.data :row}}
+          <tr>
+            {{~row :val}}
+            <td><div>{{=val}}</div></td>
+            {{~}}
+          </tr>
+          {{~}}
+      </tbody>
+    </table>
+    <div class="customcsv__rowcount">{{=it.rowcount}} total rows</div>
+
+    <button class="js-customcsv__done">Done</button>
+
+  </div>
+</div>

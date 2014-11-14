@@ -73,7 +73,7 @@ a:hover {
     position: absolute;
     transition: all 300ms ease-out;
     width: 30%;
-    z-index: 200;
+    z-index: 3;
 }
 
 #filter-panel.toggled {
@@ -89,7 +89,7 @@ a:hover {
     right: -44px;
     top: 0;
     width: 44px;
-    z-index: 100;
+    z-index: 2;
 }
 .toggle:hover {
     background: lightgreen;
@@ -107,7 +107,7 @@ a:hover {
     height: 85vh;
     position: relative;
     width: 100%;
-    z-index: 100;
+    z-index: 2;
 }
 
 #mapinfo {
@@ -192,7 +192,7 @@ a:hover {
     background-color: #177f73;
     padding:1em;
     position:absolute;
-    z-index:2;
+    z-index:1;
 }
 
 .csv-load-errors.haserror > p > strong {
@@ -265,7 +265,7 @@ span.showhide {
 
 /*---Filter Groups --*/
 .filters-group {
-    z-index: 2000;
+    z-index: 4;
 }
 #filter-panel .filters-group {
     border: none;
@@ -669,7 +669,7 @@ p.tooltip-location {
 /*----------Options Dialog--------------
  =====================================*/
 #map-options {
-    z-index: 2000;
+    z-index: 4;
 }
 
 /*----------Disclaimer-------------------
@@ -709,4 +709,70 @@ footer.row {
 
 .disclaimer a, .built-by a, .help-text a {
 	color:#fff;
+}
+
+/*----------Overlay-------------------
+ =====================================*/
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 5;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  padding: 100px;
+  box-sizing: border-box;
+}
+
+.overlay__content {
+  background: #f1f1f1;
+}
+
+.customcsv {
+  overflow-x: scroll;
+  padding: 0 20px 20px 20px;
+}
+
+.customcsv__table {
+  border-spacing: 0;
+  border-collapse: collapse;
+}
+
+.customcsv__table {
+  th,
+  td {
+    border: 1px solid #d0d0d0;
+    color: #444;
+    padding: 4px;
+  }
+  tbody td div {
+    max-height: 42px;
+    overflow: hidden;
+  }
+}
+
+.customcsv__table--hasheader tbody tr:first-child {
+  display: none;
+}
+
+.has-overlay {
+  overflow: hidden;
+}
+
+.customcsv__select--locationType,
+.customcsv__select--locationRole {
+  display: none;
+}
+
+.customcsv__select-container {
+  text-align: left;
+}
+
+.customcsv__select-container[data-type=location] {
+  .customcsv__select--locationType,
+  .customcsv__select--locationRole {
+    display: block;
+  }
 }

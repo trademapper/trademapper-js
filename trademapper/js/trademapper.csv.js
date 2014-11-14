@@ -1,5 +1,18 @@
-
-define(['trademapper.csv.definition', 'trademapper.route', 'util', 'd3', 'corsproxy'], function(csvdefs, route, util, d3, corsProxy) {
+define([
+    'trademapper.csv.definition',
+    'trademapper.customcsv',
+    'trademapper.route',
+    'util',
+    'd3',
+    'corsproxy'
+], function(
+    csvdefs,
+    CustomCsv,
+    route,
+    util,
+    d3,
+    corsProxy
+) {
 	"use strict";
 
 	return {
@@ -152,13 +165,21 @@ define(['trademapper.csv.definition', 'trademapper.route', 'util', 'd3', 'corspr
 	processCSVString: function(fileText) {
 		var firstLine = fileText.substring(0, fileText.indexOf("\n"));
 		var csvType = this.autodetectCsvType(firstLine);
-		if (csvType) {
+		if (false /*csvType*/) { // TODO: just for testing. revert
 			fileText = this.trimCsvColumnNames(fileText);
 			var csvData = d3.csv.parse(fileText);
 			this.processParsedCSV(csvData, csvType);
 		} else {
-			this.loadErrors.unknownCSVFormat.push("unknown CSV header: " + firstLine);
-			this.errorCallback();
+            var customFilterSpecCallback = function(filterSpec) {
+                // TODO: refactor these callbacks and general architecture to accept a filterSpec
+                // currently a hardcoded filterSpec's key is passed around and used to lookup the
+                // filterSpec object in various places
+                var parsedCsv = d3.csv.parse(fileText);
+                this.filters = this.csvToFilters(parsedCsv, filterSpec);
+                this.csvFilterLoadedCallback('custom', parsedCsv, this.filters);
+                this.csvDataLoadedCallback('custom', parsedCsv);
+            }.bind(this);
+            CustomCsv.init(fileText, customFilterSpecCallback);
 		}
 	},
 

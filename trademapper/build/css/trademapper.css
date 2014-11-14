@@ -607,7 +607,9 @@ p.tooltip-location {
 
 .change-over-time.year-slider-container {
   width: 90%;
-  float: right; }
+  float: right;
+  padding-left: 2em;
+  padding-right: 2em; }
 
 /*----------Options Dialog--------------
  =====================================*/

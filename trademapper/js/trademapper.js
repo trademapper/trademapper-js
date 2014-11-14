@@ -248,8 +248,8 @@ define(
 		this.currentCsvType = csvType;
 
 		document.querySelector("body").classList.add("csv-data-loaded");
-		this.showFilteredCsv();
 		this.reportCsvLoadErrors();
+		this.showFilteredCsv();
 	},
 
 	reportCsvLoadErrors: function() {

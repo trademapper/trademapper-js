@@ -40,11 +40,13 @@ a:hover {
 
 /*----------General Layout---
  =====================================*/
-.row {
+.tmrow {
   width: 100%;
   display: block;
   clear: both;
-  float: left; }
+  float: left;
+  margin-right: 0;
+  margin-left: 0; }
 
 .inner {
   margin: 0 auto;
@@ -113,7 +115,7 @@ a:hover {
 
 /*----------Header--------------------
  =====================================*/
-.header.row {
+.header.tmrow {
   background-color: #006957; }
 
 /*---Branding--*/
@@ -361,7 +363,7 @@ span.showhide {
 
 /*----------Map-----------------------
  =====================================*/
-.map.row {
+.map.tmrow {
   background-color: #eee; }
 
 #trademapper {
@@ -584,10 +586,10 @@ p.tooltip-location {
 
 /*----------Disclaimer-------------------
  =====================================*/
-.info.row > .inner {
+.info.tmrow > .inner {
   padding: 0 10px; }
 
-footer.row {
+footer.tmrow {
   background-color: #006957;
   clear: both;
   padding: 10px 0 0;

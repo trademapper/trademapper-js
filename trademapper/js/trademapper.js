@@ -81,16 +81,13 @@ define([
 	"trademapper.filterform",
 	"trademapper.mapper",
 	"trademapper.route",
+	"trademapper.yearslider",
 	"util",
 	"text!../fragments/filterskeleton.html",
 	"text!../fragments/csvformskeleton.html",
 	"text!../fragments/yearsliderskeleton.html",
-	// these requires extend the existing modules so do them last and don't
-	// bother giving them variables in the function call.
-	"bootstrap-switch",
-	"d3.slider"
 ],
-function($, d3, arrows, csv, filterform, mapper, route, util,
+function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 		 filterSkeleton, csvFormSkeleton, yearSliderSkeleton) {
 	"use strict";
 
@@ -103,7 +100,6 @@ function($, d3, arrows, csv, filterform, mapper, route, util,
 	tooltipElement: null,
 	fileInputElement: null,
 	changeOverTimeElement: null,
-	yearSlider: null,
 	tmsvg: null,
 	svgDefs: null,
 	zoomg: null,
@@ -181,8 +177,9 @@ function($, d3, arrows, csv, filterform, mapper, route, util,
 		route.setCountryGetPointFunc(function(countryCode) {return mapper.countryCentrePoint(countryCode);});
 		route.setLatLongToPointFunc(function(latLong) {return mapper.latLongToPoint(latLong);});
 		filterform.formChangedCallback = function(columnName) {return moduleThis.filterformChangedCallback(columnName); };
+		yearslider.showTradeForYear = function(year) {return moduleThis.showTradeForYear(year); };
 		this.setUpAsideToggle();
-		this.setUpYearSlider();
+		yearslider.create();
 
 		if (this.queryString.hasOwnProperty("loadcsv")) {
 			this.loadCsvFromUrl();
@@ -246,13 +243,6 @@ function($, d3, arrows, csv, filterform, mapper, route, util,
 		};
 	},
 
-	setUpYearSlider: function() {
-		$("[name='change-over-time-checkbox']").bootstrapSwitch();
-		var sliderDiv = d3.select(".change-over-time.year-slider");
-		sliderDiv.selectAll("*").remove();
-		this.yearSlider = sliderDiv.call(d3.slider());
-	},
-
 	showTradeForYear: function(year) {
 		// guard against the value not being set
 		if (!year || !this.yearColumnName) { return; }
@@ -262,27 +252,6 @@ function($, d3, arrows, csv, filterform, mapper, route, util,
 		filterValues[this.yearColumnName].minValue = year;
 		filterValues[this.yearColumnName].maxValue = year;
 		this.showFilteredCsv(filterValues);
-	},
-
-	setYearSlider: function(minYear, maxYear, selectedYear) {
-		if (selectedYear === null) {
-			selectedYear = minYear;
-		}
-		var sliderDiv = d3.select(".change-over-time.year-slider");
-		var setYearCallback = function(ext, year) {
-			this.showTradeForYear(year);
-		}.bind(this);
-
-		sliderDiv.selectAll("*").remove();
-		this.yearSlider = sliderDiv.call(
-			d3.slider()
-			.axis(true)
-			.min(minYear)
-			.max(maxYear)
-			.step(1)
-			.value(selectedYear)
-			.on("slide", setYearCallback)
-		);
 	},
 
 	loadCsvFromUrl: function() {
@@ -318,7 +287,7 @@ function($, d3, arrows, csv, filterform, mapper, route, util,
 			this.yearColumnName = yearColumns[0];
 		}
 		this.minMaxYear = csv.getMinMaxYear(filters);
-		this.setYearSlider(this.minMaxYear[0], this.minMaxYear[1]);
+		yearslider.setYears(this.minMaxYear[0], this.minMaxYear[1]);
 		this.createFilterForm(filters);
 	},
 

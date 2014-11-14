@@ -4,7 +4,7 @@
  * trademapper.js is the main file - it loads and configures the other
  * trademapper files, including setting callbacks.  It is set up by calling
  * the `init()` function which takes the following arguments:
- * 
+ *
  * - mapId - the id of the HTML element where the map should be inserted
  * - fileFormElementId - the id of the HTML element where the file form should
  *   be inserted.  (The file form is the form where you specify the file to use).
@@ -12,27 +12,29 @@
  *   should be inserted.  (The filter form allows you to filter the data once it
  *   is loaded, so only a subset of the data is displayed on the map).
  * - config - an object with various other config elements.  An empty object is fine.
- * 
+ *
  * The config has default values which can be seen in the `defaultConfig` object
- * 
+ *
  * The init function also checks the URL parameters.
  */
-define(
-	[
-		"trademapper.arrows",
-		"trademapper.csv",
-		"trademapper.filterform",
-		"trademapper.mapper",
-		"trademapper.route",
-		"util",
-		"d3",
-		"jquery",
-		"text!../fragments/filterskeleton.html",
-		"text!../fragments/csvformskeleton.html",
-	],
-	function(arrows, csv, filterform, mapper, route, util,
-			 d3, $,
-			 filterSkeleton, csvFormSkeleton) {
+define([
+	"jquery",
+	"d3",
+	"trademapper.arrows",
+	"trademapper.csv",
+	"trademapper.filterform",
+	"trademapper.mapper",
+	"trademapper.route",
+	"util",
+	"text!../fragments/filterskeleton.html",
+	"text!../fragments/csvformskeleton.html",
+	"text!../fragments/yearsliderskeleton.html",
+	// these requires extend the existing modules
+	"bootstrap-switch",
+	"d3.slider"
+],
+function($, d3, arrows, csv, filterform, mapper, route, util,
+		 filterSkeleton, csvFormSkeleton, yearSliderSkeleton) {
 	"use strict";
 
 	return {
@@ -43,6 +45,8 @@ define(
 	toolbarElement: null,
 	tooltipElement: null,
 	fileInputElement: null,
+	changeOverTimeElement: null,
+	yearSlider: null,
 	tmsvg: null,
 	svgDefs: null,
 	zoomg: null,
@@ -70,11 +74,13 @@ define(
 			arrowType: "plain-arrows"  // could be "plain-arrows" or "flowmap"
 		},
 
-	init: function(mapId, fileFormElementId, filterFormElementId, tmConfig) {
+	init: function(mapId, fileFormElementId, filterFormElementId,
+	               changeOverTimeElementId, tmConfig) {
 		this.queryString = util.queryString();
 		this.mapRootElement = d3.select(mapId);
 		this.fileFormElement = d3.select(fileFormElementId);
 		this.filterFormElement = d3.select(filterFormElementId);
+		this.changeOverTimeElement = d3.select(changeOverTimeElementId);
 		this.setConfigDefaults(tmConfig);
 
 		this.createCsvOnlyForm();
@@ -95,6 +101,7 @@ define(
 			.attr("class", "mapocean");
 		this.controlg = this.tmsvg.append("g").attr("class", "controlgroup");
 
+		this.changeOverTimeElement.html(yearSliderSkeleton);
 		this.tooltipElement = this.mapRootElement.append("div")
 			.attr("id", "maptooltip");
 
@@ -116,6 +123,7 @@ define(
 		route.setLatLongToPointFunc(function(latLong) {return mapper.latLongToPoint(latLong);});
 		filterform.formChangedCallback = function(columnName) {return moduleThis.filterformChangedCallback(columnName); };
 		this.setUpAsideToggle();
+		this.setUpYearSlider();
 
 		if (this.queryString.hasOwnProperty("loadcsv")) {
 			this.loadCsvFromUrl();
@@ -177,6 +185,32 @@ define(
 				filterToggle.textContent = "Hide filters";
 			}
 		};
+	},
+
+	setUpYearSlider: function() {
+		$("[name='change-over-time-checkbox']").bootstrapSwitch();
+		var sliderDiv = d3.select(".change-over-time.year-slider");
+		sliderDiv.selectAll("*").remove();
+		this.yearSlider = sliderDiv.call(d3.slider());
+	},
+
+	setYearSlider: function(minYear, maxYear, selectedYear) {
+		if (selectedYear === null) {
+			selectedYear = minYear;
+		}
+		// TODO: make real callback method
+		var setYearCallback = null;
+		var sliderDiv = d3.select(".change-over-time.year-slider");
+		sliderDiv.selectAll("*").remove();
+		this.yearSlider = sliderDiv.call(
+			d3.slider()
+			.axis(true)
+			.min(minYear)
+			.max(maxYear)
+			.step(1)
+			.value(selectedYear)
+			.on("slide", setYearCallback)
+		);
 	},
 
 	loadCsvFromUrl: function() {

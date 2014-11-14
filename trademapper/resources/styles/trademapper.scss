@@ -11,6 +11,15 @@ $hilight-colour: $importer-colour;
 $darkbg-colour: #006957;
 $errorbg-colour: #177F73;
 
+%vertical-align {
+	position:relative;
+	top:50%;
+	transform:translateY(-50%);
+}
+
+/*-------General---
+ ===============================*/
+
 html {
 	font-size:1em;
 }
@@ -675,6 +684,35 @@ p.tooltip-location {
     color: #555;
     font-size: 1.2em;
     font-weight: bold;
+}
+
+/*----------Year Slider----------------
+ =====================================*/
+.change-over-time-section {
+	width: 100%;
+	position: relative;
+	height: 40px;
+}
+
+.change-over-time-switch {
+	width: 15%;
+	float: left;
+}
+
+.change-over-time.slider-section {
+	width: 85%;
+	float: right;
+	@extend %vertical-align;
+}
+
+.change-over-time.play-button-section {
+	width: 10%;
+	float: left;
+}
+
+.change-over-time.year-slider-container {
+	width: 90%;
+	float: right;
 }
 
 /*----------Options Dialog--------------

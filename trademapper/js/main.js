@@ -32,5 +32,6 @@ require.config({
 require(["trademapper", "bootstrap", "domReady!"], function(tm) {
 	"use strict";
 	var config = {width:1600, arrowType:"plain-arrows"};
-	tm.init("#trademapper", "#tm-file-select", "#form-filters", config);
+	tm.init("#trademapper", "#tm-file-select", "#form-filters",
+			'#change-over-time', config);
 });

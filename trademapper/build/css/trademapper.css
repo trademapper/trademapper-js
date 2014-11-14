@@ -32,7 +32,7 @@ a, a img, img a:focus, a:active {
   outline-style: none;
   outline: none;
   border: none;
-  color: #FF6600;
+  color: #ff6600;
   text-decoration: none; }
 
 a:hover {
@@ -162,7 +162,7 @@ a:hover {
   margin-top: 0.5em; }
 
 #csv-load-error-details {
-  background-color: #177f73;
+  background-color: #177F73;
   padding: 1em;
   position: absolute;
   z-index: 2; }
@@ -173,7 +173,7 @@ a:hover {
 
 span.showhide {
   cursor: pointer;
-  color: #FF6600;
+  color: #ff6600;
   text-decoration: underline; }
 
 /*----------Filter Panel--------------
@@ -251,7 +251,7 @@ span.showhide {
 #title {
   background-color: white;
   border: medium none;
-  color: #177f73;
+  color: #006957;
   font-family: sans-serif;
   font-size: 1.3em;
   font-weight: bold;
@@ -312,7 +312,7 @@ span.showhide {
   background-color: #20AF9F; }
 
 .form-item.location-importer {
-  background-color: #FF6600; }
+  background-color: #ff6600; }
 
 .group-location > .form-item {
   background-image: url("../images/icon-origin.svg");
@@ -569,7 +569,7 @@ p.tooltip-location {
   background-image: url("../images/icon-transit.svg"); }
 
 .tooltip-location.importer:before {
-  background-color: #FF6600;
+  background-color: #ff6600;
   background-image: url("../images/icon-importer.svg"); }
 
 .location-role-country {

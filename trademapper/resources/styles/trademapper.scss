@@ -1,6 +1,15 @@
 /*-------General---
  ===============================*/
 
+$origin_colour: #000000;
+$exporter-colour: #45689f;
+$transit-colour: #20AF9F;
+$importer-colour: #ff6600;
+
+$hilight-colour: $importer-colour;
+
+$darkbg-colour: #006957;
+$errorbg-colour: #177F73;
 
 html {
 	font-size:1em;
@@ -13,7 +22,7 @@ body {
 	margin:0;
 	min-width:290px;
 	padding:0;
-	background-color:#006957;
+	background-color:$darkbg-colour;
 }
 
 * {
@@ -38,7 +47,7 @@ a, a img, img a:focus, a:active {
 	outline-style:none;
 	outline:none;
 	border:none;
-	color:#FF6600;
+	color:$hilight-colour;
 	text-decoration:none;
 }
 
@@ -140,7 +149,7 @@ a:hover {
  =====================================*/
 
 .header.row {
-	background-color:#006957;
+	background-color:$darkbg-colour;
 }
 
 /*---Branding--*/
@@ -182,14 +191,14 @@ a:hover {
 
 
 .csv-load-errors > p {
-	background-color:#177F73;
+	background-color:$errorbg-colour;
 	padding:1em;
 	margin-bottom:0;
 	margin-top:0.5em;
 }
 
 #csv-load-error-details {
-    background-color: #177f73;
+    background-color:$errorbg-colour;
     padding:1em;
     position:absolute;
     z-index:2;
@@ -202,7 +211,7 @@ a:hover {
 
 span.showhide {
 	cursor: pointer;
-	color: #FF6600;
+	color: $hilight-colour;
 	text-decoration: underline;
 }
 
@@ -299,7 +308,7 @@ span.showhide {
 #title {
     background-color: white;
     border: medium none;
-    color: #177f73;
+    color: $darkbg-colour;
     font-family: sans-serif;
     font-size: 1.3em;
     font-weight: bold;
@@ -364,9 +373,9 @@ span.showhide {
 	cursor:pointer;
 }
 
-.form-item.location-exporter {background-color: #45689f;}
-.form-item.location-transit {background-color: #20AF9F;}
-.form-item.location-importer {background-color: #FF6600;}
+.form-item.location-exporter {background-color: $exporter-colour;}
+.form-item.location-transit {background-color: $transit-colour;}
+.form-item.location-importer {background-color: $importer-colour;}
 
 .group-location > .form-item {
     background-image: url("../images/icon-origin.svg");
@@ -501,16 +510,16 @@ span.showhide {
 }
 
 .tradenode.origin {
-	fill:#000000;
+	fill:$origin-colour;
 }
 .tradenode.exporter {
-	fill:#45689f;
+	fill:$exporter-colour;
 }
 .tradenode.transit {
-	fill:#20AF9F;
+	fill:$transit-colour;
 }
 .tradenode.importer {
-	fill:#ff6600;
+	fill:$importer-colour;
 }
 
 
@@ -535,7 +544,7 @@ span.showhide {
 }
 
 .tooltip-dest > em {
-    color: #ff6600;
+    color: $importer-colour;
     font-size: 1.1em;
     font-weight: bold;
 }
@@ -656,9 +665,9 @@ p.tooltip-location {
 }
 
 
-.tooltip-location.exporter:before {background-color: #45689f; background-image: url("../images/icon-exporter.svg");}
-.tooltip-location.transit:before {background-color: #20AF9F; background-image: url("../images/icon-transit.svg");}
-.tooltip-location.importer:before {background-color: #FF6600; background-image: url("../images/icon-importer.svg");}
+.tooltip-location.exporter:before {background-color: $exporter-colour; background-image: url("../images/icon-exporter.svg");}
+.tooltip-location.transit:before {background-color: $transit-colour; background-image: url("../images/icon-transit.svg");}
+.tooltip-location.importer:before {background-color: $importer-colour; background-image: url("../images/icon-importer.svg");}
 
 .location-role-country {
     color: #555;
@@ -680,7 +689,7 @@ p.tooltip-location {
 }
 
 footer.row {
-    background-color: #006957;
+    background-color: $darkbg-colour;
     clear: both;
     padding: 10px 0 0;
     font-size:0.9em;

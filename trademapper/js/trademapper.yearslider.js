@@ -25,6 +25,15 @@ function($, d3) {
 	currentYear: null,
 	intervalId: null,
 
+	changePlayButton: function(isPlaying) {
+		var playButton = document.querySelector(".change-over-time.play-button");
+		if (isPlaying) {
+			playButton.textContent = "pause";
+		} else {
+			playButton.textContent = "play";
+		}
+	},
+
 	playYearSlider: function() {
 		// don't play if setYears() hasn't been called
 		if (this.minYear === 0) { return; }
@@ -35,23 +44,25 @@ function($, d3) {
 				this.incrementYearSlider();
 			}.bind(this);
 			this.intervalId = setInterval(incrementYearSlider, this.playInterval);
-			// TODO: change play button to pause
+			this.changePlayButton(true);
+			// and do an increment immediately
+			incrementYearSlider();
 		} else {
 			// if currently playing then pause
 			clearInterval(this.intervalId);
 			this.intervalId = null;
-			// TODO: change pause button to play
+			this.changePlayButton(false);
 		}
 	},
 
 	incrementYearSlider: function() {
-		// TODO: update the slider
+		this.setYears(this.minYear, this.maxYear, this.currentYear);
 		this.showTradeForYear(this.currentYear);
 		this.currentYear++;
 		if (this.currentYear > this.maxYear) {
 			clearInterval(this.intervalId);
 			this.intervalId = null;
-			// TODO: change pause button to play
+			this.changePlayButton(false);
 		}
 	},
 

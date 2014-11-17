@@ -119,6 +119,13 @@ function($, d3) {
 			this.setYearRangeStatus(false);
 		} else {
 			moduleThis.sliderEnabled = false;
+			// if currently playing then pause
+			if (this.intervalId) {
+				clearInterval(this.intervalId);
+				this.intervalId = null;
+				this.changePlayButton(false);
+			}
+			// disable the slider
 			section.classList.add("disabled");
 			this.createSliderBlank();
 			// go back to showing data for all years (with filter settings)

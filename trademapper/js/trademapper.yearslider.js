@@ -13,6 +13,8 @@ function($, d3) {
 	"use strict";
 
 	return {
+	sectionEnabled: false,
+	sliderEnabled: false,
 	yearSlider: null,
 	showTradeForYear: null,
 
@@ -24,6 +26,19 @@ function($, d3) {
 	// variables for the async sleep stuff
 	currentYear: null,
 	intervalId: null,
+
+
+	disable: function() {
+		this.sectionEnabled = false;
+		var section = document.querySelector(".change-over-time-section");
+		section.classList.add("disabled");
+	},
+
+	enable: function() {
+		this.sectionEnabled = true;
+		var section = document.querySelector(".change-over-time-section");
+		section.classList.remove("disabled");
+	},
 
 	changePlayButton: function(isPlaying) {
 		var playButton = document.querySelector(".change-over-time.play-button"),
@@ -45,6 +60,8 @@ function($, d3) {
 	},
 
 	playPauseYearSlider: function() {
+		// if not enabled, do nothing
+		if (this.sectionEnabled === false || this.sliderEnabled === false) { return; }
 		// don't play if setYears() hasn't been called
 		if (this.minYear === 0) { return; }
 		// is null if not currently playing
@@ -65,6 +82,19 @@ function($, d3) {
 		}
 	},
 
+	switchChange: function(moduleThis, $this) {
+		var section = document.querySelector(".change-over-time.slider-section");
+		if ($this.is(':checked')) {
+			moduleThis.sliderEnabled = true;
+			section.classList.remove("disabled");
+			this.createSliderWithYears();
+		} else {
+			moduleThis.sliderEnabled = false;
+			section.classList.add("disabled");
+			this.createSliderBlank();
+		}
+	},
+
 	incrementYearSlider: function() {
 		this.setYears(this.minYear, this.maxYear, this.currentYear);
 		this.showTradeForYear(this.currentYear);
@@ -79,7 +109,12 @@ function($, d3) {
 	create: function() {
 		// make a switch to enable/disable
 		// TODO: link it to a function to do disable/enable
-		$("[name='change-over-time-checkbox']").bootstrapSwitch();
+		var moduleThis = this;
+		var $sliderSwitch = $("input[name='change-over-time-checkbox']");
+		$sliderSwitch.bootstrapSwitch();
+		$sliderSwitch.on('switchChange.bootstrapSwitch', function() {
+			moduleThis.switchChange(moduleThis, $(this));
+		});
 
 		// link the play button to a function
 		var playPauseCallback = function() {
@@ -88,30 +123,44 @@ function($, d3) {
 		d3.select(".change-over-time.play-button").on("click", playPauseCallback);
 
 		// create the slider - years are added when CSV is loaded
-		var sliderDiv = d3.select(".change-over-time.year-slider");
-		sliderDiv.selectAll("*").remove();
-		this.yearSlider = sliderDiv.call(d3.slider());
+		this.createSliderBlank();
 	},
 
 	setYears: function(minYear, maxYear, selectedYear) {
 		this.minYear = minYear;
 		this.maxYear = maxYear;
-		if (selectedYear === null) {
-			selectedYear = minYear;
+		this.selectedYear = selectedYear ? selectedYear: minYear;
+		if (this.sliderEnabled) {
+			this.createSliderWithYears();
+		} else {
+			this.createSliderBlank();
 		}
+	},
+
+	clearSliderDiv: function() {
 		var sliderDiv = d3.select(".change-over-time.year-slider");
+		sliderDiv.selectAll("*").remove();
+		return sliderDiv;
+	},
+
+	createSliderBlank: function() {
+		var sliderDiv = this.clearSliderDiv();
+		this.yearSlider = sliderDiv.call(d3.slider());
+	},
+
+	createSliderWithYears: function() {
 		var setYearCallback = function(ext, year) {
 			this.showTradeForYear(year);
 		}.bind(this);
 
-		sliderDiv.selectAll("*").remove();
+		var sliderDiv = this.clearSliderDiv();
 		this.yearSlider = sliderDiv.call(
 			d3.slider()
 			.axis(true)
-			.min(minYear)
-			.max(maxYear)
+			.min(this.minYear)
+			.max(this.maxYear)
 			.step(1)
-			.value(selectedYear)
+			.value(this.selectedYear)
 			.on("slide", setYearCallback)
 		);
 	},

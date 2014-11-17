@@ -287,7 +287,12 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 			this.yearColumnName = yearColumns[0];
 		}
 		this.minMaxYear = csv.getMinMaxYear(filters);
-		yearslider.setYears(this.minMaxYear[0], this.minMaxYear[1]);
+		if (this.minMaxYear[0] === this.minMaxYear[1]) {
+			yearslider.disable();
+		} else {
+			yearslider.setYears(this.minMaxYear[0], this.minMaxYear[1]);
+			yearslider.enable();
+		}
 		this.createFilterForm(filters);
 	},
 

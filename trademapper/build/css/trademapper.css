@@ -619,6 +619,9 @@ p.tooltip-location {
   background-color: blue;
   text-align: center; }
 
+.disabled .change-over-time.play-button {
+  background-color: grey; }
+
 .change-over-time.play-button-text.paused {
   font-size: 30px; }
 

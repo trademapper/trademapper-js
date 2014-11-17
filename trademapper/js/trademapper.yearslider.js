@@ -90,6 +90,10 @@ function($, d3) {
 		if (this.minYear === 0) { return; }
 		// is null if not currently playing
 		if (this.intervalId === null) {
+			// reset year if at end
+			if (this.currentYear === this.maxYear) {
+				this.currentYear = this.minYear;
+			}
 			var incrementYearSlider = function() {
 				this.incrementYearSlider();
 			}.bind(this);
@@ -133,7 +137,6 @@ function($, d3) {
 	},
 
 	incrementYearSlider: function() {
-		this.currentYear;
 		// this line will recreate the slider with the bit pointing to the
 		// next year
 		this.createSliderWithYears();

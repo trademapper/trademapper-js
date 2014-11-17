@@ -326,6 +326,28 @@ define(["d3"], function(d3) {
 			var numericFieldset = formElement.append("fieldset")
 				.attr("class", "filters-group group-numeric");
 			*/
+		},
+
+		/*
+		 * whether the year range should be enabled or not
+		 */
+		setYearRangeStatus: function(enable) {
+			var yearRangeFieldset = document.querySelector(".filters-group.group-year"),
+				yearLegend = document.querySelector("legend.filter-group-title.year"),
+				yearFromSelect = document.querySelector("#year-select-from"),
+				yearToSelect = document.querySelector("#year-select-to");
+			if (enable) {
+				yearRangeFieldset.classList.remove("disabled");
+				yearFromSelect.removeAttribute('disabled');
+				yearToSelect.removeAttribute('disabled');
+				yearLegend.textContent = 'Year range';
+			} else {
+				yearRangeFieldset.classList.add("disabled");
+				yearFromSelect.setAttribute('disabled', '');
+				yearToSelect.setAttribute('disabled', '');
+				yearLegend.textContent = 'Year range disabled';
+			}
 		}
+
 	};
 });

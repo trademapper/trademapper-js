@@ -234,7 +234,7 @@ span.showhide {
 .filters-group {
   z-index: 2000; }
 
-#filter-panel .filters-group {
+#filter-panel > form > .filters-group {
   border: none;
   clear: both;
   font-size: 0.8em;
@@ -242,7 +242,7 @@ span.showhide {
   padding: 0.5em 2em 0.5em 0;
   width: 100%; }
 
-#filter-panel .filters-group.group-title {
+#filter-panel > form > .filters-group.group-title {
   padding: 0;
   margin: 0; }
 
@@ -353,6 +353,20 @@ span.showhide {
 
 .year-to > label {
   padding-left: 1em; }
+
+/* year groups disabled */
+#filter-panel > form > .filters-group.group-year.disabled {
+  border-style: solid;
+  border-width: 2px;
+  border-color: grey; }
+
+.disabled > .filter-group-title.year {
+  /* override the bootstrap styles */
+  display: block;
+  font-size: 1em;
+  border: none;
+  margin-bottom: 5px;
+  width: auto; }
 
 /*---Quantity selectors--*/
 .form-item.category-quantity > label {

@@ -178,6 +178,9 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 		route.setLatLongToPointFunc(function(latLong) {return mapper.latLongToPoint(latLong);});
 		filterform.formChangedCallback = function(columnName) {return moduleThis.filterformChangedCallback(columnName); };
 		yearslider.showTradeForYear = function(year) {return moduleThis.showTradeForYear(year); };
+		// slightly misnamed as we go back to the filter values for the years
+		yearslider.showTradeForAllYears = function() {return moduleThis.filterformChangedCallback(); };
+		yearslider.setYearRangeStatus = function(enable) {return filterform.setYearRangeStatus(enable); };
 		this.setUpAsideToggle();
 		yearslider.create();
 
@@ -287,11 +290,12 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 			this.yearColumnName = yearColumns[0];
 		}
 		this.minMaxYear = csv.getMinMaxYear(filters);
-		if (this.minMaxYear[0] === this.minMaxYear[1]) {
-			yearslider.disable();
+		if (this.minMaxYear[0] === 0 && this.minMaxYear[1] === 0) {
+			yearslider.disable("No Year Column");
+		} else if (this.minMaxYear[0] === this.minMaxYear[1]) {
+			yearslider.disable("Data is only for one year");
 		} else {
-			yearslider.setYears(this.minMaxYear[0], this.minMaxYear[1]);
-			yearslider.enable();
+			yearslider.enable(this.minMaxYear[0], this.minMaxYear[1]);
 		}
 		this.createFilterForm(filters);
 	},

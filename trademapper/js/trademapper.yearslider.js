@@ -28,12 +28,11 @@ function($, d3) {
 
 	minYear: 0,
 	maxYear: 0,
-	selectedYear: 0,
+	currentYear: 0,
 	yearColumnName: null,
 	playInterval: 2000,  // ms
 
 	// variables for the async sleep stuff
-	currentYear: null,
 	intervalId: null,
 
 
@@ -43,14 +42,14 @@ function($, d3) {
 		this.sectionDisableReason = reason;
 		var section = document.querySelector(".change-over-time-section");
 		section.classList.add("disabled");
-		this.minYear = this.maxYear = this.currentYear = this.selectedYear = 0;
+		this.minYear = this.maxYear = this.currentYear = 0;
 		this.createInactiveSwitch();
 	},
 
-	enable: function(minYear, maxYear, selectedYear) {
+	enable: function(minYear, maxYear, currentYear) {
 		this.minYear = minYear;
 		this.maxYear = maxYear;
-		this.selectedYear = selectedYear ? selectedYear: minYear;
+		this.currentYear = currentYear ? currentYear: minYear;
 
 		this.sectionEnabled = true;
 		this.sectionDisableReason = null;
@@ -91,7 +90,6 @@ function($, d3) {
 		if (this.minYear === 0) { return; }
 		// is null if not currently playing
 		if (this.intervalId === null) {
-			this.currentYear = this.minYear;
 			var incrementYearSlider = function() {
 				this.incrementYearSlider();
 			}.bind(this);
@@ -135,7 +133,7 @@ function($, d3) {
 	},
 
 	incrementYearSlider: function() {
-		this.selectedYear = this.currentYear;
+		this.currentYear;
 		// this line will recreate the slider with the bit pointing to the
 		// next year
 		this.createSliderWithYears();
@@ -205,7 +203,7 @@ function($, d3) {
 			.min(this.minYear)
 			.max(this.maxYear)
 			.step(1)
-			.value(this.selectedYear)
+			.value(this.currentYear)
 			.on("slide", setYearCallback)
 		);
 	},

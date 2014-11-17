@@ -18,6 +18,9 @@ function($, d3) {
 	sliderEnabled: false,
 	yearSlider: null,
 
+	enabledSwitchMessage: 'Switch between using the year range and the year slider',
+	disabledSwitchMessage: 'You cannot use the year slider because: ',
+
 	// functions to be set by trademapper.js
 	showTradeForYear: null,
 	showTradeForAllYears: null,
@@ -145,6 +148,8 @@ function($, d3) {
 		$sliderSwitch.on('switchChange.bootstrapSwitch', function() {
 			moduleThis.switchChange(moduleThis, $(this));
 		});
+		document.querySelector(".change-over-time-switch")
+			.setAttribute('title', this.enabledSwitchMessage);
 	},
 
 	createInactiveSwitch: function() {
@@ -152,6 +157,8 @@ function($, d3) {
 		$sliderSwitch.on('switchChange.bootstrapSwitch', function() {} );
 		$sliderSwitch.bootstrapSwitch('state', false, false);
 		$sliderSwitch.bootstrapSwitch('readonly', true);
+		document.querySelector(".change-over-time-switch")
+			.setAttribute('title', this.disabledSwitchMessage + this.sectionDisableReason);
 	},
 
 	create: function() {

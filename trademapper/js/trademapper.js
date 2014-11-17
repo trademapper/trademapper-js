@@ -293,7 +293,7 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 		if (this.minMaxYear[0] === 0 && this.minMaxYear[1] === 0) {
 			yearslider.disable("No Year Column");
 		} else if (this.minMaxYear[0] === this.minMaxYear[1]) {
-			yearslider.disable("Data is only for one year");
+			yearslider.disable("There is only data for one year");
 		} else {
 			yearslider.enable(this.minMaxYear[0], this.minMaxYear[1]);
 		}

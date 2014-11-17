@@ -273,19 +273,21 @@ span.showhide {
 /*---Filter Group selectors--*/
 .form-item > label {
   display: inline-block;
-  float: left;
   font-weight: bold;
   line-height: 1.8em;
   width: 50%; }
 
 .form-item > select,
 .form-item > input {
-  float: right;
   width: 50%; }
 
 .form-item > input[type="button"] {
   width: auto;
-  float: none; }
+  float: none;
+  color: black; }
+
+.form-item > input[type="text"] {
+  color: black; }
 
 /*---Location Group Selectors--*/
 .group-location > p {

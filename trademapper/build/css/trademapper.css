@@ -1,6 +1,6 @@
 /*-------Sass Defines-----------
  ===============================*/
-.change-over-time.slider-section {
+.change-over-time.slider-section, .change-over-time.play-button {
   position: relative;
   top: 50%;
   transform: translateY(-50%); }
@@ -601,15 +601,29 @@ p.tooltip-location {
   width: 85%;
   float: right; }
 
-.change-over-time.play-button-section {
-  width: 10%;
-  float: left; }
-
 .change-over-time.year-slider-container {
   width: 90%;
   float: right;
   padding-left: 2em;
   padding-right: 2em; }
+
+.change-over-time.play-button-section {
+  width: 10%;
+  float: left; }
+
+.change-over-time.play-button {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  color: white;
+  background-color: blue;
+  text-align: center; }
+
+.change-over-time.play-button-text.paused {
+  font-size: 30px; }
+
+.change-over-time.play-button-text.playing {
+  font-size: 20px; }
 
 /*----------Options Dialog--------------
  =====================================*/

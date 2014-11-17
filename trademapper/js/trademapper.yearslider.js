@@ -26,15 +26,25 @@ function($, d3) {
 	intervalId: null,
 
 	changePlayButton: function(isPlaying) {
-		var playButton = document.querySelector(".change-over-time.play-button");
+		var playButton = document.querySelector(".change-over-time.play-button"),
+			playButtonText = document.querySelector(".change-over-time.play-button-text");
+
 		if (isPlaying) {
-			playButton.textContent = "pause";
+			// this produces two vertical bars - the pause symbox
+			playButton.setAttribute('title', 'pause');
+			playButtonText.innerHTML = "&#9616;&#9616;";
+			playButtonText.classList.remove("paused");
+			playButtonText.classList.add("playing");
 		} else {
-			playButton.textContent = "play";
+			// unicode triangle
+			playButton.setAttribute('title', 'play');
+			playButtonText.textContent = "▶";
+			playButtonText.classList.remove("playing");
+			playButtonText.classList.add("paused");
 		}
 	},
 
-	playYearSlider: function() {
+	playPauseYearSlider: function() {
 		// don't play if setYears() hasn't been called
 		if (this.minYear === 0) { return; }
 		// is null if not currently playing
@@ -72,10 +82,10 @@ function($, d3) {
 		$("[name='change-over-time-checkbox']").bootstrapSwitch();
 
 		// link the play button to a function
-		var playCallback = function() {
-			this.playYearSlider();
+		var playPauseCallback = function() {
+			this.playPauseYearSlider();
 		}.bind(this);
-		d3.select(".change-over-time.play-button").on("click", playCallback);
+		d3.select(".change-over-time.play-button").on("click", playPauseCallback);
 
 		// create the slider - years are added when CSV is loaded
 		var sliderDiv = d3.select(".change-over-time.year-slider");

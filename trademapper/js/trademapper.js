@@ -105,7 +105,7 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 	zoomg: null,
 	controlg: null,
 	currentCsvData: null,
-	currentCsvType: null,
+	currentFilterSpec: null,
 	minMaxYear: [0, 0],
 	currentUnit: null,
 	queryString: null,
@@ -170,8 +170,8 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 		// set up the various callbacks we need to link things together
 		var moduleThis = this;
 		csv.init(
-			function(csvType, csvData) { moduleThis.csvLoadedCallback(csvType, csvData); },
-			function(csvType, csvData, filters) { moduleThis.filterLoadedCallback(csvType, csvData, filters); },
+			function(filterSpec, csvData) { moduleThis.csvLoadedCallback(filterSpec, csvData); },
+			function(filterSpec, csvData, filters) { moduleThis.filterLoadedCallback(filterSpec, csvData, filters); },
 			function(msg) { moduleThis.csvLoadErrorCallback(msg); });
 
 		route.setCountryGetPointFunc(function(countryCode) {return mapper.countryCentrePoint(countryCode);});
@@ -273,7 +273,7 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 		filterform.createFormFromFilters(this.filterFormElement, filters, mapper.countryCodeToName);
 	},
 
-	filterLoadedCallback: function(csvType, csvData, filters) {
+	filterLoadedCallback: function(filterSpec, csvData, filters) {
 		var yearColumns = filterform.getFilterNamesForType(filters, ["year"]);
 		if (yearColumns.length === 1) {
 			this.yearColumnName = yearColumns[0];
@@ -294,14 +294,14 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 		arrows.clearTooltip();
 		mapper.resetZoom();
 		var routes = csv.filterDataAndReturnRoutes(
-			this.currentCsvType, this.currentCsvData, filterValues);
+			this.currentFilterSpec, this.currentCsvData, filterValues);
 		if (!routes) {
 			console.log("failed to get routes");
 			return;
 		}
 
 		var pointRoles = routes.getPointRoles();
-		this.currentUnit = csv.getUnit(this.currentCsvType, filterValues);
+		this.currentUnit = csv.getUnit(this.currentFilterSpec, filterValues);
 		arrows.currentUnit = this.currentUnit;
 		// now draw the routes
 		if (this.config.arrowType === "plain-arrows") {
@@ -336,10 +336,10 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 		}
 	},
 
-	csvLoadedCallback: function(csvType, csvData) {
+	csvLoadedCallback: function(filterSpec, csvData) {
 		// first cache the current values, so we can regenerate if we want
 		this.currentCsvData = csvData;
-		this.currentCsvType = csvType;
+		this.currentFilterSpec = filterSpec;
 
 		document.querySelector("body").classList.add("csv-data-loaded");
 		this.reportCsvLoadErrors();

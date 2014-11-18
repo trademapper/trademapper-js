@@ -89,7 +89,7 @@ define([
 					moduleThis.processCSVString(req.response);
 				}
 			});
-		};
+		}
 	},
 
 	loadErrorsToStrings: function() {
@@ -113,18 +113,22 @@ define([
 		return errorMsgs;
 	},
 
-	autodetectCsvType: function(firstLine) {
+	autoFetchFilterSpec: function(firstLine) {
+		var csvtype = null;
 		// get the first line, lower case, and remove spaces
 		firstLine = firstLine.toLowerCase().replace(/[^\w,]/g, '');
 
 		if (csvdefs.csvHeaderToType.hasOwnProperty(firstLine)) {
-			return csvdefs.csvHeaderToType[firstLine];
+			csvtype = csvdefs.csvHeaderToType[firstLine];
+			return csvdefs.filterSpec[csvtype];
 		}
 		// etis might not have all columns - let's hope the reference
 		// number has made it in
 		if (firstLine.indexOf("etisidno") !== -1) {
-			return "etis";
+			csvtype = "etis";
+			return csvdefs.filterSpec[csvtype];
 		}
+		return null;
 	},
 
 	trimCsvColumnNames: function(csvString) {
@@ -164,11 +168,12 @@ define([
 	 */
 	processCSVString: function(fileText) {
 		var firstLine = fileText.substring(0, fileText.indexOf("\n"));
-		var csvType = this.autodetectCsvType(firstLine);
-		if (false /*csvType*/) { // TODO: just for testing. revert
+		var filterSpec = this.autoFetchFilterSpec(firstLine);
+		//if (false /*filterSpec*/) { // TODO: just for testing. revert
+		if (filterSpec) {
 			fileText = this.trimCsvColumnNames(fileText);
 			var csvData = d3.csv.parse(fileText);
-			this.processParsedCSV(csvData, csvType);
+			this.processParsedCSV(csvData, filterSpec);
 		} else {
 			var customFilterSpecCallback = function(filterSpec) {
 				// TODO: refactor these callbacks and general architecture to accept a filterSpec
@@ -184,23 +189,23 @@ define([
 	},
 
 	processCSVURL: function(url, csvType) {
-		// TODO: work out csvType from csvData???
-		this.loadingCsv = true;
-		var moduleThis = this;
-		d3.csv(url, null, function(csvData) {
-			moduleThis.processParsedCSV(csvData, csvType);
-		});
-		this.loadingCsv = false;
-	},
-
-	processParsedCSV: function(csvData, csvType) {
+		// now using loadCSVUrl() which works out csvType from csv header values
 		if (!csvdefs.filterSpec.hasOwnProperty(csvType)) {
 			this.loadErrors.unknownCSVFormat.push("no filter spec for csv type: " + csvType);
 			this.errorCallback();
 		}
-		this.filters = this.csvToFilters(csvData, csvdefs.filterSpec[csvType]);
-		this.csvFilterLoadedCallback(csvType, csvData, this.filters);
-		this.csvDataLoadedCallback(csvType, csvData);
+		this.loadingCsv = true;
+		var moduleThis = this;
+		d3.csv(url, null, function(csvData) {
+			moduleThis.processParsedCSV(csvData, csvdefs.filterSpec[csvType]);
+		});
+		this.loadingCsv = false;
+	},
+
+	processParsedCSV: function(csvData, filterSpec) {
+		this.filters = this.csvToFilters(csvData, filterSpec);
+		this.csvFilterLoadedCallback(filterSpec, csvData, this.filters);
+		this.csvDataLoadedCallback(filterSpec, csvData);
 	},
 
 	getMinMaxYear: function(filters) {
@@ -217,13 +222,8 @@ define([
 		}
 	},
 
-	filterDataAndReturnRoutes: function(csvType, csvData, filterValues) {
-		if (!csvdefs.filterSpec.hasOwnProperty(csvType)) {
-			this.loadErrors.unknownCSVFormat.push("no filter spec for csv type: " + csvType);
-			this.errorCallback();
-			return null;
-		}
-		return this.csvToRoutes(csvData, filterValues, csvdefs.filterSpec[csvType]);
+	filterDataAndReturnRoutes: function(filterSpec, csvData, filterValues) {
+		return this.csvToRoutes(csvData, filterValues, filterSpec);
 	},
 
 	filterPasses: function(row, filterValues) {
@@ -521,9 +521,8 @@ define([
 	/*
 	 * find the unit - so we can display it
 	 */
-	getUnit: function(csvType, filterValues) {
+	getUnit: function(filterSpec, filterValues) {
 		var unit = null;
-		var filterSpec = csvdefs.filterSpec[csvType];
 		// first check if any column is marked as isUnit
 		for (var filterName in filterSpec) {
 			if (filterSpec.hasOwnProperty(filterName)) {

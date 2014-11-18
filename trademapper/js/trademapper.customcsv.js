@@ -25,7 +25,7 @@ define([
 		]
 	},
 	locationRoleSelectConfig = {
-		type: 'locationType',
+		type: 'locationRole',
 		options: [
 			{ text: 'Exporter', value: 'exporter' },
 			{ text: 'Importer', value: 'importer' },

@@ -246,17 +246,6 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 		};
 	},
 
-	showTradeForYear: function(year) {
-		// guard against the value not being set
-		if (!year || !this.yearColumnName) { return; }
-		// this does a deep clone of the object
-		var filterValues = $.extend(true, {}, filterform.filterValues);
-		// now we set the year to this year
-		filterValues[this.yearColumnName].minValue = year;
-		filterValues[this.yearColumnName].maxValue = year;
-		this.showFilteredCsv(filterValues);
-	},
-
 	loadCsvFromUrl: function() {
 		var csvUrl = decodeURIComponent(this.queryString.loadcsv);
 		csv.loadCSVUrl(csvUrl);
@@ -328,8 +317,23 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 		this.stopNowWorking();
 	},
 
+	showTradeForYear: function(year) {
+		// guard against the value not being set
+		if (!year || !this.yearColumnName) { return; }
+		// this does a deep clone of the object
+		var filterValues = $.extend(true, {}, filterform.filterValues);
+		// now we set the year to this year
+		filterValues[this.yearColumnName].minValue = year;
+		filterValues[this.yearColumnName].maxValue = year;
+		this.showFilteredCsv(filterValues);
+	},
+
 	filterformChangedCallback: function(columnName) {
-		this.showFilteredCsv(filterform.filterValues);
+		if (yearslider.sliderEnabled) {
+			this.showTradeForYear(yearslider.currentYear);
+		} else {
+			this.showFilteredCsv(filterform.filterValues);
+		}
 	},
 
 	csvLoadedCallback: function(csvType, csvData) {

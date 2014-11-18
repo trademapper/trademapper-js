@@ -12,10 +12,10 @@
             <th><div>{{=header}}</div></th>
             {{~}}
           </tr>
-          <tr class="js-customcsv__options">
+          <tr class="customcsv__options">
             {{~it.headers :header}}
             <th>
-              <div class="customcsv__select-container">
+              <div class="customcsv__select-container" data-header="{{=header}}">
                 {{~it.selects :select}}
                 <select class="customcsv__select--{{=select.type}}" name="{{=select.type}}">
                   {{~select.options :option}}
@@ -41,7 +41,7 @@
     </div>
     <div class="customcsv__rowcount">{{=it.rowcount}} total rows</div>
 
-    <button class="js-customcsv__done">Done</button>
+    <button class="customcsv__done">Done</button>
 
   </div>
 </div>

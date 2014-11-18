@@ -58,28 +58,27 @@ define([
 
 	return {
 		init: function(rawCsv, callback) {
-			// TODO: use d3 csv parsing
-			var lines = rawCsv.split('\n'),
-			headers = lines[0].split(','),
-			firstRow = lines[1].split(','),
-			containerEl = document.createElement('div');
-
-			var ctx = {
-				headers:headers,
-				data: lines.slice(0,5).map(function(line) { return line.split(','); }),
-				rowcount: lines.length,
-				selects: [
-					typeSelectConfig,
-					locationTypeSelectConfig,
-					locationRoleSelectConfig
-				]
-			};
+			// use d3 csv parsing
+			var rowData = d3.csv.parseRows(rawCsv),
+				headers = rowData[0],
+				firstRow = rowData[1],
+				containerEl = document.createElement('div'),
+				ctx = {
+					headers:headers,
+					data: rowData.slice(0,5),
+					rowcount: rowData.length,
+					selects: [
+						typeSelectConfig,
+						locationTypeSelectConfig,
+						locationRoleSelectConfig
+					]
+				};
 
 			containerEl.innerHTML = doT.template(tmplCustomCsv)(ctx);
 			document.body.appendChild(containerEl);
 			document.body.classList.add('has-overlay');
 
-			var optionsEl = containerEl.querySelector('.js-customcsv__options');
+			var optionsEl = containerEl.querySelector('.customcsv__options');
 
 			bean.on(optionsEl, 'change', 'select[name="type"]', function(e) {
 				e.currentTarget.parentNode.setAttribute('data-type', e.currentTarget.value);
@@ -91,9 +90,9 @@ define([
 				bean.fire(el, 'change');
 			});
 
-			bean.on(document.querySelector('.js-customcsv__done'), 'click', function(e) {
+			bean.on(document.querySelector('.customcsv__done'), 'click', function(e) {
 				var def = {};
-				Array.prototype.forEach.call(document.querySelectorAll('.js-customcsv__select-container'), function(el, i) {
+				Array.prototype.forEach.call(document.querySelectorAll('.customcsv__select-container'), function(el, i) {
 					var headerName = el.getAttribute('data-header'),
 					val = el.querySelector('select[name=type]').value;
 					def[headerName] = {

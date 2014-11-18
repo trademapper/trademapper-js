@@ -167,22 +167,19 @@ define([
 	 * make a RouteCollection from a CSV string
 	 */
 	processCSVString: function(fileText) {
-		var firstLine = fileText.substring(0, fileText.indexOf("\n"));
-		var filterSpec = this.autoFetchFilterSpec(firstLine);
+		var csvData, filterSpec,
+			firstLine = fileText.substring(0, fileText.indexOf("\n"));
+
+		fileText = this.trimCsvColumnNames(fileText);
+		csvData = d3.csv.parse(fileText);
+
+		filterSpec = this.autoFetchFilterSpec(firstLine);
 		//if (false /*filterSpec*/) { // TODO: just for testing. revert
 		if (filterSpec) {
-			fileText = this.trimCsvColumnNames(fileText);
-			var csvData = d3.csv.parse(fileText);
 			this.processParsedCSV(csvData, filterSpec);
 		} else {
-			var customFilterSpecCallback = function(filterSpec) {
-				// TODO: refactor these callbacks and general architecture to accept a filterSpec
-				// currently a hardcoded filterSpec's key is passed around and used to lookup the
-				// filterSpec object in various places
-				var parsedCsv = d3.csv.parse(fileText);
-				this.filters = this.csvToFilters(parsedCsv, filterSpec);
-				this.csvFilterLoadedCallback('custom', parsedCsv, this.filters);
-				this.csvDataLoadedCallback('custom', parsedCsv);
+			var customFilterSpecCallback = function(customFilterSpec) {
+				this.processParsedCSV(csvData, customFilterSpec);
 			}.bind(this);
 			CustomCsv.init(fileText, customFilterSpecCallback);
 		}

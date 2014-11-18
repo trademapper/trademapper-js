@@ -203,6 +203,20 @@ define([
 		this.csvDataLoadedCallback(csvType, csvData);
 	},
 
+	getMinMaxYear: function(filters) {
+		var yearFilter = null;
+		Object.keys(filters).forEach(function(key) {
+			if (filters[key].type === 'year') {
+				yearFilter = filters[key];
+			}
+		});
+		if (yearFilter !== null) {
+			return [yearFilter.min, yearFilter.max];
+		} else {
+			return [0, 0];
+		}
+	},
+
 	filterDataAndReturnRoutes: function(csvType, csvData, filterValues) {
 		if (!csvdefs.filterSpec.hasOwnProperty(csvType)) {
 			this.loadErrors.unknownCSVFormat.push("no filter spec for csv type: " + csvType);

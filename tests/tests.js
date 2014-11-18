@@ -2,8 +2,8 @@ require.config({
 	baseUrl: '../trademapper/js',
 	paths: {
 		QUnit: '../../tests/lib/qunit-1.14.0',
-		d3: "d3/d3",
-		topojson: "d3/topojson.v1"
+		d3: "lib/d3",
+		topojson: "lib/topojson.v1"
 	},
 	shim: {
 		QUnit: {

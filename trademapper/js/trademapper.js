@@ -2,9 +2,13 @@
  * The main trademapper library
  *
  * trademapper.js is the main file - it loads and configures the other
- * trademapper files, including setting callbacks.  It is set up by calling
- * the `init()` function which takes the following arguments:
- * 
+ * trademapper files, including setting callbacks.
+ *
+ * INITIALISATION
+ *
+ * It is set up by calling the `init()` function which takes the following
+ * arguments:
+ *
  * - mapId - the id of the HTML element where the map should be inserted
  * - fileFormElementId - the id of the HTML element where the file form should
  *   be inserted.  (The file form is the form where you specify the file to use).
@@ -12,29 +16,79 @@
  *   should be inserted.  (The filter form allows you to filter the data once it
  *   is loaded, so only a subset of the data is displayed on the map).
  * - config - an object with various other config elements.  An empty object is fine.
- * 
+ *
  * The config has default values which can be seen in the `defaultConfig` object
- * 
- * The init function also checks the URL parameters.
+ *
+ * The init function:
+ *
+ * - caches the URL parameters and dom elements
+ * - creates the form to load the CSV, the SVG element for the map, the slider
+ *   and the tooltip
+ * - calls init for mapper, arrows and csv, and pokes callbacks into route
+ *   and filterform
+ * - sets up the toggle for the sidebar and the year slider
+ * - finally, if there is a URL parameter, it loads a CSV file from that URL
+ *
+ * CONTROL FLOW
+ *
+ * There is a listener on the form element to load a CSV.  When that form is
+ * filled in, the csv module:
+ *
+ * - loads the csv using d3
+ * - finds the csv type (and hence filterSpec) and from them it constructs the
+ *   filters object
+ * - calls filterLoadedCallback() with the csvData and the filters object -
+ *   this is used to initialise the filterform, which then maintains its own
+ *   filterValues object based on the filters object and the values set in the
+ *   form by the user.
+ * - calls csvLoadedCallback().  That caches the csvData and then calls
+ *   showFilteredCsv() to actually display the data - see below.
+ *
+ * The filterform listens for any change on the constituent parts of its form.  On
+ * any change it will update its filterValues and then call filterformChangedCallback()
+ * which again calls showFilteredCsv()
+ *
+ * The slider also listens for any change to its value.  It will then make a copy
+ * of the filterform values, update the year range, and of course call showFilteredCsv()
+ *
+ * showFilteredCsv() is the heart of displaying and re-displaying the data.  It calls
+ * the csv module to convert the csv data into an aggregated RouteCollection based
+ * on filterform.filterValues.  The arrows module is then used to draw the
+ * RouteCollection and the legend.  Finally mapper is used to colour in the
+ * countries involved in the trade.
+ *
+ * DATA STRUCTURES
+ *
+ * So the key data structures are:
+ *
+ * - filterSpec - a specification for the filters for a type of CSV.  It is
+ *   used, along with the data from a CSV file to generate the filters.  See
+ *   trademapper.csv.definition.js for some filterSpec examples.
+ * - filters - a specification based on the filterSpec and the actual
+ *   values found in a particular CSV.  It is used to generated the various
+ *   filters in the UI.  Search for returnedFilters in tests/js/test-csv.js
+ *   to see an example of the filters data structure.
+ * - filterValues - the current values of the filters specified in the UI
+ *
+ * All these have the CSV column name as the main key, and they vary in what
+ * they store for each column name.
  */
-define(
-	[
-		"trademapper.arrows",
-		"trademapper.csv",
-		"trademapper.filterform",
-		"trademapper.mapper",
-		"trademapper.route",
-		"util",
-		"d3",
-		"jquery",
-		"text!../fragments/filterskeleton.html",
-		"text!../fragments/csvformskeleton.html",
-		"text!../fragments/toolbarskeleton.html",
-		"text!../fragments/options-skeleton.html"
-	],
-	function(arrows, csv, filterform, mapper, route, util,
-			 d3, $,
-			 filterSkeleton, csvFormSkeleton, toolbarSkeleton, optionsSkeleton) {
+define([
+	"jquery",
+	"d3",
+	"trademapper.arrows",
+	"trademapper.csv",
+	"trademapper.filterform",
+	"trademapper.mapper",
+	"trademapper.route",
+	"trademapper.yearslider",
+	"util",
+	"text!../fragments/filterskeleton.html",
+	"text!../fragments/csvformskeleton.html",
+	"text!../fragments/yearsliderskeleton.html",
+],
+function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
+		 filterSkeleton, csvFormSkeleton, yearSliderSkeleton) {
 	"use strict";
 
 	return {
@@ -44,16 +98,18 @@ define(
 	filterFormElement: null,
 	toolbarElement: null,
 	tooltipElement: null,
-	optionsElement: null,
 	fileInputElement: null,
+	changeOverTimeElement: null,
 	tmsvg: null,
 	svgDefs: null,
 	zoomg: null,
 	controlg: null,
 	currentCsvData: null,
 	currentCsvType: null,
+	minMaxYear: [0, 0],
 	currentUnit: null,
 	queryString: null,
+	yearColumnName: null,
 
 	defaultConfig: {
 			ratio: 0.86,
@@ -73,18 +129,16 @@ define(
 			arrowType: "plain-arrows"  // could be "plain-arrows" or "flowmap"
 		},
 
-	init: function(mapId, fileFormElementId, filterFormElementId, tmConfig) {
+	init: function(mapId, fileFormElementId, filterFormElementId,
+	               changeOverTimeElementId, tmConfig) {
 		this.queryString = util.queryString();
 		this.mapRootElement = d3.select(mapId);
 		this.fileFormElement = d3.select(fileFormElementId);
 		this.filterFormElement = d3.select(filterFormElementId);
+		this.changeOverTimeElement = d3.select(changeOverTimeElementId);
 		this.setConfigDefaults(tmConfig);
 
 		this.createCsvOnlyForm();
-
-		this.toolbarElement = this.mapRootElement.append("div")
-			.attr("id", "map-toolbar")
-			.html(toolbarSkeleton);
 
 		this.tmsvg = this.mapRootElement.insert("svg")
 			.attr("width", this.config.width)
@@ -102,15 +156,9 @@ define(
 			.attr("class", "mapocean");
 		this.controlg = this.tmsvg.append("g").attr("class", "controlgroup");
 
+		this.changeOverTimeElement.html(yearSliderSkeleton);
 		this.tooltipElement = this.mapRootElement.append("div")
 			.attr("id", "maptooltip");
-		this.optionsElement = d3.select('body').append("div")
-		//this.optionsElement = this.mapRootElement.append("div")
-			.attr("id", "map-options")
-			.attr("class", "modal fade")
-			.attr("role", "dialog")
-			.attr("aria-hidden", "true")
-			.html(optionsSkeleton);
 
 		// need to init mapper before arrows otherwise the map is on top of
 		// the arrows
@@ -129,8 +177,12 @@ define(
 		route.setCountryGetPointFunc(function(countryCode) {return mapper.countryCentrePoint(countryCode);});
 		route.setLatLongToPointFunc(function(latLong) {return mapper.latLongToPoint(latLong);});
 		filterform.formChangedCallback = function(columnName) {return moduleThis.filterformChangedCallback(columnName); };
+		yearslider.showTradeForYear = function(year) {return moduleThis.showTradeForYear(year); };
+		// slightly misnamed as we go back to the filter values for the years
+		yearslider.showTradeForAllYears = function() {return moduleThis.filterformChangedCallback(); };
+		yearslider.setYearRangeStatus = function(enable) {return filterform.setYearRangeStatus(enable); };
 		this.setUpAsideToggle();
-		this.setUpOptionsDialog();
+		yearslider.create();
 
 		if (this.queryString.hasOwnProperty("loadcsv")) {
 			this.loadCsvFromUrl();
@@ -194,18 +246,6 @@ define(
 		};
 	},
 
-	setUpOptionsDialog: function() {
-		var optionsSpan = document.querySelector('.tool-icons > .options'),
-			optionsPanel = $('#map-options');
-			//optionsPanel = document.getElementById('map-options');
-
-		optionsSpan.onclick = function() {
-			//optionsPanel.classList.remove('hidden');
-			optionsPanel.modal('show');
-			// the options panel will have it's own close button
-		};
-	},
-
 	loadCsvFromUrl: function() {
 		var csvUrl = decodeURIComponent(this.queryString.loadcsv);
 		csv.loadCSVUrl(csvUrl);
@@ -234,22 +274,34 @@ define(
 	},
 
 	filterLoadedCallback: function(csvType, csvData, filters) {
+		var yearColumns = filterform.getFilterNamesForType(filters, ["year"]);
+		if (yearColumns.length === 1) {
+			this.yearColumnName = yearColumns[0];
+		}
+		this.minMaxYear = csv.getMinMaxYear(filters);
+		if (this.minMaxYear[0] === 0 && this.minMaxYear[1] === 0) {
+			yearslider.disableSection("No Year Column");
+		} else if (this.minMaxYear[0] === this.minMaxYear[1]) {
+			yearslider.disableSection("There is only data for one year");
+		} else {
+			yearslider.enableSection(this.minMaxYear[0], this.minMaxYear[1]);
+		}
 		this.createFilterForm(filters);
 	},
 
-	showFilteredCsv: function() {
+	showFilteredCsv: function(filterValues) {
 		this.showNowWorking();
 		arrows.clearTooltip();
 		mapper.resetZoom();
 		var routes = csv.filterDataAndReturnRoutes(
-			this.currentCsvType, this.currentCsvData, filterform.filterValues);
+			this.currentCsvType, this.currentCsvData, filterValues);
 		if (!routes) {
 			console.log("failed to get routes");
 			return;
 		}
 
 		var pointRoles = routes.getPointRoles();
-		this.currentUnit = csv.getUnit(this.currentCsvType, filterform.filterValues);
+		this.currentUnit = csv.getUnit(this.currentCsvType, filterValues);
 		arrows.currentUnit = this.currentUnit;
 		// now draw the routes
 		if (this.config.arrowType === "plain-arrows") {
@@ -265,8 +317,23 @@ define(
 		this.stopNowWorking();
 	},
 
+	showTradeForYear: function(year) {
+		// guard against the value not being set
+		if (!year || !this.yearColumnName) { return; }
+		// this does a deep clone of the object
+		var filterValues = $.extend(true, {}, filterform.filterValues);
+		// now we set the year to this year
+		filterValues[this.yearColumnName].minValue = year;
+		filterValues[this.yearColumnName].maxValue = year;
+		this.showFilteredCsv(filterValues);
+	},
+
 	filterformChangedCallback: function(columnName) {
-		this.showFilteredCsv();
+		if (yearslider.sliderEnabled) {
+			this.showTradeForYear(yearslider.currentYear);
+		} else {
+			this.showFilteredCsv(filterform.filterValues);
+		}
 	},
 
 	csvLoadedCallback: function(csvType, csvData) {
@@ -275,8 +342,8 @@ define(
 		this.currentCsvType = csvType;
 
 		document.querySelector("body").classList.add("csv-data-loaded");
-		this.showFilteredCsv();
 		this.reportCsvLoadErrors();
+		this.showFilteredCsv(filterform.filterValues);
 	},
 
 	reportCsvLoadErrors: function() {

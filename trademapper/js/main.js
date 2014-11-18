@@ -6,11 +6,13 @@ require.config({
 		text: "lib/text",
 		// d3 bits
 		d3: "lib/d3",
+		"d3.slider": "lib/d3.slider",
 		queue: "lib/queue.v1",
 		topojson: "lib/topojson.v1",
 		// jquery and bootstrap
 		jquery: "lib/jquery-2.1.1.min",
 		bootstrap: "lib/bootstrap.min",
+		"bootstrap-switch": "lib/bootstrap-switch.min",
 		// map data - jsons imported by require
 		countrycentre: "map/countrycentre",
 		disputedareas: "map/disputedareas",
@@ -19,6 +21,9 @@ require.config({
 	shim: {
 		bootstrap: {
 			deps: ["jquery"]
+		},
+		"d3.slider": {
+			deps: ["d3"]
 		}
 	}
 });
@@ -27,5 +32,6 @@ require.config({
 require(["trademapper", "bootstrap", "domReady!"], function(tm) {
 	"use strict";
 	var config = {width:1600, arrowType:"plain-arrows"};
-	tm.init("#trademapper", "#tm-file-select", "#form-filters", config);
+	tm.init("#trademapper", "#tm-file-select", "#form-filters",
+			'#change-over-time', config);
 });

@@ -11,8 +11,11 @@ define(
 			q.module("Arrows", {
 				setup: function() {
 					var newsvg = d3.select('#container').append('svg');
-					var tooltip = d3.select('#container').append('div');
-					arrows.init(newsvg, tooltip, arrowColours);
+					var tooltip = d3.select('#container').append('div').attr("id", "tooltip-id");
+					var svgdefs = newsvg.append('defs');
+					var zoomg = newsvg.append('g');
+					// init: function(svgElement, zoomg, svgDefs, tooltipSelector, colours, minWidth, maxWidth, pointTypeSize, countryCodeToInfo) {
+					arrows.init(newsvg, zoomg, svgdefs, "tooltip-id", arrowColours, 1, 20, 5, {});
 				}
 			});
 

@@ -4,13 +4,15 @@
 	<meta charset="utf-8">
 	<link rel="stylesheet" href="build/css/trademapper.css"></link>
 	<link rel="stylesheet" href="build/styles/bootstrap.min.css"></link>
+	<link rel="stylesheet" href="build/styles/bootstrap-switch.min.css"></link>
+	<link rel="stylesheet" href="build/styles/d3.slider.css"></link>
 	<title>TradeMapper</title>
 	<script data-main="js/main" src="js/require.js"></script>
 </head>
 <body>
 	
 	<div id="map-wrapper cf">
-		<div class="header row cf">
+		<div class="header tmrow cf">
 			<header class="inner cf" >
 				<div class="branding">
 					<h1 class="logo"><img alt="trademapper" src="build/images/logo-on-dark.png" /></h1>
@@ -20,7 +22,7 @@
 				</div>
 			</header>
 		</div>
-		<div class="map row">
+		<div class="map tmrow">
 			<div class="inner cf">
 				<aside id="filter-panel" class="aside col">
 					<button class="toggle" id="filter-toggle">Hide filters</button>
@@ -45,7 +47,11 @@
 				<div id="trademapper" class="map col"></div>
 			</div>
 		</div>
-		<footer class="footer row">
+		<div class="slider tmrow">
+			<div id="change-over-time">
+			</div>
+		</div>
+		<footer class="footer tmrow">
 			<div class="inner">	
 				<div class="disclaimer">
 					<p><strong>Disclaimer:</strong> The map shown is from data from <a href="http://www.naturalearthdata.com/">naturalearthdata.com</a> and doesn't imply an opinion of the legal status of borders/territories.</p>
@@ -56,7 +62,7 @@
 			</div>
 		</footer>
 	</div>
-	<div class="info row">
+	<div class="info tmrow">
 		<div class="inner">
 			<div class="help-text">
 				<p>For more information please read our <a href="https://docs.google.com/document/d/18Jrz2NuXHWs20fOz7E8hxtmY58SApn4wDqVHQheChwA/pub?embedded=true">detailed guide to using TradeMapper</a>.</p>

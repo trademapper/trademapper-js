@@ -457,6 +457,28 @@ define(
 				q.equal(newCsvString, '"x,and x","y","z"\n1,2');
 			});
 
+			q.test('check getMinMaxYear finds min and max year from type year', function() {
+				var testFilters = {
+					filter1: {
+						type: "text"
+					},
+					filter2: {
+						type: "quantity",
+						min: 23,
+						max: 26
+					},
+					filter3: {
+						type: "year",
+						min: 2003,
+						max: 2006
+					}
+				};
+
+				var minMax = csv.getMinMaxYear(testFilters);
+				q.equal(minMax[0], 2003);
+				q.equal(minMax[1], 2006);
+			});
+
 			// TODO: tests for:
 			// * filterPasses()
 			// * csvToFilters()

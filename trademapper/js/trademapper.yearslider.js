@@ -64,6 +64,18 @@ function($, d3) {
 	 * animate toggling the switch
 	 */
 	implicitEnableSlider: function() {
+		if (this.sliderEnabled) { return; }
+		// animate the switch to "on", 2nd true skips triggering event
+		var $sliderSwitch = $("input[name='change-over-time-checkbox']");
+		$sliderSwitch.bootstrapSwitch('state', true, true);
+		// enable the slider and play button
+		this.sliderEnabled = true;
+		var section = document.querySelector(".change-over-time.slider-section");
+		section.classList.remove("disabled");
+		// show data for first year
+		this.currentYear = this.minYear;
+		// disable the year range in the filterform
+		this.setYearRangeStatus(false);
 	},
 
 	changePlayButton: function(isPlaying) {
@@ -87,9 +99,11 @@ function($, d3) {
 
 	playPauseYearSlider: function() {
 		// if not enabled, do nothing
-		if (this.sectionEnabled === false || this.sliderEnabled === false) { return; }
+		if (this.sectionEnabled === false) { return; }
 		// don't play if enable() hasn't been called
 		if (this.minYear === 0) { return; }
+
+		this.implicitEnableSlider();
 		// is null if not currently playing
 		if (this.intervalId === null) {
 			// reset year if at end
@@ -197,7 +211,7 @@ function($, d3) {
 
 	createSliderWithYears: function() {
 		var setYearCallback = function(ext, year) {
-			this.implicitEnable();
+			this.implicitEnableSlider();
 			this.currentYear = year;
 			this.showTradeForYear(year);
 		}.bind(this);

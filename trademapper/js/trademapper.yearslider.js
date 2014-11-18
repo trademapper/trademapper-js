@@ -35,8 +35,7 @@ function($, d3) {
 	// variables for the async sleep stuff
 	intervalId: null,
 
-
-	disable: function(reason) {
+	disableSection: function(reason) {
 		this.sectionEnabled = false;
 		// TODO: do something with the reason ... bootstrap alert?
 		this.sectionDisableReason = reason;
@@ -46,7 +45,7 @@ function($, d3) {
 		this.createInactiveSwitch();
 	},
 
-	enable: function(minYear, maxYear, currentYear) {
+	enableSection: function(minYear, maxYear, currentYear) {
 		this.minYear = minYear;
 		this.maxYear = maxYear;
 		this.currentYear = currentYear ? currentYear: minYear;
@@ -57,11 +56,14 @@ function($, d3) {
 		section.classList.remove("disabled");
 		this.createActiveSwitch();
 
-		if (this.sliderEnabled) {
-			this.createSliderWithYears();
-		} else {
-			this.createSliderBlank();
-		}
+		this.createSliderWithYears();
+	},
+
+	/*
+	 * when someone clicks on play or the slider, do the full enable, and
+	 * animate toggling the switch
+	 */
+	implicitEnableSlider: function() {
 	},
 
 	changePlayButton: function(isPlaying) {
@@ -114,7 +116,6 @@ function($, d3) {
 		if ($this.is(':checked')) {
 			moduleThis.sliderEnabled = true;
 			section.classList.remove("disabled");
-			this.createSliderWithYears();
 			// show data for first year
 			this.currentYear = this.minYear;
 			this.showTradeForYear(this.currentYear);
@@ -129,7 +130,6 @@ function($, d3) {
 			}
 			// disable the slider
 			section.classList.add("disabled");
-			this.createSliderBlank();
 			// go back to showing data for all years (with filter settings)
 			this.showTradeForAllYears();
 			this.setYearRangeStatus(true);
@@ -197,6 +197,7 @@ function($, d3) {
 
 	createSliderWithYears: function() {
 		var setYearCallback = function(ext, year) {
+			this.implicitEnable();
 			this.currentYear = year;
 			this.showTradeForYear(year);
 		}.bind(this);

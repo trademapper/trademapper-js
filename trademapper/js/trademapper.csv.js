@@ -170,16 +170,16 @@ define([
 			var csvData = d3.csv.parse(fileText);
 			this.processParsedCSV(csvData, csvType);
 		} else {
-            var customFilterSpecCallback = function(filterSpec) {
-                // TODO: refactor these callbacks and general architecture to accept a filterSpec
-                // currently a hardcoded filterSpec's key is passed around and used to lookup the
-                // filterSpec object in various places
-                var parsedCsv = d3.csv.parse(fileText);
-                this.filters = this.csvToFilters(parsedCsv, filterSpec);
-                this.csvFilterLoadedCallback('custom', parsedCsv, this.filters);
-                this.csvDataLoadedCallback('custom', parsedCsv);
-            }.bind(this);
-            CustomCsv.init(fileText, customFilterSpecCallback);
+			var customFilterSpecCallback = function(filterSpec) {
+				// TODO: refactor these callbacks and general architecture to accept a filterSpec
+				// currently a hardcoded filterSpec's key is passed around and used to lookup the
+				// filterSpec object in various places
+				var parsedCsv = d3.csv.parse(fileText);
+				this.filters = this.csvToFilters(parsedCsv, filterSpec);
+				this.csvFilterLoadedCallback('custom', parsedCsv, this.filters);
+				this.csvDataLoadedCallback('custom', parsedCsv);
+			}.bind(this);
+			CustomCsv.init(fileText, customFilterSpecCallback);
 		}
 	},
 

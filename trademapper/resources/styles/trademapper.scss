@@ -740,11 +740,14 @@ p.tooltip-location {
 .change-over-time.play-button {
 	width: 40px;
 	height: 40px;
+	line-height: 35px;
 	border-radius:50%;
 	color: white;
 	background-color: blue;
 	text-align: center;
-	@extend %vertical-align;
+	position: relative;
+	top: 30%;
+	transform: translateY(-10%);
 }
 
 .disabled .change-over-time.play-button {
@@ -753,10 +756,12 @@ p.tooltip-location {
 
 .change-over-time.play-button-text.paused {
 	font-size: 30px;
+	margin-left: 5px;
 }
 
 .change-over-time.play-button-text.playing {
 	font-size: 20px;
+	margin-left: -8px;
 }
 
 /*----------Options Dialog--------------

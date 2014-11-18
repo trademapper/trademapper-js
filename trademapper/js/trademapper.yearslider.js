@@ -146,6 +146,7 @@ function($, d3) {
 			clearInterval(this.intervalId);
 			this.intervalId = null;
 			this.changePlayButton(false);
+			this.currentYear = this.maxYear;
 		}
 	},
 
@@ -196,6 +197,7 @@ function($, d3) {
 
 	createSliderWithYears: function() {
 		var setYearCallback = function(ext, year) {
+			this.currentYear = year;
 			this.showTradeForYear(year);
 		}.bind(this);
 

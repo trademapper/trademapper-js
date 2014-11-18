@@ -829,8 +829,11 @@ footer.tmrow {
 }
 
 .customcsv {
-  overflow-x: scroll;
   padding: 0 20px 20px 20px;
+}
+
+.customcsv__table_container {
+  overflow-x: scroll;
 }
 
 .customcsv__table {

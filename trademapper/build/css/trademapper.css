@@ -704,8 +704,10 @@ footer.tmrow {
   background: #f1f1f1; }
 
 .customcsv {
-  overflow-x: scroll;
   padding: 0 20px 20px 20px; }
+
+.customcsv__table_container {
+  overflow-x: scroll; }
 
 .customcsv__table {
   border-spacing: 0;
@@ -736,3 +738,5 @@ footer.tmrow {
 .customcsv__select-container[data-type=location] .customcsv__select--locationType,
 .customcsv__select-container[data-type=location] .customcsv__select--locationRole {
   display: block; }
+
+/*# sourceMappingURL=trademapper.css.map */

@@ -153,15 +153,15 @@ define([
 							'importer': 4
 						};
 						filterSpec[headerName].locationOrder = order[filterSpec[headerName].locationRole];*/
-						filterSpec[headerName].locationOrder = el.querySelector('input[name=locationOrder]').value;
+						filterSpec[headerName].locationOrder = parseInt(el.querySelector('input[name=locationOrder]').value);
 					} else if (colType === 'location_extra') {
 						filterSpec[headerName].locationExtraType = el.querySelector('select[name=locationExtraType]').value;
-						filterSpec[headerName].locationOrder = el.querySelector('input[name=locationOrder]').value;
+						filterSpec[headerName].locationOrder = parseInt(el.querySelector('input[name=locationOrder]').value);
 					} else if (colType === 'text') {
-						filterSpec[headerName].multiSelect = el.querySelector('input[name=multiSelect]').value;
-						filterSpec[headerName].isUnit = el.querySelector('input[name=isUnit]').value;
+						filterSpec[headerName].multiSelect = el.querySelector('input[name=multiSelect]').value === "on";
+						filterSpec[headerName].isUnit = el.querySelector('input[name=isUnit]').value === "on";
 					} else if (colType === 'text_list') {
-						filterSpec[headerName].multiSelect = el.querySelector('input[name=multiSelect]').value;
+						filterSpec[headerName].multiSelect = el.querySelector('input[name=multiSelect]').value === "on";
 					}
 				});
 

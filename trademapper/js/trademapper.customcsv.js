@@ -47,6 +47,7 @@ define([
 	locationOrderTextConfig = {
 		type: 'locationOrder',
 		label: 'Location Order',
+		maxlength: 3,
 		title: 'A number to allow ordering of the locations'
 	},
 	shortNameTextConfig = {

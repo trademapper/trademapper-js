@@ -737,6 +737,9 @@ footer.tmrow {
 .customcsv__checkbox--multiSelect {
   display: none; }
 
+.customcsv__text--locationOrder > input {
+  width: 3em; }
+
 .customcsv__form-container {
   text-align: left; }
 

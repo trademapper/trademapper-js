@@ -19,7 +19,7 @@
                 {{~it.globalTexts :text}}
                   <fieldset class="customcsv__text--{{=text.type}}">
                     <label>{{=text.label}}</label>
-                    <input type="text" name="{{=text.type}}" title="{{=text.title}}">
+                    <input type="text" name="{{=text.type}}" title="{{=text.title}}" {{? text.maxlength}}maxlength="{{=text.maxlength}}"{{?}}>
                   </fieldset>
                 {{~}}
                 {{~it.selects :select}}
@@ -32,7 +32,7 @@
                 {{~it.otherTexts :text}}
                   <fieldset class="customcsv__text--{{=text.type}}">
                     <label>{{=text.label}}</label>
-                    <input type="text" name="{{=text.type}}" title="{{=text.title}}">
+                    <input type="text" name="{{=text.type}}" title="{{=text.title}}" {{? text.maxlength}}maxlength="{{=text.maxlength}}"{{?}}>
                   </fieldset>
                 {{~}}
                 {{~it.checkboxes :checkbox}}

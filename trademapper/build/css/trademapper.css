@@ -749,7 +749,8 @@ footer.tmrow {
 .customcsv__form-container[data-type=location] .customcsv__text--locationOrder {
   display: block; }
 
-.customcsv__form-container[data-type=location_extra] .customcsv__select--locationExtraType {
+.customcsv__form-container[data-type=location_extra] .customcsv__select--locationExtraType,
+.customcsv__form-container[data-type=location_extra] .customcsv__text--locationOrder {
   display: block; }
 
 .customcsv__form-container[data-type=quantity] .customcsv__text--shortName {

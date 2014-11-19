@@ -890,7 +890,8 @@ footer.tmrow {
 }
 
 .customcsv__form-container[data-type=location_extra] {
-  .customcsv__select--locationExtraType {
+  .customcsv__select--locationExtraType,
+  .customcsv__text--locationOrder {
     display: block;
   }
 }

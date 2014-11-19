@@ -133,30 +133,43 @@ define([
 			});
 
 			bean.on(document.querySelector('.customcsv__done'), 'click', function(e) {
-				var def = {};
-				Array.prototype.forEach.call(document.querySelectorAll('.customcsv__select-container'), function(el, i) {
+				var filterSpec = {};
+				Array.prototype.forEach.call(document.querySelectorAll('.customcsv__form-container'), function(el, i) {
 					var headerName = el.getAttribute('data-header'),
-					val = el.querySelector('select[name=type]').value;
-					def[headerName] = {
-						type: val
+						colType = el.querySelector('select[name=type]').value,
+						shortName = el.querySelector('input[name=shortName]').value;
+					filterSpec[headerName] = {
+						type: colType
 					};
-					if (val === 'location') {
-						def[headerName].locationType = el.querySelector('select[name=locationType]').value;
-						def[headerName].locationRole = el.querySelector('select[name=locationRole]').value;
-						var order = {  // TODO: not sure how best to handle this atm
+					if (shortName) { filterSpec[headerName].shortName = shortName; }
+
+					if (colType === 'location') {
+						filterSpec[headerName].locationType = el.querySelector('select[name=locationType]').value;
+						filterSpec[headerName].locationRole = el.querySelector('select[name=locationRole]').value;
+						/*var order = {  // TODO: not sure how best to handle this atm
 							'origin': 1,
 							'exporter': 2,
 							'transit': 3,
 							'importer': 4
 						};
-						def[headerName].locationOrder = order[def[headerName].locationRole];
+						filterSpec[headerName].locationOrder = order[filterSpec[headerName].locationRole];*/
+						filterSpec[headerName].locationOrder = el.querySelector('input[name=locationOrder]').value;
+					} else if (colType === 'location_extra') {
+						filterSpec[headerName].locationExtraType = el.querySelector('select[name=locationExtraType]').value;
+						filterSpec[headerName].locationOrder = el.querySelector('input[name=locationOrder]').value;
+					} else if (colType === 'text') {
+						filterSpec[headerName].multiSelect = el.querySelector('input[name=multiSelect]').value;
+						filterSpec[headerName].isUnit = el.querySelector('input[name=isUnit]').value;
+					} else if (colType === 'text_list') {
+						filterSpec[headerName].multiSelect = el.querySelector('input[name=multiSelect]').value;
 					}
 				});
 
 				document.body.classList.remove('has-overlay');
 				document.body.removeChild(containerEl);
 
-				callback(def);
+				console.log(filterSpec);
+				callback(filterSpec);
 
 			});
 

@@ -8,7 +8,10 @@ define([
 	tmplCustomCsv
 ) {
 
-	var typeSelectConfig = {
+	return {
+	formProcessedCallback: null,
+
+	typeSelectConfig: {
 		type: 'type',
 		options: [
 			{ text: 'Ignore',   value: 'ignore' },
@@ -20,7 +23,7 @@ define([
 			{ text: 'Year',     value: 'year' }
 		]
 	},
-	locationTypeSelectConfig = {
+	locationTypeSelectConfig: {
 		type: 'locationType',
 		options: [
 			{ text: 'Country Code', value: 'country_code' },
@@ -28,14 +31,14 @@ define([
 			{ text: 'Latitude/Longitude Name', value: 'latLongName' }
 		]
 	},
-	locationExtraTypeSelectConfig = {
+	locationExtraTypeSelectConfig: {
 		type: 'locationExtraType',
 		options: [
 			{ text: 'Latitude', value: 'longitude' },
 			{ text: 'Longitude', value: 'latitude' }
 		]
 	},
-	locationRoleSelectConfig = {
+	locationRoleSelectConfig: {
 		type: 'locationRole',
 		options: [
 			{ text: 'Exporter', value: 'exporter' },
@@ -44,36 +47,31 @@ define([
 			{ text: 'Transit',  value: 'transit' }
 		]
 	},
-	locationOrderTextConfig = {
+	locationOrderTextConfig: {
 		type: 'locationOrder',
 		label: 'Location Order',
 		maxlength: 3,
 		title: 'A number to allow ordering of the locations'
 	},
-	shortNameTextConfig = {
+	shortNameTextConfig: {
 		type: 'shortName',
 		label: 'Alt Name',
 		title: 'An optional name to display instead of the column header'
 	},
-	isUnitCheckboxConfig = {
+	isUnitCheckboxConfig: {
 		type: 'isUnit',
 		label: 'Is "units" column',
 		title: 'Whether this column is the units (only one column can have that value).'
 	},
-	multiSelectCheckboxConfig = {
+	multiSelectCheckboxConfig: {
 		type: 'multiSelect',
 		label: 'multi-select',
 		title: 'Can multiple options be selected in the filters.'
 	},
 	// TODO:
-	// - all: shortName
-	// - text: multiSelect - true/false
-	// - text: isUnit - true/false
 	// - text: verboseNames !!!
-	// - location: order
-	// - location: latLong stuff !
 
-	detectColumnType = function(val) {
+	detectColumnType: function(val) {
 		var asInt = parseInt(val, 10);
 		if (!isNaN(asInt) && asInt > 1900 && asInt < 2100) {
 			return 'year';
@@ -85,36 +83,37 @@ define([
 		} else {
 			return 'ignore';
 		}
-	};
+	},
 
-	return {
 		init: function(rawCsv, callback) {
 			// use d3 csv parsing
-			var rowData = d3.csv.parseRows(rawCsv),
+			var moduleThis = this,
+				rowData = d3.csv.parseRows(rawCsv),
 				headers = rowData[0],
 				firstRow = rowData[1],
 				containerEl = document.createElement('div'),
 				ctx = {
-					headers:headers,
+					headers: headers,
 					data: rowData.slice(0,5),
 					rowcount: rowData.length,
 					selects: [
-						typeSelectConfig,
-						locationTypeSelectConfig,
-						locationExtraTypeSelectConfig,
-						locationRoleSelectConfig
+						this.typeSelectConfig,
+						this.locationTypeSelectConfig,
+						this.locationExtraTypeSelectConfig,
+						this.locationRoleSelectConfig
 					],
 					globalTexts: [
-						shortNameTextConfig
+						this.shortNameTextConfig
 					],
 					otherTexts: [
-						locationOrderTextConfig
+						this.locationOrderTextConfig
 					],
 					checkboxes: [
-						isUnitCheckboxConfig,
-						multiSelectCheckboxConfig
+						this.isUnitCheckboxConfig,
+						this.multiSelectCheckboxConfig
 					],
 				};
+			this.formProcessedCallback = callback;
 
 			containerEl.innerHTML = doT.template(tmplCustomCsv)(ctx);
 			document.body.appendChild(containerEl);
@@ -122,57 +121,62 @@ define([
 
 			var optionsEl = containerEl.querySelector('.customcsv__options');
 
+			// set the data-type so the CSS will show/hide the relevant form elements
 			bean.on(optionsEl, 'change', 'select[name="type"]', function(e) {
 				e.currentTarget.parentNode.setAttribute('data-type', e.currentTarget.value);
 			});
 
 			// basic auto detection
 			Array.prototype.forEach.call(optionsEl.querySelectorAll('.customcsv__select--type'), function(el, i){
-				el.value = detectColumnType(firstRow[i]);
+				el.value = moduleThis.detectColumnType(firstRow[i]);
 				bean.fire(el, 'change');
 			});
 
-			bean.on(document.querySelector('.customcsv__done'), 'click', function(e) {
-				var filterSpec = {};
-				Array.prototype.forEach.call(document.querySelectorAll('.customcsv__form-container'), function(el, i) {
-					var headerName = el.getAttribute('data-header'),
-						colType = el.querySelector('select[name=type]').value,
-						shortName = el.querySelector('input[name=shortName]').value;
-					filterSpec[headerName] = {
-						type: colType
+			var processFormFunc = function(e) {
+				this.processImportForm(containerEl, e);
+			}.bind(this);
+			bean.on(document.querySelector('.customcsv__done'), 'click', processFormFunc);
+		},
+
+		processImportForm: function(containerEl, e) {
+			var filterSpec = {};
+			Array.prototype.forEach.call(document.querySelectorAll('.customcsv__form-container'), function(el, i) {
+				var headerName = el.getAttribute('data-header'),
+					colType = el.querySelector('select[name=type]').value,
+					shortName = el.querySelector('input[name=shortName]').value;
+				filterSpec[headerName] = {
+					type: colType
+				};
+				if (shortName) { filterSpec[headerName].shortName = shortName; }
+
+				if (colType === 'location') {
+					filterSpec[headerName].locationType = el.querySelector('select[name=locationType]').value;
+					filterSpec[headerName].locationRole = el.querySelector('select[name=locationRole]').value;
+					/*var order = {  // TODO: not sure how best to handle this atm
+						'origin': 1,
+						'exporter': 2,
+						'transit': 3,
+						'importer': 4
 					};
-					if (shortName) { filterSpec[headerName].shortName = shortName; }
-
-					if (colType === 'location') {
-						filterSpec[headerName].locationType = el.querySelector('select[name=locationType]').value;
-						filterSpec[headerName].locationRole = el.querySelector('select[name=locationRole]').value;
-						/*var order = {  // TODO: not sure how best to handle this atm
-							'origin': 1,
-							'exporter': 2,
-							'transit': 3,
-							'importer': 4
-						};
-						filterSpec[headerName].locationOrder = order[filterSpec[headerName].locationRole];*/
-						filterSpec[headerName].locationOrder = parseInt(el.querySelector('input[name=locationOrder]').value);
-					} else if (colType === 'location_extra') {
-						filterSpec[headerName].locationExtraType = el.querySelector('select[name=locationExtraType]').value;
-						filterSpec[headerName].locationOrder = parseInt(el.querySelector('input[name=locationOrder]').value);
-					} else if (colType === 'text') {
-						filterSpec[headerName].multiSelect = el.querySelector('input[name=multiSelect]').value === "on";
-						filterSpec[headerName].isUnit = el.querySelector('input[name=isUnit]').value === "on";
-					} else if (colType === 'text_list') {
-						filterSpec[headerName].multiSelect = el.querySelector('input[name=multiSelect]').value === "on";
-					}
-				});
-
-				document.body.classList.remove('has-overlay');
-				document.body.removeChild(containerEl);
-
-				console.log(filterSpec);
-				callback(filterSpec);
-
+					filterSpec[headerName].locationOrder = order[filterSpec[headerName].locationRole];*/
+					filterSpec[headerName].locationOrder = parseInt(el.querySelector('input[name=locationOrder]').value);
+				} else if (colType === 'location_extra') {
+					filterSpec[headerName].locationExtraType = el.querySelector('select[name=locationExtraType]').value;
+					filterSpec[headerName].locationOrder = parseInt(el.querySelector('input[name=locationOrder]').value);
+				} else if (colType === 'text') {
+					filterSpec[headerName].multiSelect = el.querySelector('input[name=multiSelect]').value === "on";
+					filterSpec[headerName].isUnit = el.querySelector('input[name=isUnit]').value === "on";
+				} else if (colType === 'text_list') {
+					filterSpec[headerName].multiSelect = el.querySelector('input[name=multiSelect]').value === "on";
+				}
 			});
 
+			document.body.classList.remove('has-overlay');
+			document.body.removeChild(containerEl);
+
+			console.log(filterSpec);
+			this.formProcessedCallback(filterSpec);
 		}
+
 	};
 });

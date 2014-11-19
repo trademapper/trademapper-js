@@ -865,7 +865,6 @@ footer.tmrow {
 .customcsv__select--locationType,
 .customcsv__select--locationExtraType,
 .customcsv__select--locationRole,
-.customcsv__text--shortName,
 .customcsv__text--locationOrder,
 .customcsv__checkbox--isUnit,
 .customcsv__checkbox--multiSelect {
@@ -881,7 +880,6 @@ footer.tmrow {
 }
 
 .customcsv__form-container[data-type=location] {
-  .customcsv__text--shortName,
   .customcsv__select--locationType,
   .customcsv__select--locationRole,
   .customcsv__text--locationOrder {
@@ -892,13 +890,6 @@ footer.tmrow {
 .customcsv__form-container[data-type=location_extra] {
   .customcsv__select--locationExtraType,
   .customcsv__text--locationOrder {
-    display: block;
-  }
-}
-
-
-.customcsv__form-container[data-type=quantity] {
-  .customcsv__text--shortName {
     display: block;
   }
 }
@@ -914,12 +905,6 @@ footer.tmrow {
 .customcsv__form-container[data-type=text_list] {
   .customcsv__text--shortName,
   .customcsv__checkbox--multiSelect {
-    display: block;
-  }
-}
-
-.customcsv__form-container[data-type=year] {
-  .customcsv__text--shortName {
     display: block;
   }
 }

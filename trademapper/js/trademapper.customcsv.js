@@ -143,14 +143,13 @@ define([
 				filterSpec = {};
 			Array.prototype.forEach.call(document.querySelectorAll('.customcsv__form-container'), function(el, i) {
 				var headerName = el.getAttribute('data-header'),
-					formValueToSpec = function(name, formType, onlySetIfValue) {
-						moduleThis.formValueToSpecValue(filterSpec, headerName, el, name, formType, onlySetIfValue);
+					formValueToSpec = function(name, formType) {
+						moduleThis.formValueToSpecValue(filterSpec, headerName, el, name, formType);
 					};
 
 				filterSpec[headerName] = {};
 				formValueToSpec('type', 'select');
-				// the true means don't create the spec value if the form element is empty
-				formValueToSpec('shortName', 'text', true);
+				formValueToSpec('shortName', 'text');
 
 				if (filterSpec[headerName].type === 'location') {
 					formValueToSpec('locationType', 'select');
@@ -174,7 +173,7 @@ define([
 			this.formProcessedCallback(filterSpec);
 		},
 
-		formValueToSpecValue: function(filterSpec, headerName, el, name, formType, onlySetIfValue) {
+		formValueToSpecValue: function(filterSpec, headerName, el, name, formType) {
 			var value;
 			if (formType === 'select') {
 				value = el.querySelector('select[name=' + name + ']').value;
@@ -182,11 +181,10 @@ define([
 				value = el.querySelector('input[name=' + name + ']').value;
 			}
 			if (formType === 'checkbox') {
-				value = value === "on";  // convert to bool
+				value = (value === "on");  // convert to bool
 			} else if (formType === 'textInt') {
 				value = parseInt(value);
 			}
-			if (onlySetIfValue && !value) { return; }
 
 			filterSpec[headerName][name] = value;
 		}

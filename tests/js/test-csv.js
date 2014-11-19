@@ -3,11 +3,11 @@ define(
 	function(q, csv, csvdefs, route) {
 		"use strict";
 		var returnedCsv,
-			setReturnedCsv = function(csvType, csvData) {
+			setReturnedCsv = function(filterSpec, csvData) {
 				returnedCsv = csvData;
 			},
 			returnedFilters,
-			setReturnedFilters = function(csvType, csvData, filters) {
+			setReturnedFilters = function(filterSpec, csvData, filters) {
 				returnedFilters = filters;
 			},
 			errorMessageList,
@@ -45,16 +45,6 @@ define(
 				}
 			});
 
-			q.test('check error message for unknown csv type', function() {
-				returnedCsv = null;
-				errorMessageList = null;
-				csv.processCSVString(csvUnknown);
-				var routes = csv.filterDataAndReturnRoutes("unknown", returnedCsv, {});
-
-				q.equal(routes, null);
-				q.notEqual(errorMessageList, null);
-			});
-
 			q.test('check csv parsing for one line CSV without origin', function() {
 				returnedCsv = null;
 				errorMessageList = null;
@@ -62,7 +52,8 @@ define(
 
 				q.equal(errorMessageList, null);
 				q.notEqual(returnedCsv, null);
-				var routes = csv.filterDataAndReturnRoutes("cites", returnedCsv, initialFilterValue);
+				var routes = csv.filterDataAndReturnRoutes(
+					csvdefs.filterSpec.cites, returnedCsv, initialFilterValue);
 				var routeList = routes.getRoutes();
 				q.equal(routeList.length, 1);
 				q.equal(routeList[0].points.length, 2);
@@ -77,7 +68,8 @@ define(
 
 				q.equal(errorMessageList, null);
 				q.notEqual(returnedCsv, null);
-				var routes = csv.filterDataAndReturnRoutes("cites", returnedCsv, initialFilterValue);
+				var routes = csv.filterDataAndReturnRoutes(
+					csvdefs.filterSpec.cites, returnedCsv, initialFilterValue);
 				var routeList = routes.getRoutes();
 				q.equal(routeList.length, 1);
 				q.equal(routeList[0].points.length, 3);
@@ -93,7 +85,8 @@ define(
 
 				q.equal(errorMessageList, null);
 				q.notEqual(returnedCsv, null);
-				var routes = csv.filterDataAndReturnRoutes("cites", returnedCsv, initialFilterValue);
+				var routes = csv.filterDataAndReturnRoutes(
+					csvdefs.filterSpec.cites, returnedCsv, initialFilterValue);
 				var routeList = routes.getRoutes();
 				// There are 3 duplicates which will be combined
 				q.equal(routeList.length, 5);

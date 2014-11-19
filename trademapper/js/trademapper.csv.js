@@ -113,22 +113,29 @@ define([
 		return errorMsgs;
 	},
 
-	autoFetchFilterSpec: function(firstLine) {
+	autodetectCsvType: function(firstLine) {
 		var csvtype = null;
 		// get the first line, lower case, and remove spaces
 		firstLine = firstLine.toLowerCase().replace(/[^\w,]/g, '');
 
 		if (csvdefs.csvHeaderToType.hasOwnProperty(firstLine)) {
-			csvtype = csvdefs.csvHeaderToType[firstLine];
-			return csvdefs.filterSpec[csvtype];
+			return csvdefs.csvHeaderToType[firstLine];
 		}
 		// etis might not have all columns - let's hope the reference
 		// number has made it in
 		if (firstLine.indexOf("etisidno") !== -1) {
-			csvtype = "etis";
-			return csvdefs.filterSpec[csvtype];
+			return "etis";
 		}
 		return null;
+	},
+
+	autoFetchFilterSpec: function(firstLine) {
+		var csvtype = this.autodetectCsvType(firstLine);
+		if (csvtype === null) {
+			return null;
+		} else {
+			return csvdefs.filterSpec[csvtype];
+		}
 	},
 
 	trimCsvColumnNames: function(csvString) {

@@ -12,7 +12,7 @@ TradeMapper is a browser-based tool developed for WWF and TRAFFIC to work with d
 
 ### Where does the data come from?
 
-The data is downloaded as a csv from the trade database maintained by CITES. Most of this data represents legal trade in wildlife across countries and within them. However this is not the case for all of the the data in CITES.  For example, the ETIS databse also contains the data on the illegal sale and trafficing of elephants. A great deal of the illegal trade and traffic of wildlife goes unrecorded and at best is recorded by custom officials. 
+The data is downloaded as a csv from the trade database maintained by CITES. Most of this data represents legal trade in wildlife across countries and within them. However this is not the case for all of the the data in CITES.  For example, the ETIS database also contains the data on the illegal sale and trafficing of elephants. A great deal of the illegal trade and traffic of wildlife goes unrecorded and at best is recorded by custom officials. 
 
 ### Why use Trademapper?
 

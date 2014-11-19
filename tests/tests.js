@@ -22,11 +22,13 @@ require(
 		'QUnit',
 		'../../tests/js/test-arrows',
 		'../../tests/js/test-csv',
+		'../../tests/js/test-customcsv',
 		'../../tests/js/test-route'
 	],
-	function(QUnit, test_arrow, test_csv, test_route) {
+	function(QUnit, test_arrow, test_csv, test_customcsv, test_route) {
 		test_arrow.run();
 		test_csv.run();
+		test_customcsv.run();
 		test_route.run();
 
 		QUnit.load();

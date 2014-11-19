@@ -132,6 +132,11 @@ define([
 		},
 
 		detectColumnType: function(val) {
+			val = val.trim();
+			if (val.length === 0) {
+				return 'ignore';
+			}
+
 			var asInt = parseInt(val, 10);
 			if (!isNaN(asInt) && asInt > 1900 && asInt < 2100) {
 				return 'year';

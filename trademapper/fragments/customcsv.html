@@ -15,13 +15,31 @@
           <tr class="customcsv__options">
             {{~it.headers :header}}
             <th>
-              <div class="customcsv__select-container" data-header="{{=header}}">
+              <div class="customcsv__form-container" data-header="{{=header}}">
+                {{~it.globalTexts :text}}
+                  <fieldset class="customcsv__text--{{=text.type}}">
+                    <label>{{=text.label}}</label>
+                    <input type="text" name="{{=text.type}}" title="{{=text.title}}">
+                  </fieldset>
+                {{~}}
                 {{~it.selects :select}}
                 <select class="customcsv__select--{{=select.type}}" name="{{=select.type}}">
                   {{~select.options :option}}
                   <option value="{{=option.value}}">{{=option.text}}</option>
                   {{~}}
                 </select>
+                {{~}}
+                {{~it.otherTexts :text}}
+                  <fieldset class="customcsv__text--{{=text.type}}">
+                    <label>{{=text.label}}</label>
+                    <input type="text" name="{{=text.type}}" title="{{=text.title}}">
+                  </fieldset>
+                {{~}}
+                {{~it.checkboxes :checkbox}}
+                  <fieldset class="customcsv__checkbox--{{=checkbox.type}}">
+                    <label>{{=checkbox.label}}</label>
+                    <input type="checkbox" name="{{=checkbox.type}}" title="{{=checkbox.title}}">
+                  </fieldset>
                 {{~}}
               </div>
             </th>

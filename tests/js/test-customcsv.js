@@ -51,6 +51,59 @@ define(
 				q.equal(customcsv.headerNameToLocationRole('Destination', false), 'importer');
 				q.equal(customcsv.headerNameToLocationRole('Dest', false), 'importer');
 				q.equal(customcsv.headerNameToLocationRole('Dst', false), 'importer');
+				q.equal(customcsv.headerNameToLocationRole('garbage', false), '');
+				q.equal(customcsv.headerNameToLocationRole('', false), '');
+			});
+
+			q.test('check autoCreateFilterSpec copes with only headers', function() {
+				// we want to check it doesn't fall over due to lack of data
+				var rowData = [['header1', 'header2']];
+				q.deepEqual(customcsv.autoCreateFilterSpec(rowData), {
+						header1: {
+							type: 'ignore',
+							shortName: 'header1'
+						},
+						header2: {
+							type: 'ignore',
+							shortName: 'header2'
+						}
+					});
+			});
+
+			q.test('check autoCreateFilterSpec finds year column', function() {
+				// we want to check it doesn't fall over due to lack of data
+				var rowData = [['header1', 'yearCol'], ['', '2003']];
+				q.deepEqual(customcsv.autoCreateFilterSpec(rowData), {
+						header1: {
+							type: 'ignore',
+							shortName: 'header1'
+						},
+						yearCol: {
+							type: 'year',
+							shortName: 'yearCol'
+						}
+					});
+			});
+
+			q.test('check autoCreateFilterSpec finds year column in 5th row', function() {
+				// we want to check it doesn't fall over due to lack of data
+				var rowData = [
+					['header1', 'yearCol'],
+					['', ''],
+					['', ''],
+					['', ''],
+					['', '2003']
+				];
+				q.deepEqual(customcsv.autoCreateFilterSpec(rowData), {
+						header1: {
+							type: 'ignore',
+							shortName: 'header1'
+						},
+						yearCol: {
+							type: 'year',
+							shortName: 'yearCol'
+						}
+					});
 			});
 
 		};

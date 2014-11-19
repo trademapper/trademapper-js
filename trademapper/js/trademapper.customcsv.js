@@ -185,6 +185,7 @@ define([
 		 */
 		autoCreateFilterSpec: function(rowData) {
 			var colType, role, header,
+				rowsToTry = Math.min(6, rowData.length),
 				roleToOrder = {
 					origin: 1,
 					exporter: 2,
@@ -197,8 +198,9 @@ define([
 
 			for (var i = 0; i < headers.length; i++) {
 				header = headers[i];
-				// try to find column type in first 5 columns
-				for (var j = 1; j < 6; j++) {
+				// try to find column type in first few columns
+				colType = 'ignore';
+				for (var j = 1; j < rowsToTry; j++) {
 					colType = this.detectColumnType(rowData[j][i]);
 					if (colType !== 'ignore') {
 						break;

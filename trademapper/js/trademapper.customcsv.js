@@ -146,8 +146,106 @@ define([
 			} else if (val.match(/^[A-Z]{2}$/)) {
 				return 'location';
 			} else {
-				return 'ignore';
+				return 'text';
 			}
+		},
+
+		headerNameToLocationRole: function(headerName, cautious) {
+			var mapping = [
+				// try fairly explicit mappings first
+				['export', 'exporter'],
+				['import', 'importer'],
+				['destination', 'importer'],
+				['origin', 'origin'],
+				['transit', 'transit']
+			];
+
+			if (!cautious) {
+				mapping = mapping.concat([
+					// only try abbreviations after the more explicit
+					['exp', 'exporter'],
+					['imp', 'importer'],
+					['dest', 'importer'],
+					['dst', 'importer'],
+					['org', 'origin'],
+					['tra', 'transit'],
+				]);
+			}
+			var lowHeader = headerName.toLowerCase();
+			for (var i = 0; i < mapping.length; i++) {
+				if (lowHeader.indexOf(mapping[i][0]) > -1) {
+					return mapping[i][1];
+				}
+			}
+			return '';
+		},
+
+		/*
+		 * create a filter spec based on the CSV row data
+		 */
+		autoCreateFilterSpec: function(rowData) {
+			var colType, role, header,
+				roleToOrder = {
+					origin: 1,
+					exporter: 2,
+					transit: 3,
+					importer: 4,
+					'': 5  // the unknown value
+				},
+				filterSpec = {},
+				headers = rowData[0];
+
+			for (var i = 0; i < headers.length; i++) {
+				header = headers[i];
+				// try to find column type in first 5 columns
+				for (var j = 1; j < 6; j++) {
+					colType = this.detectColumnType(rowData[j][i]);
+					if (colType !== 'ignore') {
+						break;
+					}
+				}
+				if (colType !== 'location') {
+					role = this.headerNameToLocationRole(header, true);
+					if (role !== '') {
+						if (header.toLowerCase().indexOf('long') > -1 ||
+								header.toLowerCase().indexOf('lat') > -1) {
+							colType = 'location_extra';
+						} else {
+							colType = 'location';
+						}
+					}
+				}
+
+				filterSpec[header] = {
+					type: colType,
+					shortName: header
+				};
+				if (colType === 'location') {
+					role = this.headerNameToLocationRole(header, false);
+					filterSpec[header].locationType = 'country_code';
+					filterSpec[header].locationRole = role;
+					filterSpec[header].locationOrder = roleToOrder[role];
+					filterSpec[header].multiSelect = true;
+				} else if (colType === 'location_extra') {
+					role = this.headerNameToLocationRole(header, false);
+					if (header.toLowerCase().indexOf('long') > -1) {
+						filterSpec[header].locationExtraType = 'longitude';
+					} else {
+						filterSpec[header].locationExtraType = 'latitude';
+					}
+					filterSpec[header].locationOrder = roleToOrder[role];
+				} else if (colType === 'text') {
+					filterSpec[header].multiSelect = true;
+					if (header.toLowerCase().indexOf('unit') > -1) {
+						filterSpec[header].isUnit = true;
+					} else {
+						filterSpec[header].isUnit = false;
+					}
+				} else if (colType === 'text_list') {
+					filterSpec[header].multiSelect = true;
+				}
+			}
+			return filterSpec;
 		},
 
 		processImportForm: function(containerEl, e) {

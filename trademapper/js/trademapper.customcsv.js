@@ -139,35 +139,31 @@ define([
 		},
 
 		processImportForm: function(containerEl, e) {
-			var filterSpec = {};
+			var moduleThis = this,
+				filterSpec = {};
 			Array.prototype.forEach.call(document.querySelectorAll('.customcsv__form-container'), function(el, i) {
 				var headerName = el.getAttribute('data-header'),
-					colType = el.querySelector('select[name=type]').value,
-					shortName = el.querySelector('input[name=shortName]').value;
-				filterSpec[headerName] = {
-					type: colType
-				};
-				if (shortName) { filterSpec[headerName].shortName = shortName; }
-
-				if (colType === 'location') {
-					filterSpec[headerName].locationType = el.querySelector('select[name=locationType]').value;
-					filterSpec[headerName].locationRole = el.querySelector('select[name=locationRole]').value;
-					/*var order = {  // TODO: not sure how best to handle this atm
-						'origin': 1,
-						'exporter': 2,
-						'transit': 3,
-						'importer': 4
+					formValueToSpec = function(name, formType, onlySetIfValue) {
+						moduleThis.formValueToSpecValue(filterSpec, headerName, el, name, formType, onlySetIfValue);
 					};
-					filterSpec[headerName].locationOrder = order[filterSpec[headerName].locationRole];*/
-					filterSpec[headerName].locationOrder = parseInt(el.querySelector('input[name=locationOrder]').value);
-				} else if (colType === 'location_extra') {
-					filterSpec[headerName].locationExtraType = el.querySelector('select[name=locationExtraType]').value;
-					filterSpec[headerName].locationOrder = parseInt(el.querySelector('input[name=locationOrder]').value);
-				} else if (colType === 'text') {
-					filterSpec[headerName].multiSelect = el.querySelector('input[name=multiSelect]').value === "on";
-					filterSpec[headerName].isUnit = el.querySelector('input[name=isUnit]').value === "on";
-				} else if (colType === 'text_list') {
-					filterSpec[headerName].multiSelect = el.querySelector('input[name=multiSelect]').value === "on";
+
+				filterSpec[headerName] = {};
+				formValueToSpec('type', 'select');
+				// the true means don't create the spec value if the form element is empty
+				formValueToSpec('shortName', 'text', true);
+
+				if (filterSpec[headerName].type === 'location') {
+					formValueToSpec('locationType', 'select');
+					formValueToSpec('locationRole', 'select');
+					formValueToSpec('locationOrder', 'textInt');
+				} else if (filterSpec[headerName].type === 'location_extra') {
+					formValueToSpec('locationExtraType', 'select');
+					formValueToSpec('locationOrder', 'textInt');
+				} else if (filterSpec[headerName].type === 'text') {
+					formValueToSpec('multiSelect', 'checkbox');
+					formValueToSpec('isUnit', 'checkbox');
+				} else if (filterSpec[headerName].type === 'text_list') {
+					formValueToSpec('multiSelect', 'checkbox');
 				}
 			});
 
@@ -176,6 +172,23 @@ define([
 
 			console.log(filterSpec);
 			this.formProcessedCallback(filterSpec);
+		},
+
+		formValueToSpecValue: function(filterSpec, headerName, el, name, formType, onlySetIfValue) {
+			var value;
+			if (formType === 'select') {
+				value = el.querySelector('select[name=' + name + ']').value;
+			} else {
+				value = el.querySelector('input[name=' + name + ']').value;
+			}
+			if (formType === 'checkbox') {
+				value = value === "on";  // convert to bool
+			} else if (formType === 'textInt') {
+				value = parseInt(value);
+			}
+			if (onlySetIfValue && !value) { return; }
+
+			filterSpec[headerName][name] = value;
 		}
 
 	};

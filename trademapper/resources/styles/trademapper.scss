@@ -882,7 +882,8 @@ footer.tmrow {
 .customcsv__form-container[data-type=location] {
   .customcsv__select--locationType,
   .customcsv__select--locationRole,
-  .customcsv__text--locationOrder {
+  .customcsv__text--locationOrder,
+  .customcsv__checkbox--multiSelect {
     display: block;
   }
 }

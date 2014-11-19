@@ -162,6 +162,7 @@ define([
 					formValueToSpec('locationType', 'select');
 					formValueToSpec('locationRole', 'select');
 					formValueToSpec('locationOrder', 'textInt');
+					formValueToSpec('multiSelect', 'checkbox');
 				} else if (filterSpec[headerName].type === 'location_extra') {
 					formValueToSpec('locationExtraType', 'select');
 					formValueToSpec('locationOrder', 'textInt');

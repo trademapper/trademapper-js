@@ -132,6 +132,10 @@ define([
 				bean.fire(el, 'change');
 			});
 
+			bean.on(document.querySelector('.customcsv__cancel'), 'click', function(e) {
+				document.body.classList.remove('has-overlay');
+				document.body.removeChild(containerEl);
+			});
 			var processFormFunc = function(e) {
 				this.processImportForm(containerEl, e);
 			}.bind(this);

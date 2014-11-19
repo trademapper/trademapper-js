@@ -71,51 +71,15 @@ define([
 		// TODO:
 		// - text: verboseNames !!!
 
-		detectColumnType: function(val) {
-			var asInt = parseInt(val, 10);
-			if (!isNaN(asInt) && asInt > 1900 && asInt < 2100) {
-				return 'year';
-			}
-			else if (!isNaN(parseFloat(val, 10))) {
-				return 'quantity';
-			} else if (val.match(/^[A-Z]{2}$/)) {
-				return 'location';
-			} else {
-				return 'ignore';
-			}
-		},
-
 		init: function(rawCsv, callback) {
-			// use d3 csv parsing
 			var moduleThis = this,
+				// we use parseRows() so we have access to the headers, and
+				// maintain the column order
 				rowData = d3.csv.parseRows(rawCsv),
-				headers = rowData[0],
-				firstRow = rowData[1],
-				containerEl = document.createElement('div'),
-				ctx = {
-					headers: headers,
-					data: rowData.slice(0,5),
-					rowcount: rowData.length,
-					selects: [
-						this.typeSelectConfig,
-						this.locationTypeSelectConfig,
-						this.locationExtraTypeSelectConfig,
-						this.locationRoleSelectConfig
-					],
-					globalTexts: [
-						this.shortNameTextConfig
-					],
-					otherTexts: [
-						this.locationOrderTextConfig
-					],
-					checkboxes: [
-						this.isUnitCheckboxConfig,
-						this.multiSelectCheckboxConfig
-					],
-				};
+				containerEl = document.createElement('div');
 			this.formProcessedCallback = callback;
 
-			containerEl.innerHTML = doT.template(tmplCustomCsv)(ctx);
+			containerEl.innerHTML = doT.template(tmplCustomCsv)(this.createContext(rowData));
 			document.body.appendChild(containerEl);
 			document.body.classList.add('has-overlay');
 
@@ -128,6 +92,7 @@ define([
 
 			// basic auto detection
 			Array.prototype.forEach.call(optionsEl.querySelectorAll('.customcsv__select--type'), function(el, i){
+				var firstRow = rowData[1];
 				el.value = moduleThis.detectColumnType(firstRow[i]);
 				bean.fire(el, 'change');
 			});
@@ -140,6 +105,44 @@ define([
 				this.processImportForm(containerEl, e);
 			}.bind(this);
 			bean.on(document.querySelector('.customcsv__done'), 'click', processFormFunc);
+		},
+
+		createContext: function(rowData) {
+			return {
+				headers: rowData[0],
+				data: rowData.slice(0,5),
+				rowcount: rowData.length,
+				selects: [
+					this.typeSelectConfig,
+					this.locationTypeSelectConfig,
+					this.locationExtraTypeSelectConfig,
+					this.locationRoleSelectConfig
+				],
+				globalTexts: [
+					this.shortNameTextConfig
+				],
+				otherTexts: [
+					this.locationOrderTextConfig
+				],
+				checkboxes: [
+					this.isUnitCheckboxConfig,
+					this.multiSelectCheckboxConfig
+				],
+			};
+		},
+
+		detectColumnType: function(val) {
+			var asInt = parseInt(val, 10);
+			if (!isNaN(asInt) && asInt > 1900 && asInt < 2100) {
+				return 'year';
+			}
+			else if (!isNaN(parseFloat(val, 10))) {
+				return 'quantity';
+			} else if (val.match(/^[A-Z]{2}$/)) {
+				return 'location';
+			} else {
+				return 'ignore';
+			}
 		},
 
 		processImportForm: function(containerEl, e) {

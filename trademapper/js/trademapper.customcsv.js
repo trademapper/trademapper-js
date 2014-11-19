@@ -111,7 +111,7 @@ define([
 			return {
 				headers: rowData[0],
 				data: rowData.slice(0,5),
-				rowcount: rowData.length,
+				rowcount: rowData.length - 1,  // don't count the header row
 				selects: [
 					this.typeSelectConfig,
 					this.locationTypeSelectConfig,

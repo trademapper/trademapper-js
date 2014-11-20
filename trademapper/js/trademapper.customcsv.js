@@ -271,7 +271,7 @@ define([
 		processImportForm: function(containerEl, e) {
 			var moduleThis = this,
 				filterSpec = {};
-			Array.prototype.forEach.call(document.querySelectorAll('.customcsv__form-container'), function(el, i) {
+			Array.prototype.forEach.call(document.querySelectorAll('.customcsv__form-container'), function(el) {
 				var headerName = el.getAttribute('data-header'),
 					formValueToSpec = function(name, formType) {
 						moduleThis.formValueToSpecValue(filterSpec, headerName, el, name, formType);
@@ -279,7 +279,6 @@ define([
 
 				filterSpec[headerName] = {};
 				formValueToSpec('type', 'select');
-				formValueToSpec('shortName', 'text');
 
 				if (filterSpec[headerName].type === 'location') {
 					formValueToSpec('locationType', 'select');
@@ -295,6 +294,14 @@ define([
 				} else if (filterSpec[headerName].type === 'text_list') {
 					formValueToSpec('multiSelect', 'checkbox');
 				}
+			});
+			// the shortName is in the header
+			Array.prototype.forEach.call(document.querySelectorAll('.customcsv__header-form-container'), function(el) {
+				var headerName = el.getAttribute('data-header'),
+					formValueToSpec = function(name, formType) {
+						moduleThis.formValueToSpecValue(filterSpec, headerName, el, name, formType);
+					};
+				formValueToSpec('shortName', 'text');
 			});
 
 			document.body.classList.remove('has-overlay');

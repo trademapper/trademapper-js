@@ -10,7 +10,7 @@
         <thead>
           <tr class="customcsv__headers">
             {{~it.headers :header}}
-            <th><div>
+            <th><div class="customcsv__header-form-container" data-header="{{=header}}">
               {{=header}}
               {{~it.globalTexts :text}}
                 <fieldset class="customcsv__text--{{=text.type}}">

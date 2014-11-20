@@ -10,7 +10,6 @@ define([
 
 	return {
 		formProcessedCallback: null,
-		originalFilterSpec: null,
 
 		typeSelectConfig: {
 			type: 'type',
@@ -77,10 +76,9 @@ define([
 		 * will be attempted before displaying the form
 		 */
 		init: function(rawCsv, filterSpec, callback) {
-			var moduleThis = this,
-				// we use parseRows() so we have access to the headers, and
-				// maintain the column order
-				rowData = d3.csv.parseRows(rawCsv),
+			// we use parseRows() so we have access to the headers, and
+			// maintain the column order
+			var rowData = d3.csv.parseRows(rawCsv),
 				containerEl = document.createElement('div');
 			this.formProcessedCallback = callback;
 
@@ -89,13 +87,17 @@ define([
 			} else {
 				filterSpec = this.ensureShortNamePresent(filterSpec);
 			}
-			this.originalFilterSpec = filterSpec;
 
-			containerEl.innerHTML = doT.template(tmplCustomCsv)
-					(this.createContext(rowData, filterSpec));
 			document.body.appendChild(containerEl);
 			document.body.classList.add('has-overlay');
 
+			this.createForm(containerEl, rowData, filterSpec);
+		},
+
+		createForm: function(containerEl, rowData, filterSpec) {
+			var moduleThis = this;
+			containerEl.innerHTML = doT.template(tmplCustomCsv)
+					(this.createContext(rowData, filterSpec));
 			var optionsEl = containerEl.querySelector('.customcsv__options');
 
 			// set the data-type when the column type is changed so that the CSS
@@ -104,6 +106,9 @@ define([
 				e.currentTarget.parentNode.setAttribute('data-type', e.currentTarget.value);
 			});
 
+			bean.on(document.querySelector('.customcsv__reset'), 'click', function(e) {
+				moduleThis.createForm(containerEl, rowData, filterSpec);
+			});
 			bean.on(document.querySelector('.customcsv__cancel'), 'click', function(e) {
 				document.body.classList.remove('has-overlay');
 				document.body.removeChild(containerEl);

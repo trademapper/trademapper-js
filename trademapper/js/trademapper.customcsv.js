@@ -35,8 +35,8 @@ define([
 		locationExtraTypeSelectConfig: {
 			type: 'locationExtraType',
 			options: [
-				{ text: 'Latitude', value: 'longitude' },
-				{ text: 'Longitude', value: 'latitude' }
+				{ text: 'Latitude', value: 'latitude' },
+				{ text: 'Longitude', value: 'longitude' }
 			]
 		},
 		locationRoleSelectConfig: {

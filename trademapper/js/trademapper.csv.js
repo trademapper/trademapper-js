@@ -188,7 +188,7 @@ define([
 			var customFilterSpecCallback = function(customFilterSpec) {
 				this.processParsedCSV(csvData, customFilterSpec);
 			}.bind(this);
-			CustomCsv.init(fileText, customFilterSpecCallback);
+			CustomCsv.init(fileText, null, customFilterSpecCallback);
 		}
 	},
 
@@ -297,7 +297,12 @@ define([
 		for (var key in filterSpec) {
 			if (filterSpec.hasOwnProperty(key) &&
 					(filterSpec[key].type === "location" || filterSpec[key].type === "location_extra")) {
-				locationType = filterSpec[key].locationType;
+				if (filterSpec[key].type === "location") {
+					locationType = filterSpec[key].locationType;
+				} else {
+					locationType = filterSpec[key].locationExtraType;
+				}
+
 				if (locationType === "country_code" ||
 						locationType === "country_code_list") {
 					locationColumns.push({

@@ -400,12 +400,12 @@ define([], function() {
 				"Origin Lat": {
 					type: "location_extra",
 					locationOrder: 1,
-					locationType: "latitude"
+					locationExtraType: "latitude"
 				},
 				"Origin Long": {
 					type: "location_extra",
 					locationOrder: 1,
-					locationType: "longitude"
+					locationExtraType: "longitude"
 				},
 				"Transit 1": {
 					type: "location",
@@ -417,12 +417,12 @@ define([], function() {
 				"Transit 1 Lat": {
 					type: "location_extra",
 					locationOrder: 2,
-					locationType: "latitude"
+					locationExtraType: "latitude"
 				},
 				"Transit 1 Long": {
 					type: "location_extra",
 					locationOrder: 2,
-					locationType: "longitude"
+					locationExtraType: "longitude"
 				},
 				"Transit 2": {
 					type: "location",
@@ -434,12 +434,12 @@ define([], function() {
 				"Transit 2 Lat": {
 					type: "location_extra",
 					locationOrder: 3,
-					locationType: "latitude"
+					locationExtraType: "latitude"
 				},
 				"Transit 2 Long": {
 					type: "location_extra",
 					locationOrder: 3,
-					locationType: "longitude"
+					locationExtraType: "longitude"
 				},
 				"Transit 3": {
 					type: "location",
@@ -451,12 +451,12 @@ define([], function() {
 				"Transit 3 Lat": {
 					type: "location_extra",
 					locationOrder: 4,
-					locationType: "latitude"
+					locationExtraType: "latitude"
 				},
 				"Transit 3 Long": {
 					type: "location_extra",
 					locationOrder: 4,
-					locationType: "longitude"
+					locationExtraType: "longitude"
 				},
 				"Destination": {
 					type: "location",
@@ -468,12 +468,12 @@ define([], function() {
 				"Destination Lat": {
 					type: "location_extra",
 					locationOrder: 5,
-					locationType: "latitude"
+					locationExtraType: "latitude"
 				},
 				"Destination long": {
 					type: "location_extra",
 					locationOrder: 5,
-					locationType: "longitude"
+					locationExtraType: "longitude"
 				}
 			}
 		},

@@ -242,6 +242,23 @@ define(
 					});
 			});
 
+			q.test('check ensureShortNamePresent fills in shortName only when not present', function() {
+				var filterSpec = {
+					header1: {
+						shortName: 'my name'
+					},
+					header2: {}
+				};
+				q.deepEqual(customcsv.ensureShortNamePresent(filterSpec), {
+					header1: {
+						shortName: 'my name'
+					},
+					header2: {
+						shortName: 'header2'
+					}
+				});
+			});
+
 		};
 
 		return {run: run};

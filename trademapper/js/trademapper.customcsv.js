@@ -10,6 +10,7 @@ define([
 
 	return {
 		formProcessedCallback: null,
+		originalFilterSpec: null,
 
 		typeSelectConfig: {
 			type: 'type',
@@ -71,7 +72,11 @@ define([
 		// TODO:
 		// - text: verboseNames !!!
 
-		init: function(rawCsv, callback) {
+		/*
+		 * the 2nd argument can be null, in which case auto detection
+		 * will be attempted before displaying the form
+		 */
+		init: function(rawCsv, filterSpec, callback) {
 			var moduleThis = this,
 				// we use parseRows() so we have access to the headers, and
 				// maintain the column order
@@ -79,22 +84,24 @@ define([
 				containerEl = document.createElement('div');
 			this.formProcessedCallback = callback;
 
-			containerEl.innerHTML = doT.template(tmplCustomCsv)(this.createContext(rowData));
+			if (filterSpec === null) {
+				filterSpec = this.autoCreateFilterSpec(rowData);
+			} else {
+				filterSpec = this.ensureShortNamePresent(filterSpec);
+			}
+			this.originalFilterSpec = filterSpec;
+
+			containerEl.innerHTML = doT.template(tmplCustomCsv)
+					(this.createContext(rowData, filterSpec));
 			document.body.appendChild(containerEl);
 			document.body.classList.add('has-overlay');
 
 			var optionsEl = containerEl.querySelector('.customcsv__options');
 
-			// set the data-type so the CSS will show/hide the relevant form elements
+			// set the data-type when the column type is changed so that the CSS
+			// will show/hide the relevant form elements
 			bean.on(optionsEl, 'change', 'select[name="type"]', function(e) {
 				e.currentTarget.parentNode.setAttribute('data-type', e.currentTarget.value);
-			});
-
-			// basic auto detection
-			Array.prototype.forEach.call(optionsEl.querySelectorAll('.customcsv__select--type'), function(el, i){
-				var firstRow = rowData[1];
-				el.value = moduleThis.detectColumnType(firstRow[i]);
-				bean.fire(el, 'change');
 			});
 
 			bean.on(document.querySelector('.customcsv__cancel'), 'click', function(e) {
@@ -107,11 +114,12 @@ define([
 			bean.on(document.querySelector('.customcsv__done'), 'click', processFormFunc);
 		},
 
-		createContext: function(rowData) {
+		createContext: function(rowData, filterSpec) {
 			return {
 				headers: rowData[0],
 				data: rowData.slice(0,5),
 				rowcount: rowData.length - 1,  // don't count the header row
+				filterSpec: filterSpec,
 				selects: [
 					this.typeSelectConfig,
 					this.locationTypeSelectConfig,
@@ -248,6 +256,15 @@ define([
 					filterSpec[header].multiSelect = true;
 				}
 			}
+			return filterSpec;
+		},
+
+		ensureShortNamePresent: function(filterSpec) {
+			Object.keys(filterSpec).forEach(function(key) {
+				if (!filterSpec[key].hasOwnProperty('shortName')) {
+					filterSpec[key].shortName = key;
+				}
+			});
 			return filterSpec;
 		},
 

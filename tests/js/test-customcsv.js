@@ -106,6 +106,142 @@ define(
 					});
 			});
 
+			q.test('check autoCreateFilterSpec finds quantity column', function() {
+				// we want to check it doesn't fall over due to lack of data
+				var rowData = [
+					['header1', 'quantityCol'],
+					['', '13,6']
+				];
+				q.deepEqual(customcsv.autoCreateFilterSpec(rowData), {
+						header1: {
+							type: 'ignore',
+							shortName: 'header1'
+						},
+						quantityCol: {
+							type: 'quantity',
+							shortName: 'quantityCol'
+						}
+					});
+			});
+
+			q.test('check autoCreateFilterSpec finds location column from country code', function() {
+				// we want to check it doesn't fall over due to lack of data
+				var rowData = [
+					['header1', 'locationCol'],
+					['', 'GB']
+				];
+				q.deepEqual(customcsv.autoCreateFilterSpec(rowData), {
+						header1: {
+							type: 'ignore',
+							shortName: 'header1'
+						},
+						locationCol: {
+							type: 'location',
+							shortName: 'locationCol',
+							locationType: 'country_code',
+							locationRole: '',
+							locationOrder: 5,
+							multiSelect: true
+						}
+					});
+			});
+
+			q.test('check autoCreateFilterSpec finds location column from column header', function() {
+				// we want to check it doesn't fall over due to lack of data
+				var rowData = [
+					['header1', 'Exporter'],
+					['', '']
+				];
+				q.deepEqual(customcsv.autoCreateFilterSpec(rowData), {
+						header1: {
+							type: 'ignore',
+							shortName: 'header1'
+						},
+						Exporter: {
+							type: 'location',
+							shortName: 'Exporter',
+							locationType: 'country_code',
+							locationRole: 'exporter',
+							locationOrder: 2,
+							multiSelect: true
+						}
+					});
+			});
+
+			q.test('check autoCreateFilterSpec finds location and location_extra columns from column headers', function() {
+				// we want to check it doesn't fall over due to lack of data
+				var rowData = [
+					['header1', 'Exporter name', 'Exporter lat.', 'Exporter long.'],
+					['', 'A place', '23.3435', '33.2222']
+				];
+				q.deepEqual(customcsv.autoCreateFilterSpec(rowData), {
+						header1: {
+							type: 'ignore',
+							shortName: 'header1'
+						},
+						'Exporter name': {
+							type: 'location',
+							shortName: 'Exporter name',
+							locationType: 'country_code',
+							locationRole: 'exporter',
+							locationOrder: 2,
+							multiSelect: true
+						},
+						'Exporter lat.': {
+							type: 'location_extra',
+							shortName: 'Exporter lat.',
+							locationExtraType: 'latitude',
+							locationOrder: 2
+						},
+						'Exporter long.': {
+							type: 'location_extra',
+							shortName: 'Exporter long.',
+							locationExtraType: 'longitude',
+							locationOrder: 2
+						}
+					});
+			});
+
+			q.test('check autoCreateFilterSpec finds text column', function() {
+				// we want to check it doesn't fall over due to lack of data
+				var rowData = [
+					['header1', 'header2'],
+					['', 'a type']
+				];
+				q.deepEqual(customcsv.autoCreateFilterSpec(rowData), {
+						header1: {
+							type: 'ignore',
+							shortName: 'header1'
+						},
+						header2: {
+							type: 'text',
+							shortName: 'header2',
+							isUnit: false,
+							multiSelect: true
+						}
+					});
+			});
+
+			q.test('check autoCreateFilterSpec finds text column with unit', function() {
+				// we want to check it doesn't fall over due to lack of data
+				var rowData = [
+					['header1', 'Unit'],
+					['', 'kg']
+				];
+				q.deepEqual(customcsv.autoCreateFilterSpec(rowData), {
+						header1: {
+							type: 'ignore',
+							shortName: 'header1'
+						},
+						Unit: {
+							type: 'text',
+							shortName: 'Unit',
+							isUnit: true,
+							multiSelect: false
+						}
+					});
+			});
+
 		};
 
 		return {run: run};

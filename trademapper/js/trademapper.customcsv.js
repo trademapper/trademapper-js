@@ -237,11 +237,12 @@ define([
 					}
 					filterSpec[header].locationOrder = roleToOrder[role];
 				} else if (colType === 'text') {
-					filterSpec[header].multiSelect = true;
 					if (header.toLowerCase().indexOf('unit') > -1) {
 						filterSpec[header].isUnit = true;
+						filterSpec[header].multiSelect = false;
 					} else {
 						filterSpec[header].isUnit = false;
+						filterSpec[header].multiSelect = true;
 					}
 				} else if (colType === 'text_list') {
 					filterSpec[header].multiSelect = true;

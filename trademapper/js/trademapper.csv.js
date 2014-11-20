@@ -17,6 +17,7 @@ define([
 
 	return {
 
+	alwaysShowCustomCsv: false,
 	fileInputElement: null,
 	csvDataLoadedCallback: null,
 	csvFilterLoadedCallback: null,
@@ -26,10 +27,11 @@ define([
 	csvFile: null,
 	filters: null,
 
-	init: function(dataLoadedCallback, filterLoadedCallback, error_callback) {
+	init: function(dataLoadedCallback, filterLoadedCallback, error_callback, alwaysShowCustomCsv) {
 		this.csvDataLoadedCallback = dataLoadedCallback;
 		this.csvFilterLoadedCallback = filterLoadedCallback;
 		this.errorCallback = error_callback;
+		this.alwaysShowCustomCsv = alwaysShowCustomCsv;
 		this.resetLoadErrors();
 	},
 
@@ -181,8 +183,8 @@ define([
 		csvData = d3.csv.parse(fileText);
 
 		filterSpec = this.autoFetchFilterSpec(firstLine);
-		//if (false /*filterSpec*/) { // TODO: just for testing. revert
-		if (filterSpec) {
+		// alwaysShowCustomCsv is set by URL parameter - to help development
+		if (filterSpec && !this.alwaysShowCustomCsv) {
 			this.processParsedCSV(csvData, filterSpec);
 		} else {
 			var customFilterSpecCallback = function(customFilterSpec) {

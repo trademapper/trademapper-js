@@ -38,7 +38,7 @@ define(
 			q.module("CSV", {
 				setup: function() {
 					// set a default function for collecting the returned routes
-					csv.init(setReturnedCsv, setReturnedFilters, setErrorMessage);
+					csv.init(setReturnedCsv, setReturnedFilters, setErrorMessage, false);
 					// we also need to be able to create points
 					route.setCountryGetPointFunc(function() { return [8, 9]; });
 					route.setLatLongToPointFunc(function(latlong) { return latlong; });

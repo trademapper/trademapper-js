@@ -17,7 +17,7 @@ define([
 
 	return {
 
-	alwaysShowCustomCsv: false,
+	skipCsvAutoDetect: false,
 	fileInputElement: null,
 	csvDataLoadedCallback: null,
 	csvFilterLoadedCallback: null,
@@ -27,11 +27,11 @@ define([
 	csvFile: null,
 	filters: null,
 
-	init: function(dataLoadedCallback, filterLoadedCallback, error_callback, alwaysShowCustomCsv) {
+	init: function(dataLoadedCallback, filterLoadedCallback, error_callback, skipCsvAutoDetect) {
 		this.csvDataLoadedCallback = dataLoadedCallback;
 		this.csvFilterLoadedCallback = filterLoadedCallback;
 		this.errorCallback = error_callback;
-		this.alwaysShowCustomCsv = alwaysShowCustomCsv;
+		this.skipCsvAutoDetect = skipCsvAutoDetect;
 		this.resetLoadErrors();
 	},
 
@@ -176,15 +176,18 @@ define([
 	 * make a RouteCollection from a CSV string
 	 */
 	processCSVString: function(fileText) {
-		var csvData, filterSpec,
+		var csvData,
+			filterSpec = null,
 			firstLine = fileText.substring(0, fileText.indexOf("\n"));
 
 		fileText = this.trimCsvColumnNames(fileText);
 		csvData = d3.csv.parse(fileText);
 
-		filterSpec = this.autoFetchFilterSpec(firstLine);
-		// alwaysShowCustomCsv is set by URL parameter - to help development
-		if (filterSpec && !this.alwaysShowCustomCsv) {
+		// skipCsvAutoDetect is set by URL parameter - to help development
+		if (!this.skipCsvAutoDetect) {
+			filterSpec = this.autoFetchFilterSpec(firstLine);
+		}
+		if (filterSpec) {
 			this.processParsedCSV(csvData, filterSpec);
 		} else {
 			var customFilterSpecCallback = function(customFilterSpec) {

@@ -127,7 +127,7 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 			minArrowWidth: 1,
 			maxArrowWidth: 25,
 			arrowType: "plain-arrows",  // could be "plain-arrows" or "flowmap"
-			alwaysShowCustomCsv: false
+			skipCsvAutoDetect: false
 		},
 
 	init: function(mapId, fileFormElementId, filterFormElementId,
@@ -174,7 +174,7 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 			function(filterSpec, csvData) { moduleThis.csvLoadedCallback(filterSpec, csvData); },
 			function(filterSpec, csvData, filters) { moduleThis.filterLoadedCallback(filterSpec, csvData, filters); },
 			function(msg) { moduleThis.csvLoadErrorCallback(msg); },
-			this.config.alwaysShowCustomCsv);
+			this.config.skipCsvAutoDetect);
 
 		route.setCountryGetPointFunc(function(countryCode) {return mapper.countryCentrePoint(countryCode);});
 		route.setLatLongToPointFunc(function(latLong) {return mapper.latLongToPoint(latLong);});
@@ -224,8 +224,8 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 			}
 		}
 
-		if (this.queryString.hasOwnProperty("alwaysShowCustomCsv")) {
-			this.config.alwaysShowCustomCsv = true;
+		if (this.queryString.hasOwnProperty("skipCsvAutoDetect")) {
+			this.config.skipCsvAutoDetect = true;
 		}
 
 		// work out some stuff from the size of the element we're attached to

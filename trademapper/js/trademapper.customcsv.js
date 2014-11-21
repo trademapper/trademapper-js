@@ -324,16 +324,18 @@ define([
 		},
 
 		formValueToSpecValue: function(filterSpec, headerName, el, name, formType) {
-			var value;
+			var input, value;
 			if (formType === 'select') {
-				value = el.querySelector('select[name=' + name + ']').value;
+				input = el.querySelector('select[name=' + name + ']');
 			} else {
-				value = el.querySelector('input[name=' + name + ']').value;
+				input = el.querySelector('input[name=' + name + ']');
 			}
 			if (formType === 'checkbox') {
-				value = (value === "on");  // convert to bool
+				value = input.checked;
 			} else if (formType === 'textInt') {
-				value = parseInt(value);
+				value = parseInt(input.value);
+			} else {
+				value = input.value;
 			}
 
 			filterSpec[headerName][name] = value;

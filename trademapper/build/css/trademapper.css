@@ -698,7 +698,8 @@ footer.tmrow {
   height: 100%;
   background: rgba(0, 0, 0, 0.5);
   padding: 100px;
-  box-sizing: border-box; }
+  box-sizing: border-box;
+  overflow: auto; }
 
 .overlay__content {
   background: #f1f1f1; }

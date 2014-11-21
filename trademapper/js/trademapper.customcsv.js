@@ -309,6 +309,11 @@ define([
 				formValueToSpec('shortName', 'text');
 			});
 
+			var errors = this.validateFilterSpec(filterSpec);
+			if (errors) {
+				// TODO: form validation here.  If fail, reshow form with errors
+			}
+
 			document.body.classList.remove('has-overlay');
 			document.body.removeChild(containerEl);
 
@@ -330,6 +335,119 @@ define([
 			}
 
 			filterSpec[headerName][name] = value;
+		},
+
+		validateFilterSpec: function(filterSpec) {
+			var errors = {},
+				generalErrors = this.validateFilterSpecGeneral(filterSpec),
+				columnErrors = this.validateFilterSpecColumns(filterSpec);
+
+			if (generalErrors) {
+				errors.general = generalErrors;
+			}
+			if (columnErrors) {
+				errors.column = columnErrors;
+			}
+
+			return errors;
+		},
+
+		validateFilterSpecGeneral: function(filterSpec) {
+			// - general errors
+			//   - 1+ quantity
+			//   - 2+ locations
+			//   - location order - no duplicates, integers
+			//   - lat long properly done
+			var errors = [],
+				quantityCount = this.countColumnsOfType(filterSpec, 'quantity'),
+				locationCount = this.countColumnsOfType(filterSpec, 'location');
+
+			if (quantityCount === 0) {
+				errors.push("There need to be at least 1 quantity column.");
+			}
+			if (locationCount < 2) {
+				errors.push("There need to be at least 2 location columns.");
+			}
+
+			errors.concat(this.checkLocationOrdering(filterSpec));
+
+			// TODO: latlong check
+			//
+			// TODO: generate list of columns that relate to errors?
+
+			return errors;
+		},
+
+		countColumnsOfType: function(filterSpec, type) {
+			return this.getColumnsOfType(filterSpec, type).length;
+		},
+
+		getColumnsOfType: function(filterSpec, type) {
+			var columns = [];
+			Object.keys(filterSpec).forEach(function(key) {
+				if (filterSpec[key].type === type) {
+					columns.push(filterSpec[key]);
+				}
+			});
+			return columns;
+		},
+
+		checkLocationOrdering: function(filterSpec) {
+			// check there are no duplicate orders
+			var errors = [],
+				counts = {},
+				columns = {};
+			Object.keys(filterSpec).forEach(function(key) {
+				if (filterSpec[key].type === 'location') {
+					var order = filterSpec[key].locationOrder;
+					if (counts[order]) {
+						counts[order] = counts[order] + 1;
+						columns[order].push(key);
+					} else {
+						counts[order] = 1;
+						columns[order] = [key];
+					}
+				}
+			});
+
+			Object.keys(counts).forEach(function(key) {
+				if (counts[key] > 1) {
+					errors.push("More than one location column has the order: " +
+					            key + "(columns are: " +
+					            columns[key].join(', ') + ").");
+				}
+			});
+			return errors;
+		},
+
+		// TODO: extend to full check (required fields, types of values) -
+		//       currently we assume this came from processImportForm() which
+		//       is constrained to only produce certain errors.  But we might
+		//       want to extend later.
+		validateFilterSpecColumns: function(filterSpec) {
+			// - column specific errors
+			//   - multiselect and isUnit are incompatible
+			var columnErrorCollection = {};
+			Object.keys(filterSpec).forEach(function(key) {
+				var columnSpec = filterSpec[key],
+					columnErrors = [];
+
+				if (columnSpec.multiSelect && columnSpec.isUnit) {
+					columnErrors.push("Cannot select both multiSelect and isUnit.");
+				}
+
+				if (columnSpec.type === 'location' ||
+					columnSpec.type === 'location_extra') {
+					if (isNaN(columnSpec.locationOrder)) {
+						columnErrors.push("Invalid value for locationOrder");
+					}
+				}
+
+				if (columnErrors) {
+					columnErrorCollection[key] = columnErrors;
+				}
+			});
+			return columnErrorCollection;
 		}
 
 	};

@@ -171,8 +171,8 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 		// set up the various callbacks we need to link things together
 		var moduleThis = this;
 		csv.init(
-			function(filterSpec, csvData) { moduleThis.csvLoadedCallback(filterSpec, csvData); },
-			function(filterSpec, csvData, filters) { moduleThis.filterLoadedCallback(filterSpec, csvData, filters); },
+			function(csvData, filterSpec) { moduleThis.csvLoadedCallback(csvData, filterSpec); },
+			function(csvData, filterSpec, filters) { moduleThis.filterLoadedCallback(csvData, filterSpec, filters); },
 			function(msg) { moduleThis.csvLoadErrorCallback(msg); },
 			this.config.skipCsvAutoDetect);
 
@@ -279,7 +279,7 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 		filterform.createFormFromFilters(this.filterFormElement, filters, mapper.countryCodeToName);
 	},
 
-	filterLoadedCallback: function(filterSpec, csvData, filters) {
+	filterLoadedCallback: function(csvData, filterSpec, filters) {
 		var yearColumns = filterform.getFilterNamesForType(filters, ["year"]);
 		if (yearColumns.length === 1) {
 			this.yearColumnName = yearColumns[0];
@@ -300,7 +300,7 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 		arrows.clearTooltip();
 		mapper.resetZoom();
 		var routes = csv.filterDataAndReturnRoutes(
-			this.currentFilterSpec, this.currentCsvData, filterValues);
+			this.currentCsvData, this.currentFilterSpec, filterValues);
 		if (!routes) {
 			console.log("failed to get routes");
 			return;
@@ -342,7 +342,7 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 		}
 	},
 
-	csvLoadedCallback: function(filterSpec, csvData) {
+	csvLoadedCallback: function(csvData, filterSpec) {
 		// first cache the current values, so we can regenerate if we want
 		this.currentCsvData = csvData;
 		this.currentFilterSpec = filterSpec;

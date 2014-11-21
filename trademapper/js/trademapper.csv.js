@@ -213,8 +213,8 @@ define([
 
 	processParsedCSV: function(csvData, filterSpec) {
 		this.filters = this.csvToFilters(csvData, filterSpec);
-		this.csvFilterLoadedCallback(filterSpec, csvData, this.filters);
-		this.csvDataLoadedCallback(filterSpec, csvData);
+		this.csvFilterLoadedCallback(csvData, filterSpec, this.filters);
+		this.csvDataLoadedCallback(csvData, filterSpec);
 	},
 
 	getMinMaxYear: function(filters) {
@@ -231,8 +231,8 @@ define([
 		}
 	},
 
-	filterDataAndReturnRoutes: function(filterSpec, csvData, filterValues) {
-		return this.csvToRoutes(csvData, filterValues, filterSpec);
+	filterDataAndReturnRoutes: function(csvData, filterSpec, filterValues) {
+		return this.csvToRoutes(csvData, filterSpec, filterValues);
 	},
 
 	filterPasses: function(row, filterValues) {
@@ -387,7 +387,7 @@ define([
 		return points;
 	},
 
-	csvToRoutes: function(csvData, filterValues, filterSpec) {
+	csvToRoutes: function(csvData, filterSpec, filterValues) {
 		var points, quantity, row,
 			filteredRowCount = 0,
 			locationColumns = this.extractLocationColumns(filterSpec),

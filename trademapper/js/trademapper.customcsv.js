@@ -1,8 +1,10 @@
 define([
+	'util',
 	'vendor/bean',
 	'vendor/doT',
 	"text!../fragments/customcsv.html"
 ], function(
+	util,
 	bean,
 	doT,
 	tmplCustomCsv
@@ -342,10 +344,10 @@ define([
 				generalErrors = this.validateFilterSpecGeneral(filterSpec),
 				columnErrors = this.validateFilterSpecColumns(filterSpec);
 
-			if (generalErrors) {
+			if (generalErrors.length > 0) {
 				errors.general = generalErrors;
 			}
-			if (columnErrors) {
+			if (Object.keys(columnErrors).length > 0) {
 				errors.column = columnErrors;
 			}
 
@@ -438,12 +440,13 @@ define([
 
 				if (columnSpec.type === 'location' ||
 					columnSpec.type === 'location_extra') {
-					if (isNaN(columnSpec.locationOrder)) {
-						columnErrors.push("Invalid value for locationOrder");
+					if (!util.isInt(columnSpec.locationOrder)) {
+						columnErrors.push("Invalid value for locationOrder: " +
+						                  columnSpec.locationOrder);
 					}
 				}
 
-				if (columnErrors) {
+				if (columnErrors.length > 0) {
 					columnErrorCollection[key] = columnErrors;
 				}
 			});

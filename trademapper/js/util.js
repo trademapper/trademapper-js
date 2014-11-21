@@ -13,6 +13,10 @@ define([], function() {
 			return ret;
 		},
 
+		isInt: function(value) {
+			return (typeof value === 'number' && (value%1) === 0);
+		},
+
 		getPageOffsetRect: function(elem) {
 			var box = elem.getBoundingClientRect();
 

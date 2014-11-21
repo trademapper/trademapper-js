@@ -259,6 +259,154 @@ define(
 				});
 			});
 
+			q.test('check validateFilterSpecColumns detects both multiSelect and isUnit being true', function() {
+				var filterSpec = {
+					header1: {
+						type: "text",
+						multiSelect: true,
+						isUnit: true
+					},
+					header2: {
+						type: "text",
+						multiSelect: true
+					},
+					header3: {
+						type: "text",
+						isUnit: true
+					}
+				},
+				columnErrors = customcsv.validateFilterSpecColumns(filterSpec);
+				q.equal(columnErrors.hasOwnProperty('header1'), true);
+				q.equal(columnErrors.header1.length, 1);
+				q.equal(columnErrors.hasOwnProperty('header2'), false);
+				q.equal(columnErrors.hasOwnProperty('header3'), false);
+			});
+
+			q.test('check validateFilterSpecColumns detects invalid locationOrder', function() {
+				var filterSpec = {
+					header1: {
+						type: "location",
+						locationOrder: 'abc'
+					},
+					header2: {
+						type: "location_extra",
+						locationOrder: 4.3
+					},
+					header3: {
+						type: "location",
+						locationOrder: null
+					},
+					header4: {
+						type: "location",
+						locationOrder: 3
+					}
+				},
+				columnErrors = customcsv.validateFilterSpecColumns(filterSpec);
+				q.equal(columnErrors.hasOwnProperty('header1'), true);
+				q.equal(columnErrors.header1.length, 1);
+				q.equal(columnErrors.hasOwnProperty('header2'), true);
+				q.equal(columnErrors.header1.length, 1);
+				q.equal(columnErrors.hasOwnProperty('header3'), true);
+				q.equal(columnErrors.header1.length, 1);
+				q.equal(columnErrors.hasOwnProperty('header4'), false);
+			});
+
+			q.test('check checkLocationOrdering detects duplicate locationOrder', function() {
+				var filterSpec = {
+					headerA: {
+						type: "location",
+						locationOrder: 13
+					},
+					headerB: {
+						type: "location",
+						locationOrder: 13
+					},
+					headerC: {
+						type: "location",
+						locationOrder: 21
+					}
+				},
+				locationErrors = customcsv.checkLocationOrdering(filterSpec);
+				q.equal(locationErrors.length, 1);
+				var error = locationErrors[0];
+				q.ok(error.indexOf('13') > -1);
+				q.ok(error.indexOf('21') === -1);
+				q.ok(error.indexOf('headerA') > -1);
+				q.ok(error.indexOf('headerB') > -1);
+				q.ok(error.indexOf('headerC') === -1);
+			});
+
+			q.test('check checkLocationOrdering allows non-duplicate locationOrder', function() {
+				var filterSpec = {
+					headerA: {
+						type: "location",
+						locationOrder: 3
+					},
+					headerB: {
+						type: "location",
+						locationOrder: 13
+					},
+					headerC: {
+						type: "location",
+						locationOrder: 21
+					}
+				},
+				locationErrors = customcsv.checkLocationOrdering(filterSpec);
+				q.equal(locationErrors.length, 0);
+			});
+
+			q.test('check validateFilterSpecGeneral detects lack of quantity column', function() {
+				var filterSpec = {
+					headerA: {
+						type: "location",
+						locationOrder: 3
+					},
+					headerB: {
+						type: "location",
+						locationOrder: 13
+					},
+					headerC: {
+						type: "location",
+						locationOrder: 21
+					}
+				},
+				generalErrors = customcsv.validateFilterSpecGeneral(filterSpec);
+				q.equal(generalErrors.length, 1);
+				var error = generalErrors[0];
+				q.ok(error.toLowerCase().indexOf('quantity') > -1);
+			});
+
+			q.test('check validateFilterSpecGeneral detects less than 2 location columns', function() {
+				var filterSpec = {
+					headerA: {
+						type: "location"
+					},
+					headerB: {
+						type: "quantity"
+					}
+				},
+				generalErrors = customcsv.validateFilterSpecGeneral(filterSpec);
+				q.equal(generalErrors.length, 1);
+				var error = generalErrors[0];
+				q.ok(error.toLowerCase().indexOf('location') > -1);
+			});
+
+			q.test('check validateFilterSpecGeneral passes valid filterspec', function() {
+				var filterSpec = {
+					headerA: {
+						type: "location"
+					},
+					headerB: {
+						type: "location"
+					},
+					headerC: {
+						type: "quantity"
+					}
+				},
+				generalErrors = customcsv.validateFilterSpecGeneral(filterSpec);
+				q.equal(generalErrors.length, 0);
+			});
+
 		};
 
 		return {run: run};

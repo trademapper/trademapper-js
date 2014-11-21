@@ -854,6 +854,10 @@ footer.tmrow {
   }
 }
 
+.customcsv__options > th {
+	vertical-align: top;
+}
+
 .customcsv__table--hasheader tbody tr:first-child {
   display: none;
 }

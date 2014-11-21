@@ -722,6 +722,9 @@ footer.tmrow {
   max-height: 42px;
   overflow: hidden; }
 
+.customcsv__options > th {
+  vertical-align: top; }
+
 .customcsv__table--hasheader tbody tr:first-child {
   display: none; }
 

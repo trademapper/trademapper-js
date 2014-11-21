@@ -33,7 +33,13 @@
           <tr class="customcsv__options">
             {{~it.headers :header}}
             <th>
-              <div class="customcsv__form-container" data-header="{{=header}}" data-type="{{=it.filterSpec[header].type}}">
+              <div class="customcsv__form-container {{?it.errors && it.errors.column && it.errors.column[header]}}customcsv__errors{{?}}"
+                  data-header="{{=header}}" data-type="{{=it.filterSpec[header].type}}">
+                {{?it.errors && it.errors.column && it.errors.column[header]}}
+                  {{~it.errors.column[header] :colError}}
+                  <p>{{=colError}}</p>
+                  {{~}}
+                {{?}}
                 {{~it.selects :select}}
                 <select class="customcsv__select--{{=select.type}}" name="{{=select.type}}">
                   {{~select.options :option}}

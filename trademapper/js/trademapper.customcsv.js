@@ -352,6 +352,9 @@ define([
 				value = input.checked;
 			} else if (formType === 'textInt') {
 				value = parseInt(input.value);
+				if (isNaN(value)) {  // preserve the text for error message
+					value = input.value;
+				}
 			} else {
 				value = input.value;
 			}

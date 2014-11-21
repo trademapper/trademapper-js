@@ -761,4 +761,10 @@ footer.tmrow {
 .customcsv__form-container[data-type=text_list] .customcsv__checkbox--multiSelect {
   display: block; }
 
+.customcsv__errors {
+  border-style: solid;
+  border-width: 1px;
+  border-color: red;
+  padding: 3px; }
+
 /*# sourceMappingURL=trademapper.css.map */

@@ -909,3 +909,10 @@ footer.tmrow {
     display: block;
   }
 }
+
+.customcsv__errors {
+	border-style: solid;
+	border-width: 1px;
+	border-color: red;
+	padding: 3px;
+}

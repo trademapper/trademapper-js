@@ -2,6 +2,14 @@
   <div class="overlay__content customcsv">
     <h2>Custom CSV Importer</h2>
     <p>Choose the type of each column and fill in the supplementary settings as required.  Or read the <a href="https://trademapper.github.io/trademapper-js/">more detailed instructions</a>.</p>
+    {{? it.errors}}
+    <div class="customcsv__errors">
+      <p>There are some errors in the form - please correct them and then click "Done"</p>
+      {{~it.errors.general :generalError}}
+      <p>{{=generalError}}</p>
+      {{~}}
+    </div>
+    {{?}}
     <!--<label for="csv-has-headers">Has headers</label>-->
     <!--<input id="csv-has-headers" type="checkbox" >-->
 

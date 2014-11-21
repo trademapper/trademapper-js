@@ -101,10 +101,15 @@ define([
 			this.createForm(containerEl, rowData, filterSpec);
 		},
 
-		createForm: function(containerEl, rowData, filterSpec) {
+		/*
+		 * (re)create the import form
+		 *
+		 * Note that errors is an optional parameter
+		 */
+		createForm: function(containerEl, rowData, filterSpec, errors) {
 			var moduleThis = this;
 			containerEl.innerHTML = doT.template(tmplCustomCsv)
-					(this.createContext(rowData, filterSpec));
+					(this.createContext(rowData, filterSpec, errors));
 			var optionsEl = containerEl.querySelector('.customcsv__options');
 
 			// set the data-type when the column type is changed so that the CSS
@@ -122,17 +127,21 @@ define([
 				document.body.removeChild(containerEl);
 			});
 			var processFormFunc = function(e) {
-				this.processImportForm(containerEl, e);
+				this.processImportForm(containerEl, rowData);
 			}.bind(this);
 			bean.on(document.querySelector('.customcsv__done'), 'click', processFormFunc);
 		},
 
-		createContext: function(rowData, filterSpec) {
+		/*
+		 * Note that errors is optional/can be null
+		 */
+		createContext: function(rowData, filterSpec, errors) {
 			return {
 				headers: rowData[0],
 				data: rowData.slice(0,5),
 				rowcount: rowData.length - 1,  // don't count the header row
 				filterSpec: filterSpec,
+				errors: errors,
 				selects: [
 					this.typeSelectConfig,
 					this.locationTypeSelectConfig,
@@ -281,7 +290,7 @@ define([
 			return filterSpec;
 		},
 
-		processImportForm: function(containerEl, e) {
+		processImportForm: function(containerEl, rowData) {
 			var moduleThis = this,
 				filterSpec = {};
 			Array.prototype.forEach.call(document.querySelectorAll('.customcsv__form-container'), function(el) {
@@ -318,8 +327,12 @@ define([
 			});
 
 			var errors = this.validateFilterSpec(filterSpec);
-			if (errors) {
-				// TODO: form validation here.  If fail, reshow form with errors
+			if (!$.isEmptyObject(errors)) {
+				// If validation fails, reshow form with errors
+				console.log(filterSpec);
+				console.log(errors);
+				this.createForm(containerEl, rowData, filterSpec, errors);
+				return;
 			}
 
 			document.body.classList.remove('has-overlay');

@@ -140,6 +140,7 @@ define([
 		}
 	},
 
+	// TODO: change to use csvFirstTenRows
 	trimCsvColumnNames: function(csvString) {
 		// TODO: what if a column name includes \n ?!?!
 		// split on commas - but use d3 for proper parsing
@@ -176,31 +177,39 @@ define([
 	 * make a RouteCollection from a CSV string
 	 */
 	processCSVString: function(fileText) {
-		var csvData,
+		var csvData, csvFirstTenRows,
 			filterSpec = null,
 			firstLine = fileText.substring(0, fileText.indexOf("\n"));
 
 		fileText = this.trimCsvColumnNames(fileText);
 		csvData = d3.csv.parse(fileText);
+		csvFirstTenRows = d3.csv.parseRows(fileText).slice(0, 10);
 
 		// skipCsvAutoDetect is set by URL parameter - to help development
 		if (!this.skipCsvAutoDetect) {
 			filterSpec = this.autoFetchFilterSpec(firstLine);
 		}
 		if (filterSpec) {
-			this.processParsedCSV(csvData, filterSpec);
+			this.processParsedCSV(csvData, csvFirstTenRows, filterSpec);
 		} else {
 			var customFilterSpecCallback = function(customFilterSpec) {
-				this.processParsedCSV(csvData, customFilterSpec);
+				this.processParsedCSV(csvData, csvFirstTenRows, customFilterSpec);
 			}.bind(this);
-			CustomCsv.init(fileText, null, customFilterSpecCallback);
+			CustomCsv.init(csvFirstTenRows, null, customFilterSpecCallback);
 		}
 	},
 
-	processParsedCSV: function(csvData, filterSpec) {
+	editFilterSpec: function(csvData, csvFirstTenRows, filterSpec) {
+		var editFilterSpecCallback = function(editedFilterSpec) {
+			this.processParsedCSV(csvData, csvFirstTenRows, editedFilterSpec);
+		}.bind(this);
+		CustomCsv.init(csvFirstTenRows, filterSpec, editFilterSpecCallback);
+	},
+
+	processParsedCSV: function(csvData, csvFirstTenRows, filterSpec) {
 		this.filters = this.csvToFilters(csvData, filterSpec);
 		this.csvFilterLoadedCallback(csvData, filterSpec, this.filters);
-		this.csvDataLoadedCallback(csvData, filterSpec);
+		this.csvDataLoadedCallback(csvData, csvFirstTenRows, filterSpec);
 	},
 
 	getMinMaxYear: function(filters) {

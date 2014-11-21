@@ -105,6 +105,7 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 	zoomg: null,
 	controlg: null,
 	currentCsvData: null,
+	currentCsvFirstTenRows: null,
 	currentFilterSpec: null,
 	minMaxYear: [0, 0],
 	currentUnit: null,
@@ -171,7 +172,7 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 		// set up the various callbacks we need to link things together
 		var moduleThis = this;
 		csv.init(
-			function(csvData, filterSpec) { moduleThis.csvLoadedCallback(csvData, filterSpec); },
+			function(csvData, csvFirstTenRows, filterSpec) { moduleThis.csvLoadedCallback(csvData, csvFirstTenRows, filterSpec); },
 			function(csvData, filterSpec, filters) { moduleThis.filterLoadedCallback(csvData, filterSpec, filters); },
 			function(msg) { moduleThis.csvLoadErrorCallback(msg); },
 			this.config.skipCsvAutoDetect);
@@ -277,6 +278,18 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 		// generate the form for playing with the data
 		this.filterFormElement.html(filterSkeleton);
 		filterform.createFormFromFilters(this.filterFormElement, filters, mapper.countryCodeToName);
+		this.addChangeFilterSpecButton(this.filterFormElement);
+	},
+
+	addChangeFilterSpecButton: function(formElement) {
+		var fsButton = formElement.append('button');
+		fsButton.text("Change CSV column mappings")
+			.attr('type', 'button');
+
+		var filterSpecChange = function() {
+			csv.editFilterSpec(this.currentCsvData, this.currentCsvFirstTenRows, this.currentFilterSpec);
+		}.bind(this);
+		fsButton.on("click", filterSpecChange);
 	},
 
 	filterLoadedCallback: function(csvData, filterSpec, filters) {
@@ -342,9 +355,10 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 		}
 	},
 
-	csvLoadedCallback: function(csvData, filterSpec) {
+	csvLoadedCallback: function(csvData, csvFirstTenRows, filterSpec) {
 		// first cache the current values, so we can regenerate if we want
 		this.currentCsvData = csvData;
+		this.currentCsvFirstTenRows = csvFirstTenRows;
 		this.currentFilterSpec = filterSpec;
 
 		document.querySelector("body").classList.add("csv-data-loaded");

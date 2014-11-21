@@ -197,20 +197,6 @@ define([
 		}
 	},
 
-	processCSVURL: function(url, csvType) {
-		// now using loadCSVUrl() which works out csvType from csv header values
-		if (!csvdefs.filterSpec.hasOwnProperty(csvType)) {
-			this.loadErrors.unknownCSVFormat.push("no filter spec for csv type: " + csvType);
-			this.errorCallback();
-		}
-		this.loadingCsv = true;
-		var moduleThis = this;
-		d3.csv(url, null, function(csvData) {
-			moduleThis.processParsedCSV(csvData, csvdefs.filterSpec[csvType]);
-		});
-		this.loadingCsv = false;
-	},
-
 	processParsedCSV: function(csvData, filterSpec) {
 		this.filters = this.csvToFilters(csvData, filterSpec);
 		this.csvFilterLoadedCallback(csvData, filterSpec, this.filters);

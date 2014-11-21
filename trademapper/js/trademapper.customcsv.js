@@ -1,9 +1,11 @@
 define([
+	'jquery',
 	'util',
 	'vendor/bean',
 	'vendor/doT',
 	"text!../fragments/customcsv.html"
 ], function(
+	$,
 	util,
 	bean,
 	doT,
@@ -12,6 +14,7 @@ define([
 
 	return {
 		formProcessedCallback: null,
+		originalFilterSpec: null,
 
 		typeSelectConfig: {
 			type: 'type',
@@ -89,6 +92,8 @@ define([
 			} else {
 				filterSpec = this.ensureShortNamePresent(filterSpec);
 			}
+			// deep copy the object
+			this.originalFilterSpec = $.extend(true, {}, filterSpec);
 
 			document.body.appendChild(containerEl);
 			document.body.classList.add('has-overlay');
@@ -109,7 +114,8 @@ define([
 			});
 
 			bean.on(document.querySelector('.customcsv__reset'), 'click', function(e) {
-				moduleThis.createForm(containerEl, rowData, filterSpec);
+				var newFilterSpec = $.extend(true, {}, moduleThis.originalFilterSpec);
+				moduleThis.createForm(containerEl, rowData, newFilterSpec);
 			});
 			bean.on(document.querySelector('.customcsv__cancel'), 'click', function(e) {
 				document.body.classList.remove('has-overlay');

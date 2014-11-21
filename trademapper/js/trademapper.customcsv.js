@@ -325,7 +325,6 @@ define([
 			document.body.classList.remove('has-overlay');
 			document.body.removeChild(containerEl);
 
-			console.log(filterSpec);
 			this.formProcessedCallback(filterSpec);
 		},
 
@@ -355,7 +354,7 @@ define([
 			if (generalErrors.length > 0) {
 				errors.general = generalErrors;
 			}
-			if (Object.keys(columnErrors).length > 0) {
+			if (!$.isEmptyObject(columnErrors)) {
 				errors.column = columnErrors;
 			}
 
@@ -379,7 +378,7 @@ define([
 				errors.push("There need to be at least 2 location columns.");
 			}
 
-			errors.concat(this.checkLocationOrdering(filterSpec));
+			errors = errors.concat(this.checkLocationOrdering(filterSpec));
 
 			// TODO: latlong check
 			//
@@ -423,7 +422,7 @@ define([
 			Object.keys(counts).forEach(function(key) {
 				if (counts[key] > 1) {
 					errors.push("More than one location column has the order: " +
-					            key + "(columns are: " +
+					            key + " (columns are: " +
 					            columns[key].join(', ') + ").");
 				}
 			});

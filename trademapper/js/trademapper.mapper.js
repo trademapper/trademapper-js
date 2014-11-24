@@ -124,7 +124,7 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre"], functio
 		zoom = d3.behavior.zoom()
 			.translate([0, 0])
 			.scale(1)
-			.scaleExtent([1, 20])
+			.scaleExtent([0.5, 20])
 			.on("zoom", zoomed);
 		this.zoomg.call(zoom);
 

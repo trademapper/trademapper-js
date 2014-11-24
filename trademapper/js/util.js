@@ -17,6 +17,10 @@ define([], function() {
 			return (typeof value === 'number' && (value%1) === 0);
 		},
 
+		corsProxy: function(url) {
+			return "http://www.corsproxy.com/" + url.replace(/^https?:\/\//, "");
+		},
+
 		getPageOffsetRect: function(elem) {
 			var box = elem.getBoundingClientRect();
 

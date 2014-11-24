@@ -172,7 +172,7 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 		csv.init(
 			function(csvData, csvFirstTenRows, filterSpec) { moduleThis.csvLoadedCallback(csvData, csvFirstTenRows, filterSpec); },
 			function(csvData, filterSpec, filters) { moduleThis.filterLoadedCallback(csvData, filterSpec, filters); },
-			function(msg) { moduleThis.csvLoadErrorCallback(msg); },
+			function() { moduleThis.csvLoadErrorCallback(); },
 			this.config.skipCsvAutoDetect);
 
 		route.setCountryGetPointFunc(function(countryCode) {return mapper.countryCentrePoint(countryCode);});
@@ -183,6 +183,7 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 		yearslider.showTradeForAllYears = function() {return moduleThis.filterformChangedCallback(); };
 		yearslider.setYearRangeStatus = function(enable) {return filterform.setYearRangeStatus(enable); };
 		this.setUpAsideToggle();
+		this.hideUnusedTabs();
 		yearslider.create();
 
 		if (this.queryString.hasOwnProperty("loadcsv")) {
@@ -251,6 +252,14 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 		};
 	},
 
+	hideUnusedTabs: function() {
+		// this is hidden to start with and re-added when we add the filters
+		document.querySelector('li[role=filters]').style.display = "none";
+		// the options line will be deleted when we actually use the display
+		// TODO: remove when options available
+		document.querySelector('li[role=options]').style.display = "none";
+	},
+
 	loadCsvFromUrl: function() {
 		var csvUrl = decodeURIComponent(this.queryString.loadcsv);
 		csv.loadCSVUrl(csvUrl);
@@ -266,6 +275,8 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 
 	createCsvOnlyForm: function() {
 		this.fileFormElement.html(csvFormSkeleton);
+		// stop the form "submitting" and causing page reload
+		$('form#tm-file-select').submit(function() { return false; });
 		this.fileInputElement = this.fileFormElement.select("#fileinput");
 		csv.setFileInputElement(this.fileInputElement);
 		csv.setUrlInputElement(this.fileFormElement.select("#urlinput"),
@@ -277,6 +288,8 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 		this.filterFormElement.html(filterSkeleton);
 		filterform.createFormFromFilters(this.filterFormElement, filters, mapper.countryCodeToName);
 		this.addChangeFilterSpecButton(this.filterFormElement);
+		// finally ensure the tab is now available
+		document.querySelector('li[role=filters]').style.display = "block";
 	},
 
 	addChangeFilterSpecButton: function(formElement) {
@@ -373,7 +386,10 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 		errorFieldset.classed("haserror", false);
 
 		// return here if no error
-		if (errorMsgList.length === 0) { return; }
+		if (errorMsgList.length === 0) {
+			errorFieldset.html('');
+			return;
+		}
 
 		errorFieldset.classed("haserror", true);
 

@@ -3,15 +3,13 @@ define([
     'trademapper.customcsv',
     'trademapper.route',
     'util',
-    'd3',
-    'corsproxy'
+    'd3'
 ], function(
     csvdefs,
     CustomCsv,
     route,
     util,
-    d3,
-    corsProxy
+    d3
 ) {
 	"use strict";
 
@@ -25,6 +23,7 @@ define([
 	loadingCsv: false,
 	loadErrors: null,
 	csvFile: null,
+	csvFileName: null,
 	filters: null,
 
 	init: function(dataLoadedCallback, filterLoadedCallback, error_callback, skipCsvAutoDetect) {
@@ -38,7 +37,8 @@ define([
 	resetLoadErrors: function() {
 		this.loadErrors = {
 			unknownCSVFormat: [],
-			unknownCountries: {}
+			unknownCountries: {},
+			badUrl: []
 		};
 	},
 
@@ -51,9 +51,19 @@ define([
 	},
 
 	setUrlInputElement: function(urlInput, button) {
+		var moduleThis = this;
 		this.urlInputElement = urlInput;
-		if(this.button !== null) {
-			var moduleThis = this;
+		// on enter, load the CSV
+		this.urlInputElement.on("keypress", function() {
+			// if enter, load the URL
+			if (d3.event.keyCode === 13) {
+				moduleThis.loadCSVUrl();
+				return false;
+			} else {
+				return true;
+			}
+		});
+		if (button !== null) {
 			button.on("click", function () { moduleThis.loadCSVUrl(); });
 		}
 	},
@@ -65,6 +75,7 @@ define([
 	loadCSVFile: function() {
 		this.resetLoadErrors();
 		this.csvFile = this.fileInputElement[0][0].files[0];
+		this.csvFileName = this.csvFile.name;
 
 		var reader = new FileReader();
 		var moduleThis = this;
@@ -77,26 +88,52 @@ define([
 		reader.readAsText(this.csvFile);
 	},
 
-	loadCSVUrl: function(url) {
-		if(!url) {
-			url = this.urlInputElement.node().value;
+	loadCSVUrl: function(csvUrl) {
+		this.resetLoadErrors();
+		if(!csvUrl) {
+			csvUrl = this.urlInputElement.node().value;
 		}
-		var moduleThis = this;
-		if(url && url.length > 0) {
-			//d3.xhr(corsProxy(url), function (error, req) {
-			d3.xhr(url, function (error, req) {
-				if(error || req.status !== 200) {
-					console.log("unable to download", error, req);
-				} else {
-					moduleThis.processCSVString(req.response);
+		if(csvUrl && csvUrl.length > 0) {
+			var moduleThis = this,
+				succeeded = false,
+				finished = false,
+				urlList = [csvUrl, util.corsProxy(csvUrl)];
+			// if we use the corsProxy on a URL that already does CORS
+			// then the download will fail, so try both directly and via
+			// corsProxy
+			for (var i = 0; i < urlList.length; i++) {
+				var url = urlList[i];
+				d3.xhr(url, function (error, req) {
+					if (succeeded) { return; }
+					if (!error && req.status === 200) {
+						finished = succeeded = true;
+						moduleThis.processCSVString(req.response);
+					} else {
+						console.log("unable to download", error, req);
+						moduleThis.loadErrors.badUrl.push("unable to download " + url +
+							" due to error: " + error.toString());
+						finished = true;
+					}
+				});
+			}
+			// sleep for 5 seconds, if not succeeded then show errors
+			// TODO: add indicator to say we're trying
+			var reportErrors = function() {
+				// show errors - or clear them if necessary
+				moduleThis.errorCallback();
+				// if not finished, try showing errors again in a bit
+				if (!finished) {
+					window.setTimeout(reportErrors, 2000);
 				}
-			});
+			};
+			window.setTimeout(reportErrors, 1000);
 		}
 	},
 
 	loadErrorsToStrings: function() {
 		var countryInfo, errorMsgs = [],
 			unknownCountries = Object.keys(this.loadErrors.unknownCountries);
+		errorMsgs = errorMsgs.concat(this.loadErrors.badUrl);
 		errorMsgs = errorMsgs.concat(this.loadErrors.unknownCSVFormat);
 		unknownCountries.sort();
 		for (var i = 0; i < unknownCountries.length; i++) {

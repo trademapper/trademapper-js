@@ -79,6 +79,7 @@ define([
 	},
 
 	loadCSVUrl: function(csvUrl) {
+		this.resetLoadErrors();
 		if(!csvUrl) {
 			csvUrl = this.urlInputElement.node().value;
 		}
@@ -108,15 +109,14 @@ define([
 			// sleep for 5 seconds, if not succeeded then show errors
 			// TODO: add indicator to say we're trying
 			var reportErrors = function() {
-				if (succeeded) { return; }
-				// show errors
+				// show errors - or clear them if necessary
 				moduleThis.errorCallback();
 				// if not finished, try showing errors again in a bit
 				if (!finished) {
-					window.setTimeout(reportErrors, 5000);
+					window.setTimeout(reportErrors, 2000);
 				}
 			};
-			window.setTimeout(reportErrors, 5000);
+			window.setTimeout(reportErrors, 1000);
 		}
 	},
 

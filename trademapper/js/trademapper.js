@@ -172,7 +172,7 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 		csv.init(
 			function(csvData, csvFirstTenRows, filterSpec) { moduleThis.csvLoadedCallback(csvData, csvFirstTenRows, filterSpec); },
 			function(csvData, filterSpec, filters) { moduleThis.filterLoadedCallback(csvData, filterSpec, filters); },
-			function(msg) { moduleThis.csvLoadErrorCallback(msg); },
+			function() { moduleThis.csvLoadErrorCallback(); },
 			this.config.skipCsvAutoDetect);
 
 		route.setCountryGetPointFunc(function(countryCode) {return mapper.countryCentrePoint(countryCode);});
@@ -384,7 +384,10 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 		errorFieldset.classed("haserror", false);
 
 		// return here if no error
-		if (errorMsgList.length === 0) { return; }
+		if (errorMsgList.length === 0) {
+			errorFieldset.html('');
+			return;
+		}
 
 		errorFieldset.classed("haserror", true);
 

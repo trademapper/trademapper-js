@@ -183,6 +183,7 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 		yearslider.showTradeForAllYears = function() {return moduleThis.filterformChangedCallback(); };
 		yearslider.setYearRangeStatus = function(enable) {return filterform.setYearRangeStatus(enable); };
 		this.setUpAsideToggle();
+		this.hideUnusedTabs();
 		yearslider.create();
 
 		if (this.queryString.hasOwnProperty("loadcsv")) {
@@ -251,6 +252,14 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 		};
 	},
 
+	hideUnusedTabs: function() {
+		// this is hidden to start with and re-added when we add the filters
+		document.querySelector('li[role=filters]').style.display = "none";
+		// the options line will be deleted when we actually use the display
+		// TODO: remove when options available
+		document.querySelector('li[role=options]').style.display = "none";
+	},
+
 	loadCsvFromUrl: function() {
 		var csvUrl = decodeURIComponent(this.queryString.loadcsv);
 		csv.loadCSVUrl(csvUrl);
@@ -277,6 +286,8 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 		this.filterFormElement.html(filterSkeleton);
 		filterform.createFormFromFilters(this.filterFormElement, filters, mapper.countryCodeToName);
 		this.addChangeFilterSpecButton(this.filterFormElement);
+		// finally ensure the tab is now available
+		document.querySelector('li[role=filters]').style.display = "block";
 	},
 
 	addChangeFilterSpecButton: function(formElement) {

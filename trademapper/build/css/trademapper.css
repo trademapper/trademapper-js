@@ -203,7 +203,7 @@ span.showhide {
   z-index: 1; }
 
 .toggle:hover {
-  background: #20af9f;
+  background: #20AF9F;
   color: #fff; }
 
 .tab-pane.active {
@@ -214,7 +214,7 @@ span.showhide {
   background: -o-linear-gradient(top, white 0%, rgba(251, 251, 251, 0) 39%, rgba(246, 246, 246, 0) 82%, rgba(237, 237, 237, 0) 100%);
   background: -ms-linear-gradient(top, white 0%, rgba(251, 251, 251, 0) 39%, rgba(246, 246, 246, 0) 82%, rgba(237, 237, 237, 0) 100%);
   background: linear-gradient(to bottom, white 0%, rgba(251, 251, 251, 0) 39%, rgba(246, 246, 246, 0) 82%, rgba(237, 237, 237, 0) 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#ededed', GradientType=0 );
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ededed', GradientType=0 );
   padding-bottom: 2em; }
 
 .nav-tabs > li > a {
@@ -368,7 +368,7 @@ span.showhide {
   background-color: #45689f; }
 
 .form-item.location-transit {
-  background-color: #20af9f; }
+  background-color: #20AF9F; }
 
 .form-item.location-importer {
   background-color: #ff6600; }
@@ -500,13 +500,13 @@ span.showhide {
   fill-opacity: 1; }
 
 .tradenode.origin {
-  fill: black; }
+  fill: #000000; }
 
 .tradenode.exporter {
   fill: #45689f; }
 
 .tradenode.transit {
-  fill: #20af9f; }
+  fill: #20AF9F; }
 
 .tradenode.importer {
   fill: #ff6600; }
@@ -638,7 +638,7 @@ p.tooltip-location {
   background-image: url("../images/icon-exporter.svg"); }
 
 .tooltip-location.transit:before {
-  background-color: #20af9f;
+  background-color: #20AF9F;
   background-image: url("../images/icon-transit.svg"); }
 
 .tooltip-location.importer:before {
@@ -814,3 +814,5 @@ p.tooltip-location {
   border-width: 1px;
   border-color: red;
   padding: 3px; }
+
+/*# sourceMappingURL=trademapper.css.map */

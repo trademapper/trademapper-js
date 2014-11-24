@@ -130,8 +130,6 @@ function($, d3) {
 		if ($this.is(':checked')) {
 			moduleThis.sliderEnabled = true;
 			section.classList.remove("disabled");
-			// show data for first year
-			this.currentYear = this.minYear;
 			this.showTradeForYear(this.currentYear);
 			this.setYearRangeStatus(false);
 		} else {

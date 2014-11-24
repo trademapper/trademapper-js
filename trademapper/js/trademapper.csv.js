@@ -85,6 +85,7 @@ define([
 		if(csvUrl && csvUrl.length > 0) {
 			var moduleThis = this,
 				succeeded = false,
+				finished = false,
 				urlList = [csvUrl, util.corsProxy(csvUrl)];
 			// if we use the corsProxy on a URL that already does CORS
 			// then the download will fail, so try both directly and via
@@ -94,15 +95,28 @@ define([
 				d3.xhr(url, function (error, req) {
 					if (succeeded) { return; }
 					if (!error && req.status === 200) {
-						succeeded = true;
+						finished = succeeded = true;
 						moduleThis.processCSVString(req.response);
 					} else {
 						console.log("unable to download", error, req);
 						moduleThis.loadErrors.badUrl.push("unable to download " + url +
 							" due to error: " + error.toString());
+						finished = true;
 					}
 				});
 			}
+			// sleep for 5 seconds, if not succeeded then show errors
+			// TODO: add indicator to say we're trying
+			var reportErrors = function() {
+				if (succeeded) { return; }
+				// show errors
+				moduleThis.errorCallback();
+				// if not finished, try showing errors again in a bit
+				if (!finished) {
+					window.setTimeout(reportErrors, 5000);
+				}
+			};
+			window.setTimeout(reportErrors, 5000);
 		}
 	},
 

@@ -275,6 +275,8 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 
 	createCsvOnlyForm: function() {
 		this.fileFormElement.html(csvFormSkeleton);
+		// stop the form "submitting" and causing page reload
+		$('form#tm-file-select').submit(function() { return false; });
 		this.fileInputElement = this.fileFormElement.select("#fileinput");
 		csv.setFileInputElement(this.fileInputElement);
 		csv.setUrlInputElement(this.fileFormElement.select("#urlinput"),

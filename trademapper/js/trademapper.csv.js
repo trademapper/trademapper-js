@@ -51,9 +51,19 @@ define([
 	},
 
 	setUrlInputElement: function(urlInput, button) {
+		var moduleThis = this;
 		this.urlInputElement = urlInput;
-		if(this.button !== null) {
-			var moduleThis = this;
+		// on enter, load the CSV
+		this.urlInputElement.on("keypress", function() {
+			// if enter, load the URL
+			if (d3.event.keyCode === 13) {
+				moduleThis.loadCSVUrl();
+				return false;
+			} else {
+				return true;
+			}
+		});
+		if (button !== null) {
 			button.on("click", function () { moduleThis.loadCSVUrl(); });
 		}
 	},

@@ -41,6 +41,9 @@ a, a img, img a:focus, a:active,
 a:hover {
   color: #333; }
 
+h1, h2 {
+  color: #ff6600; }
+
 /*----------General Layout---
  =====================================*/
 .tmrow {
@@ -740,16 +743,22 @@ p.tooltip-location {
   z-index: 5;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.85);
   padding: 100px;
   box-sizing: border-box;
   overflow: auto; }
 
 .overlay__content {
-  background: #f1f1f1; }
+  background: #fff; }
 
 .customcsv {
-  padding: 0 20px 20px 20px; }
+  padding: 1px 20px 20px;
+  box-shadow: 0 0 10px 10px rgba(0, 0, 0, 0.8); }
+
+.customcsv > .title {
+  color: #ff6600;
+  font-size: 1.5em;
+  font-weight: normal; }
 
 .customcsv__table_container {
   overflow-x: scroll; }
@@ -814,3 +823,70 @@ p.tooltip-location {
   border-width: 1px;
   border-color: red;
   padding: 3px; }
+
+.customcsv__header-form-container > p {
+  font-size: 0.9em;
+  font-weight: normal;
+  margin-bottom: 0;
+  padding-left: 0.3em; }
+
+.customcsv__text--shortName > input {
+  padding: 0.2em 0.5em 0.1em; }
+
+.customcsv__select--type {
+  box-shadow: 0 0 0 3px #ff6600;
+  color: #ff6600;
+  margin: 0.5em 0.3em;
+  padding: 0.2em 0.5em;
+  text-transform: uppercase; }
+
+.customcsv__checkbox--multiSelect,
+.customcsv__checkbox--isUnit {
+  font-size: 0.9em;
+  font-weight: normal;
+  width: 60%;
+  float: left;
+  padding: 0 3px; }
+
+.customcsv__checkbox--multiSelect label,
+.customcsv__checkbox--isUnit label {
+  font-weight: normal; }
+
+.customcsv__select--locationRole,
+.customcsv__select--locationType,
+.customcsv__text--locationOrder > label {
+  margin-top: 0;
+  width: 50%;
+  float: left;
+  font-size: 0.9em; }
+
+.customcsv__text--locationOrder {
+  float: left;
+  width: 60%;
+  padding-top: 0.5em; }
+
+.customcsv__text--locationOrder > label {
+  margin-top: 0;
+  padding-left: 0.5em;
+  width: 50%; }
+
+.customcsv__text--locationOrder > input {
+  background-color: #ff6600;
+  border: medium none;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 1.3em;
+  height: 2em;
+  text-align: center;
+  width: 2em; }
+
+.customcsv__checkbox--multiSelect {
+  text-align: right;
+  width: 40%; }
+
+.customcsv__checkbox--multiSelect > input {
+  margin: 0; }
+
+.customcsv__rowcount {
+  color: #ff6600;
+  padding: 1em 0; }

@@ -1,6 +1,6 @@
 <div class="overlay">
   <div class="overlay__content customcsv">
-    <h2>Custom CSV Importer</h2>
+    <h2 class="title">Custom CSV Importer</h2>
     <p>Choose the type of each column and fill in the supplementary settings as required.  Or read the <a href="https://trademapper.github.io/trademapper-js/">more detailed instructions</a>.</p>
     {{? it.errors}}
     <div class="customcsv__errors">
@@ -19,8 +19,8 @@
           <tr class="customcsv__headers">
             {{~it.headers :header}}
             <th><div class="customcsv__header-form-container" data-header="{{=header}}">
-              {{=header}}
-              {{~it.globalTexts :text}}
+              <p>{{=header}}
+              {{~it.globalTexts :text}}</p>
                 <fieldset class="customcsv__text--{{=text.type}}">
                   <input type="text" name="{{=text.type}}" title="{{=text.title}}"
                       {{? it.filterSpec[header][text.type]}}value="{{=it.filterSpec[header][text.type]}}"{{?}}
@@ -79,9 +79,9 @@
     </div>
     <div class="customcsv__rowcount">{{=it.rowcount}} total rows</div>
 
-    <button class="customcsv__cancel">Cancel</button>
-    <button class="customcsv__reset">Reset Form</button>
-    <button class="customcsv__done">Done</button>
+    <button class="btn btn-dander customcsv__cancel">Cancel</button>
+    <button class="btn btn-primary customcsv__done">Done</button>
+    <button class="btn btn-link customcsv__reset">Reset Form</button>
 
   </div>
 </div>

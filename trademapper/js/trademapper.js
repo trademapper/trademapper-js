@@ -360,8 +360,8 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 		this.currentFilterSpec = filterSpec;
 
 		document.querySelector("body").classList.add("csv-data-loaded");
-		this.reportCsvLoadErrors();
 		this.showFilteredCsv(filterform.filterValues);
+		this.reportCsvLoadErrors();
 	},
 
 	reportCsvLoadErrors: function() {

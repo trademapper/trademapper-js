@@ -701,3 +701,87 @@ p.tooltip-location {
 
 .disclaimer a, .built-by a, .help-text a {
   color: #333; }
+
+/*----------Overlay-------------------
+ =====================================*/
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 5;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 100px;
+  box-sizing: border-box;
+  overflow: auto; }
+
+.overlay__content {
+  background: #f1f1f1; }
+
+.customcsv {
+  padding: 0 20px 20px 20px; }
+
+.customcsv__table_container {
+  overflow-x: scroll; }
+
+.customcsv__table {
+  border-spacing: 0;
+  border-collapse: collapse; }
+
+.customcsv__table th,
+.customcsv__table td {
+  border: 1px solid #d0d0d0;
+  color: #444;
+  padding: 4px; }
+.customcsv__table tbody td div {
+  max-height: 42px;
+  overflow: hidden; }
+
+.customcsv__options > th {
+  vertical-align: top; }
+
+.customcsv__table--hasheader tbody tr:first-child {
+  display: none; }
+
+.has-overlay {
+  overflow: hidden; }
+
+.customcsv__select--locationType,
+.customcsv__select--locationExtraType,
+.customcsv__select--locationRole,
+.customcsv__text--locationOrder,
+.customcsv__checkbox--isUnit,
+.customcsv__checkbox--multiSelect {
+  display: none; }
+
+.customcsv__text--locationOrder > input {
+  width: 3em; }
+
+.customcsv__form-container {
+  text-align: left; }
+
+.customcsv__form-container[data-type=location] .customcsv__select--locationType,
+.customcsv__form-container[data-type=location] .customcsv__select--locationRole,
+.customcsv__form-container[data-type=location] .customcsv__text--locationOrder,
+.customcsv__form-container[data-type=location] .customcsv__checkbox--multiSelect {
+  display: block; }
+
+.customcsv__form-container[data-type=location_extra] .customcsv__select--locationExtraType,
+.customcsv__form-container[data-type=location_extra] .customcsv__text--locationOrder {
+  display: block; }
+
+.customcsv__form-container[data-type=text] .customcsv__text--shortName,
+.customcsv__form-container[data-type=text] .customcsv__checkbox--isUnit,
+.customcsv__form-container[data-type=text] .customcsv__checkbox--multiSelect {
+  display: block; }
+
+.customcsv__form-container[data-type=text_list] .customcsv__text--shortName,
+.customcsv__form-container[data-type=text_list] .customcsv__checkbox--multiSelect {
+  display: block; }
+
+.customcsv__errors {
+  border-style: solid;
+  border-width: 1px;
+  border-color: red;
+  padding: 3px; }

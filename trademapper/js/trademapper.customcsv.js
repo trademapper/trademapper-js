@@ -80,11 +80,9 @@ define([
 		 * the 2nd argument can be null, in which case auto detection
 		 * will be attempted before displaying the form
 		 */
-		init: function(rawCsv, filterSpec, callback) {
+		init: function(rowData, filterSpec, callback) {
 			// we use parseRows() so we have access to the headers, and
 			// maintain the column order
-			var rowData = d3.csv.parseRows(rawCsv),
-				containerEl = document.createElement('div');
 			this.formProcessedCallback = callback;
 
 			if (filterSpec === null) {
@@ -95,6 +93,7 @@ define([
 			// deep copy the object
 			this.originalFilterSpec = $.extend(true, {}, filterSpec);
 
+			var containerEl = document.createElement('div');
 			document.body.appendChild(containerEl);
 			document.body.classList.add('has-overlay');
 

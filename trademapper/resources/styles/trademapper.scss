@@ -844,6 +844,15 @@ p.tooltip-location {
 	margin-left: -8px;
 }
 
+.change-over-time.year-slider > .d3-slider-handle {
+	background: $importer-colour;
+}
+
+.disabled .change-over-time.year-slider > .d3-slider-handle {
+	background: #eee;
+	background: linear-gradient(to bottom, #eee 0%, #ddd 100%);
+}
+
 /*----------Options Dialog--------------
  =====================================*/
 #map-options {

@@ -146,13 +146,13 @@ a:hover {
   padding-top: 2em; }
 
 .csv-load-errors > p {
-  background-color: #177f73;
+  background-color: #177F73;
   padding: 1em;
   margin-bottom: 0;
   margin-top: 0.5em; }
 
 #csv-load-error-details {
-  background-color: #177f73;
+  background-color: #177F73;
   padding: 1em;
   position: absolute;
   z-index: 2; }
@@ -185,7 +185,7 @@ span.showhide {
   z-index: 1; }
 
 .toggle:hover {
-  background: #20af9f;
+  background: #20AF9F;
   color: #fff; }
 
 .tab-pane.active {
@@ -350,7 +350,7 @@ span.showhide {
   background-color: #45689f; }
 
 .form-item.location-transit {
-  background-color: #20af9f; }
+  background-color: #20AF9F; }
 
 .form-item.location-importer {
   background-color: #ff6600; }
@@ -482,13 +482,13 @@ span.showhide {
   fill-opacity: 1; }
 
 .tradenode.origin {
-  fill: black; }
+  fill: #000000; }
 
 .tradenode.exporter {
   fill: #45689f; }
 
 .tradenode.transit {
-  fill: #20af9f; }
+  fill: #20AF9F; }
 
 .tradenode.importer {
   fill: #ff6600; }
@@ -620,7 +620,7 @@ p.tooltip-location {
   background-image: url("../images/icon-exporter.svg"); }
 
 .tooltip-location.transit:before {
-  background-color: #20af9f;
+  background-color: #20AF9F;
   background-image: url("../images/icon-transit.svg"); }
 
 .tooltip-location.importer:before {
@@ -796,3 +796,5 @@ p.tooltip-location {
   border-width: 1px;
   border-color: red;
   padding: 3px; }
+
+/*# sourceMappingURL=trademapper.css.map */

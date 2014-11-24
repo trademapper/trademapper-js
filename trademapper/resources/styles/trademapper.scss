@@ -174,7 +174,6 @@ a:hover {
 .group-fileinput,
 .csv-load-errors,
 .csv-load-errors.haserror {
-	float:left;
 	border:none;
 	margin:0;
 }
@@ -203,19 +202,21 @@ a:hover {
 .user-actions  .group-fileinput > p > label {font-size:0.9em; color: #333; padding-top:2em;}
 
 .csv-load-errors > p {
-	background-color:$errorbg-colour;
-	padding:1em;
-	margin-bottom:0;
-	margin-top:0.5em;
+    border-bottom: 3px solid #ff6600;
+    color: #ff6600;
+    margin-bottom: 0;
+    margin-top: 0.5em;
+    padding: 1em;
 }
 
 #csv-load-error-details {
-    background-color:$errorbg-colour;
-    padding:1em;
-    position:absolute;
-    z-index:2;
+    background-color: #fff;
+    border: 3px solid #ff6600;
+    border-top-width:0;
+    padding: 1em;
+    position: absolute;
+    z-index: 2;
 }
-
 .csv-load-errors.haserror > p > strong {
     float: left;
     margin-right: 0.5em;

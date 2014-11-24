@@ -69,10 +69,10 @@ a:hover {
   transition: all 300ms ease-out;
   width: 30%;
   max-width: 450px;
-  z-index: 200; }
+  z-index: 3; }
 
 #info-panel.toggled {
-  transform: translateX(-95%); }
+  transform: translateX(-100%); }
 
 #tabs {
   clear: both;
@@ -83,7 +83,7 @@ a:hover {
   float: right;
   position: relative;
   width: 100%;
-  z-index: 100; }
+  z-index: 2; }
 
 #mapinfo {
   border: medium none; }
@@ -124,27 +124,28 @@ a:hover {
 
 /*---File Select--*/
 .user-actions {
-  width: 70%;
-  float: right;
-  padding: 10px 0 10px 20px;
-  color: #fff; }
+  display: table;
+  padding: 0; }
 
 .group-fileinput,
 .csv-load-errors,
 .csv-load-errors.haserror {
-  width: 50%;
   float: left;
   border: none;
-  margin: 0;
-  padding: 10px 0 0 20px; }
+  margin: 0; }
 
 .group-fileinput > p > input {
   width: 100%; }
 
 .group-fileinput > p > label {
   width: 100%;
-  color: #fff;
+  color: #333;
   font-size: 0.8em; }
+
+.user-actions .group-fileinput > p > label {
+  font-size: 0.9em;
+  color: #008F75;
+  padding-top: 2em; }
 
 .csv-load-errors > p {
   background-color: #177f73;
@@ -188,6 +189,21 @@ span.showhide {
 .toggle:hover {
   background: #20af9f;
   color: #fff; }
+
+.tab-pane.active {
+  background: white;
+  background: -moz-linear-gradient(top, white 0%, rgba(251, 251, 251, 0) 39%, rgba(246, 246, 246, 0) 82%, rgba(237, 237, 237, 0) 100%);
+  background: -webkit-gradient(left top, left bottom, color-stop(0%, white), color-stop(39%, rgba(251, 251, 251, 0)), color-stop(82%, rgba(246, 246, 246, 0)), color-stop(100%, rgba(237, 237, 237, 0)));
+  background: -webkit-linear-gradient(top, white 0%, rgba(251, 251, 251, 0) 39%, rgba(246, 246, 246, 0) 82%, rgba(237, 237, 237, 0) 100%);
+  background: -o-linear-gradient(top, white 0%, rgba(251, 251, 251, 0) 39%, rgba(246, 246, 246, 0) 82%, rgba(237, 237, 237, 0) 100%);
+  background: -ms-linear-gradient(top, white 0%, rgba(251, 251, 251, 0) 39%, rgba(246, 246, 246, 0) 82%, rgba(237, 237, 237, 0) 100%);
+  background: linear-gradient(to bottom, white 0%, rgba(251, 251, 251, 0) 39%, rgba(246, 246, 246, 0) 82%, rgba(237, 237, 237, 0) 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#ededed', GradientType=0 );
+  padding-bottom: 2em; }
+
+.nav-tabs > li > a {
+  color: #45689f;
+  font-weight: bold; }
 
 .tab-pane-wrapper {
   display: block;
@@ -251,7 +267,7 @@ span.showhide {
 
 /*---Filter Groups --*/
 .filters-group {
-  z-index: 2000; }
+  z-index: 4; }
 
 #filter-panel > form > .filters-group {
   border: none;
@@ -277,7 +293,7 @@ span.showhide {
 
 /*---Map Title--*/
 #title {
-  background-color: white;
+  background-color: transparent;
   border: medium none;
   font-family: sans-serif;
   height: 2em;
@@ -535,7 +551,7 @@ span.tooltip-dest {
   cursor: pointer;
   float: right;
   font-weight: bold;
-  padding: 0 0.2em; }
+  padding: 0 0.4em; }
 
 .tooltip-close:hover {
   background-color: black;
@@ -626,7 +642,7 @@ p.tooltip-location {
   height: 5em;
   position: fixed;
   width: 100%;
-  z-index: 10; }
+  z-index: 2; }
 
 #slider > #change-over-time {
   width: 100%; }
@@ -664,7 +680,7 @@ p.tooltip-location {
   line-height: 35px;
   border-radius: 50%;
   color: white;
-  background-color: blue;
+  background-color: #ff6600;
   text-align: center;
   position: absolute;
   top: 30%;
@@ -684,7 +700,7 @@ p.tooltip-location {
 /*----------Options Dialog--------------
  =====================================*/
 #map-options {
-  z-index: 2000; }
+  z-index: 4; }
 
 /*----------Disclaimer-------------------
  =====================================*/

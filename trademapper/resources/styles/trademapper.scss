@@ -101,7 +101,7 @@ a:hover {
 }
 
 #info-panel.toggled {
-    transform: translateX( -95% );
+    transform: translateX( -100% );
 }
 
 #tabs {
@@ -169,23 +169,23 @@ a:hover {
 /*---File Select--*/
 
 .user-actions {
-	width:70%;
-	float:right;
-	padding:10px 0 10px 20px;
-	color:#fff;
+    display: table;
+    padding: 0;
 }
+
 .group-fileinput,
 .csv-load-errors,
 .csv-load-errors.haserror {
-	width: 50%;
 	float:left;
 	border:none;
 	margin:0;
-	padding: 10px 0 0 20px;
 }
-.group-fileinput > p > input {width: 100%;}
-.group-fileinput > p > label {width: 100%;color:#fff;font-size:0.8em;}
 
+
+
+.group-fileinput > p > input {width: 100%;}
+.group-fileinput > p > label {width: 100%;color:#333;font-size:0.8em;}
+.user-actions  .group-fileinput > p > label {font-size:0.9em; color: #008F75; padding-top:2em;}
 
 .csv-load-errors > p {
 	background-color:$errorbg-colour;
@@ -237,6 +237,22 @@ span.showhide {
     background:$transit-colour;
     color:#fff;
 }
+
+.tab-pane.active {
+    
+    background: rgba(255,255,255,1);
+    background: -moz-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(251,251,251,0) 39%, rgba(246,246,246,0) 82%, rgba(237,237,237,0) 100%);
+    background: -webkit-gradient(left top, left bottom, color-stop(0%, rgba(255,255,255,1)), color-stop(39%, rgba(251,251,251,0)), color-stop(82%, rgba(246,246,246,0)), color-stop(100%, rgba(237,237,237,0)));
+    background: -webkit-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(251,251,251,0) 39%, rgba(246,246,246,0) 82%, rgba(237,237,237,0) 100%);
+    background: -o-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(251,251,251,0) 39%, rgba(246,246,246,0) 82%, rgba(237,237,237,0) 100%);
+    background: -ms-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(251,251,251,0) 39%, rgba(246,246,246,0) 82%, rgba(237,237,237,0) 100%);
+    background: linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(251,251,251,0) 39%, rgba(246,246,246,0) 82%, rgba(237,237,237,0) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ededed', GradientType=0 );
+
+    padding-bottom: 2em;
+}
+
+.nav-tabs > li > a {color:$exporter-colour; font-weight:bold;}
 
 .tab-pane-wrapper {
   display:block;
@@ -345,7 +361,7 @@ span.showhide {
 /*---Map Title--*/
 
 #title {
-    background-color: white;
+    background-color: transparent;
     border: medium none;
     font-family: sans-serif;
     height: 2em;
@@ -644,7 +660,7 @@ span.tooltip-dest {
     cursor: pointer;
     float: right;
     font-weight: bold;
-    padding: 0 0.2em;
+    padding: 0 0.4em;
 }
 
 .tooltip-close:hover {
@@ -785,7 +801,7 @@ p.tooltip-location {
 	line-height: 35px;
 	border-radius:50%;
 	color: white;
-	background-color: blue;
+	background-color: $importer-colour;
 	text-align: center;
 	position: absolute;
 	top: 30%;

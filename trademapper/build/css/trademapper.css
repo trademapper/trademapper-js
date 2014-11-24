@@ -1,10 +1,5 @@
 /*-------Sass Defines-----------
  ===============================*/
-.change-over-time.slider-section {
-  position: relative;
-  top: 50%;
-  transform: translateY(-50%); }
-
 /*-------General---
  ===============================*/
 html {
@@ -35,7 +30,8 @@ body {
 .cf:after {
   clear: both; }
 
-a, a img, img a:focus, a:active {
+a, a img, img a:focus, a:active,
+.nav-tabs > li.active > a, .nav-tabs > li.active > a:hover, .nav-tabs > li.active > a:focus {
   outline-style: none;
   outline: none;
   border: none;
@@ -62,45 +58,32 @@ a:hover {
 .inner * {
   position: relative; }
 
-#filter-panel {
-  background: rgba(255, 255, 255, 0.85);
+#info-panel {
+  background-color: rgba(255, 255, 255, 0.7);
+  box-shadow: 0 10px 50px rgba(100, 100, 100, 0.8);
   display: block;
   height: 100%;
-  padding: 0 0 0 10px;
+  padding: 0;
+  margin-bottom: -50px;
   position: absolute;
   transition: all 300ms ease-out;
   width: 30%;
-  z-index: 3; }
+  max-width: 450px;
+  z-index: 200; }
 
-#filter-panel.toggled {
-  transform: translateX(-100%); }
+#info-panel.toggled {
+  transform: translateX(-95%); }
 
-.toggle {
-  background: orange;
-  border: 0;
-  cursor: pointer;
-  bottom: 0;
-  position: absolute;
-  right: -44px;
-  top: 0;
-  width: 44px;
-  z-index: 2; }
-
-.toggle:hover {
-  background: lightgreen; }
-
-.branding {
-  width: 30%;
-  float: left;
-  margin: 0; }
+#tabs {
+  clear: both;
+  padding: 20px 30px; }
 
 #trademapper {
   display: block;
   float: right;
-  height: 85vh;
   position: relative;
   width: 100%;
-  z-index: 2; }
+  z-index: 100; }
 
 #mapinfo {
   border: medium none; }
@@ -128,7 +111,7 @@ a:hover {
 /*---Branding--*/
 .branding {
   color: #fff;
-  padding: 10px 0; }
+  padding: 30px; }
 
 .logo {
   margin: 0;
@@ -137,7 +120,6 @@ a:hover {
 .logo img {
   display: block;
   height: 48px;
-  margin: 10px auto;
   width: auto; }
 
 /*---File Select--*/
@@ -165,16 +147,16 @@ a:hover {
   font-size: 0.8em; }
 
 .csv-load-errors > p {
-  background-color: #177F73;
+  background-color: #177f73;
   padding: 1em;
   margin-bottom: 0;
   margin-top: 0.5em; }
 
 #csv-load-error-details {
-  background-color: #177F73;
+  background-color: #177f73;
   padding: 1em;
   position: absolute;
-  z-index: 1; }
+  z-index: 2; }
 
 .csv-load-errors.haserror > p > strong {
   float: left;
@@ -185,8 +167,45 @@ span.showhide {
   color: #ff6600;
   text-decoration: underline; }
 
-/*----------Filter Panel--------------
+/*----------Info Panel--------------
  =====================================*/
+.toggle {
+  background-color: #ff6600;
+  border: 0 none;
+  box-shadow: -5px 10px 15px rgba(100, 100, 100, 0.3);
+  color: #fff;
+  cursor: pointer;
+  font-weight: bold;
+  height: 3em;
+  padding: 0.5em;
+  position: absolute;
+  right: -4em;
+  top: 40px;
+  transform: rotate(-90deg);
+  width: 5em;
+  z-index: 1; }
+
+.toggle:hover {
+  background: #20af9f;
+  color: #fff; }
+
+.tab-pane-wrapper {
+  display: block;
+  position: relative;
+  width: 400%;
+  float: left; }
+
+.tab-pane {
+  display: block;
+  float: left;
+  position: relative;
+  width: 100%; }
+
+.tab-pane-title, .tab-pane > h3 {
+  color: #ff6600;
+  font-size: 1.4em;
+  padding: 2em 0 1em; }
+
 .intro {
   padding-right: 30px; }
 
@@ -232,7 +251,7 @@ span.showhide {
 
 /*---Filter Groups --*/
 .filters-group {
-  z-index: 4; }
+  z-index: 2000; }
 
 #filter-panel > form > .filters-group {
   border: none;
@@ -320,7 +339,7 @@ span.showhide {
   background-color: #45689f; }
 
 .form-item.location-transit {
-  background-color: #20AF9F; }
+  background-color: #20af9f; }
 
 .form-item.location-importer {
   background-color: #ff6600; }
@@ -452,13 +471,13 @@ span.showhide {
   fill-opacity: 1; }
 
 .tradenode.origin {
-  fill: #000000; }
+  fill: black; }
 
 .tradenode.exporter {
   fill: #45689f; }
 
 .tradenode.transit {
-  fill: #20AF9F; }
+  fill: #20af9f; }
 
 .tradenode.importer {
   fill: #ff6600; }
@@ -590,7 +609,7 @@ p.tooltip-location {
   background-image: url("../images/icon-exporter.svg"); }
 
 .tooltip-location.transit:before {
-  background-color: #20AF9F;
+  background-color: #20af9f;
   background-image: url("../images/icon-transit.svg"); }
 
 .tooltip-location.importer:before {
@@ -604,24 +623,39 @@ p.tooltip-location {
 
 /*----------Year Slider----------------
  =====================================*/
-.change-over-time-section {
+.slider {
+  background-color: #f8f8f8;
+  bottom: 0;
+  height: 5em;
+  position: fixed;
   width: 100%;
+  z-index: 10; }
+
+#slider > #change-over-time {
+  width: 100%; }
+
+.change-over-time-section {
+  float: right;
+  height: 5em;
+  padding-top: 1em;
+  padding-left: 15em;
   position: relative;
-  height: 50px; }
+  width: 70%; }
 
 .change-over-time-switch {
-  width: 15%;
-  float: left; }
+  width: 15em;
+  padding-left: 0.5em;
+  position: absolute;
+  left: 0; }
 
 .change-over-time.slider-section {
-  width: 85%;
-  float: right; }
+  position: relative;
+  top: 0.5em; }
 
 .change-over-time.year-slider-container {
-  width: 90%;
+  width: 100%;
   float: right;
-  padding-left: 2em;
-  padding-right: 2em; }
+  padding: 0.25em 2em 0 5em; }
 
 .change-over-time.play-button-section {
   width: 10%;
@@ -635,9 +669,9 @@ p.tooltip-location {
   color: white;
   background-color: blue;
   text-align: center;
-  position: relative;
+  position: absolute;
   top: 30%;
-  transform: translateY(-10%); }
+  transform: translateY(-25%); }
 
 .disabled .change-over-time.play-button {
   background-color: grey; }
@@ -653,121 +687,17 @@ p.tooltip-location {
 /*----------Options Dialog--------------
  =====================================*/
 #map-options {
-  z-index: 4; }
+  z-index: 2000; }
 
 /*----------Disclaimer-------------------
  =====================================*/
-.info.tmrow > .inner {
-  padding: 0 10px; }
-
-footer.tmrow {
-  background-color: #006957;
-  clear: both;
-  padding: 10px 0 0;
-  font-size: 0.9em; }
-
-.disclaimer {
-  clear: both;
-  color: #eee;
-  display: block;
-  margin: 0;
-  padding: 0;
-  width: 80%;
-  float: left; }
-
 .built-by {
-  width: 20%;
+  width: 100%;
   float: right;
-  color: #eee;
   text-align: right; }
 
 .help-text {
   color: #eee; }
 
 .disclaimer a, .built-by a, .help-text a {
-  color: #fff; }
-
-/*----------Overlay-------------------
- =====================================*/
-.overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 5;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  padding: 100px;
-  box-sizing: border-box; }
-
-.overlay__content {
-  background: #f1f1f1; }
-
-.customcsv {
-  padding: 0 20px 20px 20px; }
-
-.customcsv__table_container {
-  overflow-x: scroll; }
-
-.customcsv__table {
-  border-spacing: 0;
-  border-collapse: collapse; }
-
-.customcsv__table th,
-.customcsv__table td {
-  border: 1px solid #d0d0d0;
-  color: #444;
-  padding: 4px; }
-.customcsv__table tbody td div {
-  max-height: 42px;
-  overflow: hidden; }
-
-.customcsv__options > th {
-  vertical-align: top; }
-
-.customcsv__table--hasheader tbody tr:first-child {
-  display: none; }
-
-.has-overlay {
-  overflow: hidden; }
-
-.customcsv__select--locationType,
-.customcsv__select--locationExtraType,
-.customcsv__select--locationRole,
-.customcsv__text--locationOrder,
-.customcsv__checkbox--isUnit,
-.customcsv__checkbox--multiSelect {
-  display: none; }
-
-.customcsv__text--locationOrder > input {
-  width: 3em; }
-
-.customcsv__form-container {
-  text-align: left; }
-
-.customcsv__form-container[data-type=location] .customcsv__select--locationType,
-.customcsv__form-container[data-type=location] .customcsv__select--locationRole,
-.customcsv__form-container[data-type=location] .customcsv__text--locationOrder,
-.customcsv__form-container[data-type=location] .customcsv__checkbox--multiSelect {
-  display: block; }
-
-.customcsv__form-container[data-type=location_extra] .customcsv__select--locationExtraType,
-.customcsv__form-container[data-type=location_extra] .customcsv__text--locationOrder {
-  display: block; }
-
-.customcsv__form-container[data-type=text] .customcsv__text--shortName,
-.customcsv__form-container[data-type=text] .customcsv__checkbox--isUnit,
-.customcsv__form-container[data-type=text] .customcsv__checkbox--multiSelect {
-  display: block; }
-
-.customcsv__form-container[data-type=text_list] .customcsv__text--shortName,
-.customcsv__form-container[data-type=text_list] .customcsv__checkbox--multiSelect {
-  display: block; }
-
-.customcsv__errors {
-  border-style: solid;
-  border-width: 1px;
-  border-color: red;
-  padding: 3px; }
-
-/*# sourceMappingURL=trademapper.css.map */
+  color: #333; }

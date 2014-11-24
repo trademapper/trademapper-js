@@ -12,62 +12,88 @@
 <body>
 	
 	<div id="map-wrapper cf">
-		<div class="header tmrow cf">
-			<header class="inner cf" >
-				<div class="branding">
-					<h1 class="logo"><img alt="trademapper" src="build/images/logo-on-dark.png" /></h1>
-				</div>
-				<div class="user-actions">
-					<form id="tm-file-select"></form>
-				</div>
-			</header>
-		</div>
 		<div class="map tmrow">
 			<div class="inner cf">
-				<aside id="filter-panel" class="aside col">
-					<button class="toggle" id="filter-toggle">Hide filters</button>
-					<div class="intro">
-						<iframe id="introtext" scrolling="no" width="100%" height="200" src="https://docs.google.com/document/d/19RSVdHfnLM5T7cA_q6-psYOS5rwnTGPOuTDTs7o9UeM/pub?embedded=true"></iframe>
+				<aside id="info-panel" class="aside col">
+					<div class="header tmrow cf">
+						<header class="inner cf" >
+							<div class="branding">
+								<h1 class="logo"><img alt="trademapper" src="build/images/logo-on-dark.png" /></h1>
+							</div>
+						</header>
 					</div>
-					<form id="form-filters">
-					</form>
-					<div class="social-share">
-						<h3>Share #TradeMapper </h3>
-						<ul class="ss-share">
-							<li class="ss-share-item">
-								<a title="Share #TradeMapper on Twitter" target="_blank" 
-									class="twitter ss-share-link ico-twitter" href="https://twitter.com/share?
-									text=%23TradeMapper-%20web%20tool%20developed%20by%20%40TRAFFIC_WLTrade%20%26%20%40wwf_uk%20to%20explore%20%26%20map%20wildlife%20trade%20data%20quickly%20%26%20easily%20;
-									url=http%3A%2F%2Ftrademapper.aptivate.org%2F;">
-								</a>
-							</li>
+					<div role="tabpanel" id="tabs">
+						<button class="toggle" id="info-panel-toggle">Hide</button>
+						<ul class="nav nav-tabs" role="tablist">
+							<li role="info" class="active"><a href="#intro" role="tab" data-toggle="tab">Info</a></li>
+							<li role="data"><a href="#data" role="tab" data-toggle="tab">Data</a></li>
+							<li role="filters"><a href="#filters" role="tab" data-toggle="tab">Filters</a></li>
+							<li role="options"><a href="#options" role="tab" data-toggle="tab">Options</a></li>
+							<li role="help"><a href="#help" role="tab" data-toggle="tab">Help</a></li>
 						</ul>
-					</div>
+							<div class="tab-content">
+								<div role="tabpanel" id="info" class="tab-pane active">
+									<h2 class="tab-pane-title">Visualise wildlife trade data</h2>
+									<p> TradeMapper is an interactive tool originally developed by 
+										TRAFFIC and WWF to visualise trade data. The code for TradeMapper has been made open-source and is 
+										freely available on GitHub https://github.com/trademapper/trademapper-js. We hope by making it 
+										open-source this will encourage individuals and organisations to refine and further develop the tool; 
+										extending its potential beyond the original project. Any re-use of the TradeMapper source code is 
+										governed under the <a href="http://opensource.org/licenses/GPL-3.0">GPL v3</a> license as deﬁned by the Open Source Initiative, meaning that any re-use 
+										of the code must retain the copyright and conditions, and that the names of the original creators 
+										cannot be used to endorse products derived from the software without explicit permission.
+									</p>
+									<div class="social-share">
+										<h3>Share #TradeMapper </h3>
+										<ul class="ss-share">
+											<li class="ss-share-item">
+												<a title="Share #TradeMapper on Twitter" target="_blank" 
+													class="twitter ss-share-link ico-twitter" href="https://twitter.com/share?
+													text=%23TradeMapper-%20web%20tool%20developed%20by%20%40TRAFFIC_WLTrade%20%26%20%40wwf_uk%20to%20explore%20%26%20map%20wildlife%20trade%20data%20quickly%20%26%20easily%20;
+													url=http%3A%2F%2Ftrademapper.aptivate.org%2F;">
+												</a>
+											</li>
+										</ul>
+									</div>
+								</div>
+								<div role="tabpanel" id="data" class="tab-pane">
+									<h2 class="tab-pane-title">Import Data</h2>
+									<p>Trademapper accepts CSV format</p>
+									<div class="user-actions">
+										<form id="tm-file-select"></form>
+									</div>
+								</div>
+								<div role="tabpanel" id="filters" class="tab-pane">
+									<h2 class="tab-pane-title">Filter data</h2>
+									<form id="form-filters">
+									</form>
+								</div>
+								<div role="tabpanel" id="options" class="tab-pane">
+									<h2 class="tab-pane-title">Options</h2>
+									<p>options panel form</p>
+								</div>
+								<div role="tabpanel" id="help" class="tab-pane">
+									<h2 class="tab-pane-title">Help</h2>
+										<p>For more information please read our <a href="https://docs.google.com/document/d/18Jrz2NuXHWs20fOz7E8hxtmY58SApn4wDqVHQheChwA/pub?embedded=true">detailed guide to using TradeMapper</a>.</p>
+										<h3>Disclaimer</h3> The map shown is from data from <a href="http://www.naturalearthdata.com/">naturalearthdata.com</a> and doesn't imply an opinion of the legal status of borders/territories.</p>
+									<div class="built-by">
+										<p><strong>Built by: </strong><a title="visit Aptivate website" href="http://www.aptivate.org">Aptivate</a> <strong>Code: </strong><a title="View source code" href="https://github.com/trademapper/trademapper-js">GitHub</a></p>
+									</div>
+								</div>
+							</div>
+						</div>
 				</aside>
-				<div id="trademapper" class="map col"></div>
-			</div>
-		</div>
-		<div class="slider tmrow">
-			<div id="change-over-time">
-			</div>
-		</div>
-		<footer class="footer tmrow">
-			<div class="inner">	
-				<div class="disclaimer">
-					<p><strong>Disclaimer:</strong> The map shown is from data from <a href="http://www.naturalearthdata.com/">naturalearthdata.com</a> and doesn't imply an opinion of the legal status of borders/territories.</p>
+				<div id="trademapper" class="map col">
+					<div id="slider" class="slider">
+						<div id="change-over-time">
+						</div>
+					</div>
 				</div>
-				<div class="built-by">
-					<p><strong>Built by: </strong><a title="visit Aptivate website" href="http://www.aptivate.org">Aptivate</a> <strong>Code: </strong><a title="View source code" href="https://github.com/trademapper/trademapper-js">GitHub</a></p>
-				</div>
-			</div>
-		</footer>
-	</div>
-	<div class="info tmrow">
-		<div class="inner">
-			<div class="help-text">
-				<p>For more information please read our <a href="https://docs.google.com/document/d/18Jrz2NuXHWs20fOz7E8hxtmY58SApn4wDqVHQheChwA/pub?embedded=true">detailed guide to using TradeMapper</a>.</p>
+					
 			</div>
 		</div>
+		
 	</div>
+	
 </body>
 </html>

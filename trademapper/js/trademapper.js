@@ -142,11 +142,9 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 		this.createCsvOnlyForm();
 
 		this.tmsvg = this.mapRootElement.insert("svg")
-			.attr("width", this.config.width)
-			.attr("height", this.config.height)
 			.attr("id", "mapcanvas")
 			.attr("class", "map-svg flow")
-			.attr("viewBox", "0 -120 900 500");
+			.attr("viewBox", "60 -20 800 500");
 		this.svgDefs = this.tmsvg.append("defs");
 		this.zoomg = this.tmsvg.append("g").attr("class", "zoomgroup");
 		// append a background rectangle so mouse scroll zoom works over sea
@@ -239,15 +237,15 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 
 	setUpAsideToggle: function() {
 		// TODO: make the document element id configurable
-		var filterToggle = document.getElementById('filter-toggle'),
-			filterPanel = document.getElementById('filter-panel');
+		var filterToggle = document.getElementById('info-panel-toggle'),
+			filterPanel = document.getElementById('info-panel');
 
 		filterToggle.onclick = function() {
 			filterPanel.classList.toggle('toggled');
 			if (filterPanel.classList.contains('toggled')) {
-				filterToggle.textContent = "Show filters";
+				filterToggle.textContent = "Show";
 			} else {
-				filterToggle.textContent = "Hide filters";
+				filterToggle.textContent = "Hide";
 			}
 		};
 	},

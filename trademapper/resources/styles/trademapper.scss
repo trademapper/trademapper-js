@@ -179,11 +179,28 @@ a:hover {
 	margin:0;
 }
 
+.form-item > input[type="file"] {
+    background-color: #ff6600;
+    color: #fff;
+    font-size: 1.2em;
+    font-weight: bold;
+    padding: 1em;
+}
 
+#urlinput {
+    border: 3px solid #4579c4;
+    margin: 0 0 1em;
+    padding: 0.5em;
+}
+
+#url-download-button {
+  color:#fff;
+  float:right;
+}
 
 .group-fileinput > p > input {width: 100%;}
 .group-fileinput > p > label {width: 100%;color:#333;font-size:0.8em;}
-.user-actions  .group-fileinput > p > label {font-size:0.9em; color: #008F75; padding-top:2em;}
+.user-actions  .group-fileinput > p > label {font-size:0.9em; color: #333; padding-top:2em;}
 
 .csv-load-errors > p {
 	background-color:$errorbg-colour;
@@ -288,6 +305,8 @@ span.showhide {
 	display:none;
 }
 
+
+
 /*--Social Share--*/
 
 .social-share {
@@ -363,8 +382,8 @@ span.showhide {
     border: medium none;
     font-family: sans-serif;
     height: 2em;
-    margin: 0 0 15px;
-    padding: 0.2em 0.5em;
+    margin: 0;
+    padding: 0;
     resize: none;
     width: 100%;
 }

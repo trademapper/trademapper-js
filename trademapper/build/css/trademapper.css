@@ -132,6 +132,22 @@ a:hover {
   border: none;
   margin: 0; }
 
+.form-item > input[type="file"] {
+  background-color: #ff6600;
+  color: #fff;
+  font-size: 1.2em;
+  font-weight: bold;
+  padding: 1em; }
+
+#urlinput {
+  border: 3px solid #4579c4;
+  margin: 0 0 1em;
+  padding: 0.5em; }
+
+#url-download-button {
+  color: #fff;
+  float: right; }
+
 .group-fileinput > p > input {
   width: 100%; }
 
@@ -142,17 +158,17 @@ a:hover {
 
 .user-actions .group-fileinput > p > label {
   font-size: 0.9em;
-  color: #008F75;
+  color: #333;
   padding-top: 2em; }
 
 .csv-load-errors > p {
-  background-color: #177F73;
+  background-color: #177f73;
   padding: 1em;
   margin-bottom: 0;
   margin-top: 0.5em; }
 
 #csv-load-error-details {
-  background-color: #177F73;
+  background-color: #177f73;
   padding: 1em;
   position: absolute;
   z-index: 2; }
@@ -185,7 +201,7 @@ span.showhide {
   z-index: 1; }
 
 .toggle:hover {
-  background: #20AF9F;
+  background: #20af9f;
   color: #fff; }
 
 .tab-pane.active {
@@ -295,8 +311,8 @@ span.showhide {
   border: medium none;
   font-family: sans-serif;
   height: 2em;
-  margin: 0 0 15px;
-  padding: 0.2em 0.5em;
+  margin: 0;
+  padding: 0;
   resize: none;
   width: 100%; }
 
@@ -350,7 +366,7 @@ span.showhide {
   background-color: #45689f; }
 
 .form-item.location-transit {
-  background-color: #20AF9F; }
+  background-color: #20af9f; }
 
 .form-item.location-importer {
   background-color: #ff6600; }
@@ -482,13 +498,13 @@ span.showhide {
   fill-opacity: 1; }
 
 .tradenode.origin {
-  fill: #000000; }
+  fill: black; }
 
 .tradenode.exporter {
   fill: #45689f; }
 
 .tradenode.transit {
-  fill: #20AF9F; }
+  fill: #20af9f; }
 
 .tradenode.importer {
   fill: #ff6600; }
@@ -620,7 +636,7 @@ p.tooltip-location {
   background-image: url("../images/icon-exporter.svg"); }
 
 .tooltip-location.transit:before {
-  background-color: #20AF9F;
+  background-color: #20af9f;
   background-image: url("../images/icon-transit.svg"); }
 
 .tooltip-location.importer:before {
@@ -796,5 +812,3 @@ p.tooltip-location {
   border-width: 1px;
   border-color: red;
   padding: 3px; }
-
-/*# sourceMappingURL=trademapper.css.map */

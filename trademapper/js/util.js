@@ -1,4 +1,4 @@
-define([], function() {
+define(['jquery'], function($) {
 	return {
 		intersection: function(arr1, arr2) {
 			var ret = [];
@@ -15,6 +15,13 @@ define([], function() {
 
 		isInt: function(value) {
 			return (typeof value === 'number' && (value%1) === 0);
+		},
+
+		/*
+		 * deep copy of a javascript object
+		 */
+		deepCopy: function(obj) {
+			return $.extend(true, {}, obj);
 		},
 
 		corsProxy: function(url) {

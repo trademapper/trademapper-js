@@ -91,7 +91,7 @@ define([
 				filterSpec = this.ensureShortNamePresent(filterSpec);
 			}
 			// deep copy the object
-			this.originalFilterSpec = $.extend(true, {}, filterSpec);
+			this.originalFilterSpec = util.deepCopy(filterSpec);
 
 			var containerEl = document.createElement('div');
 			document.body.appendChild(containerEl);
@@ -118,7 +118,7 @@ define([
 			});
 
 			bean.on(document.querySelector('.customcsv__reset'), 'click', function(e) {
-				var newFilterSpec = $.extend(true, {}, moduleThis.originalFilterSpec);
+				var newFilterSpec = util.deepCopy(moduleThis.originalFilterSpec);
 				moduleThis.createForm(containerEl, rowData, rowCount, newFilterSpec);
 			});
 			bean.on(document.querySelector('.customcsv__cancel'), 'click', function(e) {

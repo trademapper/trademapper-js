@@ -356,7 +356,7 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 		// guard against the value not being set
 		if (!year || !this.yearColumnName) { return; }
 		// this does a deep clone of the object
-		var filterValues = $.extend(true, {}, filterform.filterValues);
+		var filterValues = util.deepCopy(filterform.filterValues);
 		// now we set the year to this year
 		filterValues[this.yearColumnName].minValue = year;
 		filterValues[this.yearColumnName].maxValue = year;

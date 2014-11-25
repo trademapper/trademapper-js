@@ -407,6 +407,62 @@ define(
 				q.equal(generalErrors.length, 0);
 			});
 
+			q.test('check checkLatLongColumns passes valid filterspec', function() {
+				var filterSpec = {
+					headerA: {
+						type: "location",
+						locationType: "latLongName",
+						locationOrder: 13
+					},
+					headerB: {
+						type: "location_extra",
+						locationExtraType: "latitude",
+						locationOrder: 13
+					},
+					headerC: {
+						type: "location_extra",
+						locationExtraType: "longitude",
+						locationOrder: 13
+					}
+				},
+				locationErrors = customcsv.checkLatLongColumns(filterSpec);
+				q.equal(locationErrors.length, 0);
+			});
+
+			q.test('check checkLatLongColumns catches invalid filterspec', function() {
+				var filterSpec = {
+					headerA: {
+						type: "location",
+						locationType: "latLongName",
+						locationOrder: 13
+					},
+					headerB: {
+						type: "location_extra",
+						locationExtraType: "latitude",
+						locationOrder: 13
+					},
+					headerC: {
+						type: "location_extra",
+						locationExtraType: "longitude",
+						locationOrder: 21
+					}
+				},
+				locationErrors = customcsv.checkLatLongColumns(filterSpec);
+				q.equal(locationErrors.length, 2);
+				var error = locationErrors[0];
+				q.ok(error.msg.indexOf('13') > -1);
+				q.ok(error.msg.indexOf('21') === -1);
+				q.ok(error.columns.indexOf('headerA') > -1);
+				q.ok(error.columns.indexOf('headerB') > -1);
+				q.ok(error.columns.indexOf('headerC') === -1);
+				error = locationErrors[1];
+				q.ok(error.msg.indexOf('13') === -1);
+				q.ok(error.msg.indexOf('21') > -1);
+				q.ok(error.columns.indexOf('headerA') === -1);
+				q.ok(error.columns.indexOf('headerB') === -1);
+				q.ok(error.columns.indexOf('headerC') > -1);
+			});
+
 		};
 
 		return {run: run};

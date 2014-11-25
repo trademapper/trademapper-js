@@ -452,8 +452,7 @@ define([
 			var errors = [];
 
 			errors = errors.concat(this.checkLocationOrdering(filterSpec));
-
-			// TODO: latlong check
+			errors = errors.concat(this.checkLatLongColumns(filterSpec));
 
 			return errors;
 		},
@@ -486,6 +485,75 @@ define([
 					});
 				}
 			});
+			return errors;
+		},
+
+		checkLatLongColumns: function(filterSpec) {
+			var errors = [],
+				orders = {};
+
+			Object.keys(filterSpec).forEach(function(colName) {
+				var order,
+					colSpec = filterSpec[colName];
+				if ((colSpec.type === 'location' && colSpec.locationType === 'latLongName') ||
+						colSpec.type === 'location_extra') {
+					order = colSpec.locationOrder;
+					if (!orders[order]) {
+						orders[order] = {
+							nameCols: [],
+							latitudeCols: [],
+							longitudeCols: []
+						};
+					}
+					if (colSpec.type === 'location') {
+						orders[order].nameCols.push(colName);
+					} else if (colSpec.locationExtraType === 'latitude') {
+						orders[order].latitudeCols.push(colName);
+					} else if (colSpec.locationExtraType === 'longitude') {
+						orders[order].longitudeCols.push(colName);
+					}
+				}
+			});
+
+			Object.keys(orders).sort().forEach(function(order) {
+				var orderCols = orders[order];
+				if (orderCols.nameCols.length === 1 &&
+						orderCols.latitudeCols.length === 1 &&
+						orderCols.longitudeCols.length === 1) {
+					// all is good, skip this one
+					return;
+				}
+
+				var columns = [].concat(orderCols.nameCols)
+						.concat(orderCols.latitudeCols)
+						.concat(orderCols.longitudeCols);
+
+				var msg = "Location Order " + order + ":";
+				if (orderCols.nameCols.length === 0) {
+					msg += " Has no name column.";
+				}
+				if (orderCols.nameCols.length > 1) {
+					msg += " Has more than 1 name column.";
+				}
+				if (orderCols.latitudeCols.length === 0) {
+					msg += " Has no latitude column.";
+				}
+				if (orderCols.latitudeCols.length > 1) {
+					msg += " Has more than 1 latitude column.";
+				}
+				if (orderCols.longitudeCols.length === 0) {
+					msg += " Has no longitude column.";
+				}
+				if (orderCols.longitudeCols.length > 1) {
+					msg += " Has more than 1 longitude column.";
+				}
+
+				errors.push({
+					msg: msg,
+					columns: columns
+				});
+			});
+
 			return errors;
 		},
 

@@ -24,7 +24,7 @@ define([
 				{ text: 'Location (coordinates)', value: 'location_extra'},
 				{ text: 'Quantity', value: 'quantity' },
 				{ text: 'Text',     value: 'text' },
-				{ text: 'Text List', value: 'text_list' },
+				{ text: 'Text (Multiple values)', value: 'text_list' },
 				{ text: 'Year',     value: 'year' }
 			]
 		},
@@ -32,7 +32,7 @@ define([
 			type: 'locationType',
 			options: [
 				{ text: 'Country Code', value: 'country_code' },
-				{ text: 'Country Code List', value: 'country_code_list' },
+				{ text: 'Country Code (Multiple values)', value: 'country_code_list' },
 				{ text: 'Latitude/Longitude place name', value: 'latLongName' }
 			]
 		},

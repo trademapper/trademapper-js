@@ -449,6 +449,24 @@ define([
 		return routes;
 	},
 
+	calcMaxSingleYearQuantity: function(csvData, filterSpec, filterValues, yearColumnName, minYear, maxYear) {
+		var localFilterValues, routes, quantity,
+			maxQuantity = 0;
+
+		for (var year = minYear; year <= maxYear; year++) {
+			localFilterValues = util.deepCopy(filterValues);
+			localFilterValues[yearColumnName].minValue = year;
+			localFilterValues[yearColumnName].maxValue = year;
+
+			routes = this.csvToRoutes(csvData, filterSpec, localFilterValues);
+			quantity = routes.maxQuantity();
+			if (quantity > maxQuantity) {
+				maxQuantity = quantity;
+			}
+		}
+		return maxQuantity;
+	},
+
 	getMinMaxValuesFromCsvColumn: function(csvData, column) {
 		var columnNumber,
 			min = NaN,

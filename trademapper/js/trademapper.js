@@ -107,6 +107,7 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 	currentCsvData: null,
 	currentCsvFirstTenRows: null,
 	currentFilterSpec: null,
+	maxSingleYearQuantity: 1,
 	minMaxYear: [0, 0],
 	currentUnit: null,
 	queryString: null,
@@ -349,6 +350,9 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 
 
 	yearSliderEnableDisableCallback: function(enable) {
+		if (enable) {
+			this.updateMaxSingleYearQuantity();
+		}
 		filterform.setYearRangeStatus(!enable);
 	},
 
@@ -365,9 +369,18 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 
 	filterformChangedCallback: function(columnName) {
 		if (yearslider.sliderEnabled) {
+			this.updateMaxSingleYearQuantity();
 			this.showTradeForYear(yearslider.currentYear);
 		} else {
 			this.showFilteredCsv(filterform.filterValues);
+		}
+	},
+
+	updateMaxSingleYearQuantity: function() {
+		if (this.yearColumnName && this.minMaxYear[0] !== 0 && this.minMaxYear[1] !== 0) {
+			this.maxSingleYearQuantity = csv.calcMaxSingleYearQuantity(
+				this.currentCsvData, this.currentFilterSpec, filterform.filterValues,
+				this.yearColumnName, this.minMaxYear[0], this.minMaxYear[1]);
 		}
 	},
 
@@ -378,6 +391,7 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 		this.currentFilterSpec = filterSpec;
 
 		document.querySelector("body").classList.add("csv-data-loaded");
+		this.updateMaxSingleYearQuantity();
 		this.showFilteredCsv(filterform.filterValues);
 		var errorsShown = this.reportCsvLoadErrors();
 		if (!errorsShown) {

@@ -329,11 +329,11 @@ define(
 				locationErrors = customcsv.checkLocationOrdering(filterSpec);
 				q.equal(locationErrors.length, 1);
 				var error = locationErrors[0];
-				q.ok(error.indexOf('13') > -1);
-				q.ok(error.indexOf('21') === -1);
-				q.ok(error.indexOf('headerA') > -1);
-				q.ok(error.indexOf('headerB') > -1);
-				q.ok(error.indexOf('headerC') === -1);
+				q.ok(error.msg.indexOf('13') > -1);
+				q.ok(error.msg.indexOf('21') === -1);
+				q.ok(error.columns.indexOf('headerA') > -1);
+				q.ok(error.columns.indexOf('headerB') > -1);
+				q.ok(error.columns.indexOf('headerC') === -1);
 			});
 
 			q.test('check checkLocationOrdering allows non-duplicate locationOrder', function() {

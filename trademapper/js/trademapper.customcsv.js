@@ -21,7 +21,7 @@ define([
 			options: [
 				{ text: 'Ignore',   value: 'ignore' },
 				{ text: 'Location', value: 'location'},
-				{ text: 'Location (extra info)', value: 'location_extra'},
+				{ text: 'Location (coordinates)', value: 'location_extra'},
 				{ text: 'Quantity', value: 'quantity' },
 				{ text: 'Text',     value: 'text' },
 				{ text: 'Text List', value: 'text_list' },
@@ -33,7 +33,7 @@ define([
 			options: [
 				{ text: 'Country Code', value: 'country_code' },
 				{ text: 'Country Code List', value: 'country_code_list' },
-				{ text: 'Latitude/Longitude Name', value: 'latLongName' }
+				{ text: 'Latitude/Longitude place name', value: 'latLongName' }
 			]
 		},
 		locationExtraTypeSelectConfig: {
@@ -65,7 +65,7 @@ define([
 		},
 		isUnitCheckboxConfig: {
 			type: 'isUnit',
-			label: 'Is "units" column',
+			label: 'Does column contain units?',
 			title: 'Whether this column is the units (only one column can have that value).'
 		},
 		multiSelectCheckboxConfig: {

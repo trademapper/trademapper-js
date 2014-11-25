@@ -380,6 +380,7 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 		if (this.yearColumnName && this.minMaxYear[0] !== 0 && this.minMaxYear[1] !== 0) {
 			this.maxSingleYearQuantity = csv.calcMaxSingleYearQuantity(
 				this.currentCsvData, this.currentFilterSpec, filterform.filterValues,
+				this.config.arrowType,
 				this.yearColumnName, this.minMaxYear[0], this.minMaxYear[1]);
 		}
 	},

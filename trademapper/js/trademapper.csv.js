@@ -449,7 +449,7 @@ define([
 		return routes;
 	},
 
-	calcMaxSingleYearQuantity: function(csvData, filterSpec, filterValues, yearColumnName, minYear, maxYear) {
+	calcMaxSingleYearQuantity: function(csvData, filterSpec, filterValues, arrowType, yearColumnName, minYear, maxYear) {
 		var localFilterValues, routes, quantity,
 			maxQuantity = 0;
 
@@ -459,7 +459,15 @@ define([
 			localFilterValues[yearColumnName].maxValue = year;
 
 			routes = this.csvToRoutes(csvData, filterSpec, localFilterValues);
-			quantity = routes.maxQuantity();
+			if (arrowType === 'plain-arrows') {
+				quantity = routes.maxQuantity();
+			} else if (arrowType === 'flowmap') {
+				var ctAndMax = collection.getCenterTerminalList();
+				maxQuantity = ctAndMax.maxSourceQuantity;
+			} else {
+				console.log("calcMaxSingleYearQuantity: unknown arrowType: " + arrowType);
+				quantity = 0;
+			}
 			if (quantity > maxQuantity) {
 				maxQuantity = quantity;
 			}

@@ -24,7 +24,7 @@ function($, d3) {
 	// functions to be set by trademapper.js
 	showTradeForYear: null,
 	showTradeForAllYears: null,
-	setYearRangeStatus: null,
+	enableDisableCallback: null,
 
 	minYear: 0,
 	maxYear: 0,
@@ -75,7 +75,7 @@ function($, d3) {
 		// show data for first year
 		this.currentYear = this.minYear;
 		// disable the year range in the filterform
-		this.setYearRangeStatus(false);
+		this.enableDisableCallback(true);
 	},
 
 	changePlayButton: function(isPlaying) {
@@ -131,7 +131,7 @@ function($, d3) {
 			moduleThis.sliderEnabled = true;
 			section.classList.remove("disabled");
 			this.showTradeForYear(this.currentYear);
-			this.setYearRangeStatus(false);
+			this.enableDisableCallback(true);
 		} else {
 			moduleThis.sliderEnabled = false;
 			// if currently playing then pause
@@ -144,7 +144,7 @@ function($, d3) {
 			section.classList.add("disabled");
 			// go back to showing data for all years (with filter settings)
 			this.showTradeForAllYears();
-			this.setYearRangeStatus(true);
+			this.enableDisableCallback(false);
 		}
 	},
 

@@ -181,7 +181,7 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 		yearslider.showTradeForYear = function(year) {return moduleThis.showTradeForYear(year); };
 		// slightly misnamed as we go back to the filter values for the years
 		yearslider.showTradeForAllYears = function() {return moduleThis.filterformChangedCallback(); };
-		yearslider.setYearRangeStatus = function(enable) {return filterform.setYearRangeStatus(enable); };
+		yearslider.enableDisableCallback = function(enable) {return moduleThis.yearSliderEnableDisableCallback(enable); };
 		this.setUpAsideToggle();
 		this.hideUnusedTabs();
 		yearslider.create();
@@ -345,6 +345,11 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 		// colour in the countries that are trading
 		mapper.colorTradingCountries(pointRoles);
 		this.stopNowWorking();
+	},
+
+
+	yearSliderEnableDisableCallback: function(enable) {
+		filterform.setYearRangeStatus(!enable);
 	},
 
 	showTradeForYear: function(year) {

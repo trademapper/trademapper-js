@@ -208,10 +208,17 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, flowmap, 
 			.on('mouseout', this.genericMouseOutPath);
 	},
 
-	drawRouteCollectionPlainArrows: function(collection, pointRoles) {
+	drawRouteCollectionPlainArrows: function(collection, pointRoles, maxQuantity) {
 		this.clearArrows();
 		this.clearPoints();
-		this.maxQuantity = parseFloat(collection.maxQuantity().toPrecision(2));
+		if (maxQuantity) {
+			this.maxQuantity = maxQuantity;
+		} else {
+			this.maxQuantity = collection.maxQuantity();
+		}
+		// round to 2 significant digits
+		this.maxQuantity = parseFloat(this.maxQuantity.toPrecision(2));
+
 		var routeList = collection.getRoutes();
 		for (var i = 0; i < routeList.length; i++) {
 			if (routeList[i].points.length >= 2) {
@@ -440,12 +447,17 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, flowmap, 
 			.style("opacity", 0);
 	},
 
-	drawRouteCollectionFlowmap: function(collection, pointRoles) {
+	drawRouteCollectionFlowmap: function(collection, pointRoles, maxQuantity) {
 		var center, terminals;
 		var ctAndMax = collection.getCenterTerminalList();
 		this.centerTerminals = ctAndMax.centerTerminalList;
+		if (maxQuantity) {
+			this.maxQuantity = maxQuantity;
+		} else {
+			this.maxQuantity = ctAndMax.maxSourceQuantity;
+		}
 		// round to 2 significant digits
-		this.maxQuantity = parseFloat(ctAndMax.maxSourceQuantity.toPrecision(2));
+		this.maxQuantity = parseFloat(this.maxQuantity.toPrecision(2));
 
 		this.flowmap.clearSpiralPaths();
 		this.clearPoints();

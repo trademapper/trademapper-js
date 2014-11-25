@@ -374,9 +374,16 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 
 		document.querySelector("body").classList.add("csv-data-loaded");
 		this.showFilteredCsv(filterform.filterValues);
-		this.reportCsvLoadErrors();
+		var errorsShown = this.reportCsvLoadErrors();
+		if (!errorsShown) {
+			// switch to filters tab
+			$('#panel-tabs a[href="#filters"]').tab('show');
+		}
 	},
 
+	/*
+	 * returns true if errors shown
+	 */
 	reportCsvLoadErrors: function() {
 		var errorDetails,
 			errorMsgList = csv.loadErrorsToStrings(),
@@ -388,7 +395,7 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 		// return here if no error
 		if (errorMsgList.length === 0) {
 			errorFieldset.html('');
-			return;
+			return false;
 		}
 
 		errorFieldset.classed("haserror", true);
@@ -399,10 +406,11 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 		for (var i = 0; i < errorMsgList.length; i++) {
 			errorDetails.append("p").text(errorMsgList[i]);
 		}
+		return true;
 	},
 
 	csvLoadErrorCallback: function() {
-		this.reportCsvLoadErrors();
+		return this.reportCsvLoadErrors();
 	}
 
 	};

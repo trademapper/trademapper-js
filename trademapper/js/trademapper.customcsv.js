@@ -80,7 +80,7 @@ define([
 		 * the 2nd argument can be null, in which case auto detection
 		 * will be attempted before displaying the form
 		 */
-		init: function(rowData, filterSpec, callback) {
+		init: function(rowData, rowCount, filterSpec, callback) {
 			// we use parseRows() so we have access to the headers, and
 			// maintain the column order
 			this.formProcessedCallback = callback;
@@ -97,7 +97,7 @@ define([
 			document.body.appendChild(containerEl);
 			document.body.classList.add('has-overlay');
 
-			this.createForm(containerEl, rowData, filterSpec);
+			this.createForm(containerEl, rowData, rowCount, filterSpec);
 		},
 
 		/*
@@ -105,10 +105,10 @@ define([
 		 *
 		 * Note that errors is an optional parameter
 		 */
-		createForm: function(containerEl, rowData, filterSpec, errors) {
+		createForm: function(containerEl, rowData, rowCount, filterSpec, errors) {
 			var moduleThis = this;
 			containerEl.innerHTML = doT.template(tmplCustomCsv)
-					(this.createContext(rowData, filterSpec, errors));
+					(this.createContext(rowData, rowCount, filterSpec, errors));
 			var optionsEl = containerEl.querySelector('.customcsv__options');
 
 			// set the data-type when the column type is changed so that the CSS
@@ -119,14 +119,14 @@ define([
 
 			bean.on(document.querySelector('.customcsv__reset'), 'click', function(e) {
 				var newFilterSpec = $.extend(true, {}, moduleThis.originalFilterSpec);
-				moduleThis.createForm(containerEl, rowData, newFilterSpec);
+				moduleThis.createForm(containerEl, rowData, rowCount, newFilterSpec);
 			});
 			bean.on(document.querySelector('.customcsv__cancel'), 'click', function(e) {
 				document.body.classList.remove('has-overlay');
 				document.body.removeChild(containerEl);
 			});
 			var processFormFunc = function(e) {
-				this.processImportForm(containerEl, rowData);
+				this.processImportForm(containerEl, rowData, rowCount);
 			}.bind(this);
 			bean.on(document.querySelector('.customcsv__done'), 'click', processFormFunc);
 		},
@@ -134,11 +134,11 @@ define([
 		/*
 		 * Note that errors is optional/can be null
 		 */
-		createContext: function(rowData, filterSpec, errors) {
+		createContext: function(rowData, rowCount, filterSpec, errors) {
 			return {
 				headers: rowData[0],
 				data: rowData.slice(0,5),
-				rowcount: rowData.length - 1,  // don't count the header row
+				rowcount: rowCount,  // don't count the header row
 				filterSpec: filterSpec,
 				errors: errors,
 				selects: [
@@ -289,7 +289,7 @@ define([
 			return filterSpec;
 		},
 
-		processImportForm: function(containerEl, rowData) {
+		processImportForm: function(containerEl, rowData, rowCount) {
 			var moduleThis = this,
 				filterSpec = {};
 			Array.prototype.forEach.call(document.querySelectorAll('.customcsv__form-container'), function(el) {
@@ -330,7 +330,7 @@ define([
 				// If validation fails, reshow form with errors
 				console.log(filterSpec);
 				console.log(errors);
-				this.createForm(containerEl, rowData, filterSpec, errors);
+				this.createForm(containerEl, rowData, rowCount, filterSpec, errors);
 				return;
 			}
 

@@ -232,7 +232,7 @@ define([
 			var customFilterSpecCallback = function(customFilterSpec) {
 				this.processParsedCSV(csvData, csvFirstTenRows, customFilterSpec);
 			}.bind(this);
-			CustomCsv.init(csvFirstTenRows, null, customFilterSpecCallback);
+			CustomCsv.init(csvFirstTenRows, csvData.length, null, customFilterSpecCallback);
 		}
 	},
 
@@ -240,7 +240,7 @@ define([
 		var editFilterSpecCallback = function(editedFilterSpec) {
 			this.processParsedCSV(csvData, csvFirstTenRows, editedFilterSpec);
 		}.bind(this);
-		CustomCsv.init(csvFirstTenRows, filterSpec, editFilterSpecCallback);
+		CustomCsv.init(csvFirstTenRows, csvData.length, filterSpec, editFilterSpecCallback);
 	},
 
 	processParsedCSV: function(csvData, csvFirstTenRows, filterSpec) {

@@ -320,7 +320,10 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 		this.createFilterForm(filters);
 	},
 
-	showFilteredCsv: function(filterValues) {
+	/*
+	 * the maxQuantity is optional and so can be null
+	 */
+	showFilteredCsv: function(filterValues, maxQuantity) {
 		this.showNowWorking();
 		arrows.clearTooltip();
 		mapper.resetZoom();
@@ -336,9 +339,9 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 		arrows.currentUnit = this.currentUnit;
 		// now draw the routes
 		if (this.config.arrowType === "plain-arrows") {
-			arrows.drawRouteCollectionPlainArrows(routes, pointRoles);
+			arrows.drawRouteCollectionPlainArrows(routes, pointRoles, maxQuantity);
 		} else if (this.config.arrowType === "flowmap") {
-			arrows.drawRouteCollectionFlowmap(routes, pointRoles);
+			arrows.drawRouteCollectionFlowmap(routes, pointRoles, maxQuantity);
 		} else {
 			console.log("unknown config.arrowType: " + this.config.arrowType);
 		}
@@ -364,7 +367,7 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 		// now we set the year to this year
 		filterValues[this.yearColumnName].minValue = year;
 		filterValues[this.yearColumnName].maxValue = year;
-		this.showFilteredCsv(filterValues);
+		this.showFilteredCsv(filterValues, this.maxSingleYearQuantity);
 	},
 
 	filterformChangedCallback: function(columnName) {

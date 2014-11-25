@@ -365,8 +365,23 @@ define([
 		validateFilterSpec: function(filterSpec) {
 			var errors = {},
 				generalErrors = this.validateFilterSpecGeneral(filterSpec),
+				multiColumnErrors = this.validateFilterSpecMultiColumn(filterSpec),
 				columnErrors = this.validateFilterSpecColumns(filterSpec);
 
+			if (multiColumnErrors.length > 0) {
+				errors.multicolumn = multiColumnErrors;
+				// now we add the multiColumn errors to the general and column
+				// errors
+				multiColumnErrors.forEach(function(mce) {
+					generalErrors.push(mce.msg);
+					mce.columns.forEach(function(col) {
+						if (!columnErrors[col]) {
+							columnErrors[col] = [];
+						}
+						columnErrors[col].push(mce.msg);
+					});
+				});
+			}
 			if (generalErrors.length > 0) {
 				errors.general = generalErrors;
 			}
@@ -398,12 +413,6 @@ define([
 				errors.push("There cannot be more than one column which contains units.");
 			}
 
-			errors = errors.concat(this.checkLocationOrdering(filterSpec));
-
-			// TODO: latlong check
-			//
-			// TODO: generate list of columns that relate to errors?
-
 			return errors;
 		},
 
@@ -431,6 +440,24 @@ define([
 			return unitCount;
 		},
 
+		/*
+		 * returns list of objects with keys msg, columns, eg
+		 *
+		 * [
+		 *   {msg: "error because X", columns: ["colA", "colB"]},
+		 *   {msg: "error because Y", columns: ["colG", "colP"]}
+		 * ]
+		 */
+		validateFilterSpecMultiColumn: function(filterSpec) {
+			var errors = [];
+
+			errors = errors.concat(this.checkLocationOrdering(filterSpec));
+
+			// TODO: latlong check
+
+			return errors;
+		},
+
 		checkLocationOrdering: function(filterSpec) {
 			// check there are no duplicate orders
 			var errors = [],
@@ -451,9 +478,12 @@ define([
 
 			Object.keys(counts).forEach(function(key) {
 				if (counts[key] > 1) {
-					errors.push("More than one location column has the order: " +
-					            key + " (columns are: " +
-					            columns[key].join(', ') + ").");
+					errors.push({
+						msg: "More than one location column has the order: " +
+						     key + " (columns are: " +
+						     columns[key].join(', ') + ").",
+						columns: columns[key]
+					});
 				}
 			});
 			return errors;

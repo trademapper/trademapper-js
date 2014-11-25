@@ -393,27 +393,11 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 
 		errorFieldset.classed("haserror", true);
 
-		errorFieldset.html('<p><strong>Errors:</strong> <span class="showhide">Show</span></p>');
+		errorFieldset.html('<p><strong>Errors:</strong></p>');
 		errorDetails = errorFieldset.append("div")
-			.attr("id", "csv-load-error-details")
-			.attr("style", "display: none");
+			.attr("id", "csv-load-error-details");
 		for (var i = 0; i < errorMsgList.length; i++) {
 			errorDetails.append("p").text(errorMsgList[i]);
-		}
-
-		var moduleThis = this;
-		errorFieldset.select(".showhide").on("click", function() { moduleThis.csvLoadErrorShowHide(); });
-	},
-
-	csvLoadErrorShowHide: function() {
-		var errorDetails = document.getElementById("csv-load-error-details");
-		var showHide = document.querySelector(".csv-load-errors > p > span.showhide");
-		if (errorDetails.style.display === "block") {
-			errorDetails.style.display = "none";
-			showHide.textContent = "Show";
-		} else {
-			errorDetails.style.display = "block";
-			showHide.textContent = "Hide";
 		}
 	},
 

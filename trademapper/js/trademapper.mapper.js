@@ -111,14 +111,21 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre"], functio
 	setupZoom: function() {
 		var moduleThis = this,
 		zoomed = function() {
-			// TODO: put map in group so it can be zoomed separate to legend etc
-			moduleThis.zoomg.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
-			d3.selectAll(".country-border").attr("stroke-width", (1/d3.event.scale).toString());
+			var translate = d3.event.translate,
+				scale = d3.event.scale;
+			console.log("target: " + d3.target);
+			console.log("PRE: scale: " + scale + " translate: " + translate);
+			translate[0] = Math.max(-600*scale, Math.min(600*scale, translate[0]));
+			translate[1] = Math.max(-350*scale, Math.min(350*scale, translate[1]));
+			console.log("POST: translate: " + translate);
+
+			moduleThis.zoomg.attr("transform", "translate(" + translate + ")scale(" + scale + ")");
+			d3.selectAll(".country-border").attr("stroke-width", (1/scale).toString());
 			// change the width of the paths after zoom
 			d3.selectAll(".zoompath").each(function(d, i) {
 				this.setAttribute(
 					"stroke-width",
-					(this.attributes["data-origwidth"].value/d3.event.scale).toString());
+					(this.attributes["data-origwidth"].value/scale).toString());
 			});
 		},
 		zoom = d3.behavior.zoom()

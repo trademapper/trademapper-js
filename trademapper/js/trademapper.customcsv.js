@@ -324,6 +324,10 @@ define([
 						moduleThis.formValueToSpecValue(filterSpec, headerName, el, name, formType);
 					};
 				formValueToSpec('shortName', 'text');
+				// if someone left it blank, fill it in
+				if (filterSpec[headerName].shortName === '') {
+					filterSpec[headerName].shortName = headerName;
+				}
 			});
 
 			var errors = this.validateFilterSpec(filterSpec);

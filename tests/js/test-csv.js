@@ -3,11 +3,11 @@ define(
 	function(q, csv, csvdefs, route) {
 		"use strict";
 		var returnedCsv,
-			setReturnedCsv = function(filterSpec, csvData) {
+			setReturnedCsv = function(csvData, csvFirstTenRows, filterSpec) {
 				returnedCsv = csvData;
 			},
 			returnedFilters,
-			setReturnedFilters = function(filterSpec, csvData, filters) {
+			setReturnedFilters = function(csvData, filterSpec, filters) {
 				returnedFilters = filters;
 			},
 			errorMessageList,
@@ -53,7 +53,7 @@ define(
 				q.equal(errorMessageList, null);
 				q.notEqual(returnedCsv, null);
 				var routes = csv.filterDataAndReturnRoutes(
-					csvdefs.filterSpec.cites, returnedCsv, initialFilterValue);
+					returnedCsv, csvdefs.filterSpec.cites, initialFilterValue);
 				var routeList = routes.getRoutes();
 				q.equal(routeList.length, 1);
 				q.equal(routeList[0].points.length, 2);
@@ -69,7 +69,7 @@ define(
 				q.equal(errorMessageList, null);
 				q.notEqual(returnedCsv, null);
 				var routes = csv.filterDataAndReturnRoutes(
-					csvdefs.filterSpec.cites, returnedCsv, initialFilterValue);
+					returnedCsv, csvdefs.filterSpec.cites, initialFilterValue);
 				var routeList = routes.getRoutes();
 				q.equal(routeList.length, 1);
 				q.equal(routeList[0].points.length, 3);
@@ -86,7 +86,7 @@ define(
 				q.equal(errorMessageList, null);
 				q.notEqual(returnedCsv, null);
 				var routes = csv.filterDataAndReturnRoutes(
-					csvdefs.filterSpec.cites, returnedCsv, initialFilterValue);
+					returnedCsv, csvdefs.filterSpec.cites, initialFilterValue);
 				var routeList = routes.getRoutes();
 				// There are 3 duplicates which will be combined
 				q.equal(routeList.length, 5);

@@ -153,6 +153,7 @@ define([
 				otherTexts: [
 					this.locationOrderTextConfig
 				],
+				// TODO: hide multiSelect until we've implemented it properly
 				checkboxes: [
 					this.isUnitCheckboxConfig,
 					this.multiSelectCheckboxConfig
@@ -384,13 +385,17 @@ define([
 			//   - lat long properly done
 			var errors = [],
 				quantityCount = this.countColumnsOfType(filterSpec, 'quantity'),
-				locationCount = this.countColumnsOfType(filterSpec, 'location');
+				locationCount = this.countColumnsOfType(filterSpec, 'location'),
+				unitCount = this.countUnitColumns(filterSpec);
 
 			if (quantityCount === 0) {
 				errors.push("There need to be at least 1 quantity column.");
 			}
 			if (locationCount < 2) {
 				errors.push("There need to be at least 2 location columns.");
+			}
+			if (unitCount > 1) {
+				errors.push("There cannot be more than one column which contains units.");
 			}
 
 			errors = errors.concat(this.checkLocationOrdering(filterSpec));
@@ -414,6 +419,16 @@ define([
 				}
 			});
 			return columns;
+		},
+
+		countUnitColumns: function(filterSpec) {
+			var unitCount = 0;
+			Object.keys(filterSpec).forEach(function(key) {
+				if (filterSpec[key].type === 'text' && filterSpec[key].isUnit) {
+					unitCount++;
+				}
+			});
+			return unitCount;
 		},
 
 		checkLocationOrdering: function(filterSpec) {

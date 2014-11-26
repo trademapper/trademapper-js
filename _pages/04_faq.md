@@ -4,21 +4,21 @@ layout:    default
 title:     Frequently Asked Questions
 ---
 
-__What format does my data need to be in?__
-Currently TradeMapper will only recognise CSV files (comma separated-values). Data stored in Excel can easily be converted to CSV (File->Save as-> CSV (Comma delimited). 
+__What format does my dataset need to be in?__
+   Currently TradeMapper will only recognise CSV files (comma separated-values). Data stored in Excel can easily be converted to CSV (File->Save as-> CSV (Comma delimited). 
 
 __Which country name should I use (e.g. DRC or Democratic Republic of Congo)?__
-TradeMapper only recognises 2-letter ISO country codes (e.g. United Kingdom = GB). This is a widely used standard and 2-letter country codes can be found in ‘A guide to using the CITES Trade Database’ http://trade.cites.org/cites_trade_guidelines/en-CITES_Trade_Database_Guide.pdf
+   TradeMapper only recognises 2-letter ISO country codes (e.g. United Kingdom = GB). This is a widely used standard and 2-letter country codes can be found in ‘A guide to using the CITES Trade Database’ http://trade.cites.org/cites_trade_guidelines/en-CITES_Trade_Database_Guide.pdf.
 
-TradeMapper uses 2-letter ISO codes as they are less prone to spelling mistakes and grammatical errors, and because downloads from some data sources e.g. CITES Trade Database automatically use this standard. TradeMapper will give an error message if you load data containing non-country specific ISO codes (e.g. XF, XX) or country names which no longer exist (e.g. DD (Former East Germany)).
+TradeMapper uses 2-letter ISO codes as they are less prone to spelling mistakes and grammatical errors, and outputs from certain data sources automatically use this standard. TradeMapper will give an error message if you import data containing non-country specific ISO codes (e.g. XF, XX) or country names which no longer exist (e.g. DD (Former East Germany)).
 
 As well as country codes, TradeMapper also works with locations given as geographical coordinates.
 
 __Why are some countries green?__
-If a country is involved in the trade (either as origin, exporter, transit, importer) then it will be highlighted in green. This makes it easier to determine which countries are involved and which are not. In some rare cases, overseas territories/regions may also be green (e.g. French Guiana if France is involved in trade).
+If a country is involved in the trade (either as origin, exporter, transit, importer) then it will be highlighted in green on the map. This makes it easier to determine which countries are involved and which are not. In some rare cases, overseas territories/regions may also be green (e.g. French Guiana if France is involved in trade).
 
 __What do the coloured circles mean?__
-The coloured circles (points) represent the different role(s) a country plays in the trade chain: a country could be the origin of the wildlife product, it could be an exporter, a transit point or an importer. A country can have multiple roles so may have more than one coloured dot.  Check the legend on the map to find out which colour relates to which role.
+The coloured circles (points) represent the different role(s) a country plays in the trade chain: a country could be the origin of the wildlife product, it could be an exporter, a transit point or an importer. A country can have multiple roles so may have more than one coloured dot. You assign these roles using the Custom CSV Importer box. Check the legend on the map to find out which colour relates to which role.
 
 __What do the grey diagonal lines over some countries mean?__
 These lines symbolise disputed regions or territories such as Kashmir. This data comes from www.naturalearthdata.com and doesn't imply an opinion of the legal status of borders/territories by TRAFFIC or WWF.

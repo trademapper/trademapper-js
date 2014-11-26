@@ -57,7 +57,8 @@ TradeMapper will attempt to auto-assign roles to each of the columns but you sho
 
 13) Click the Play button at the bottom of the screen to view an animation of the data over time. Click the Pause button or drag the slider to a specific year to investigate further. Click the Year Slide off to return to the filters. _(Zoom/pan is disabled when using the change over time function)_.
 
-14) Share your map by: 
+14) Share your map by:
+
   * Taking a screenshot
   * Embedding the .csv in the url and sharing.
 
@@ -65,6 +66,7 @@ TradeMapper will attempt to auto-assign roles to each of the columns but you sho
 ##Links to youtube tutorials _(coming soon)_
 
 How to import data.
+
 What if my data doesn't contain 2- letter country codes? (Vlookup)
 
 

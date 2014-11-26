@@ -5,22 +5,25 @@ title:     Getting Started
 ---
 Below are steps for getting started with TradeMapper. Please read these in conjuction with the rest of the information on this website.
 
-1) Select the 'Data' tab and navigate to your .csv file. Files can be accessed from your computer or online using a url _(e.g. paste http://trademapper.aptivate.org/sample_data/cites/cites_unicorn.csv into the box_.
+1) Select the 'Data' tab and navigate to your .csv file. Files can be accessed from your computer or online using a url _(e.g. paste http://trademapper.aptivate.org/sample_data/cites/cites_unicorn.csv into the box_).
 
-2) If your data is from the CITES or ETIS database then it should draw instantly on the map.
+2) If your data is from the CITES or ETIS databases then it should import and draw instantly onto the map.
 
 3) If your data does not come from CITES or ETIS, a Custom CSV Importer box will appear. This interface allows you to map any data by telling TradeMapper which columns to look in for certain information (such as the year, or the location).
 
-4) Use the orange box to assign each column a role;
+4) Use the orange boxes in the Custom CSV Importer interface to assign each column a role:
 
   * __Ignore__ - TradeMapper will ignore this column so it will not be possible to filter on at a later stage. This is useful   when you have lots of columns in your .csv which are irrelevant.
  
   * __Location__ - This should be used when a column contains information on a location in the trade chain. If you select Location, two further boxes will appear underneath which allow you to select;
-     * The type of location data (Country Code (e.g. TZ), Country Code (Multiple values) (e.g. TZ, UG, HK) or Latitude/Longitude Place Name (e.g. Chitwan National Park)
+  
+     * The type of location data (Country Code (e.g. TZ), Country Code (Multiple values) (e.g. TZ, UG, HK) or Latitude/Longitude Place Name (e.g. Chitwan National Park).
+     
      * The role of the location in the trade chain (origin, exporter, transit, importer). These different roles are symbolised by different coloured points on the map.
+     
      * An orange Location Order circle will also appear underneath. TradeMapper uses this number to draw the locations in the correct order (e.g. type '1' if this location is the first in the trade chain, type '2' if it is the second etc.).
 
-  * __Location__ Coordinates - This should be used when a column contains specific geographical coordinates (GPS) rather than a 2-letter country code. If this option is selected, one further box will appear underneath. 
+  * __Location Coordinates__ - This should be used when a column contains specific geographical coordinates (GPS) rather than a 2-letter country code. If this option is selected, one further box will appear underneath. 
      * This box can be used to specify if the data in that column is the Latitude or the Longitude. The latitude and longitude of the location must be stored in separate columns. 
      * An orange Location Order circle will also appear underneath (see Location for more details). The three columns containing the latitude, longitude and latitude/longitude place name for each location must have the same number in the Location Order circle to allow TradeMapper to understand that these three columns relate to the same one location.
  

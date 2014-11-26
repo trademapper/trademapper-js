@@ -3,7 +3,7 @@ permalink: /starting/
 layout:    default
 title:     Getting Started
 ---
-
+Below are steps for getting started with TradeMapper. Please read these in conjuction with the rest of the information on this website.
 
 1) Select the 'Data' tab and navigate to your .csv file. Files can be accessed from your computer or online using a url _(e.g. paste http://trademapper.aptivate.org/sample_data/cites/cites_unicorn.csv into the box_.
 

@@ -26,7 +26,6 @@ Below are steps for getting started with TradeMapper. Please read these in conju
   * __Location Coordinates__ - This should be used when a column contains specific geographical coordinates (GPS) rather than a 2-letter country code. If this option is selected, one further box will appear underneath. 
      * This box can be used to specify if the data in that column is the Latitude or the Longitude. The latitude and longitude of the location must be stored in separate columns. 
      * An orange Location Order circle will also appear underneath (see Location for more details). The three columns containing the latitude, longitude and latitude/longitude place name for each location must have the same number in the Location Order circle to allow TradeMapper to understand that these three columns relate to the same one location.
- 
 
   * __Quantity__ - This should be used for columns which contain information on the volume of trade. Multiple columns can be assigned as the Quantity: this is useful for when you have different quantities for the same trade (e.g. weight in kg, weight in tonnes, value in USD). 
  

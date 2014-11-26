@@ -7,7 +7,9 @@ title:     Getting Started
 ###Getting Started
 
 1) Select the 'Data' tab and navigate to your .csv file. Files can be accessed from your computer or online using a url.
+
 2) If your data is from the CITES or ETIS database then it should draw instantly on the map.
+
 3) If your data does not come from CITES or ETIS, a Custom CSV Importer box will appear. This interface allows you to map any data by telling TradeMapper which columns to look in for certain information (such as the year, or the location).
 4) Use the orange box to assign each column a role;
   * 

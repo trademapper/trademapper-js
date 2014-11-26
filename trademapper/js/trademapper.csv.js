@@ -462,7 +462,7 @@ define([
 			if (arrowType === 'plain-arrows') {
 				quantity = routes.maxQuantity();
 			} else if (arrowType === 'flowmap') {
-				var ctAndMax = collection.getCenterTerminalList();
+				var ctAndMax = routes.getCenterTerminalList();
 				maxQuantity = ctAndMax.maxSourceQuantity;
 			} else {
 				console.log("calcMaxSingleYearQuantity: unknown arrowType: " + arrowType);

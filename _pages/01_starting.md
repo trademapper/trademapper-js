@@ -14,11 +14,18 @@ title:     Getting Started
 
 4) Use the orange box to assign each column a role;
   * Ignore - TradeMapper will ignore this column so it will not be possible to filter on at a later stage. This is useful   when you have lots of columns in your .csv which are irrelevant.
+ 
   * Location - This should be used when a column contains information on a location in the trade chain. If you select Location, two further boxes will appear underneath which allow you to select;
-     * The type of Location data ( Country Code (e.g. TZ), Country Code (Multiple values) (e.g. TZ, UG, HK) or Latitude/Longitude Place Name (e.g. Chitwan National Park)
+     * The type of location data (Country Code (e.g. TZ), Country Code (Multiple values) (e.g. TZ, UG, HK) or Latitude/Longitude Place Name (e.g. Chitwan National Park)
      * The role of the location in the trade chain (origin, exporter, transit, importer). These different roles are symbolised by different coloured points on the map.
 
-
+ * Location Coordinates - This should be used when a column contains specific geographical coordinates rather than a 2-letter country code. If this option is selected, one further box will appear underneath. This box can be used to specify if the data in that column is the Latitude or the Longitude. The latitude and longitude of the location must be stored in separate columns.
+ 
+ * Quantity - This should be used for columns which contain information on the volume of trade. Multiple columns can be assigned as the Quantity: this is useful for when you have different quantities for the same trade (e.g. weight in kg, weight in tonnes, value in USD). 
+ 
+ * Text - This should be used for columns containing data stored as text which you wish to be able to filter on (e.g. species name, method of transport, purpose or source codes). If this option is selected, a tick box will appear underneath asking if this column contains units (e.g. kg).
+ 
+* 
 
 heck to see if an ‘Errors’ message has appeared in white text at the top-right hand of the screen. Click ‘Show’ to read the full message which explains why a particular row(s) was not drawn on the map.
 Use the filters in the control panel (left hand side of the screen) if required. It may be useful to select one specific country if you are. Changes to the map will be instant when you change something in the filters.

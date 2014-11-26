@@ -4,7 +4,7 @@ layout:    default
 title:     Contact
 ---
 
-__Get involved__
+__Get involved!__
 
 _Google Group_
 

@@ -3,6 +3,10 @@ permalink: /faq/
 layout:    default
 title:     Frequently Asked Questions
 ---
+
+__What format does my data need to be in?__
+Currently TradeMapper will only recognise CSV files (comma separated-values). Data stored in Excel can easily be converted to CSV (File->Save as-> CSV (Comma delimited). 
+
 __Which country name should I use (e.g. DRC or Democratic Republic of Congo)?__
 TradeMapper only recognises 2-letter ISO country codes (e.g. United Kingdom = GB). This is a widely used standard and 2-letter country codes can be found in ‘A guide to using the CITES Trade Database’ http://trade.cites.org/cites_trade_guidelines/en-CITES_Trade_Database_Guide.pdf
 

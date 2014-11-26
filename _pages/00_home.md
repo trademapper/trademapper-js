@@ -8,7 +8,12 @@ title:     What is TradeMapper?
 
 ### What is TradeMapper?
 
-TradeMapper is a browser-based tool developed for WWF and TRAFFIC to work with data about international trade in wildlife (though you could use it with any kind of data about international flows). It draws flows of traded items as lines on a world map; wider lines show bigger quantities; and coloured dots show the role of countries along the route. You can zoom (scroll wheel) and pan (drag) the map, and filter the data by column values to get insights about what your data means.
+TradeMapper is an interactive browser-based tool developed by TRAFFIC and WWF to visualise wildlife trade data quickly and easily. Trade flow is depicted by arrows (wider arrows show larger trade volume) and coloured points show the role of countries along the route (origin, exporter, transit, importer). You can zoom (scroll wheel) and pan (drag) the map, and filter the data by column values to get insights about what your data means
+
+Users can also use TradeMapper to visualise non-wildlife flow data such as flows of investments or people, or points at single locations.  TradeMapper can be used both to analyse data, and also create attractive maps for inclusion in reports and presentations.
+
+TradeMapper was initially created by Willow Outhwaite (TRAFFIC) and Paul Roberts (formerly WWF-UK). TradeMapper was kindly funded by the WWF-UK Innovation Fund and developed by Aptivate http://www.aptivate.org/.  
+
 
 ### Where does the data come from?
 

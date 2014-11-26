@@ -4,9 +4,9 @@ layout:    default
 title:     Data Sources
 ---
 
-TradeMapper is a tool which can be used to map trade flow data. Although it has been developed with wildlife trade data in mind, it could be used with any flow data (people, money, carbon). 
+TradeMapper is a tool which can be used to map trade flow data. Although it has been developed with wildlife trade data in mind, it could be used with any flow data (people, money, carbon). Please ensure you understand how to interpret the data and resulting maps, and take into consideration any caveats which may apply.
 
-Below are some sources of freely available trade data to try out in TradeMapper:
+Below are some sources of freely available sources of trade data:
 
 * __CITES__ http://trade.cites.org/ Wildlife trade data
 
@@ -19,5 +19,8 @@ Below are some sources of freely available trade data to try out in TradeMapper:
 * __FAO http://faostat3.fao.org/home/E__ Trade data for food and agricultural products (inc forestry)
 
 * __FAO FishStatJ__ http://www.fao.org/fishery/topic/166235/en Fisheries trade data
+
+
+_Please get in contact if you have any additional sources you wish to add to this list._
 
 ...

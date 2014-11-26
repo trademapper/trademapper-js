@@ -1,7 +1,7 @@
 ---
 permalink: /faq/
 layout:    default
-title:     Frequently Asked Questions (FAQs)
+title:     Frequently Asked Questions
 ---
 __Which country name should I use (e.g. DRC or Democratic Republic of Congo)?__
 TradeMapper only recognises 2-letter ISO country codes (e.g. United Kingdom = GB). This is a widely used standard and 2-letter country codes can be found in ‘A guide to using the CITES Trade Database’ http://trade.cites.org/cites_trade_guidelines/en-CITES_Trade_Database_Guide.pdf

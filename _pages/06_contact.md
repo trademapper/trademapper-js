@@ -6,13 +6,13 @@ title:     Contact
 
 __Get involved!__
 
-_Google Group_
-
-Please join the Google Group to keep up to date with developments and communicate with others who are involved in the use and development of TradeMapper https://groups.google.com/forum/#!forum/trademapper/join.
-
 _GitHub_
 
 The code is available on GitHub and we welcome people to get involved! Whether its bug fixing or developing new functionality, all help is welcome https://github.com/trademapper. 
+
+_Google Group_
+
+Please join the Google Group to keep up to date with developments and communicate with others who are involved in the use and development of TradeMapper https://groups.google.com/forum/#!forum/trademapper/join.
 
 _Bugs_
 

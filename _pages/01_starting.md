@@ -4,7 +4,6 @@ layout:    default
 title:     Getting Started
 ---
 
-###Getting Started
 
 1) Select the 'Data' tab and navigate to your .csv file. Files can be accessed from your computer or online using a url.
 

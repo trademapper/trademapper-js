@@ -27,9 +27,9 @@ Below are steps for getting started with TradeMapper. Please read these in conju
  
      * This box can be used to specify if the data in that column is the Latitude or the Longitude. The latitude and longitude of the location must be stored in separate columns. 
  
-     * An orange Location Order circle will also appear underneath (see Location for more details). The three columns containing the latitude, longitude and latitude/longitude place name for each location must have the same number in the Location Order circle to allow TradeMapper to understand that these three columns relate to the same one location.
+     * An orange Location Order circle will also appear underneath (see Location for more details). The three columns containing the Latitude, Longitude and Latitude/longitude Place Name for each location must have the same number in the Location Order circle to allow TradeMapper to understand that these three columns relate to the same one location.
 
-  * __Quantity__ - This should be used for columns which contain information on the volume of trade. Multiple columns can be assigned as the Quantity: this is useful for when you have different quantities for the same trade (e.g. weight in kg, weight in tonnes, value in USD). 
+  * __Quantity__ - This should be used for columns which contain information on the volume of trade. Multiple columns can be assigned as the Quantity: this is useful when you have different quantities for the same trade (e.g. weight in kg, weight in tonnes, value in USD). 
  
   * __Text__ - This should be used for columns containing data stored as text which you wish to be able to filter on (e.g. species name, method of transport, purpose or source codes). If this option is selected, a tick box will appear underneath asking if this column contains units (e.g. kg).
  
@@ -43,13 +43,13 @@ TradeMapper will attempt to auto-assign roles to each of the columns but you sho
 
 6) Check the 'Data' tab to see if any errors have occured.
 
-7) On the 'Filters' tab, select the correct column for ‘Quantity’. TradeMapper uses data from this column to draw the arrows, and the thickness of the arrow is based on this.
+7) On the 'Filters' tab, select the correct column for ‘Quantity’. TradeMapper uses data from this column to draw the arrows, and the thickness of the arrow is based on this. The legend for the arrows and points will appear on the map automatically.
 
-8) Use the filters on the 'Filters' if required. Changes to the map will be instant when you change something in the filters.
+8) Use the filters on the 'Filters' tab if required. Changes to the map will be instant when you change something in the filters.
 
 9) Use the 'Hide' tab to hide the control panel to allow more of the map to be shown.
 
-10) Hover over arrows to get a pop up box which contains detailed information for that specific arrow. Pop up boxes can be dragged to a new location or closed by pressing the ‘X’ in the box.  Hover over the symbols which relate to each countries role in the hover box to reveal their meaning (e.g. black circle with cross means origin), or hover over the 2-letter country code in the hover box to see the full country name.
+10) Hover over arrows to get a pop up box which contains detailed information for that specific arrow. Pop up boxes can be dragged to a new location or closed by pressing the ‘X’ in the box.  Hover over the symbols which relate to each country's role in the hover box to reveal their meaning (e.g. black circle with cross means origin), or hover over the 2-letter country code in the hover box to see the full country name.
 
 11) Zoom in using the wheel on your mouse if required.
 
@@ -58,12 +58,14 @@ TradeMapper will attempt to auto-assign roles to each of the columns but you sho
 13) Click the Play button at the bottom of the screen to view an animation of the data over time. Click the Pause button or drag the slider to a specific year to investigate further. Click the Year Slide off to return to the filters. _(Zoom/pan is disabled when using the change over time function)_.
 
 14) Share your map by: 
- * Taking a screenshot
- * Embedding the .csv in the url and sharing.
+  * Taking a screenshot
+  * Embedding the .csv in the url and sharing.
 
 
 ##Links to youtube tutorials _(coming soon)_
 
-What if my data doesn't contain 2- letter country codes?
+How to import data.
+What if my data doesn't contain 2- letter country codes? (Vlookup)
+
 
 

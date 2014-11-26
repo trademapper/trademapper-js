@@ -21,10 +21,12 @@ title:     Getting Started
      * The role of the location in the trade chain (origin, exporter, transit, importer). These different roles are symbolised by different coloured points on the map.
      * An orange Location Order circle will also appear underneath. TradeMapper uses this number to draw the locations in the correct order (e.g. type '1' if this location is the first in the trade chain, type '2' if it is the second etc.).
 
+
   * Location Coordinates - This should be used when a column contains specific geographical coordinates (GPS) rather than a 2-letter country code. If this option is selected, one further box will appear underneath. 
      * This box can be used to specify if the data in that column is the Latitude or the Longitude. The latitude and longitude of the location must be stored in separate columns. 
      * An orange Location Order circle will also appear underneath (see Location for more details). The three columns containing the latitude, longitude and latitude/longitude place name for each location must have the same number in the Location Order circle to allow TradeMapper to understand that these three columns relate to the same one location.
  
+
   * Quantity - This should be used for columns which contain information on the volume of trade. Multiple columns can be assigned as the Quantity: this is useful for when you have different quantities for the same trade (e.g. weight in kg, weight in tonnes, value in USD). 
  
   * Text - This should be used for columns containing data stored as text which you wish to be able to filter on (e.g. species name, method of transport, purpose or source codes). If this option is selected, a tick box will appear underneath asking if this column contains units (e.g. kg).

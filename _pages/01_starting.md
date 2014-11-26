@@ -19,7 +19,7 @@ title:     Getting Started
   * Location - This should be used when a column contains information on a location in the trade chain. If you select Location, two further boxes will appear underneath which allow you to select;
      * The type of location data (Country Code (e.g. TZ), Country Code (Multiple values) (e.g. TZ, UG, HK) or Latitude/Longitude Place Name (e.g. Chitwan National Park)
      * The role of the location in the trade chain (origin, exporter, transit, importer). These different roles are symbolised by different coloured points on the map.
-     * An orange Location Order circle will also appear underneath. TradeMapper uses this number to draw the locations in the correct order (e.g. type '1' if this location is the first in the trade chain, type '2' if it is the second etc.)
+     * An orange Location Order circle will also appear underneath. TradeMapper uses this number to draw the locations in the correct order (e.g. type '1' if this location is the first in the trade chain, type '2' if it is the second etc.).
 
   * Location Coordinates - This should be used when a column contains specific geographical coordinates (GPS) rather than a 2-letter country code. If this option is selected, one further box will appear underneath. 
      * This box can be used to specify if the data in that column is the Latitude or the Longitude. The latitude and longitude of the location must be stored in separate columns. 

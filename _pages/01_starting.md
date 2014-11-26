@@ -5,7 +5,7 @@ title:     Getting Started
 ---
 
 
-1) Select the 'Data' tab and navigate to your .csv file. Files can be accessed from your computer or online using a url.
+1) Select the 'Data' tab and navigate to your .csv file. Files can be accessed from your computer or online using a url _(e.g. paste http://trademapper.aptivate.org/sample_data/cites/cites_unicorn.csv into the box_.
 
 2) If your data is from the CITES or ETIS database then it should draw instantly on the map.
 
@@ -33,15 +33,33 @@ title:     Getting Started
 
  * __Year__ - This should be used for columns containing the year (e.g. 2012).
 
-heck to see if an ‘Errors’ message has appeared in white text at the top-right hand of the screen. Click ‘Show’ to read the full message which explains why a particular row(s) was not drawn on the map.
-Use the filters in the control panel (left hand side of the screen) if required. It may be useful to select one specific country if you are. Changes to the map will be instant when you change something in the filters.
-Select the correct column heading for ‘Quantity’ in the control panel. TradeMapper uses data from this column to draw the arrows, and the thickness of the arrow is based on this.
-Add text in the title box in the control panel if required. 
-Hover over arrows to get a pop up box which contains detailed information for that specific arrow. Pop up boxes can be dragged to a new location or closed by pressing the ‘X’ in the box. 
-Zoom in using the wheel on your mouse if required.
-Pan by clicking on the map with your mouse and dragging if required.
-Resize or reshape the map window if required.
-Create an image by taking a screenshot of your map if required.
+TradeMapper will attempt to auto-assign roles to each of the columns but you should alyways check these are correct.
+
+5) Click Done. The Custom CSV Importer box can be found on the 'Filters' tab and accessed at any time.
+
+6) Check the 'Data' tab to see if any errors have occured.
+
+7) On the 'Filters' tab, select the correct column for ‘Quantity’. TradeMapper uses data from this column to draw the arrows, and the thickness of the arrow is based on this.
+
+8) Use the filters on the 'Filters' if required. Changes to the map will be instant when you change something in the filters.
+
+9) Use the 'Hide' tab to hide the control panel to allow more of the map to be shown.
+
+10) Hover over arrows to get a pop up box which contains detailed information for that specific arrow. Pop up boxes can be dragged to a new location or closed by pressing the ‘X’ in the box.  Hover over the symbols which relate to each countries role in the hover box to reveal their meaning (e.g. black circle with cross means origin), or hover over the 2-letter country code in the hover box to see the full country name.
+
+11) Zoom in using the wheel on your mouse if required.
+
+12) Pan by clicking on the map with your mouse and dragging if required.
+
+13) Click the Play button at the bottom of the screen to view an animation of the data over time. Click the Pause button or drag the slider to a specific year to investigate further. Click the Year Slide off to return to the filters. _(Zoom/pan is disabled when using the change over time function)_.
+
+14) Share your map by: 
+ * Taking a screenshot
+ * Embedding the .csv in the url and sharing.
 
 
-Links to youtube tutorials
+##Links to youtube tutorials _(coming soon)_
+
+What if my data doesn't contain 2- letter country codes?
+
+

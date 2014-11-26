@@ -469,7 +469,7 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, flowmap, 
 			// set up flowmap settings for this path
 			this.flowmap.extraSpiralClass = "traderoute zoompath center-" + center.point.toString();
 			this.flowmap.mouseOverFunc = this.createFlowmapMouseOverFunc(i);
-			this.flowmap.mouseOutFunc = this.genericMouseOutPath;
+			this.flowmap.mouseOutFunc = this.flowmapMouseOutPath;
 
 			// now do preprocess and drawing
 			this.flowmap.preprocess(terminals, center);

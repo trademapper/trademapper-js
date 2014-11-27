@@ -4,6 +4,5 @@ layout:    default
 title:     System Requirements
 ---
 
-What browsers work
+TradeMapper requires an up to date version of Google Chrome or Mozilla Firefox. 
 
-Offline vs online

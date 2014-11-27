@@ -127,6 +127,11 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre"], functio
 					"stroke-width",
 					(this.attributes["data-origwidth"].value/scale).toString());
 			});
+			d3.selectAll("circle.tradenode").each(function(d, i) {
+				this.setAttribute(
+					"r",
+					(this.attributes["data-orig-r"].value/scale).toString());
+			});
 		},
 		zoom = d3.behavior.zoom()
 			.translate([0, 0])

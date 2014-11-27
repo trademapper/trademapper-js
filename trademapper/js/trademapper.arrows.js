@@ -238,6 +238,7 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, flowmap, 
 			.attr("cx", x)
 			.attr("cy", y)
 			.attr("r", this.pointTypeSize[pointType])
+			.attr("data-orig-r", this.pointTypeSize[pointType])
 			.attr("class", "tradenode " + pointType + " " + extraclass);
 	},
 

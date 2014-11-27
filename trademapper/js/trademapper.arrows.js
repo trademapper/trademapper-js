@@ -117,7 +117,9 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, flowmap, 
 	setUpFlowmap: function() {
 		this.flowmap = new flowmap.SpiralTree(this.zoomg, function(xy) { return [xy[1], xy[0]]; });
 		this.flowmap.extraFlowmapClass = "traderoute zoompath";
-		this.flowmap.setOpacity(this.arrowColours.opacity);
+		// any transparency leads to circles on path joins, which users often
+		// interpret as a point.  So for flowmaps, never use transparency.
+		this.flowmap.setOpacity(1);
 		this.flowmap.setNodeDrawable(false);
 		this.flowmap.markerStart.wide = null;
 		this.flowmap.markerStart.narrow = "url(#markerFlowmapTreeArrowNarrow)";

@@ -745,7 +745,7 @@ p.tooltip-location {
 /*----------Overlay-------------------
  =====================================*/
 .overlay {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   z-index: 5;
@@ -791,7 +791,7 @@ p.tooltip-location {
   display: none; }
 
 .has-overlay {
-  overflow: hidden; }
+  overflow: auto; }
 
 .customcsv__select--locationType,
 .customcsv__select--locationExtraType,

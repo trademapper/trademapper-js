@@ -153,10 +153,10 @@ define([
 				otherTexts: [
 					this.locationOrderTextConfig
 				],
-				// TODO: hide multiSelect until we've implemented it properly
 				checkboxes: [
-					this.isUnitCheckboxConfig,
-					this.multiSelectCheckboxConfig
+					// TODO: unhide multiSelect when we've implemented it properly
+					//this.multiSelectCheckboxConfig,
+					this.isUnitCheckboxConfig
 				],
 			};
 		},

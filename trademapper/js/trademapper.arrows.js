@@ -119,7 +119,7 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, flowmap, 
 		this.flowmap.extraFlowmapClass = "traderoute zoompath";
 		this.flowmap.setOpacity(this.arrowColours.opacity);
 		this.flowmap.setNodeDrawable(false);
-		this.flowmap.markerStart.wide = "url(#markerFlowmapTreeArrowWide)";
+		this.flowmap.markerStart.wide = null;
 		this.flowmap.markerStart.narrow = "url(#markerFlowmapTreeArrowNarrow)";
 		this.flowmap.narrowWideStrokeThreshold = this.narrowWideStrokeThreshold;
 	},

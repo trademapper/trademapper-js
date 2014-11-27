@@ -491,6 +491,22 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, flowmap, 
 			.attr("class", "legend tradenode-label")
 			.text(roleLabel);
 	},
+
+	formatLegendValue: function(labelValue) {
+	var abs = Math.abs(Number(labelValue))
+		return abs >= 1.0e+9
+			? (abs / 1.0e+9).toFixed(0) + "B"
+			// Six Zeroes for Millions
+			: abs >= 1.0e+6
+
+			? (abs / 1.0e+6).toFixed(0) + "M"
+			// Three Zeroes for Thousands
+			: abs >= 1.0e+3
+
+			? (abs / 1.0e+3).toFixed(0) + "K"
+
+			: abs.toFixed(0);
+ 	},
 	
 	drawLegend: function() {
 		// use parseFloat as the height has "px" at the end
@@ -531,7 +547,7 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, flowmap, 
 				strokeWidth = this.minArrowWidth;
 				value = (this.maxQuantity * this.minArrowWidth) / this.maxArrowWidth;
 			}
-			valueText = value.toFixed(0);
+			valueText = this.formatLegendValue(value);
 			if (i === 3) {
 				valueText = "< " + valueText;
 			}

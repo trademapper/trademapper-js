@@ -56,3 +56,7 @@ p {
 	@include font('sans-serif', 1em, 1.35, 300);
 	margin: 0 0 1.35em 0;
 }
+
+strong {
+	font-weight: bold;
+}

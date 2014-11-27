@@ -86,9 +86,10 @@ define([
 	"text!../fragments/filterskeleton.html",
 	"text!../fragments/csvformskeleton.html",
 	"text!../fragments/yearsliderskeleton.html",
+	"text!../fragments/reopencustomcsv.html",
 ],
 function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
-		 filterSkeleton, csvFormSkeleton, yearSliderSkeleton) {
+		 filterSkeleton, csvFormSkeleton, yearSliderSkeleton, reopenCustomCsv) {
 	"use strict";
 
 	return {
@@ -284,24 +285,28 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 							this.fileFormElement.select("#url-download-button"));
 	},
 
+	addChangeFilterSpecToDataTab: function() {
+		var dataFilterSpecChange = d3.select(".change-filter-spec");
+		this.addChangeFilterSpecLink(dataFilterSpecChange);
+	},
+
 	createFilterForm: function(filters) {
 		// generate the form for playing with the data
 		this.filterFormElement.html(filterSkeleton);
 		filterform.createFormFromFilters(this.filterFormElement, filters, mapper.countryCodeToName);
-		this.addChangeFilterSpecButton(this.filterFormElement);
+		var elFilterSpecChange = this.filterFormElement.append('div');
+		this.addChangeFilterSpecLink(elFilterSpecChange);
 		// finally ensure the tab is now available
 		document.querySelector('li[role=filters]').style.display = "block";
 	},
 
-	addChangeFilterSpecButton: function(formElement) {
-		var fsButton = formElement.append('button');
-		fsButton.text("Change CSV column mappings")
-			.attr('type', 'button');
+	addChangeFilterSpecLink: function(elFilterSpecChange) {
+		elFilterSpecChange.html(reopenCustomCsv);
 
 		var filterSpecChange = function() {
 			csv.editFilterSpec(this.currentCsvData, this.currentCsvFirstTenRows, this.currentFilterSpec);
 		}.bind(this);
-		fsButton.on("click", filterSpecChange);
+		elFilterSpecChange.on("click", filterSpecChange);
 	},
 
 	filterLoadedCallback: function(csvData, filterSpec, filters) {
@@ -397,6 +402,7 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 		document.querySelector("body").classList.add("csv-data-loaded");
 		this.updateMaxSingleYearQuantity();
 		this.showFilteredCsv(filterform.filterValues);
+		this.addChangeFilterSpecToDataTab();
 		var errorsShown = this.reportCsvLoadErrors();
 		if (!errorsShown) {
 			// switch to filters tab

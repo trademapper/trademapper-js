@@ -25,7 +25,13 @@ define(['jquery'], function($) {
 		},
 
 		corsProxy: function(url) {
-			return "http://www.corsproxy.com/" + url.replace(/^https?:\/\//, "");
+			// so we can have ?xyz=345&abc=789 ...
+			//url = decodeURI(url);
+			var protocol = 'http';
+			if (url.indexOf('https://') === 0) {
+				protocol = 'https';
+			}
+			return protocol + "://www.corsproxy.com/" + url.replace(/^https?:\/\//, "");
 		},
 
 		getPageOffsetRect: function(elem) {

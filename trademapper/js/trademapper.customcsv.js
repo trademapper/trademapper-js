@@ -155,6 +155,7 @@ define([
 				],
 				checkboxes: [
 					// TODO: unhide multiSelect when we've implemented it properly
+					// TODO: also uncomment the formValueToSpec() calls below
 					//this.multiSelectCheckboxConfig,
 					this.isUnitCheckboxConfig
 				],
@@ -306,15 +307,15 @@ define([
 					formValueToSpec('locationType', 'select');
 					formValueToSpec('locationRole', 'select');
 					formValueToSpec('locationOrder', 'textInt');
-					formValueToSpec('multiSelect', 'checkbox');
+					//formValueToSpec('multiSelect', 'checkbox');
 				} else if (filterSpec[headerName].type === 'location_extra') {
 					formValueToSpec('locationExtraType', 'select');
 					formValueToSpec('locationOrder', 'textInt');
 				} else if (filterSpec[headerName].type === 'text') {
-					formValueToSpec('multiSelect', 'checkbox');
+					//formValueToSpec('multiSelect', 'checkbox');
 					formValueToSpec('isUnit', 'checkbox');
 				} else if (filterSpec[headerName].type === 'text_list') {
-					formValueToSpec('multiSelect', 'checkbox');
+					//formValueToSpec('multiSelect', 'checkbox');
 				}
 			});
 			// the shortName is in the header
@@ -573,9 +574,9 @@ define([
 				var columnSpec = filterSpec[key],
 					columnErrors = [];
 
-				if (columnSpec.multiSelect && columnSpec.isUnit) {
+				/*if (columnSpec.multiSelect && columnSpec.isUnit) {
 					columnErrors.push("Cannot select both multiSelect and isUnit.");
-				}
+				}*/
 
 				if (columnSpec.type === 'location' ||
 					columnSpec.type === 'location_extra') {

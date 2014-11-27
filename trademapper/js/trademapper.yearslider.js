@@ -130,8 +130,8 @@ function($, d3) {
 		if ($this.is(':checked')) {
 			moduleThis.sliderEnabled = true;
 			section.classList.remove("disabled");
-			this.showTradeForYear(this.currentYear);
 			this.enableDisableCallback(true);
+			this.showTradeForYear(this.currentYear);
 		} else {
 			moduleThis.sliderEnabled = false;
 			// if currently playing then pause
@@ -143,8 +143,8 @@ function($, d3) {
 			// disable the slider
 			section.classList.add("disabled");
 			// go back to showing data for all years (with filter settings)
-			this.showTradeForAllYears();
 			this.enableDisableCallback(false);
+			this.showTradeForAllYears();
 		}
 	},
 

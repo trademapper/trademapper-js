@@ -62,7 +62,7 @@ h1, h2 {
   position: relative; }
 
 #info-panel {
-  background-color: rgba(255, 255, 255, 0.7);
+  background-color: #fff;
   box-shadow: 0 10px 50px rgba(100, 100, 100, 0.8);
   min-height: 100%;
   padding: 0;
@@ -179,8 +179,10 @@ h1, h2 {
   z-index: 2; }
 
 .csv-load-errors.haserror > p > strong {
+  bottom: 0.5em;
   float: left;
-  margin-right: 0.5em; }
+  left: -1em;
+  position: relative; }
 
 span.showhide {
   cursor: pointer;
@@ -206,7 +208,7 @@ span.showhide {
   z-index: 1; }
 
 .toggle:hover {
-  background: #20AF9F;
+  background: #20af9f;
   color: #fff; }
 
 .tab-pane.active {
@@ -217,7 +219,7 @@ span.showhide {
   background: -o-linear-gradient(top, white 0%, rgba(251, 251, 251, 0) 39%, rgba(246, 246, 246, 0) 82%, rgba(237, 237, 237, 0) 100%);
   background: -ms-linear-gradient(top, white 0%, rgba(251, 251, 251, 0) 39%, rgba(246, 246, 246, 0) 82%, rgba(237, 237, 237, 0) 100%);
   background: linear-gradient(to bottom, white 0%, rgba(251, 251, 251, 0) 39%, rgba(246, 246, 246, 0) 82%, rgba(237, 237, 237, 0) 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ededed', GradientType=0 );
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#ededed', GradientType=0 );
   padding-bottom: 2em; }
 
 .nav-tabs > li > a {
@@ -371,7 +373,7 @@ span.showhide {
   background-color: #45689f; }
 
 .form-item.location-transit {
-  background-color: #20AF9F; }
+  background-color: #20af9f; }
 
 .form-item.location-importer {
   background-color: #ff6600; }
@@ -477,6 +479,10 @@ span.showhide {
   fill: #f8f8f8;
   opacity: 0.6; }
 
+.legend.tradenode-label,
+.legend.traderoute-label {
+  font-size: 0.5em; }
+
 .legend.traderoute {
   opacity: 0.6; }
 
@@ -503,13 +509,13 @@ span.showhide {
   fill-opacity: 1; }
 
 .tradenode.origin {
-  fill: #000000; }
+  fill: black; }
 
 .tradenode.exporter {
   fill: #45689f; }
 
 .tradenode.transit {
-  fill: #20AF9F; }
+  fill: #20af9f; }
 
 .tradenode.importer {
   fill: #ff6600; }
@@ -641,7 +647,7 @@ p.tooltip-location {
   background-image: url("../images/icon-exporter.svg"); }
 
 .tooltip-location.transit:before {
-  background-color: #20AF9F;
+  background-color: #20af9f;
   background-image: url("../images/icon-transit.svg"); }
 
 .tooltip-location.importer:before {
@@ -722,7 +728,7 @@ p.tooltip-location {
 
 .disabled .change-over-time.year-slider > .d3-slider-handle {
   background: #eee;
-  background: linear-gradient(to bottom, #eee 0%, #ddd 100%); }
+  background: linear-gradient(to bottom, #eeeeee 0%, #dddddd 100%); }
 
 /*----------Options Dialog--------------
  =====================================*/
@@ -898,5 +904,3 @@ p.tooltip-location {
 .customcsv__rowcount {
   color: #ff6600;
   padding: 1em 0; }
-
-/*# sourceMappingURL=trademapper.css.map */

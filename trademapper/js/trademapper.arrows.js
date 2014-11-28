@@ -498,11 +498,11 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, flowmap, 
 			xOffset = 100,
 			yOffset = 100,
 			margin = 10,
-			lineLength = this.maxArrowWidth + 10,
+			lineLength = this.maxArrowWidth + 5,
 			maxWidth = this.maxArrowWidth,
 			roundUpWidth = function (factor) { return Math.max(maxWidth*factor, 8); },
-			legendHeight = Math.max(110, margin*4 + 8 + roundUpWidth(1) + roundUpWidth(0.5) + roundUpWidth(0.25)),
-			legendWidth = lineLength + margin*4 + 10 + this.maxQuantity.toFixed(1).length*8 + 80,
+			legendHeight = Math.max(90, margin*3 + 8 + roundUpWidth(1) + roundUpWidth(0.25) + roundUpWidth(0.25)),
+			legendWidth = lineLength + margin*4 + 10 + this.maxQuantity.toFixed(1).length*8 + 20,
 			//svgHeight = 430,  // from viewbox - TODO: get this properly
 			svgHeight = 0,
 			lineVertical = svgHeight;
@@ -512,7 +512,7 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, flowmap, 
 		gLegend = this.mapsvg.append("g").attr("class", "legend");
 		gLegend.append("rect")
 			.attr("x", 5 + xOffset)
-			.attr("y", svgHeight - (margin/2) - legendHeight + yOffset)
+			.attr("y", svgHeight - (margin) - legendHeight + yOffset)
 			.attr("width", legendWidth)
 			.attr("height", legendHeight)
 			.attr("class", "legend legend-background");
@@ -547,19 +547,19 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, flowmap, 
 				.attr("class", "legend traderoute");
 
 			gLegend.append("text")
-				.attr("x", lineLength + xOffset + (margin * 2))
+				.attr("x", lineLength + xOffset + (margin +5))
 				.attr("y", lineVertical + 5 + yOffset)
 				.attr("class", "legend traderoute-label")
 				.text(valueText);
 		}
 
 		// Now add a legend for the circles
-		circleX = lineLength + xOffset + (margin * 3) +
-			this.maxQuantity.toFixed(1).length * 8;
-		circleY = svgHeight + yOffset;
+		circleX = lineLength + xOffset + (margin * 2) +
+			this.maxQuantity.toFixed(1).length * 7;
+		circleY = (svgHeight + yOffset)-13;
 
 		for (i = tmroute.locationRoles.length-1; i >= 0; i--) {
-			circleY -= 25;
+			circleY -= 18;
 			this.drawPointRoleLabel(tmroute.locationRoles[i], gLegend, circleX, circleY);
 		}
 	}

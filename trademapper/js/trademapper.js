@@ -122,13 +122,13 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 				pathEnd: "rgba(0,0,0,0.4)"
 			},
 			pointTypeSize: {
-				origin: 6,
-				exporter: 4.5,
-				transit: 3.2,
-				importer: 2.5
+				origin: 5.5,
+				exporter: 4,
+				transit: 2.5,
+				importer: 2
 			},
-			minArrowWidth: 1,
-			maxArrowWidth: 25,
+			minArrowWidth: 0.75,
+			maxArrowWidth: 20,
 			arrowType: "plain-arrows",  // could be "plain-arrows" or "flowmap"
 			skipCsvAutoDetect: false
 		},

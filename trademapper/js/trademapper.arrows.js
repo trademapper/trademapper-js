@@ -493,19 +493,13 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, flowmap, 
 	},
 
 	formatLegendValue: function(labelValue) {
-	var abs = Math.abs(Number(labelValue))
-		return abs >= 1.0e+9
-			? (abs / 1.0e+9).toFixed(0) + "B"
+		var abs = Math.abs(Number(labelValue));
+		return abs >= 1.0e+9 ?
+			(abs / 1.0e+9).toFixed(0) + " billion"
 			// Six Zeroes for Millions
-			: abs >= 1.0e+6
-
-			? (abs / 1.0e+6).toFixed(0) + "M"
-			// Three Zeroes for Thousands
-			: abs >= 1.0e+3
-
-			? (abs / 1.0e+3).toFixed(0) + "K"
-
-			: abs.toFixed(0);
+			: abs >= 1.0e+6 ?
+				(abs / 1.0e+6).toFixed(0) + " million"
+				: abs.toFixed(0);
  	},
 	
 	drawLegend: function() {

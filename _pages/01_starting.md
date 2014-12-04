@@ -12,7 +12,7 @@ title:     Getting Started
 
 <a href="https://www.youtube.com/watch?v=B4ND5ZmuPhU">What if my location is given in coordinates?</a> 
 
-##Getting started
+##Quick start
 
 Below are steps for getting started with TradeMapper. Please read these in conjuction with the rest of the information on this website.
 

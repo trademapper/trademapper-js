@@ -5,7 +5,6 @@ title:     Getting Started
 ---
 ##Links to YouTube tutorials 
 
-https://www.youtube.com/watch?v=Bnsr5Hpt07k
 <a href="https://www.youtube.com/watch?v=Bnsr5Hpt07k">How do I import data?</a> 
 
 <a href="https://www.youtube.com/watch?v=EIklmvz_KiU">What if my data doesn't contain 2- letter country codes?</a> 

@@ -3,7 +3,7 @@ permalink: /starting/
 layout:    default
 title:     Getting Started
 ---
-##YouTube tutorials 
+###YouTube tutorials 
 
 <a href="https://www.youtube.com/watch?v=Bnsr5Hpt07k">How do I import data?</a> 
 

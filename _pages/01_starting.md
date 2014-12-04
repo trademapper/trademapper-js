@@ -3,6 +3,17 @@ permalink: /starting/
 layout:    default
 title:     Getting Started
 ---
+##Links to YouTube tutorials 
+
+https://www.youtube.com/watch?v=Bnsr5Hpt07k
+<a href="https://www.youtube.com/watch?v=Bnsr5Hpt07k">How do I import data?</a> 
+
+<a href="https://www.youtube.com/watch?v=EIklmvz_KiU">What if my data doesn't contain 2- letter country codes?</a> 
+
+<a href="https://www.youtube.com/watch?v=B4ND5ZmuPhU">What if my location is given in coordinates?</a> 
+
+##Getting started
+
 Below are steps for getting started with TradeMapper. Please read these in conjuction with the rest of the information on this website.
 
 1) Select the 'Data' tab and navigate to your .csv file. Files can be accessed from your computer or online using a url _(e.g. paste http://trademapper.aptivate.org/sample_data/cites/cites_unicorn.csv into the box_).
@@ -63,12 +74,7 @@ TradeMapper will attempt to auto-assign roles to each of the columns but you sho
   * Embedding the .csv in the url and sharing.
 
 
-##Links to youtube tutorials 
 
-How to import data.
-
-<a href="https://www.youtube.com/watch?v=EIklmvz_KiU">What if my data doesn't contain 2- letter country codes?</a> 
-<a href="https://www.youtube.com/watch?v=B4ND5ZmuPhU">What if my location is given in coordinates?</a> 
 
 
 

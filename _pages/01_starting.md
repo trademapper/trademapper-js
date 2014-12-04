@@ -63,11 +63,11 @@ TradeMapper will attempt to auto-assign roles to each of the columns but you sho
   * Embedding the .csv in the url and sharing.
 
 
-##Links to youtube tutorials _(coming soon)_
+##Links to youtube tutorials 
 
 How to import data.
 
-What if my data doesn't contain 2- letter country codes? (Vlookup)
+<a href="https://www.youtube.com/watch?v=EIklmvz_KiU">What if my data doesn't contain 2- letter country codes?</a> 
 
 
 

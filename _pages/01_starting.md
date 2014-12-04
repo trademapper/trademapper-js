@@ -68,6 +68,8 @@ TradeMapper will attempt to auto-assign roles to each of the columns but you sho
 How to import data.
 
 <a href="https://www.youtube.com/watch?v=EIklmvz_KiU">What if my data doesn't contain 2- letter country codes?</a> 
+<a href="https://www.youtube.com/watch?v=B4ND5ZmuPhU">What if my location is given in coordinates?</a> 
+
 
 
 

@@ -32,3 +32,5 @@ The default maximum thickness of arrows is currently 30 pixels. If this seems to
 __How can I create an image__
 Images can be created by pressing the print screen button on your keyboard and pasting it into a document/editing program. There are also a number of ‘snipping’ add ons for your browser which can be downloaded and allow any portion of the screen to be selected and saved as an image (rather than print screen which takes the entire screen).
 
+__How secure is TradeMapper?__
+TradeMapper runs locally on your computer so no information is transmitted via the internet when using a .csv file stored on your computer.

@@ -331,7 +331,6 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 	showFilteredCsv: function(filterValues, maxQuantity) {
 		this.showNowWorking();
 		arrows.clearTooltip();
-		mapper.resetZoom();
 		var routes = csv.filterDataAndReturnRoutes(
 			this.currentCsvData, this.currentFilterSpec, filterValues);
 		if (!routes) {
@@ -352,7 +351,7 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 		}
 		arrows.drawLegend();
 		// colour in the countries that are trading
-		mapper.colorTradingCountries(pointRoles);
+		mapper.setTradingCountries(pointRoles);
 		this.stopNowWorking();
 	},
 

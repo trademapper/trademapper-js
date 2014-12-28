@@ -16,6 +16,8 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre"], functio
 	disputedborders: null,
 	projection: null,
 	pathmaker: null,
+	width: 960,
+	height: 400,
 
 	/*
 	 * caches svg reference
@@ -26,7 +28,8 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre"], functio
 		this.controlg = controlg;
 		this.svgDefs = svgDefs;
 		this.config = mapConfig;
-
+		//this.width = (mapConfig.width || 960);
+	// this.height = (mapConfig.height || 400);
 		this.addPatternDefs();
 		this.drawMap();
 		this.setupZoom();
@@ -147,6 +150,43 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre"], functio
 	resetZoom: function () {
 		this.zoomg.attr("transform", "");
 	},
+		/* Return the extent as a bounding array as per https://github.com/mbostock/d3/wiki/Geo-Paths#bounds
+				[0][0], [0][1],	 [1][0],	[1][1]
+				[​[left, bottom], [right, top]​] */
+	findExtent: function(countriesObj) {
+			var extent= [[],[]];
+			/* [​[left, bottom], [right, top]​] */
+			for (var prop in countriesObj) {
+					if (countriesObj.hasOwnProperty(prop)) {
+							var country = countriesObj[prop];
+							if(country.hasOwnProperty('point')) {
+									extent[0][0] = extent[0][0] ? Math.min(extent[0][0], country.point[0]) : country.point[0] ;
+									extent[0][1] = extent[0][1] ? Math.min(extent[0][1], country.point[1]) : country.point[1] ;
+									extent[1][0] = extent[1][0] ? Math.max(extent[1][0], country.point[0]) : country.point[0] ;
+									extent[1][1] = extent[1][1] ? Math.max(extent[1][1], country.point[1]) : country.point[1] ;
+							}
+					}
+			}
+			return extent;
+	},
+
+	zoomToShow: function(countriesObj) {
+			var extent = this.findExtent(countriesObj);
+			// Define the new view's center, width and height.
+			var c_new = [ (extent[0][0]+extent[1][0]) /2,
+																	(extent[0][1]+extent[1][1]) /2],
+							width_new = extent[1][0] - extent[0][0],
+					  height_new = extent[1][1] - extent[0][1],
+
+							// 80% just
+							scale = .8 * 1/ Math.max( width_new/this.width, height_new/this.height),
+							translate = [this.width/2 - scale*c_new[0],
+																				this.height/2 - scale*c_new[1]];
+
+			this.zoomg.transition()
+					.duration(750)
+					.attr("transform", "translate(" + translate + ")scale(" + scale + ")");
+	},
 
 	addPatternDefs: function() {
 		// from http://stackoverflow.com/a/14500054/3189
@@ -169,18 +209,19 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre"], functio
 		}
 	},
 
-	colorTradingCountries: function(countryObj) {
+	setTradingCountries: function(countriesObj) {
 		this.mapg.selectAll(".country")
 			.classed("trading", function(d) {
-				if (countryObj.hasOwnProperty(d.id)) {
+				if (countriesObj.hasOwnProperty(d.id)) {
 					return true;
 				} else {
 					return false;
 				}
 			});
+			this.zoomToShow(countriesObj);
 	},
 
-	resetCountryColors: function() {
+	resetTradingCountries: function() {
 		this.mapg.selectAll(".country")
 			.classed("trading", false);
 	},

@@ -130,7 +130,9 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 			minArrowWidth: 0.75,
 			maxArrowWidth: 20,
 			arrowType: "plain-arrows",  // could be "plain-arrows" or "flowmap"
-			skipCsvAutoDetect: false
+			skipCsvAutoDetect: false,
+			width: 950,
+			height: 500
 		},
 
 	init: function(mapId, fileFormElementId, filterFormElementId,
@@ -147,7 +149,7 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 		this.tmsvg = this.mapRootElement.insert("svg")
 			.attr("id", "mapcanvas")
 			.attr("class", "map-svg flow")
-			.attr("viewBox", "60 -20 800 500");
+			.attr("viewBox", "0 0 "+this.config.width+" "+this.config.height);
 		this.svgDefs = this.tmsvg.append("defs");
 		this.zoomg = this.tmsvg.append("g").attr("class", "zoomgroup");
 		// append a background rectangle so mouse scroll zoom works over sea
@@ -236,6 +238,7 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 		}
 		if (!this.config.hasOwnProperty("height")) {
 			this.config.height = this.config.width * this.config.ratio;
+				//	this.config.height = parseInt(this.mapRootElement.style('height'));
 		}
 	},
 

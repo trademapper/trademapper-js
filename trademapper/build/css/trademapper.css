@@ -2,6 +2,9 @@
  ===============================*/
 /*-------General---
  ===============================*/
+html, body {
+  height: 100%; }
+
 html {
   font-size: 1em; }
 
@@ -78,6 +81,9 @@ h1, h2 {
 #tabs {
   clear: both;
   padding: 20px 30px; }
+
+.map-wrapper, .map, .inner {
+  height: 100%; }
 
 #trademapper {
   display: block;

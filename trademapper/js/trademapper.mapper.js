@@ -28,8 +28,8 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre"], functio
 		this.controlg = controlg;
 		this.svgDefs = svgDefs;
 		this.config = mapConfig;
-		//this.width = (mapConfig.width || 960);
-	// this.height = (mapConfig.height || 400);
+		this.width = mapConfig.width  || 960;
+	 this.height = mapConfig.height  || 400;
 		this.addPatternDefs();
 		this.drawMap();
 		this.setupZoom();
@@ -118,8 +118,8 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre"], functio
 				scale = d3.event.scale;
 			console.log("target: " + d3.target);
 			console.log("PRE: scale: " + scale + " translate: " + translate);
-			translate[0] = Math.max(-600*scale, Math.min(600*scale, translate[0]));
-			translate[1] = Math.max(-350*scale, Math.min(350*scale, translate[1]));
+				translate[0] = Math.max(-(moduleThis.width/2)*scale, Math.min((moduleThis.width/2)*scale, translate[0]));
+				translate[1] = Math.max(-(moduleThis.height/2)*scale, Math.min((moduleThis.height/2)*scale, translate[1]));
 			console.log("POST: translate: " + translate);
 
 			moduleThis.zoomg.attr("transform", "translate(" + translate + ")scale(" + scale + ")");
@@ -138,7 +138,8 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre"], functio
 		},
 		zoom = d3.behavior.zoom()
 			.translate([0, 0])
-			.scale(1)
+		 .scale(1)
+		 .size([this.width,this.height])
 			.scaleExtent([0.5, 20])
 			.on("zoom", zoomed);
 		this.zoomg.call(zoom);
@@ -178,7 +179,7 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre"], functio
 							width_new = extent[1][0] - extent[0][0],
 					  height_new = extent[1][1] - extent[0][1],
 
-							// 80% just
+							// 80% just for a bit of a margin
 							scale = .8 * 1/ Math.max( width_new/this.width, height_new/this.height),
 							translate = [this.width/2 - scale*c_new[0],
 																				this.height/2 - scale*c_new[1]];

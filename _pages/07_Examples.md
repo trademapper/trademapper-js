@@ -1,5 +1,5 @@
 ---
-permalink: /gallery
+permalink: /gallery/
 layout:    default
 title:     Gallery
 ---

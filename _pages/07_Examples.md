@@ -8,4 +8,4 @@ Here are some examples of how people are already using TradeMapper. Send any map
 ###Elephant trade through the UK *(submitted by Neil Gunn)*
 ![Gallery1](https://cloud.githubusercontent.com/assets/9199843/5820063/662101ea-a0ba-11e4-9767-5165e706098f.png "Gallery1")
 
-![Gallery1](https://cloud.githubusercontent.com/assets/9199843/5820228/55ec5e04-a0bb-11e4-8249-f727864cb697.png "Gallery1")
+![Gallery1](https://cloud.githubusercontent.com/assets/9199843/5820267/adfe1ab0-a0bb-11e4-80ce-6442a10579e1.png "Gallery1")

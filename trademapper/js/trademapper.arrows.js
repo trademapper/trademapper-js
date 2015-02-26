@@ -519,11 +519,11 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, flowmap, 
 
 		// clear any old legend
 		d3.selectAll(".legend").remove();
-    legendContainer = this.mapsvg.append("svg")
-      .attr("id", "legendcontainer")
-      .attr("class", "legend")
-      .attr("x", "76%") // pin at 76% of map width
-      .attr("y", "0");
+		legendContainer = this.mapsvg.append("svg")
+			.attr("id", "legendcontainer")
+			.attr("class", "legend")
+			.attr("x", "76%") // pin at 76% of map width
+			.attr("y", "0");
 		gLegend = legendContainer.append("g").attr("class", "legend");
 		gLegend.append("rect")
 			.attr("x", 5 + xOffset)

@@ -504,7 +504,7 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, flowmap, 
 	
 	drawLegend: function() {
 		// use parseFloat as the height has "px" at the end
-		var gLegend, i, strokeWidth, value, valueText, circleX, circleY,
+		var legendContainer, gLegend, i, strokeWidth, value, valueText, circleX, circleY,
 			xOffset = 100,
 			yOffset = 100,
 			margin = 10,
@@ -519,7 +519,12 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, flowmap, 
 
 		// clear any old legend
 		d3.selectAll(".legend").remove();
-		gLegend = this.mapsvg.append("g").attr("class", "legend");
+		legendContainer = this.mapsvg.append("svg")
+			.attr("id", "legendcontainer")
+			.attr("class", "legend")
+			.attr("x", "76%") // pin at 76% of map width
+			.attr("y", "0");
+		gLegend = legendContainer.append("g").attr("class", "legend");
 		gLegend.append("rect")
 			.attr("x", 5 + xOffset)
 			.attr("y", svgHeight - (margin) - legendHeight + yOffset)

@@ -40,7 +40,7 @@ Below are steps for getting started with TradeMapper. Please read these in conju
  
      * An orange Location Order circle will also appear underneath (see Location for more details). The three columns containing the Latitude, Longitude and Latitude/longitude Place Name for each location must have the same number in the Location Order circle to allow TradeMapper to understand that these three columns relate to the same one location.
 
-  * __Quantity__ - This should be used for columns which contain information on the volume of trade. Multiple columns can be assigned as the Quantity: this is useful when you have different quantities for the same trade (e.g. weight in kg, weight in tonnes, value in USD). 
+  * __Quantity__ - This should be used for columns which contain information on the volume of trade. Multiple columns can be assigned as the Quantity: this is useful when you have different quantities for the same trade (e.g. weight in kg, weight in tonnes, value in USD). Do not use any commas within your numerical data (e.g. 100,000 should be 100000).
  
   * __Text__ - This should be used for columns containing data stored as text which you wish to be able to filter on (e.g. species name, method of transport, purpose or source codes). If this option is selected, a tick box will appear underneath asking if this column contains units (e.g. kg).
  

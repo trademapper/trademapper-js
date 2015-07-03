@@ -20,7 +20,7 @@ Below are steps for getting started with TradeMapper. Please read these in conju
 
 2) If your data is from the CITES or ETIS databases then it should import and draw instantly onto the map.
 
-3) If your data does not come from CITES or ETIS, a Custom CSV Importer box will appear. This interface allows you to map any data by telling TradeMapper which columns to look in for certain information (such as the year, or the location).
+3) If your data does not come from CITES or ETIS, a Custom CSV Importer box will appear. This interface allows you to map any data by telling TradeMapper which columns to look in for certain information (such as the year, or the location). Do not use any commas within your data (e.g. 100,000 should be 100000).
 
 4) Use the orange boxes in the Custom CSV Importer interface to assign each column a role:
 

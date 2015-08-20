@@ -6,8 +6,7 @@ define(
       run = function() {
         q.module("Mapper", {
           setup: function() {
-            var newsvg = d3.select('body').append('svg');
-            var tooltip = d3.select('#container').append('div').attr("id", "tooltip-id");
+            var newsvg = d3.select(document.createElement("div")).append('svg');
             var svgdefs = newsvg.append('defs');
             var zoomg = newsvg.append('g');
             var controlg = newsvg.append('g');

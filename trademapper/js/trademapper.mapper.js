@@ -219,7 +219,6 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre"], functio
 					return false;
 				}
 			});
-			this.zoomToShow(countriesObj);
 	},
 
 	resetTradingCountries: function() {

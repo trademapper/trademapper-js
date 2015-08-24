@@ -328,8 +328,8 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 		this.createFilterForm(filters);
 	},
 	updateMapperZoom: function() {
-			var routes = csv.filterDataAndReturnRoutes(this.currentCsvData, this.currentFilterSpec, filterform.filterValues);
-   mapper.zoomToShow(routes.getPointRoles());
+		var routes = csv.filterDataAndReturnRoutes(this.currentCsvData, this.currentFilterSpec, filterform.filterValues);
+		mapper.zoomToShow(routes.getPointRoles());
 	},
 			/*
 	 * the maxQuantity is optional and so can be null
@@ -346,7 +346,7 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 
 		var pointRoles = routes.getPointRoles();
 		this.currentUnit = csv.getUnit(this.currentFilterSpec, filterValues);
- 	this.drawArrows(routes,pointRoles, maxQuantity);
+		this.drawArrows(routes,pointRoles, maxQuantity);
 
 		// colour in the countries that are trading
 		mapper.setTradingCountries(pointRoles);
@@ -385,7 +385,7 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 	},
 
 	filterformChangedCallback: function(columnName) {
-  this.updateMapperZoom();
+		this.updateMapperZoom();
 		if (yearslider.sliderEnabled) {
 			this.updateMaxSingleYearQuantity();
 			this.showTradeForYear(yearslider.currentYear);
@@ -410,7 +410,7 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 		this.currentFilterSpec = filterSpec;
 
 		document.querySelector("body").classList.add("csv-data-loaded");
-	 this.updateMapperZoom();
+		this.updateMapperZoom();
 		this.updateMaxSingleYearQuantity();
 		this.showFilteredCsv(filterform.filterValues);
 		this.addChangeFilterSpecToDataTab();

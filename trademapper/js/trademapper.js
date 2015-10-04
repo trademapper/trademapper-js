@@ -130,7 +130,9 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 			minArrowWidth: 0.75,
 			maxArrowWidth: 20,
 			arrowType: "plain-arrows",  // could be "plain-arrows" or "flowmap"
-			skipCsvAutoDetect: false
+			skipCsvAutoDetect: false,
+			width: 950,
+			height: 500
 		},
 
 	init: function(mapId, fileFormElementId, filterFormElementId,
@@ -147,7 +149,7 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 		this.tmsvg = this.mapRootElement.insert("svg")
 			.attr("id", "mapcanvas")
 			.attr("class", "map-svg flow")
-			.attr("viewBox", "60 -20 800 500");
+			.attr("viewBox", "0 0 "+this.config.width+" "+this.config.height);
 		this.svgDefs = this.tmsvg.append("defs");
 		this.zoomg = this.tmsvg.append("g").attr("class", "zoomgroup");
 		// append a background rectangle so mouse scroll zoom works over sea
@@ -236,6 +238,7 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 		}
 		if (!this.config.hasOwnProperty("height")) {
 			this.config.height = this.config.width * this.config.ratio;
+				//	this.config.height = parseInt(this.mapRootElement.style('height'));
 		}
 	},
 
@@ -324,16 +327,18 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 		}
 		this.createFilterForm(filters);
 	},
-
-	/*
+	updateMapperZoom: function() {
+		var routes = csv.filterDataAndReturnRoutes(this.currentCsvData, this.currentFilterSpec, filterform.filterValues);
+		mapper.zoomToShow(routes.getPointRoles());
+	},
+			/*
 	 * the maxQuantity is optional and so can be null
 	 */
 	showFilteredCsv: function(filterValues, maxQuantity) {
 		this.showNowWorking();
 		arrows.clearTooltip();
-		mapper.resetZoom();
-		var routes = csv.filterDataAndReturnRoutes(
-			this.currentCsvData, this.currentFilterSpec, filterValues);
+
+		var routes= csv.filterDataAndReturnRoutes(this.currentCsvData, this.currentFilterSpec, filterValues);
 		if (!routes) {
 			console.log("failed to get routes");
 			return;
@@ -341,19 +346,23 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 
 		var pointRoles = routes.getPointRoles();
 		this.currentUnit = csv.getUnit(this.currentFilterSpec, filterValues);
-		arrows.currentUnit = this.currentUnit;
-		// now draw the routes
-		if (this.config.arrowType === "plain-arrows") {
-			arrows.drawRouteCollectionPlainArrows(routes, pointRoles, maxQuantity);
-		} else if (this.config.arrowType === "flowmap") {
-			arrows.drawRouteCollectionFlowmap(routes, pointRoles, maxQuantity);
-		} else {
-			console.log("unknown config.arrowType: " + this.config.arrowType);
-		}
-		arrows.drawLegend();
+		this.drawArrows(routes,pointRoles, maxQuantity);
+
 		// colour in the countries that are trading
-		mapper.colorTradingCountries(pointRoles);
+		mapper.setTradingCountries(pointRoles);
 		this.stopNowWorking();
+	},
+	drawArrows: function(routes,pointRoles,maxQuantity) {
+			arrows.currentUnit = this.currentUnit;
+			// now draw the routes
+			if (this.config.arrowType === "plain-arrows") {
+					arrows.drawRouteCollectionPlainArrows(routes, pointRoles, maxQuantity);
+			} else if (this.config.arrowType === "flowmap") {
+					arrows.drawRouteCollectionFlowmap(routes, pointRoles, maxQuantity);
+			} else {
+					console.log("unknown config.arrowType: " + this.config.arrowType);
+			}
+			arrows.drawLegend();
 	},
 
 
@@ -376,6 +385,7 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 	},
 
 	filterformChangedCallback: function(columnName) {
+		this.updateMapperZoom();
 		if (yearslider.sliderEnabled) {
 			this.updateMaxSingleYearQuantity();
 			this.showTradeForYear(yearslider.currentYear);
@@ -400,6 +410,7 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 		this.currentFilterSpec = filterSpec;
 
 		document.querySelector("body").classList.add("csv-data-loaded");
+		this.updateMapperZoom();
 		this.updateMaxSingleYearQuantity();
 		this.showFilteredCsv(filterform.filterValues);
 		this.addChangeFilterSpecToDataTab();

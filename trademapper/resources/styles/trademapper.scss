@@ -20,6 +20,10 @@ $errorbg-colour: #177F73;
 /*-------General---
  ===============================*/
 
+html,body {
+    height: 100%;
+}
+
 html {
 	font-size:1em;
 }
@@ -110,7 +114,9 @@ h1,h2 {
   clear:both;
   padding:20px 30px;
 }
-
+.map-wrapper, .map, .inner {
+    height: 100%;
+}
 #trademapper {
 	display: block;
 	float: right;

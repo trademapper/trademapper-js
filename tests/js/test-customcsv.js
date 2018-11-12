@@ -259,29 +259,6 @@ define(
 				});
 			});
 
-			q.test('check validateFilterSpecColumns detects both multiSelect and isUnit being true', function() {
-				var filterSpec = {
-					header1: {
-						type: "text",
-						multiSelect: true,
-						isUnit: true
-					},
-					header2: {
-						type: "text",
-						multiSelect: true
-					},
-					header3: {
-						type: "text",
-						isUnit: true
-					}
-				},
-				columnErrors = customcsv.validateFilterSpecColumns(filterSpec);
-				q.equal(columnErrors.hasOwnProperty('header1'), true);
-				q.equal(columnErrors.header1.length, 1);
-				q.equal(columnErrors.hasOwnProperty('header2'), false);
-				q.equal(columnErrors.hasOwnProperty('header3'), false);
-			});
-
 			q.test('check validateFilterSpecColumns detects invalid locationOrder', function() {
 				var filterSpec = {
 					header1: {

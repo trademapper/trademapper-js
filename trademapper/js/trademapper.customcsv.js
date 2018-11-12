@@ -574,10 +574,6 @@ define([
 				var columnSpec = filterSpec[key],
 					columnErrors = [];
 
-				/*if (columnSpec.multiSelect && columnSpec.isUnit) {
-					columnErrors.push("Cannot select both multiSelect and isUnit.");
-				}*/
-
 				if (columnSpec.type === 'location' ||
 					columnSpec.type === 'location_extra') {
 					if (!util.isInt(columnSpec.locationOrder)) {

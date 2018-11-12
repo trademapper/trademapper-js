@@ -10,7 +10,7 @@ require.config({
 		queue: "lib/queue.v1",
 		topojson: "lib/topojson.v1",
 		// jquery and bootstrap
-		jquery: "lib/jquery-2.1.1.min",
+		jquery: "lib/jquery-3.3.1.min",
 		bootstrap: "lib/bootstrap.min",
 		"bootstrap-switch": "lib/bootstrap-switch.min",
 		// map data - jsons imported by require

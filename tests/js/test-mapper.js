@@ -16,7 +16,7 @@ define(
               width: 1200, // parseInt(this.newsvg.style('width')),
               height: 600// parseInt(this.newsvg.style('height'))
             };
-            mapper.init(zoomg, controlg, svgdefs, config);
+            mapper.init(zoomg, controlg, svgdefs, config, newsvg);
           }
         });
 

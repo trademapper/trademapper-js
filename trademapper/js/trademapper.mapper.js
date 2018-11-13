@@ -144,7 +144,7 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre"], functio
 		 .size([this.width,this.height])
 			.scaleExtent([0.5, 20])
 			.on("zoom", zoomed);
-			this.svg.call(zoom);
+		this.svg.call(zoom);
 
 		// and add some controls to allow zooming - html or svg?
 		// add + and - text bits, function to change the scale thing

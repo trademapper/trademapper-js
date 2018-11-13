@@ -146,8 +146,8 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, flowmap, 
 			return "M" + start[0] + "," + start[1] + "A" + dr + "," + dr +
 				" 0 0,1 " + end[0] + "," + end[1];
 		} else {
-			return d3.svg.line()
-				.interpolate("monotone")
+			return d3.line()
+				.curve(d3.curveCardinal)
 				.x(function(d) { return d.point[0]; })
 				.y(function(d) { return d.point[1]; });
 		}
@@ -501,7 +501,7 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, flowmap, 
 				(abs / 1.0e+6).toFixed(0) + " million"
 				: abs.toFixed(0);
  	},
-	
+
 	drawLegend: function() {
 		// use parseFloat as the height has "px" at the end
 		var legendContainer, gLegend, i, strokeWidth, value, valueText, circleX, circleY,

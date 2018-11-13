@@ -74,7 +74,7 @@ define([
 
 	loadCSVFile: function() {
 		this.resetLoadErrors();
-		this.csvFile = this.fileInputElement[0][0].files[0];
+		this.csvFile = this.fileInputElement._groups[0][0].files[0];
 		this.csvFileName = this.csvFile.name;
 
 		var reader = new FileReader();
@@ -183,7 +183,7 @@ define([
 		// split on commas - but use d3 for proper parsing
 		var i,
 			csvHeaderLine = csvString.substring(0, csvString.indexOf("\n")),
-			csvHeaders = d3.csv.parseRows(csvHeaderLine)[0],
+			csvHeaders = d3.csvParseRows(csvHeaderLine)[0],
 			quotesPresent = csvHeaderLine.indexOf('"') !== -1,
 			newCsvHeaders = [];
 
@@ -219,8 +219,8 @@ define([
 			firstLine = fileText.substring(0, fileText.indexOf("\n"));
 
 		fileText = this.trimCsvColumnNames(fileText);
-		csvData = d3.csv.parse(fileText);
-		csvFirstTenRows = d3.csv.parseRows(fileText).slice(0, 10);
+		csvData = d3.csvParse(fileText);
+		csvFirstTenRows = d3.csvParseRows(fileText).slice(0, 10);
 
 		// skipCsvAutoDetect is set by URL parameter - to help development
 		if (!this.skipCsvAutoDetect) {

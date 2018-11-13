@@ -166,7 +166,7 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 
 		// need to init mapper before arrows otherwise the map is on top of
 		// the arrows
-		mapper.init(this.zoomg, this.controlg, this.svgDefs, this.config);
+		mapper.init(this.zoomg, this.controlg, this.svgDefs, this.config, this.tmsvg);
 		arrows.init(this.tmsvg, this.zoomg, this.svgDefs, '#maptooltip', this.config.arrowColours,
 			this.config.minArrowWidth, this.config.maxArrowWidth, this.config.pointTypeSize,
 			mapper.countryCodeToInfo);

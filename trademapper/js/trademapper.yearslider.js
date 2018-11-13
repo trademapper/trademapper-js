@@ -4,10 +4,9 @@
 define([
 	"jquery",
 	"d3",
-	// these requires extend the existing modules so do them last and don't
+	// this extends the existing module so do them last and don't
 	// bother giving them variables in the function call.
 	"bootstrap-switch",
-	"d3.slider"
 ],
 function($, d3) {
 	"use strict";
@@ -204,7 +203,7 @@ function($, d3) {
 
 	createSliderBlank: function() {
 		var sliderDiv = this.clearSliderDiv();
-		this.yearSlider = sliderDiv.call(d3.slider());
+		//this.yearSlider = sliderDiv.call(d3.slider());
 	},
 
 	createSliderWithYears: function() {
@@ -215,7 +214,7 @@ function($, d3) {
 		}.bind(this);
 
 		var sliderDiv = this.clearSliderDiv();
-		this.yearSlider = sliderDiv.call(
+		/*this.yearSlider = sliderDiv.call(
 			d3.slider()
 			.axis(true)
 			.min(this.minYear)
@@ -223,7 +222,7 @@ function($, d3) {
 			.step(1)
 			.value(this.currentYear)
 			.on("slide", setYearCallback)
-		);
+		);*/
 	},
 
 	};

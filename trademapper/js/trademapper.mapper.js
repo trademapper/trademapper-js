@@ -67,10 +67,10 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre"], functio
 	},
 
 	drawMap: function() {
-		this.projection = d3.geo.mercator();
+		this.projection = d3.geoMercator();
 			//.scale(mapWidth/1.25)
 			//.translate([mapWidth/4, mapHeight/2+10]);
-		this.pathmaker = d3.geo.path().projection(this.projection);
+		this.pathmaker = d3.geoPath().projection(this.projection);
 
 		this.countries = topojson.feature(mapdata, mapdata.objects.subunits).features;
 		this.borders = topojson.mesh(mapdata, mapdata.objects.subunits,
@@ -138,13 +138,11 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre"], functio
 					(this.attributes["data-orig-r"].value/scale).toString());
 			});
 		},
-		zoom = d3.behavior.zoom()
-			.translate([0, 0])
-		 .scale(1)
-		 .size([this.width,this.height])
+		zoom = d3.zoom()
 			.scaleExtent([0.5, 20])
 			.on("zoom", zoomed);
-			this.svg.call(zoom);
+
+		this.svg.call(zoom);
 
 		// and add some controls to allow zooming - html or svg?
 		// add + and - text bits, function to change the scale thing

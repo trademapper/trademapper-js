@@ -5,7 +5,7 @@ require.config({
 		QUnit: '../../tests/lib/qunit-1.14.0',
 		d3: "lib/d3",
 		jquery: "lib/jquery-3.3.1.min",
-		topojson: "lib/topojson.v1",
+		topojson: "lib/topojson.v3.0.2.min",
 		text: "lib/text",
 			countrycentre: "map/countrycentre",
 			disputedareas: "map/disputedareas",

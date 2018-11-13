@@ -8,7 +8,7 @@ require.config({
 		d3: "lib/d3",
 		"d3.slider": "lib/d3.slider",
 		queue: "lib/queue.v1",
-		topojson: "lib/topojson.v1",
+		topojson: "lib/topojson.v3.0.2.min",
 		// jquery and bootstrap
 		jquery: "lib/jquery-3.3.1.min",
 		bootstrap: "lib/bootstrap.min",
@@ -16,7 +16,8 @@ require.config({
 		// map data - jsons imported by require
 		countrycentre: "map/countrycentre",
 		disputedareas: "map/disputedareas",
-		worldmap: "map/worldmap"
+		worldmap: "map/worldmap",
+    caudata: "map/CAUDATA"
 	},
 	shim: {
 		bootstrap: {

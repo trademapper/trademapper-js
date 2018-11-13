@@ -34,6 +34,7 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre", "config"
 	 this.height = mapConfig.height  || 400;
 		this.addPatternDefs();
 		this.drawMap();
+		this.addOverlays();
 		this.setupZoom();
 		this.makeCountryNameHash();
 	},
@@ -73,6 +74,7 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre", "config"
 		this.pathmaker = d3.geoPath().projection(this.projection);
 
 		this.countries = topojson.feature(mapdata, mapdata.objects.subunits).features;
+
 		this.borders = topojson.mesh(mapdata, mapdata.objects.subunits,
 			function(a, b) { return true; });
 		this.disputed = topojson.feature(disputedareas, disputedareas.objects.disputeunit).features;
@@ -106,6 +108,66 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre", "config"
 				.attr("d", this.pathmaker)
 				.attr("class", function(d) { return "disputed " + d.id; })
 				.attr("fill", "url(#diagonalHatch)");
+	},
+
+	// load overlays from the overlays= variable in the query string
+	addOverlays: function () {
+		var self = this;
+
+		var params = (new URL(document.location)).searchParams;
+		var urls = params.get('overlays').split(',');
+		console.log('FETCHING OVERLAYS FROM URLS:', urls);
+
+		urls.forEach(function (url) {
+			self.loadTopojsonFromURL(url);
+		});
+	},
+
+	loadTopojson: function (data, pathmaker) {
+		var features = [];
+		var propertyFeatures, numFeaturesToUse;
+		for (var propertyName in data.objects) {
+			propertyFeatures = topojson.feature(data, data.objects[propertyName]).features;
+			numFeaturesToUse = propertyFeatures.length;
+
+			for (var i = 0; i < numFeaturesToUse; i++) {
+				features.push(pathmaker(propertyFeatures[i]));
+			}
+		}
+
+		var eltStart = '<path fill="rgba(255, 0, 0, 0.5)" d="';
+		var eltEnd = '"></path>';
+		return eltStart + features.join(eltEnd + eltStart) + eltEnd;
+	},
+
+	loadTopojsonFromURL: function(url) {
+		var self = this;
+
+		d3.xhr(url, function (error, req) {
+			if (!error && req.status === 200) {
+				var data = JSON.parse(req.response);
+
+				// generate HTML for this overlay
+				var start = new Date();
+
+				var html = self.loadTopojson(data, self.pathmaker);
+
+				var end = new Date();
+				var elapsed = end - start;
+				console.log('TIME TO PROCESS TOPOJSON FROM ' + url + ' (msecs): ', elapsed);
+
+				// append overlay HTML into the svg element
+				start = new Date();
+
+				self.mapg.html(self.mapg.html() + html)
+
+				elapsed = new Date() - start;
+				console.log('TIME TO INSERT HTML DERIVED FROM ' + url + ' INTO DOM (msecs): ', elapsed);
+			}
+			else {
+				console.log("unable to download", error, req);
+			}
+		});
 	},
 
 	setupZoom: function() {

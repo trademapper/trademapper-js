@@ -1,5 +1,6 @@
 require.config({
 	baseUrl: '../trademapper/js',
+	urlArgs: 'cache_bust=' + (new Date()).getTime(),
 	paths: {
 		QUnit: '../../tests/lib/qunit-1.14.0',
 		d3: "lib/d3",

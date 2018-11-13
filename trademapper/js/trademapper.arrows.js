@@ -147,7 +147,7 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, flowmap, 
 				" 0 0,1 " + end[0] + "," + end[1];
 		} else {
 			return d3.line()
-				.curve(d3.curveCardinal)
+				.curve(d3.curveCatmullRom)
 				.x(function(d) { return d.point[0]; })
 				.y(function(d) { return d.point[1]; });
 		}

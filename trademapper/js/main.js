@@ -16,7 +16,8 @@ require.config({
 		// map data - jsons imported by require
 		countrycentre: "map/countrycentre",
 		disputedareas: "map/disputedareas",
-		worldmap: "map/worldmap"
+		worldmap: "map/worldmap",
+    caudata: "map/CAUDATA"
 	},
 	shim: {
 		bootstrap: {

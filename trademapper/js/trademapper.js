@@ -319,11 +319,11 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 		}
 		this.minMaxYear = csv.getMinMaxYear(filters);
 		if (this.minMaxYear[0] === 0 && this.minMaxYear[1] === 0) {
-			yearslider.disableSection("No Year Column");
+			yearslider.enable("No Year Column");
 		} else if (this.minMaxYear[0] === this.minMaxYear[1]) {
-			yearslider.disableSection("There is only data for one year");
+			yearslider.disable("There is only data for one year");
 		} else {
-			yearslider.enableSection(this.minMaxYear[0], this.minMaxYear[1]);
+			yearslider.enable(this.minMaxYear[0], this.minMaxYear[1]);
 		}
 		this.createFilterForm(filters);
 	},

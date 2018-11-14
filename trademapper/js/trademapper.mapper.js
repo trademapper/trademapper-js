@@ -8,6 +8,7 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre"], functio
 	controlg: null,
 	svgDefs: null,
 	config: null,
+	svg: null,
 	countries: null,
 	countryCodeToName: null,
 	countryCodeToInfo: null,
@@ -23,11 +24,12 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre"], functio
 	 * caches svg reference
 	 * decodes countries and borders and draws them
 	 */
-	init: function(svgZoomg, controlg, svgDefs, mapConfig) {
+	init: function(svgZoomg, controlg, svgDefs, mapConfig, svg) {
 		this.zoomg = svgZoomg;
 		this.controlg = controlg;
 		this.svgDefs = svgDefs;
 		this.config = mapConfig;
+		this.svg = svg;
 		this.width = mapConfig.width  || 960;
 	 this.height = mapConfig.height  || 400;
 		this.addPatternDefs();
@@ -142,7 +144,7 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre"], functio
 		 .size([this.width,this.height])
 			.scaleExtent([0.5, 20])
 			.on("zoom", zoomed);
-		this.zoomg.call(zoom);
+			this.svg.call(zoom);
 
 		// and add some controls to allow zooming - html or svg?
 		// add + and - text bits, function to change the scale thing

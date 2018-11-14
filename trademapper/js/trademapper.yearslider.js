@@ -7,6 +7,7 @@ define([
 	// these extend the existing module so do them last and don't
 	// bother giving them variables in the function call.
 	"bootstrap-switch",
+	"bootstrap-slider",
 ],
 function($, d3) {
 	"use strict";
@@ -15,6 +16,9 @@ function($, d3) {
 		enabled: false,
 		sectionDisableReason: "No data loaded yet",
 		sliderEnabled: false,
+
+		// reference to the bootstrap slider
+		slider: null,
 
 		enabledSwitchMessage: 'Switch between using the year range and the year slider',
 		disabledSwitchMessage: 'You cannot use the year slider because: ',
@@ -177,7 +181,9 @@ function($, d3) {
 		},
 
 		setSliderValue: function (value) {
-			// TODO set value of the slider
+			if (this.slider !== null) {
+				this.slider.slider('setValue', value);
+			}
 		},
 
 		create: function() {
@@ -186,6 +192,9 @@ function($, d3) {
 
 			// link the play button to a function
 			this.getPlayButtonElement().on("click", this.playPauseYearSlider.bind(this));
+
+			// make a blank slider
+			this.createSlider()
 		},
 
 		createInactiveSwitch: function() {
@@ -207,27 +216,46 @@ function($, d3) {
 			sliderSwitch.attr('title', this.enabledSwitchMessage);
 		},
 
-		createBlankSlider: function() {
-			// TODO create slider
-		},
+		createSlider: function(options) {
+			if (this.slider !== null) {
+				this.slider.slider('destroy');
+				this.slider = null;
+			}
 
-		configureSlider: function() {
-			var setYearCallback = function(year) {
+			if (!options) {
+				options = {
+					ticks: [0],
+					enabled: false
+				};
+			}
+
+			this.slider = this.getSliderElement().slider(options);
+
+			this.slider.on('change', function(event) {
+				var year = event.value['newValue'];
 				this.implicitEnableSlider();
 				this.currentYear = year;
 				this.showTradeForYear(year);
-			}.bind(this);
+			}.bind(this));
 
-			// TODO create slider
-			/*
-			.min(this.minYear)
-      .max(this.maxYear)
-      .step(1)
-      .value(this.currentYear)
+			return this.slider;
+		},
 
-			// event handler arguments may need adjusting
-      .on("slide", setYearCallback)
-			*/
+		configureSlider: function() {
+			var years = [];
+			for (var i = this.minYear; i <= this.maxYear; i++) {
+				years.push(i);
+			}
+
+			var opts = {
+				step: 1,
+				ticks: years,
+				ticks_labels: years,
+				enabled: true
+			};
+
+			this.createSlider(opts);
+			this.setSliderValue(this.currentYear);
 		},
 	};
 });

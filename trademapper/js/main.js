@@ -12,6 +12,7 @@ require.config({
 		jquery: "lib/jquery-3.3.1.min",
 		bootstrap: "lib/bootstrap.min",
 		"bootstrap-switch": "lib/bootstrap-switch.min",
+		"bootstrap-slider": "lib/bootstrap-slider",
 		// map data - jsons imported by require
 		countrycentre: "map/countrycentre",
 		disputedareas: "map/disputedareas",
@@ -20,6 +21,9 @@ require.config({
 	shim: {
 		bootstrap: {
 			deps: ["jquery"]
+		},
+		"bootstrap-slider": {
+			deps: ["bootstrap"]
 		}
 	}
 });

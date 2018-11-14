@@ -90,9 +90,6 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre"], functio
 				.attr("d", this.pathmaker)
 				.attr("fill", "#DFDFDF")
 				.attr("class", function(d) { return "country " + d.id; });
-				//.on("click", countryClicked)
-				//.on("mouseover", hoverCountry)
-				//.on("mouseout", unhoverCountry);
 
 		this.mapg.append("path")
 			.datum(this.borders)
@@ -109,12 +106,6 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre"], functio
 				.attr("d", this.pathmaker)
 				.attr("class", function(d) { return "disputed " + d.id; })
 				.attr("fill", "rgba(255, 0, 0, 0.4)");
-
-		// don't need to draw disputed borders
-		/*this.mapg.append("path")
-			.datum(this.disputedborders)
-			.attr("d", this.pathmaker)
-			.attr("class", "disputed-border");*/
 	},
 
 	setupZoom: function() {

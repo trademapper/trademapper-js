@@ -458,28 +458,12 @@ span.showhide {
   height: 100%;
   min-height: 600px; }
 
-.mapocean {
-  fill: #fff; }
-
-.country {
-  fill: #DFDFDF; }
-
 .country.trading {
   fill: #b1c73e; }
-
-.country-border {
-  fill: none;
-  stroke: #fff;
-  stroke-linejoin: round; }
 
 .diagonal-hatch-path {
   stroke: #aaa;
   stroke-width: 1px; }
-
-.disputed-border {
-  fill: none;
-  stroke: #fff;
-  stroke-linejoin: round; }
 
 .legend-background {
   fill: #f8f8f8;

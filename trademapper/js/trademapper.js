@@ -161,7 +161,8 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider,
 			.attr("width", "150%")
 			.attr("height", "150%")
 			.attr("y", "-150")
-			.attr("class", "mapocean");
+			.attr("class", "mapocean")
+			.attr("fill", "#FFF");
 		this.controlg = this.tmsvg.append("g").attr("class", "controlgroup");
 
 		this.changeOverTimeElement.html(yearSliderSkeleton);

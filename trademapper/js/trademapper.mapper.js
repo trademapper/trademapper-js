@@ -88,6 +88,7 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre"], functio
 			.enter()
 				.append("path")
 				.attr("d", this.pathmaker)
+				.attr("fill", "#DFDFDF")
 				.attr("class", function(d) { return "country " + d.id; });
 				//.on("click", countryClicked)
 				//.on("mouseover", hoverCountry)
@@ -96,7 +97,10 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre"], functio
 		this.mapg.append("path")
 			.datum(this.borders)
 			.attr("d", this.pathmaker)
-			.attr("class", "country-border");
+			.attr("class", "country-border")
+			.attr("stroke", "#FFF")
+			.attr("stroke-linejoin", "round")
+			.attr("fill", "none");
 
 		this.mapg.selectAll(".disputed")
 			.data(this.disputed)
@@ -104,7 +108,7 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre"], functio
 				.append("path")
 				.attr("d", this.pathmaker)
 				.attr("class", function(d) { return "disputed " + d.id; })
-				.attr("fill", "url(#diagonalHatch)");
+				.attr("fill", "rgba(255, 0, 0, 0.4)");
 
 		// don't need to draw disputed borders
 		/*this.mapg.append("path")

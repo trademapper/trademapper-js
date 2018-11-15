@@ -115,7 +115,13 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre", "config"
 		var self = this;
 
 		var params = (new URL(document.location)).searchParams;
-		var urls = params.get('overlays').split(',');
+		var urls = params.get('overlays');
+
+		if (urls === null) {
+			return;
+		}
+
+		urls = urls.split(',');
 		console.log('FETCHING OVERLAYS FROM URLS:', urls);
 
 		urls.forEach(function (url) {

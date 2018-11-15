@@ -43,6 +43,7 @@ function($, d3) {
 			this.sectionDisableReason = reason;
 			this.getSectionElement().addClass("disabled");
 			this.minYear = this.maxYear = this.currentYear = 0;
+			this.disableSlider();
 			this.createInactiveSwitch();
 		},
 
@@ -64,17 +65,19 @@ function($, d3) {
 		* animate toggling the switch
 		*/
 		implicitEnableSlider: function() {
-		   if (this.sliderEnabled) { return; }
+			if (this.sliderEnabled) { return; }
 
-		   // animate the switch to "on", 2nd true skips triggering event
-		   this.getSwitchElement().bootstrapSwitch('state', true, true);
-		   // enable the slider and play button
-		   this.sliderEnabled = true;
-		   this.getSectionElement().removeClass("disabled");
-		   // show data for first year
-		   this.currentYear = this.minYear;
-		   // disable the year range in the filterform
-		   this.enableDisableCallback(true);
+			// animate the switch to "on", 2nd true skips triggering event
+			this.getSwitchElement().bootstrapSwitch('state', true, true);
+			// enable the slider and play button
+			this.sliderEnabled = true;
+			this.getSectionElement().removeClass("disabled");
+			// show data for first year
+			this.currentYear = this.minYear;
+			// disable the year range in the filterform
+			this.enableDisableCallback(true);
+
+			this.setSliderState();
 		},
 
 
@@ -140,12 +143,13 @@ function($, d3) {
 					this.intervalId = null;
 					this.togglePlayButton(false);
 				}
-				// disable the slider
 				section.addClass("disabled");
 				// go back to showing data for all years (with filter settings)
 				this.enableDisableCallback(false);
 				this.showTradeForAllYears();
 			}
+
+			this.setSliderState();
 		},
 
 		incrementYearSlider: function() {
@@ -256,6 +260,17 @@ function($, d3) {
 
 			this.createSlider(opts);
 			this.setSliderValue(this.currentYear);
+		},
+
+		setSliderState: function() {
+			if (this.slider === null) { return ; }
+
+			if (this.sliderEnabled) {
+				this.slider.slider('enable');
+			}
+			else {
+				this.slider.slider('disable');
+			}
 		},
 	};
 });

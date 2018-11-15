@@ -9,7 +9,16 @@ define({
 		ARROW_WIDE: "rgba(255, 255, 255, 0.5)",
 		ARROW_NARROW: "rgba(0, 0, 0, 1.0)",
 		ARROW_NARROW_PLAIN: "rgba(102, 102, 102, 1.0)",
+
+		TRADE_ORIGIN: "#000000",
+		TRADE_EXPORTER: "#45689f",
+		TRADE_IMPORTER: "#ff6600",
+		TRADE_TRANSIT: "#20AF9F",
+
+		LEGEND_BACKGROUND: "rgba(248, 248, 248, 0.6)",
 	},
+
+	FONT_FAMILY: "'Helvetica Neue',Helvetica,Arial,sans-serif",
 
 	// properties used by trademapper.js
 	ratio: 0.86,

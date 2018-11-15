@@ -1,7 +1,7 @@
 /*-------Sass Defines-----------
  ===============================*/
 
-$origin_colour: #000000;
+$origin-colour: #000000;
 $exporter-colour: #45689f;
 $transit-colour: #20AF9F;
 $importer-colour: #ff6600;
@@ -546,34 +546,6 @@ span.showhide {
 	height:100%;
 	min-height:600px;
 }
-
-.legend-background {
-	fill: #f8f8f8;
-	opacity: 0.6;
-}
-
-.legend.tradenode-label,
-.legend.traderoute-label {
-    font-size: 0.5em;
-}
-
-.legend.traderoute {
-	opacity: 0.6;
-}
-
-.tradenode.origin {
-	fill:$origin-colour;
-}
-.tradenode.exporter {
-	fill:$exporter-colour;
-}
-.tradenode.transit {
-	fill:$transit-colour;
-}
-.tradenode.importer {
-	fill:$importer-colour;
-}
-
 
 
 /*----------Tooltip---

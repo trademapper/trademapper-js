@@ -1,6 +1,7 @@
 define({
 	colours: {
 		COUNTRY: "#DFDFDF",
+		COUNTRY_TRADING: "#B1C73E",
 		COUNTRY_BORDER: "#FFF",
 		OCEAN: "#FFF",
 		DISPUTED: "#AAA",

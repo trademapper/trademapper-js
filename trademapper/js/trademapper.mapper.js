@@ -208,10 +208,12 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre", "config"
 
 	setTradingCountries: function(countriesObj) {
 		this.mapg.selectAll(".country")
-			.classed("trading", function(d) {
+			.classed("trading", function(d, idx, nodes) {
 				if (countriesObj.hasOwnProperty(d.id)) {
+					this.setAttribute("fill", config.colours["COUNTRY_TRADING"]);
 					return true;
 				} else {
+					this.setAttribute("fill", config.colours["COUNTRY"]);
 					return false;
 				}
 			});

@@ -458,9 +458,6 @@ span.showhide {
   height: 100%;
   min-height: 600px; }
 
-.country.trading {
-  fill: #b1c73e; }
-
 .legend-background {
   fill: #f8f8f8;
   opacity: 0.6; }
@@ -472,27 +469,8 @@ span.showhide {
 .legend.traderoute {
   opacity: 0.6; }
 
-.spiral.traderoute {
-  stroke: #6D6E72; }
-
-.spiral.traderoute.traderoute-highlight {
-  stroke: #EF0E81; }
-
-.route-arrow {
-  fill: none;
-  stroke-linejoin: round; }
-
-.route-arrow-head-wide {
-  fill: white;
-  fill-opacity: 0.5; }
-
-.route-arrow-head-narrow {
-  fill: black;
-  fill-opacity: 1; }
-
-.route-plain-arrow-head-narrow {
-  fill: #666666;
-  fill-opacity: 1; }
+.country.trading {
+  fill: #b1c73e; }
 
 .tradenode.origin {
   fill: #000000; }

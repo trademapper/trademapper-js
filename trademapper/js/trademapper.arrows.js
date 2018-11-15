@@ -1,5 +1,5 @@
 
-define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, flowmap, tmroute, util) {
+define(["d3", "spiralTree", "trademapper.route", "util", "config"], function(d3, flowmap, tmroute, util, config) {
 	"use strict";
 	return {
 	mapsvg: null,
@@ -56,6 +56,7 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, flowmap, 
 				.attr("orient", "auto")
 			.append("path")
 				.attr("d", "M 9 2 L 3 5 L 9 8 z")
+				.attr("fill", config.colours["ARROW_WIDE"])
 				.attr("class", "route-arrow-head-wide");
 
 		this.svgdefs.append("marker")
@@ -69,6 +70,7 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, flowmap, 
 				.attr("orient", "auto")
 			.append("path")
 				.attr("d", "M 10 0 L 0 5 L 10 10 z")
+				.attr("fill", config.colours["ARROW_NARROW"])
 				.attr("class", "route-arrow-head-narrow");
 
 		this.svgdefs.append("marker")
@@ -82,6 +84,7 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, flowmap, 
 				.attr("orient", "auto")
 			.append("path")
 				.attr("d", "M 1 2 L 10 5 L 1 8 z")
+				.attr("fill", config.colours["ARROW_WIDE"])
 				.attr("class", "route-arrow-head-wide");
 
 		this.svgdefs.append("marker")
@@ -95,6 +98,7 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, flowmap, 
 				.attr("orient", "auto")
 			.append("path")
 				.attr("d", "M 0 0 L 10 5 L 0 10 z")
+				.attr("fill", config.colours["ARROW_NARROW_PLAIN"])
 				.attr("class", "route-plain-arrow-head-narrow");
 
 		// this is for the legend
@@ -205,6 +209,8 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, flowmap, 
 			.attr("marker-end", markerEnd)
 			.attr("stroke", "url(#" + gradientId + ")")
 			.attr("stroke-width", arrowWidth)
+			.attr("stroke-linejoin", "round")
+			.attr("fill", "none")
 			.attr("data-origwidth", arrowWidth)
 			.on('mouseover', this.createPlainMouseOverFunc(route))
 			.on('mouseout', this.genericMouseOutPath);

@@ -667,7 +667,7 @@ p.tooltip-location {
 
 /*----------Year Slider----------------
  =====================================*/
-.slider {
+#slider {
   background-color: #f8f8f8;
   bottom: 0;
   height: 5em;
@@ -677,6 +677,9 @@ p.tooltip-location {
 
 #slider > #change-over-time {
   width: 100%; }
+
+.change-over-time .slider-horizontal {
+  width: 100% !important; }
 
 .change-over-time-section {
   float: right;

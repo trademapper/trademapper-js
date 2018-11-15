@@ -3,9 +3,9 @@ require.config({
 	urlArgs: 'cache_bust=' + (new Date()).getTime(),
 	paths: {
 		QUnit: '../../tests/lib/qunit-1.14.0',
-		d3: "lib/d3",
-		jquery: "lib/jquery-2.1.1.min",
-		topojson: "lib/topojson.v1",
+		d3: "lib/d3.min",
+		jquery: "lib/jquery-3.3.1.min",
+		topojson: "lib/topojson.v3.0.2.min",
 		text: "lib/text",
 			countrycentre: "map/countrycentre",
 			disputedareas: "map/disputedareas",

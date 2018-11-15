@@ -785,7 +785,7 @@ p.tooltip-location {
 /*----------Year Slider----------------
  =====================================*/
 
-.slider {
+#slider {
     background-color: #f8f8f8;
     bottom: 0;
     height: 5em;
@@ -796,6 +796,10 @@ p.tooltip-location {
 
 #slider > #change-over-time {
     width: 100%;
+}
+
+.change-over-time .slider-horizontal {
+	width: 100% !important;
 }
 
 .change-over-time-section {
@@ -1074,7 +1078,7 @@ p.tooltip-location {
     font-size: 1.3em;
     height: 2em;
     text-align: center;
-    width: 2em; 
+    width: 2em;
 }
 
 .customcsv__checkbox--multiSelect {
@@ -1089,4 +1093,4 @@ p.tooltip-location {
 .customcsv__rowcount {
     color: #ff6600;
     padding: 1em 0;
-} 
+}

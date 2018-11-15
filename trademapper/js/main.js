@@ -5,14 +5,14 @@ require.config({
 		domReady: "lib/domReady",
 		text: "lib/text",
 		// d3 bits
-		d3: "lib/d3",
-		"d3.slider": "lib/d3.slider",
+		d3: "lib/d3.min",
 		queue: "lib/queue.v1",
-		topojson: "lib/topojson.v1",
+		topojson: "lib/topojson.v3.0.2.min",
 		// jquery and bootstrap
-		jquery: "lib/jquery-2.1.1.min",
+		jquery: "lib/jquery-3.3.1.min",
 		bootstrap: "lib/bootstrap.min",
 		"bootstrap-switch": "lib/bootstrap-switch.min",
+		"bootstrap-slider": "lib/bootstrap-slider",
 		// map data - jsons imported by require
 		countrycentre: "map/countrycentre",
 		disputedareas: "map/disputedareas",
@@ -22,8 +22,8 @@ require.config({
 		bootstrap: {
 			deps: ["jquery"]
 		},
-		"d3.slider": {
-			deps: ["d3"]
+		"bootstrap-slider": {
+			deps: ["bootstrap"]
 		}
 	}
 });

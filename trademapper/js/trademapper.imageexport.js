@@ -4,9 +4,6 @@ define([
 
 function($) {
 	const DATA_URL_HEADER = "data:image/svg+xml;base64,";
-	const COUNTRY_FILL = "#DFDFDF";
-	const OCEAN_FILL = "#FFF";
-	const DISPUTED_FILL = "rgba(255, 0, 0, 0.3)";
 
 	return {
 		/**

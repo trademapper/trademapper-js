@@ -1,4 +1,4 @@
-define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre"], function(d3, topojson, mapdata, disputedareas, countryCentre) {
+define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre", "config"], function(d3, topojson, mapdata, disputedareas, countryCentre, config) {
 	"use strict";
 
 	return {
@@ -88,14 +88,14 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre"], functio
 			.enter()
 				.append("path")
 				.attr("d", this.pathmaker)
-				.attr("fill", "#DFDFDF")
+				.attr("fill", config.colours["COUNTRY"])
 				.attr("class", function(d) { return "country " + d.id; });
 
 		this.mapg.append("path")
 			.datum(this.borders)
 			.attr("d", this.pathmaker)
 			.attr("class", "country-border")
-			.attr("stroke", "#FFF")
+			.attr("stroke", config.colours["COUNTRY_BORDER"])
 			.attr("stroke-linejoin", "round")
 			.attr("fill", "none");
 
@@ -192,7 +192,7 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre"], functio
 				.attr("width", "4")
 				.attr("height", "4")
 			.append("g")
-        .attr("stroke", "#aaa")
+        .attr("stroke", config.colours["DISPUTED"])
 				.attr("stroke-width", "1px")
 			.append("path")
 				.attr("d", "M-1,1 l2,-2 M0,4 l4,-4 M3,5 l2,-2");

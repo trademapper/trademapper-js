@@ -84,13 +84,14 @@ define([
 	"trademapper.yearslider",
 	"trademapper.imageexport",
 	"util",
+	"config",
 	"text!../fragments/filterskeleton.html",
 	"text!../fragments/csvformskeleton.html",
 	"text!../fragments/yearsliderskeleton.html",
 	"text!../fragments/reopencustomcsv.html",
 ],
 function($, d3, arrows, csv, filterform, mapper, route, yearslider,
-			imageExport, util, filterSkeleton, csvFormSkeleton, yearSliderSkeleton,
+			imageExport, util, config, filterSkeleton, csvFormSkeleton, yearSliderSkeleton,
 			reopenCustomCsv) {
 	"use strict";
 
@@ -162,7 +163,7 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider,
 			.attr("height", "150%")
 			.attr("y", "-150")
 			.attr("class", "mapocean")
-			.attr("fill", "#FFF");
+			.attr("fill", config.colours["OCEAN"]);
 		this.controlg = this.tmsvg.append("g").attr("class", "controlgroup");
 
 		this.changeOverTimeElement.html(yearSliderSkeleton);

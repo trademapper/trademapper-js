@@ -74,7 +74,7 @@ define([
 
 	loadCSVFile: function() {
 		this.resetLoadErrors();
-		this.csvFile = this.fileInputElement._groups[0][0].files[0];
+		this.csvFile = d3.event.target.files[0];
 		this.csvFileName = this.csvFile.name;
 
 		var reader = new FileReader();

@@ -94,39 +94,43 @@ define([
 			csvUrl = this.urlInputElement.node().value;
 		}
 		if(csvUrl && csvUrl.length > 0) {
-			var moduleThis = this,
-				succeeded = false,
-				finished = false,
-				urlList = [csvUrl, util.corsProxy(csvUrl)];
-			// if we use the corsProxy on a URL that already does CORS
-			// then the download will fail, so try both directly and via
-			// corsProxy
-			for (var i = 0; i < urlList.length; i++) {
-				var url = urlList[i];
-				d3.xhr(url, function (error, req) {
-					if (succeeded) { return; }
-					if (!error && req.status === 200) {
-						finished = succeeded = true;
-						moduleThis.processCSVString(req.response);
-					} else {
-						console.log("unable to download", error, req);
-						moduleThis.loadErrors.badUrl.push("unable to download " + url +
-							" due to error: " + error.toString());
-						finished = true;
-					}
-				});
-			}
-			// sleep for 5 seconds, if not succeeded then show errors
-			// TODO: add indicator to say we're trying
-			var reportErrors = function() {
-				// show errors - or clear them if necessary
-				moduleThis.errorCallback();
-				// if not finished, try showing errors again in a bit
-				if (!finished) {
-					window.setTimeout(reportErrors, 2000);
+			var moduleThis = this;
+
+			// try the original CSV url
+			d3.text(csvUrl)
+			.then(
+				function (data) {
+					return Promise.resolve(data);
+				},
+				function (error) {
+					// fetch failed, so try via the proxy
+					var proxyUrl = util.corsProxy(csvUrl);
+
+					moduleThis.loadErrors.badUrl.push("unable to download " + csvUrl +
+						" due to error: " + error.toString() + "; trying via proxy URL " +
+						proxyUrl + "...");
+
+					return d3.text(proxyUrl);
 				}
-			};
-			window.setTimeout(reportErrors, 1000);
+			)
+			.then(
+				// this either receives a resolved promise from the original URL,
+				// or waits on the promise returned by the proxy URL fetch
+				function (data) {
+					// success!
+					moduleThis.processCSVString(data);
+				},
+				function (error) {
+					// both original URL and proxy URL errored
+					console.log("unable to download", error);
+
+					var message = "unable to download " + csvUrl +
+						" due to error: " + error.toString();
+					moduleThis.loadErrors.badUrl.push(message);
+
+					moduleThis.errorCallback();
+				}
+			);
 		}
 	},
 

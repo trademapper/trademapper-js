@@ -105,7 +105,7 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre"], functio
 				.append("path")
 				.attr("d", this.pathmaker)
 				.attr("class", function(d) { return "disputed " + d.id; })
-				.attr("fill", "rgba(255, 0, 0, 0.4)");
+				.attr("fill", "url(#diagonalHatch)");
 	},
 
 	setupZoom: function() {
@@ -192,7 +192,8 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre"], functio
 				.attr("width", "4")
 				.attr("height", "4")
 			.append("g")
-				.attr("class", "diagonal-hatch-path")
+        .attr("stroke", "#aaa")
+				.attr("stroke-width", "1px")
 			.append("path")
 				.attr("d", "M-1,1 l2,-2 M0,4 l4,-4 M3,5 l2,-2");
 	},

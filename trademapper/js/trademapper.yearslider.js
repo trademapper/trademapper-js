@@ -41,7 +41,6 @@ function($, d3) {
 			this.enabled = false;
 			// TODO: do something with the reason ... bootstrap alert?
 			this.sectionDisableReason = reason;
-			this.getSectionElement().addClass("disabled");
 			this.minYear = this.maxYear = this.currentYear = 0;
 
 			this.sliderEnabled = false;
@@ -57,7 +56,6 @@ function($, d3) {
 
 			this.enabled = true;
 			this.sectionDisableReason = null;
-			this.getSectionElement().removeClass("disabled");
 			this.createActiveSwitch();
 
 			this.configureSlider();

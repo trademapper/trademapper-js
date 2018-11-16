@@ -1,4 +1,4 @@
-define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre"], function(d3, topojson, mapdata, disputedareas, countryCentre) {
+define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre", "config"], function(d3, topojson, mapdata, disputedareas, countryCentre, config) {
 	"use strict";
 
 	return {
@@ -88,15 +88,16 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre"], functio
 			.enter()
 				.append("path")
 				.attr("d", this.pathmaker)
+				.attr("fill", config.colours["COUNTRY"])
 				.attr("class", function(d) { return "country " + d.id; });
-				//.on("click", countryClicked)
-				//.on("mouseover", hoverCountry)
-				//.on("mouseout", unhoverCountry);
 
 		this.mapg.append("path")
 			.datum(this.borders)
 			.attr("d", this.pathmaker)
-			.attr("class", "country-border");
+			.attr("class", "country-border")
+			.attr("stroke", config.colours["COUNTRY_BORDER"])
+			.attr("stroke-linejoin", "round")
+			.attr("fill", "none");
 
 		this.mapg.selectAll(".disputed")
 			.data(this.disputed)
@@ -105,12 +106,6 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre"], functio
 				.attr("d", this.pathmaker)
 				.attr("class", function(d) { return "disputed " + d.id; })
 				.attr("fill", "url(#diagonalHatch)");
-
-		// don't need to draw disputed borders
-		/*this.mapg.append("path")
-			.datum(this.disputedborders)
-			.attr("d", this.pathmaker)
-			.attr("class", "disputed-border");*/
 	},
 
 	setupZoom: function() {
@@ -197,7 +192,8 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre"], functio
 				.attr("width", "4")
 				.attr("height", "4")
 			.append("g")
-				.attr("class", "diagonal-hatch-path")
+				.attr("stroke", config.colours["DISPUTED"])
+				.attr("stroke-width", "1px")
 			.append("path")
 				.attr("d", "M-1,1 l2,-2 M0,4 l4,-4 M3,5 l2,-2");
 	},
@@ -212,10 +208,12 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre"], functio
 
 	setTradingCountries: function(countriesObj) {
 		this.mapg.selectAll(".country")
-			.classed("trading", function(d) {
+			.classed("trading", function(d, idx, nodes) {
 				if (countriesObj.hasOwnProperty(d.id)) {
+					this.setAttribute("fill", config.colours["COUNTRY_TRADING"]);
 					return true;
 				} else {
+					this.setAttribute("fill", config.colours["COUNTRY"]);
 					return false;
 				}
 			});

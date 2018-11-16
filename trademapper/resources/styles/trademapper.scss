@@ -1,7 +1,7 @@
 /*-------Sass Defines-----------
  ===============================*/
 
-$origin_colour: #000000;
+$origin-colour: #000000;
 $exporter-colour: #45689f;
 $transit-colour: #20AF9F;
 $importer-colour: #ff6600;
@@ -546,89 +546,6 @@ span.showhide {
 	height:100%;
 	min-height:600px;
 }
-
-.mapocean {
-	fill: #fff;
-}
-
-.country { fill: #DFDFDF; }
-
-.country.trading { fill: #b1c73e; }
-
-.country-border {
-	fill: none;
-	stroke: #fff;
-	stroke-linejoin: round;
-}
-
-.diagonal-hatch-path {
-	stroke:#aaa;
-	stroke-width:1px;
-}
-
-.disputed-border {
-	fill: none;
-	stroke: #fff;
-	stroke-linejoin: round;
-}
-
-.legend-background {
-	fill: #f8f8f8;
-	opacity: 0.6;
-}
-
-
-
-.legend.tradenode-label,
-.legend.traderoute-label {
-    font-size: 0.5em;
-}
-
-.legend.traderoute {
-	opacity: 0.6;
-}
-
-.spiral.traderoute {
-	stroke: #6D6E72;
-}
-
-.spiral.traderoute.traderoute-highlight {
-	stroke: #EF0E81;
-}
-
-.route-arrow {
-	fill: none;
-	stroke-linejoin: round;
-}
-
-.route-arrow-head-wide {
-	fill: white;
-	fill-opacity: 0.5;
-}
-
-.route-arrow-head-narrow {
-	fill: black;
-	fill-opacity: 1;
-}
-
-.route-plain-arrow-head-narrow {
-	fill: #666666;
-	fill-opacity: 1;
-}
-
-.tradenode.origin {
-	fill:$origin-colour;
-}
-.tradenode.exporter {
-	fill:$exporter-colour;
-}
-.tradenode.transit {
-	fill:$transit-colour;
-}
-.tradenode.importer {
-	fill:$importer-colour;
-}
-
 
 
 /*----------Tooltip---

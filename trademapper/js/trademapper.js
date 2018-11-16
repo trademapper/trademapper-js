@@ -82,14 +82,17 @@ define([
 	"trademapper.mapper",
 	"trademapper.route",
 	"trademapper.yearslider",
+	"trademapper.imageexport",
 	"util",
+	"config",
 	"text!../fragments/filterskeleton.html",
 	"text!../fragments/csvformskeleton.html",
 	"text!../fragments/yearsliderskeleton.html",
 	"text!../fragments/reopencustomcsv.html",
 ],
-function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
-		 filterSkeleton, csvFormSkeleton, yearSliderSkeleton, reopenCustomCsv) {
+function($, d3, arrows, csv, filterform, mapper, route, yearslider,
+			imageExport, util, config, filterSkeleton, csvFormSkeleton, yearSliderSkeleton,
+			reopenCustomCsv) {
 	"use strict";
 
 	return {
@@ -100,6 +103,7 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 	toolbarElement: null,
 	tooltipElement: null,
 	fileInputElement: null,
+	imageExportButtonElement: null,
 	changeOverTimeElement: null,
 	tmsvg: null,
 	svgDefs: null,
@@ -114,33 +118,15 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 	queryString: null,
 	yearColumnName: null,
 
-	defaultConfig: {
-			ratio: 0.86,
-			arrowColours: {
-				opacity: 0.6,
-				pathStart: "rgba(0,0,0,1)",
-				pathEnd: "rgba(0,0,0,0.4)"
-			},
-			pointTypeSize: {
-				origin: 5.5,
-				exporter: 4,
-				transit: 2.5,
-				importer: 2
-			},
-			minArrowWidth: 0.75,
-			maxArrowWidth: 20,
-			arrowType: "plain-arrows",  // could be "plain-arrows" or "flowmap"
-			skipCsvAutoDetect: false,
-			width: 950,
-			height: 500
-		},
+	defaultConfig: config,
 
 	init: function(mapId, fileFormElementId, filterFormElementId,
-	               changeOverTimeElementId, tmConfig) {
+	               imageExportButtonElementId, changeOverTimeElementId, tmConfig) {
 		this.queryString = util.queryString();
 		this.mapRootElement = d3.select(mapId);
 		this.fileFormElement = d3.select(fileFormElementId);
 		this.filterFormElement = d3.select(filterFormElementId);
+		this.imageExportButtonElement = d3.select(imageExportButtonElementId);
 		this.changeOverTimeElement = d3.select(changeOverTimeElementId);
 		this.setConfigDefaults(tmConfig);
 
@@ -157,7 +143,8 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 			.attr("width", "150%")
 			.attr("height", "150%")
 			.attr("y", "-150")
-			.attr("class", "mapocean");
+			.attr("class", "mapocean")
+			.attr("fill", config.colours["OCEAN"]);
 		this.controlg = this.tmsvg.append("g").attr("class", "controlgroup");
 
 		this.changeOverTimeElement.html(yearSliderSkeleton);
@@ -178,6 +165,10 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 			function(csvData, filterSpec, filters) { moduleThis.filterLoadedCallback(csvData, filterSpec, filters); },
 			function() { moduleThis.csvLoadErrorCallback(); },
 			this.config.skipCsvAutoDetect);
+
+		// NB we want the raw DOM node so we can wrap it with jQuery, to make
+		// height/width retrieval simpler
+		imageExport.init(this.imageExportButtonElement, this.tmsvg.node());
 
 		route.setCountryGetPointFunc(function(countryCode) {return mapper.countryCentrePoint(countryCode);});
 		route.setLatLongToPointFunc(function(latLong) {return mapper.latLongToPoint(latLong);});

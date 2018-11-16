@@ -33,5 +33,5 @@ require(["trademapper", "bootstrap", "domReady!"], function(tm) {
 	"use strict";
 	var config = {arrowType:"plain-arrows"};
 	tm.init("#trademapper", "#tm-file-select", "#form-filters",
-			'#change-over-time', config);
+			'#tm-image-export', '#change-over-time', config);
 });

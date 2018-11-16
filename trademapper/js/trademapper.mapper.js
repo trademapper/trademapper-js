@@ -69,9 +69,7 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre", "config"
 
 	drawMap: function() {
 		this.projection = d3.geoMercator();
-			//.scale(mapWidth/1.25)
-			//.translate([mapWidth/4, mapHeight/2+10]);
-		this.pathmaker = d3.geoPath().projection(this.projection);
+		this.pathmaker = d3.geoPath().projection(this.projection).pointRadius(1);
 
 		this.countries = topojson.feature(mapdata, mapdata.objects.subunits).features;
 

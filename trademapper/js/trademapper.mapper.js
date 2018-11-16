@@ -149,10 +149,8 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre", "config"
 	loadTopojsonFromURL: function(url) {
 		var self = this;
 
-		d3.xhr(url, function (error, req) {
-			if (!error && req.status === 200) {
-				var data = JSON.parse(req.response);
-
+		d3.json(url).then(
+			function (data) {
 				// generate HTML for this overlay
 				var start = new Date();
 
@@ -169,11 +167,12 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre", "config"
 
 				elapsed = new Date() - start;
 				console.log('TIME TO INSERT HTML DERIVED FROM ' + url + ' INTO DOM (msecs): ', elapsed);
+			},
+
+			function (error) {
+				console.log("unable to download", error);
 			}
-			else {
-				console.log("unable to download", error, req);
-			}
-		});
+		);
 	},
 
 	setupZoom: function() {

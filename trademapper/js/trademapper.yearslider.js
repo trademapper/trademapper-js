@@ -43,7 +43,10 @@ function($, d3) {
 			this.sectionDisableReason = reason;
 			this.getSectionElement().addClass("disabled");
 			this.minYear = this.maxYear = this.currentYear = 0;
-			this.disableSlider();
+
+			this.sliderEnabled = false;
+			this.setSliderState();
+
 			this.createInactiveSwitch();
 		},
 

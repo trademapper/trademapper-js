@@ -192,7 +192,7 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre", "config"
 				.attr("width", "4")
 				.attr("height", "4")
 			.append("g")
-        .attr("stroke", config.colours["DISPUTED"])
+				.attr("stroke", config.colours["DISPUTED"])
 				.attr("stroke-width", "1px")
 			.append("path")
 				.attr("d", "M-1,1 l2,-2 M0,4 l4,-4 M3,5 l2,-2");

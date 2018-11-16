@@ -59,6 +59,7 @@ function($, d3) {
 			this.createActiveSwitch();
 
 			this.configureSlider();
+			this.setSliderState();
 		},
 
 		/*

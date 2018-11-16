@@ -10,6 +10,8 @@ define({
 		ARROW_NARROW: "rgba(0, 0, 0, 1.0)",
 		ARROW_NARROW_PLAIN: "rgba(102, 102, 102, 1.0)",
 
+		// colours for nodes; if these are changed here, the corresponding
+		// variables at the top of the trademapper.scss file should also be edited
 		TRADE_ORIGIN: "#000000",
 		TRADE_EXPORTER: "#45689f",
 		TRADE_IMPORTER: "#ff6600",

@@ -118,26 +118,7 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider,
 	queryString: null,
 	yearColumnName: null,
 
-	defaultConfig: {
-			ratio: 0.86,
-			arrowColours: {
-				opacity: 0.6,
-				pathStart: "rgba(0,0,0,1)",
-				pathEnd: "rgba(0,0,0,0.4)"
-			},
-			pointTypeSize: {
-				origin: 5.5,
-				exporter: 4,
-				transit: 2.5,
-				importer: 2
-			},
-			minArrowWidth: 0.75,
-			maxArrowWidth: 20,
-			arrowType: "plain-arrows",  // could be "plain-arrows" or "flowmap"
-			skipCsvAutoDetect: false,
-			width: 950,
-			height: 500
-		},
+	defaultConfig: config,
 
 	init: function(mapId, fileFormElementId, filterFormElementId,
 	               imageExportButtonElementId, changeOverTimeElementId, tmConfig) {

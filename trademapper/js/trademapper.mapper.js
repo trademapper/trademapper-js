@@ -88,16 +88,12 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre", "config"
 			.enter()
 				.append("path")
 				.attr("d", this.pathmaker)
-				.attr("fill", config.colours["COUNTRY"])
 				.attr("class", function(d) { return "country " + d.id; });
 
 		this.mapg.append("path")
 			.datum(this.borders)
 			.attr("d", this.pathmaker)
-			.attr("class", "country-border")
-			.attr("stroke", config.colours["COUNTRY_BORDER"])
-			.attr("stroke-linejoin", "round")
-			.attr("fill", "none");
+			.attr("class", "country-border");
 
 		this.mapg.selectAll(".disputed")
 			.data(this.disputed)
@@ -139,7 +135,7 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre", "config"
 			}
 		}
 
-		var eltStart = '<path fill="rgba(255, 0, 0, 0.5)" d="';
+		var eltStart = '<path class="overlay" d="';
 		var eltEnd = '"></path>';
 		return eltStart + features.join(eltEnd + eltStart) + eltEnd;
 	},
@@ -275,10 +271,8 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre", "config"
 		this.mapg.selectAll(".country")
 			.classed("trading", function(d, idx, nodes) {
 				if (countriesObj.hasOwnProperty(d.id)) {
-					this.setAttribute("fill", config.colours["COUNTRY_TRADING"]);
 					return true;
 				} else {
-					this.setAttribute("fill", config.colours["COUNTRY"]);
 					return false;
 				}
 			});

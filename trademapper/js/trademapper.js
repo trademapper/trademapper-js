@@ -136,6 +136,31 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider,
 			.attr("id", "mapcanvas")
 			.attr("class", "map-svg flow")
 			.attr("viewBox", "0 0 "+this.config.width+" "+this.config.height);
+
+		var style = this.tmsvg.append("style");
+
+		style.text(
+			"/* <![CDATA[ */" +
+			".country { fill: " + config.colours["COUNTRY"] + "; }" +
+			".country.trading { fill: " + config.colours["COUNTRY_TRADING"] + "; }" +
+			".country-border { " +
+				"stroke: " + config.colours["COUNTRY_BORDER"] + ";" +
+				"fill: none;" +
+				"stroke-linejoin: round;" +
+			"}" +
+			".mapocean { fill: " + config.colours["OCEAN"] + "; }" +
+			".legend-background { fill: " + config.colours["LEGEND_BACKGROUND"] + "; }" +
+			".route-arrow-head-wide { fill: " + config.colours["ARROW_WIDE"] + "; }" +
+			".route-arrow-head-narrow { fill: " + config.colours["ARROW_NARROW"] + "; }" +
+			".route-plain-arrow-head-narrow { fill: " + config.colours["ARROW_NARROW_PLAIN"] + "; }" +
+			".tradenode.exporter { fill: " + config.colours["TRADE_EXPORTER"] + "; }" +
+			".tradenode.origin { fill: " + config.colours["TRADE_ORIGIN"] + "; }" +
+			".tradenode.transit { fill: " + config.colours["TRADE_TRANSIT"] + "; }" +
+			".tradenode.importer { fill: " + config.colours["TRADE_IMPORTER"] + "; }" +
+			".overlay { fill: " + config.colours["OVERLAY"] + "; }" +
+		  "/* ]] */>"
+		);
+
 		this.svgDefs = this.tmsvg.append("defs");
 		this.zoomg = this.tmsvg.append("g").attr("class", "zoomgroup");
 		// append a background rectangle so mouse scroll zoom works over sea
@@ -143,8 +168,7 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider,
 			.attr("width", "150%")
 			.attr("height", "150%")
 			.attr("y", "-150")
-			.attr("class", "mapocean")
-			.attr("fill", config.colours["OCEAN"]);
+			.attr("class", "mapocean");
 		this.controlg = this.tmsvg.append("g").attr("class", "controlgroup");
 
 		this.changeOverTimeElement.html(yearSliderSkeleton);

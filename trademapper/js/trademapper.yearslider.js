@@ -37,6 +37,34 @@ function($, d3) {
 		// variables for the async sleep stuff
 		intervalId: null,
 
+		savedState: null,
+
+		// save the current state of the year slider and switch so they can
+		// be re-applied at a later date; this is used to reset them after
+		// playing the video at a fast rate to export it as an image
+		saveState: function () {
+			this.savedState = {
+				currentYear: this.currentYear,
+				sliderEnabled: this.sliderEnabled,
+			};
+		},
+
+		applySavedState: function () {
+			if (this.savedState !== null) {
+				this.currentYear = this.savedState.currentYear;
+				this.setSliderValue(this.currentYear);
+
+				this.sliderEnabled = this.savedState.sliderEnabled;
+				this.setSliderState();
+
+				if (this.sliderEnabled) {
+					this.showTradeForYear(this.currentYear);
+				} else {
+					this.showTradeForAllYears();
+				}
+			}
+		},
+
 		disable: function(reason) {
 			this.enabled = false;
 			// TODO: do something with the reason ... bootstrap alert?

@@ -83,6 +83,7 @@ define([
 	"trademapper.route",
 	"trademapper.yearslider",
 	"trademapper.imageexport",
+	"trademapper.videoexport",
 	"util",
 	"config",
 	"text!../fragments/filterskeleton.html",
@@ -92,8 +93,8 @@ define([
 	"text!../fragments/svgstyles.css",
 ],
 function($, d3, arrows, csv, filterform, mapper, route, yearslider,
-			imageExport, util, config, filterSkeleton, csvFormSkeleton, yearSliderSkeleton,
-			reopenCustomCsv, svgStylesTemplate) {
+			imageExport, videoExport, util, config, filterSkeleton, csvFormSkeleton,
+			yearSliderSkeleton,	reopenCustomCsv, svgStylesTemplate) {
 	"use strict";
 
 	return {
@@ -118,16 +119,20 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider,
 	currentUnit: null,
 	queryString: null,
 	yearColumnName: null,
+	yearSlider: null,
+	imageExport: null,
 
 	defaultConfig: config,
 
 	init: function(mapId, fileFormElementId, filterFormElementId,
-	               imageExportButtonElementId, changeOverTimeElementId, tmConfig) {
+	               imageExportButtonElementId, videoExportButtonElementId,
+								 changeOverTimeElementId, tmConfig) {
 		this.queryString = util.queryString();
 		this.mapRootElement = d3.select(mapId);
 		this.fileFormElement = d3.select(fileFormElementId);
 		this.filterFormElement = d3.select(filterFormElementId);
 		this.imageExportButtonElement = d3.select(imageExportButtonElementId);
+		this.videoExportButtonElement = d3.select(videoExportButtonElementId);
 		this.changeOverTimeElement = d3.select(changeOverTimeElementId);
 		this.setConfigDefaults(tmConfig);
 
@@ -175,6 +180,9 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider,
 		// NB we want the raw DOM node so we can wrap it with jQuery, to make
 		// height/width retrieval simpler
 		imageExport.init(this.imageExportButtonElement, this.tmsvg.node());
+		this.imageExport = imageExport;
+
+		videoExport.init(this.videoExportButtonElement, this);
 
 		route.setCountryGetPointFunc(function(countryCode) {return mapper.countryCentrePoint(countryCode);});
 		route.setLatLongToPointFunc(function(latLong) {return mapper.latLongToPoint(latLong);});
@@ -183,9 +191,12 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider,
 		// slightly misnamed as we go back to the filter values for the years
 		yearslider.showTradeForAllYears = function() {return moduleThis.filterformChangedCallback(); };
 		yearslider.enableDisableCallback = function(enable) {return moduleThis.yearSliderEnableDisableCallback(enable); };
+
 		this.setUpAsideToggle();
 		this.hideUnusedTabs();
 		yearslider.create();
+
+		this.yearslider = yearslider;
 
 		if (this.queryString.hasOwnProperty("loadcsv")) {
 			this.loadCsvFromUrl();

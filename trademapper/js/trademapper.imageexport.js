@@ -28,15 +28,20 @@ function($) {
 			document.body.appendChild(this.link);
 		},
 
-		// export the associated SVG element
-		exportSvg: function() {
+		// get a data URL for the current content of the SVG element
+		getSvgDataUrl: function () {
 			this.$svgElement.attr("version", 1.1);
 			this.$svgElement.attr("xmlns", "http://www.w3.org/2000/svg");
 
 			var svgString = this.$svgElement.get(0).outerHTML;
 			var blob = new Blob([svgString], {type: "image/svg+xml"});
 
-			this.link.href = window.URL.createObjectURL(blob);
+			return window.URL.createObjectURL(blob);
+		},
+
+		// export the associated SVG element as a download
+		exportSvg: function() {
+			this.link.href = this.getSvgDataUrl();
 			this.link.click();
 		}
 	};

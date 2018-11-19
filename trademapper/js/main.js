@@ -1,6 +1,7 @@
 require.config({
 	baseUrl: 'js',
 	paths: {
+		gifshot: "lib/gifshot.min",
 		// require.js bits
 		domReady: "lib/domReady",
 		text: "lib/text",
@@ -33,5 +34,5 @@ require(["trademapper", "bootstrap", "domReady!"], function(tm) {
 	"use strict";
 	var config = {arrowType:"plain-arrows"};
 	tm.init("#trademapper", "#tm-file-select", "#form-filters",
-			'#tm-image-export', '#change-over-time', config);
+			'#tm-image-export', '#tm-video-export', '#change-over-time', config);
 });

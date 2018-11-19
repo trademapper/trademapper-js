@@ -157,7 +157,14 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider,
 			".tradenode.origin { fill: " + config.colours["TRADE_ORIGIN"] + "; }" +
 			".tradenode.transit { fill: " + config.colours["TRADE_TRANSIT"] + "; }" +
 			".tradenode.importer { fill: " + config.colours["TRADE_IMPORTER"] + "; }" +
-			".overlay { fill: " + config.colours["OVERLAY"] + "; }" +
+			".overlay-polygon { fill: " + config.colours["OVERLAY_POLYGON"] + "; }" +
+			".overlay-point { fill: " + config.colours["OVERLAY_POINT"] + "; }" +
+			".overlay-polygon-boundary, .overlay-line { " +
+				"stroke-width: 0.03px;" +
+				"fill: none;" +
+			"}" +
+			".overlay-polygon-boundary { stroke: " + config.colours["OVERLAY_POLYGON_BOUNDARY"] + "; }" +
+			".overlay-line { stroke: " + config.colours["OVERLAY_LINE"] + "; }" +
 		  "/* ]] */>"
 		);
 

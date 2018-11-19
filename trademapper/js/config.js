@@ -20,8 +20,10 @@ define({
 		LEGEND_BACKGROUND: "rgba(248, 248, 248, 0.6)",
 
 		// this may eventually be customisable by the user and/or set per overlay
-		OVERLAY: "rgba(255, 0, 0, 0.4)",
-		OVERLAY_BOUNDARY: "rgba(0, 0, 0, 0.4)",
+		OVERLAY_POLYGON: "rgba(168, 0, 0, 0.4)",
+		OVERLAY_POLYGON_BOUNDARY: "rgba(0, 0, 0, 0.4)",
+		OVERLAY_LINE: "rgba(0, 0, 255, 0.8)",
+		OVERLAY_POINT: "rgba(0, 255, 0, 0.6)",
 	},
 
 	FONT_FAMILY: "'Helvetica Neue',Helvetica,Arial,sans-serif",

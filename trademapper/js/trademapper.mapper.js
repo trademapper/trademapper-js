@@ -132,21 +132,84 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre", "config"
 	},
 
 	loadTopojson: function (data) {
-		var features = [], propertyFeatures;
-		for (var propertyName in data.objects) {
-			propertyFeatures = topojson.feature(data, data.objects[propertyName]).features;
+		// lines need drawing with class overlay-line;
+		// polygons need drawing with class overlay-area, but also need to
+		// add lines denoting their boundaries;
+		// points can be treated the same way as polygons and don't need boundaries
+		// to be derived
+		var polygons = {
+			type: "GeometryCollection",
+			geometries: []
+		};
 
-			for (var i = 0; i < propertyFeatures.length; i++) {
-				features.push(propertyFeatures[i]);
+		var lines = {
+			type: "GeometryCollection",
+			geometries: []
+		};
+
+		var points = {
+			type: "GeometryCollection",
+			geometries: []
+		};
+
+		// sort the geometries so they can be drawn appropriately
+		var geometries, i, geometry;
+		for (var propertyName in data.objects) {
+			geometries = data.objects[propertyName].geometries;
+
+			for (i = 0; i < geometries.length; i++) {
+				var geometry = geometries[i];
+
+				if (geometry.type === "Polygon" || geometry.type === "MultiPolygon") {
+					polygons.geometries.push(geometry);
+				} else if (geometry.type === "LineString" || geometry.type === "MultiLineString") {
+					lines.geometries.push(geometry);
+				} else if (geometry.type === "Point" || geometry.type === "MultiPoint") {
+					points.geometries.push(geometry);
+				}
 			}
 		}
 
-		this.mapg.selectAll(".overlay")
-			.data(features)
-			.enter()
-				.append("path")
+		if (polygons.geometries.length > 0) {
+			var polygonFeatures = topojson.feature(data, polygons).features;
+
+			this.mapg.selectAll(".overlay-polygon")
+				.data(polygonFeatures)
+				.enter()
+					.append("path")
+					.attr("d", this.pathmaker)
+					.attr("class", "overlay-polygon");
+
+			// extract lines around polygons; this creates a multiline which draws
+			// around the polygons and shows their borders
+			var boundaries = topojson.mesh(data, polygons, function(a, b) { return a !== b; });
+			this.mapg.append("path")
+				.datum(boundaries)
 				.attr("d", this.pathmaker)
-				.attr("class", "overlay");
+				.attr("class", "overlay-polygon-boundary");
+		}
+
+		// draw lines
+		if (lines.geometries.length > 0) {
+			var lineFeatures = topojson.feature(data, lines).features;
+			this.mapg.selectAll(".overlay-line")
+				.data(lineFeatures)
+				.enter()
+					.append("path")
+					.attr("d", this.pathmaker)
+					.attr("class", "overlay-line");
+		}
+
+		// draw points
+		if (points.geometries.length > 0) {
+			var pointFeatures = topojson.feature(data, points).features;
+			this.mapg.selectAll(".overlay-point")
+				.data(pointFeatures)
+				.enter()
+					.append("path")
+					.attr("d", this.pathmaker)
+					.attr("class", "overlay-point");
+		}
 
 		console.log("loaded topojson");
 	},

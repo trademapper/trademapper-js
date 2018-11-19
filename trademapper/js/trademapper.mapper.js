@@ -25,13 +25,18 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre", "config"
 	 * decodes countries and borders and draws them
 	 */
 	init: function(svgZoomg, controlg, svgDefs, mapConfig, svg) {
+		this.projection = d3.geoMercator();
+		this.pathmaker = d3.geoPath().projection(this.projection).pointRadius(1);
+
 		this.zoomg = svgZoomg;
+		this.mapg = this.zoomg.append("g").attr("class", "mapgroup");
+
 		this.controlg = controlg;
 		this.svgDefs = svgDefs;
 		this.config = mapConfig;
 		this.svg = svg;
-		this.width = mapConfig.width  || 960;
-	 this.height = mapConfig.height  || 400;
+		this.width = mapConfig.width || 960;
+		this.height = mapConfig.height || 400;
 		this.addPatternDefs();
 		this.drawMap();
 		this.addOverlays();
@@ -68,20 +73,15 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre", "config"
 	},
 
 	drawMap: function() {
-		this.projection = d3.geoMercator();
-		this.pathmaker = d3.geoPath().projection(this.projection).pointRadius(1);
-
 		this.countries = topojson.feature(mapdata, mapdata.objects.subunits).features;
 
 		this.borders = topojson.mesh(mapdata, mapdata.objects.subunits,
 			function(a, b) { return true; });
+
 		this.disputed = topojson.feature(disputedareas, disputedareas.objects.disputeunit).features;
 		// don't need to draw disputed borders
 		/*this.disputedborders = topojson.mesh(disputedareas, disputedareas.objects.disputeunit,
 			function(a, b) { return true; });*/
-
-		this.mapg = this.zoomg.append("g")
-			.attr("class", "mapgroup");
 
 		this.mapg.selectAll(".subunit")
 			.data(this.countries)
@@ -106,8 +106,6 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre", "config"
 
 	// load overlays from the overlays= variable in the query string
 	addOverlays: function () {
-		var self = this;
-
 		var params = (new URL(document.location)).searchParams;
 		var urls = params.get('overlays');
 
@@ -118,55 +116,39 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre", "config"
 		urls = urls.split(',');
 		console.log('FETCHING OVERLAYS FROM URLS:', urls);
 
-		urls.forEach(function (url) {
-			self.loadTopojsonFromURL(url);
-		});
-	},
-
-	loadTopojson: function (data, pathmaker) {
-		var features = [];
-		var propertyFeatures, numFeaturesToUse;
-		for (var propertyName in data.objects) {
-			propertyFeatures = topojson.feature(data, data.objects[propertyName]).features;
-			numFeaturesToUse = propertyFeatures.length;
-
-			for (var i = 0; i < numFeaturesToUse; i++) {
-				features.push(pathmaker(propertyFeatures[i]));
-			}
-		}
-
-		var eltStart = '<path class="overlay" d="';
-		var eltEnd = '"></path>';
-		return eltStart + features.join(eltEnd + eltStart) + eltEnd;
+		urls.forEach(this.loadTopojsonFromURL.bind(this));
 	},
 
 	loadTopojsonFromURL: function(url) {
 		var self = this;
 
 		d3.json(url).then(
-			function (data) {
-				// generate HTML for this overlay
-				var start = new Date();
-
-				var html = self.loadTopojson(data, self.pathmaker);
-
-				var end = new Date();
-				var elapsed = end - start;
-				console.log('TIME TO PROCESS TOPOJSON FROM ' + url + ' (msecs): ', elapsed);
-
-				// append overlay HTML into the svg element
-				start = new Date();
-
-				self.mapg.html(self.mapg.html() + html)
-
-				elapsed = new Date() - start;
-				console.log('TIME TO INSERT HTML DERIVED FROM ' + url + ' INTO DOM (msecs): ', elapsed);
-			},
+			this.loadTopojson.bind(this),
 
 			function (error) {
 				console.log("unable to download", error);
 			}
 		);
+	},
+
+	loadTopojson: function (data) {
+		var features = [], propertyFeatures;
+		for (var propertyName in data.objects) {
+			propertyFeatures = topojson.feature(data, data.objects[propertyName]).features;
+
+			for (var i = 0; i < propertyFeatures.length; i++) {
+				features.push(propertyFeatures[i]);
+			}
+		}
+
+		this.mapg.selectAll(".overlay")
+			.data(features)
+			.enter()
+				.append("path")
+				.attr("d", this.pathmaker)
+				.attr("class", "overlay");
+
+		console.log("loaded topojson");
 	},
 
 	setupZoom: function() {

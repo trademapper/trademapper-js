@@ -21,6 +21,7 @@ define({
 
 		// this may eventually be customisable by the user and/or set per overlay
 		OVERLAY: "rgba(255, 0, 0, 0.4)",
+		OVERLAY_BOUNDARY: "rgba(0, 0, 0, 0.4)",
 	},
 
 	FONT_FAMILY: "'Helvetica Neue',Helvetica,Arial,sans-serif",

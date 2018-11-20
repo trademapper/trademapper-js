@@ -33,7 +33,7 @@ function($) {
 			this.$svgElement.attr("version", 1.1);
 			this.$svgElement.attr("xmlns", "http://www.w3.org/2000/svg");
 
-			var svgString = this.$svgElement.get(0).outerHTML;
+			var svgString = new XMLSerializer().serializeToString(this.$svgElement.get(0));
 			var blob = new Blob([svgString], {type: "image/svg+xml"});
 
 			return window.URL.createObjectURL(blob);

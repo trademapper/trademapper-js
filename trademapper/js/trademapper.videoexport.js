@@ -1,4 +1,4 @@
-define(["gifshot", "jquery"], function (gifshot, $) {
+define(["gif", "jquery"], function (GIF, $) {
 
 	return {
 		init: function (button, trademapper) {
@@ -26,27 +26,43 @@ define(["gifshot", "jquery"], function (gifshot, $) {
 			var minYear = this.trademapper.minMaxYear[0];
 			var maxYear = this.trademapper.minMaxYear[1];
 
-			var dataUrls = [];
+			var gif = new GIF({
+				workers: 4,
+				quality: 10,
+				height: height,
+				width: width,
+				workerScript: "./js/lib/gif.worker.js",
+				repeat: -1,
+			});
+
+			var self = this;
+
+			gif.on("finished", function (blob) {
+				self.link.href = window.URL.createObjectURL(blob);
+				self.link.click();
+			});
+
+			var numImagesLoaded = 0;
+			var numImagesExpected = maxYear - minYear + 1;
+			var images = [];
+
+			var onload = function () {
+				numImagesLoaded++;
+				if (numImagesLoaded === numImagesExpected) {
+					for (var i = 0; i < images.length; i++) {
+						gif.addFrame(images[i], { delay: 2000 });
+					}
+					gif.render();
+				}
+			};
+
 			for (var year = minYear; year <= maxYear; year++) {
 				this.trademapper.showTradeForYear(year);
-				dataUrls.push(this.trademapper.imageExport.getSvgDataUrl());
+				var image = new Image();
+				image.onload = onload;
+				images.push(image);
+				image.src = this.trademapper.imageExport.getSvgDataUrl();
 			}
-
-			gifshot.createGIF({
-				images: dataUrls,
-				gifHeight: height,
-				gifWidth: width,
-				frameDuration: 20,
-				numWorkers: 4,
-			}, function(obj) {
-				if (!obj.error) {
-					var animatedImage = document.createElement('img');
-					animatedImage.src = obj.image;
-					document.body.appendChild(animatedImage);
-				} else {
-					console.error(obj.error);
-				}
-			});
 
 			this.trademapper.yearslider.applySavedState();
 		}

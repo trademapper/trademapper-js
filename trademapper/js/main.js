@@ -1,7 +1,7 @@
 require.config({
 	baseUrl: 'js',
 	paths: {
-		gifshot: "lib/gifshot.min",
+		gif: "lib/gif.min",
 		// require.js bits
 		domReady: "lib/domReady",
 		text: "lib/text",

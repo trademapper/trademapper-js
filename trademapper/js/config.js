@@ -3,21 +3,22 @@ define({
 	colours: {
 		COUNTRY: "#DFDFDF",
 		COUNTRY_TRADING: "#B1C73E",
-		COUNTRY_BORDER: "#FFF",
-		OCEAN: "#FFF",
-		DISPUTED: "#AAA",
+		COUNTRY_BORDER: "#FFFFFF",
+		OCEAN: "#FFFFFF",
+		DISPUTED: "#AAAAAA",
 		ARROW_WIDE: "rgba(255, 255, 255, 0.5)",
-		ARROW_NARROW: "rgba(0, 0, 0, 1.0)",
+		ARROW_NARROW: "#000000",
 		ARROW_NARROW_PLAIN: "rgba(102, 102, 102, 1.0)",
 
 		// colours for nodes; if these are changed here, the corresponding
 		// variables at the top of the trademapper.scss file should also be edited
 		TRADE_ORIGIN: "#000000",
-		TRADE_EXPORTER: "#45689f",
-		TRADE_IMPORTER: "#ff6600",
+		TRADE_EXPORTER: "#45689F",
+		TRADE_IMPORTER: "#FF6600",
 		TRADE_TRANSIT: "#20AF9F",
 
-		LEGEND_BACKGROUND: "rgba(248, 248, 248, 0.6)",
+		LEGEND_TEXT: "#333333",
+		LEGEND_BACKGROUND: "#F8F8F8",
 
 		// this may eventually be customisable by the user and/or set per overlay
 		OVERLAY_POLYGON: "rgba(168, 0, 0, 0.4)",

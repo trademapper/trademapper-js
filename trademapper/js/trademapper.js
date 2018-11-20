@@ -140,7 +140,6 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider,
 		var style = this.tmsvg.append("style");
 
 		style.text(
-			"/* <![CDATA[ */" +
 			".country { fill: " + config.colours["COUNTRY"] + "; }" +
 			".country.trading { fill: " + config.colours["COUNTRY_TRADING"] + "; }" +
 			".country-border { " +
@@ -149,7 +148,12 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider,
 				"stroke-linejoin: round;" +
 			"}" +
 			".mapocean { fill: " + config.colours["OCEAN"] + "; }" +
-			".legend-background { fill: " + config.colours["LEGEND_BACKGROUND"] + "; }" +
+			"#legendcontainer, g.legend { opacity: 1; }" +
+			".legend-background {" +
+				"fill: " + config.colours["LEGEND_BACKGROUND"] + ";" +
+				"opacity: 0.6;" +
+			"}" +
+			".legend text { fill: " + config.colours["LEGEND_TEXT"] + "; }" +
 			".route-arrow-head-wide { fill: " + config.colours["ARROW_WIDE"] + "; }" +
 			".route-arrow-head-narrow { fill: " + config.colours["ARROW_NARROW"] + "; }" +
 			".route-plain-arrow-head-narrow { fill: " + config.colours["ARROW_NARROW_PLAIN"] + "; }" +
@@ -164,8 +168,7 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider,
 				"fill: none;" +
 			"}" +
 			".overlay-polygon-boundary { stroke: " + config.colours["OVERLAY_POLYGON_BOUNDARY"] + "; }" +
-			".overlay-line { stroke: " + config.colours["OVERLAY_LINE"] + "; }" +
-		  "/* ]] */>"
+			".overlay-line { stroke: " + config.colours["OVERLAY_LINE"] + "; }"
 		);
 
 		this.svgDefs = this.tmsvg.append("defs");

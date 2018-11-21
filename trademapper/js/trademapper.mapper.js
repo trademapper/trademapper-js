@@ -123,10 +123,17 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre", "config"
 		var self = this;
 
 		d3.json(url).then(
-			this.loadTopojson.bind(this),
+			function (data) {
+				try {
+					this.loadTopojson(data);
+				}
+				catch (error) {
+					console.error("unable to parse topojson file", error);
+				}
+			},
 
 			function (error) {
-				console.log("unable to download", error);
+				console.error("unable to download", error);
 			}
 		);
 	},

@@ -71,6 +71,22 @@ define(['jquery'], function($) {
 				}
 			}
 			return query_string;
-		}
+		},
+
+		/**
+     * Render a template string, interpolating values from context. This is
+		 * very simple and doesn't allow anything complex like running arbitrary
+     * code or using conditionals.
+     *
+     * templateStr: string; variables to be interpolated are denoted with {{...}}
+     * context: object with properties; property names in templateStr are
+     *   replaced with the corresponding value from context (no HTML-escaping
+		 *   is applied)
+     */
+		renderTemplate: function (templateStr, context) {
+			return templateStr.replace(/\{\{(.*?)\}\}/g, function (e) {
+				return "" + context[e.slice(2, -2)];
+			});
+		},
 	};
 });

@@ -89,10 +89,11 @@ define([
 	"text!../fragments/csvformskeleton.html",
 	"text!../fragments/yearsliderskeleton.html",
 	"text!../fragments/reopencustomcsv.html",
+	"text!../fragments/svgstyles.css",
 ],
 function($, d3, arrows, csv, filterform, mapper, route, yearslider,
 			imageExport, util, config, filterSkeleton, csvFormSkeleton, yearSliderSkeleton,
-			reopenCustomCsv) {
+			reopenCustomCsv, svgStylesTemplate) {
 	"use strict";
 
 	return {
@@ -138,9 +139,11 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider,
 			.attr("viewBox", "0 0 "+this.config.width+" "+this.config.height);
 
 		var style = this.tmsvg.append("style");
+		var svgStyles = util.renderTemplate(svgStylesTemplate, config.colours);
+		console.log(svgStyles);
+		style.text(svgStyles);
 
-		style.text(
-			".country { fill: " + config.colours["COUNTRY"] + "; }" +
+/*			".country { fill: " + config.colours["COUNTRY"] + "; }" +
 			".country.trading { fill: " + config.colours["COUNTRY_TRADING"] + "; }" +
 			".country-border { " +
 				"stroke: " + config.colours["COUNTRY_BORDER"] + ";" +
@@ -169,7 +172,7 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider,
 			"}" +
 			".overlay-polygon-boundary { stroke: " + config.colours["OVERLAY_POLYGON_BOUNDARY"] + "; }" +
 			".overlay-line { stroke: " + config.colours["OVERLAY_LINE"] + "; }"
-		);
+		);*/
 
 		this.svgDefs = this.tmsvg.append("defs");
 		this.zoomg = this.tmsvg.append("g").attr("class", "zoomgroup");

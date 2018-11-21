@@ -125,7 +125,7 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre", "config"
 		d3.json(url).then(
 			function (data) {
 				try {
-					this.loadTopojson(data);
+					self.loadTopojson(data);
 				}
 				catch (error) {
 					console.error("unable to parse topojson file", error);

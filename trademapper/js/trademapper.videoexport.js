@@ -54,6 +54,11 @@ define(["gif", "jquery", "util"], function (GIF, $, util) {
 				}
 			};
 
+			var yearContainer = $("<svg class='year-container' x='0' y='0'>" +
+				"<text class='year-text' x='0.25em' y='1em'></text>" +
+				"</svg>");
+			var yearText = yearContainer.find('text');
+
 			for (var year = minYear; year <= maxYear; year++) {
 				this.trademapper.showTradeForYear(year);
 				var image = new Image();
@@ -61,7 +66,12 @@ define(["gif", "jquery", "util"], function (GIF, $, util) {
 				images.push(image);
 
 				var svgElement = this.trademapper.imageExport.cloneSvg();
-				image.src = util.svgToObjectURL(svgElement);
+
+				// TODO add the year text box somewhere
+				svgElement.append(yearContainer);
+				yearText.html(year);
+
+				image.src = util.svgToObjectURL(svgElement.get(0));
 			}
 
 			this.trademapper.yearslider.applySavedState();

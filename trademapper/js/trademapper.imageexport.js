@@ -48,12 +48,12 @@ function($, util) {
 			newsvg.attr("width", this.trademapper.config.width);
 			newsvg.attr("height", this.trademapper.config.height);
 
-			return newsvg.get(0);
+			return newsvg;
 		},
 
 		// get a data URL for the current content of the SVG element
 		getSvgDataUrl: function () {
-			return util.svgToObjectURL(this.cloneSvg());
+			return util.svgToObjectURL(this.cloneSvg().get(0));
 		},
 
 		// export the associated SVG element as a download

@@ -25,8 +25,8 @@ define(["gif", "jquery", "util"], function (GIF, $, util) {
 			var maxYear = this.trademapper.minMaxYear[1];
 
 			var gif = new GIF({
-				workers: 4,
-				quality: 10,
+				workers: 6,
+				quality: 5,
 				height: height,
 				width: width,
 				workerScript: "./js/lib/gif.worker.js",

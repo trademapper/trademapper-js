@@ -17,7 +17,6 @@ require.config({
 		countrycentre: "map/countrycentre",
 		disputedareas: "map/disputedareas",
 		worldmap: "map/worldmap",
-    caudata: "map/CAUDATA"
 	},
 	shim: {
 		bootstrap: {

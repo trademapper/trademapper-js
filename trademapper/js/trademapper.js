@@ -138,41 +138,10 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider,
 			.attr("class", "map-svg flow")
 			.attr("viewBox", "0 0 "+this.config.width+" "+this.config.height);
 
+		// SVG styling, via a template with settings from config
 		var style = this.tmsvg.append("style");
 		var svgStyles = util.renderTemplate(svgStylesTemplate, config.colours);
-		console.log(svgStyles);
 		style.text(svgStyles);
-
-/*			".country { fill: " + config.colours["COUNTRY"] + "; }" +
-			".country.trading { fill: " + config.colours["COUNTRY_TRADING"] + "; }" +
-			".country-border { " +
-				"stroke: " + config.colours["COUNTRY_BORDER"] + ";" +
-				"fill: none;" +
-				"stroke-linejoin: round;" +
-			"}" +
-			".mapocean { fill: " + config.colours["OCEAN"] + "; }" +
-			"#legendcontainer, g.legend { opacity: 1; }" +
-			".legend-background {" +
-				"fill: " + config.colours["LEGEND_BACKGROUND"] + ";" +
-				"opacity: 0.6;" +
-			"}" +
-			".legend text { fill: " + config.colours["LEGEND_TEXT"] + "; }" +
-			".route-arrow-head-wide { fill: " + config.colours["ARROW_WIDE"] + "; }" +
-			".route-arrow-head-narrow { fill: " + config.colours["ARROW_NARROW"] + "; }" +
-			".route-plain-arrow-head-narrow { fill: " + config.colours["ARROW_NARROW_PLAIN"] + "; }" +
-			".tradenode.exporter { fill: " + config.colours["TRADE_EXPORTER"] + "; }" +
-			".tradenode.origin { fill: " + config.colours["TRADE_ORIGIN"] + "; }" +
-			".tradenode.transit { fill: " + config.colours["TRADE_TRANSIT"] + "; }" +
-			".tradenode.importer { fill: " + config.colours["TRADE_IMPORTER"] + "; }" +
-			".overlay-polygon { fill: " + config.colours["OVERLAY_POLYGON"] + "; }" +
-			".overlay-point { fill: " + config.colours["OVERLAY_POINT"] + "; }" +
-			".overlay-polygon-boundary, .overlay-line { " +
-				"stroke-width: 0.03px;" +
-				"fill: none;" +
-			"}" +
-			".overlay-polygon-boundary { stroke: " + config.colours["OVERLAY_POLYGON_BOUNDARY"] + "; }" +
-			".overlay-line { stroke: " + config.colours["OVERLAY_LINE"] + "; }"
-		);*/
 
 		this.svgDefs = this.tmsvg.append("defs");
 		this.zoomg = this.tmsvg.append("g").attr("class", "zoomgroup");

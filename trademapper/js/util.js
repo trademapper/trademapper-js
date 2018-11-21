@@ -88,5 +88,12 @@ define(['jquery'], function($) {
 				return "" + context[e.slice(2, -2)];
 			});
 		},
+
+		// convert an SVG DOM element to an object URL of type "image/svg+xml"
+		svgToObjectURL: function (svgDOMElement) {
+			var svgString = new XMLSerializer().serializeToString(svgDOMElement);
+			var blob = new Blob([svgString], {type: "image/svg+xml"});
+			return window.URL.createObjectURL(blob);
+		}
 	};
 });

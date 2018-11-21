@@ -1,4 +1,4 @@
-define(["gif", "jquery"], function (GIF, $) {
+define(["gif", "jquery", "util"], function (GIF, $, util) {
 
 	return {
 		init: function (button, trademapper) {
@@ -59,7 +59,9 @@ define(["gif", "jquery"], function (GIF, $) {
 				var image = new Image();
 				image.onload = onload;
 				images.push(image);
-				image.src = this.trademapper.imageExport.getSvgDataUrl();
+
+				var svgElement = this.trademapper.imageExport.cloneSvg();
+				image.src = util.svgToObjectURL(svgElement);
 			}
 
 			this.trademapper.yearslider.applySavedState();

@@ -1,8 +1,9 @@
 define([
-	"jquery"
+	"jquery",
+	"util"
 ],
 
-function($) {
+function($, util) {
 	return {
 		/**
 		 * Constructor
@@ -30,8 +31,11 @@ function($) {
 			this.trademapper = trademapper;
 		},
 
-		// get a data URL for the current content of the SVG element
-		getSvgDataUrl: function () {
+		// clone the SVG element and append useful attributes to it which allow
+		// it to be exported as a gif or SVG
+		// returns: an <svg> DOM element; note that this doesn't have any of the
+		// event handlers of the original svg element
+		cloneSvg: function () {
 			// make a copy of the existing SVG element
 			var newsvg = this.$svgElement.clone();
 
@@ -44,10 +48,12 @@ function($) {
 			newsvg.attr("width", this.trademapper.config.width);
 			newsvg.attr("height", this.trademapper.config.height);
 
-			var svgString = new XMLSerializer().serializeToString(newsvg.get(0));
-			var blob = new Blob([svgString], {type: "image/svg+xml"});
+			return newsvg.get(0);
+		},
 
-			return window.URL.createObjectURL(blob);
+		// get a data URL for the current content of the SVG element
+		getSvgDataUrl: function () {
+			return util.svgToObjectURL(this.cloneSvg());
 		},
 
 		// export the associated SVG element as a download

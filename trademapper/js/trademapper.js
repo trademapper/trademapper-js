@@ -179,7 +179,7 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider,
 
 		// NB we want the raw DOM node so we can wrap it with jQuery, to make
 		// height/width retrieval simpler
-		imageExport.init(this.imageExportButtonElement, this.tmsvg.node());
+		imageExport.init(this.imageExportButtonElement, this.tmsvg.node(), this);
 		this.imageExport = imageExport;
 
 		videoExport.init(this.videoExportButtonElement, this);

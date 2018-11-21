@@ -19,8 +19,6 @@ define(["gif", "jquery"], function (GIF, $) {
 			var height = this.trademapper.config.height;
 			var width = this.trademapper.config.width;
 
-			console.log('height: ' + height + '; width: ' + width);
-
 			this.trademapper.yearslider.saveState();
 
 			var minYear = this.trademapper.minMaxYear[0];

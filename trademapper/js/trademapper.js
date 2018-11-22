@@ -84,6 +84,7 @@ define([
 	"trademapper.yearslider",
 	"trademapper.imageexport",
 	"trademapper.videoexport",
+	"trademapper.progress",
 	"util",
 	"config",
 	"text!../fragments/filterskeleton.html",
@@ -93,8 +94,8 @@ define([
 	"text!../fragments/svgstyles.css",
 ],
 function($, d3, arrows, csv, filterform, mapper, route, yearslider,
-			imageExport, videoExport, util, config, filterSkeleton, csvFormSkeleton,
-			yearSliderSkeleton,	reopenCustomCsv, svgStylesTemplate) {
+			imageExport, videoExport, Progress, util, config, filterSkeleton,
+			csvFormSkeleton, yearSliderSkeleton, reopenCustomCsv, svgStylesTemplate) {
 	"use strict";
 
 	return {
@@ -125,7 +126,7 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider,
 	defaultConfig: config,
 
 	init: function(mapId, fileFormElementId, filterFormElementId,
-	               imageExportButtonElementId, videoExportButtonElementId,
+								 imageExportButtonElementId, videoExportButtonElementId,
 								 changeOverTimeElementId, tmConfig) {
 		this.queryString = util.queryString();
 		this.mapRootElement = d3.select(mapId);
@@ -183,6 +184,17 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider,
 		this.imageExport = imageExport;
 
 		videoExport.init(this.videoExportButtonElement, this);
+
+		// bind events on the video exporter to a progress modal instance
+		var videoProgress = Progress(document.body);
+		videoExport.on('start', function () {
+			videoProgress.setProgress(0);
+			videoProgress.show();
+		});
+		videoExport.on('progress', function (event, progress) {
+			videoProgress.setProgress(progress);
+		});
+		videoExport.on('end', videoProgress.hide.bind(videoProgress));
 
 		route.setCountryGetPointFunc(function(countryCode) {return mapper.countryCentrePoint(countryCode);});
 		route.setLatLongToPointFunc(function(latLong) {return mapper.latLongToPoint(latLong);});

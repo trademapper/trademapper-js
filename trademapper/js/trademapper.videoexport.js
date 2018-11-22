@@ -48,6 +48,7 @@ define(["gif", "jquery", "util"], function (GIF, $, util) {
 			var width = this.trademapper.config.width;
 
 			this.trademapper.yearslider.saveState();
+			this.trademapper.yearslider.pause();
 
 			var minYear = this.trademapper.minMaxYear[0];
 			var maxYear = this.trademapper.minMaxYear[1];
@@ -70,6 +71,7 @@ define(["gif", "jquery", "util"], function (GIF, $, util) {
 				self.link.click();
 				self.eventFirer.trigger("progress", 100);
 				self.eventFirer.trigger("end");
+				self.trademapper.yearslider.applySavedState();
 			});
 
 			// this is called each time an SVG snapshot is exported to an image,
@@ -82,6 +84,7 @@ define(["gif", "jquery", "util"], function (GIF, $, util) {
 						gif.addFrame(images[i], { delay: 2000 });
 						self.eventFirer.trigger("progress", parseInt((i / images.length) * 100));
 					}
+
 					gif.render();
 				}
 			};
@@ -107,8 +110,6 @@ define(["gif", "jquery", "util"], function (GIF, $, util) {
 
 				image.src = util.svgToObjectURL(svgElement.get(0));
 			}
-
-			this.trademapper.yearslider.applySavedState();
 		}
 	}
 

@@ -855,12 +855,16 @@ p.tooltip-location {
   align-items: center;
   height: 100%; }
 
-.progress-modal .modal-content {
-  width: 80%; }
+.progress-modal .progress-modal-content {
+  width: 50%;
+  position: relative;
+  top: -220px; }
 
 .progress-modal p {
   width: 100%;
-  text-align: center; }
+  text-align: center;
+  color: white;
+  font-weight: 800; }
 
 .progress-modal .progress-bar {
   background-color: #dc3545 !important; }

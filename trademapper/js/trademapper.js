@@ -89,10 +89,11 @@ define([
 	"text!../fragments/csvformskeleton.html",
 	"text!../fragments/yearsliderskeleton.html",
 	"text!../fragments/reopencustomcsv.html",
+	"text!../fragments/svgstyles.css",
 ],
 function($, d3, arrows, csv, filterform, mapper, route, yearslider,
 			imageExport, util, config, filterSkeleton, csvFormSkeleton, yearSliderSkeleton,
-			reopenCustomCsv) {
+			reopenCustomCsv, svgStylesTemplate) {
 	"use strict";
 
 	return {
@@ -136,6 +137,12 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider,
 			.attr("id", "mapcanvas")
 			.attr("class", "map-svg flow")
 			.attr("viewBox", "0 0 "+this.config.width+" "+this.config.height);
+
+		// SVG styling, via a template with settings from config
+		var style = this.tmsvg.append("style");
+		var svgStyles = util.renderTemplate(svgStylesTemplate, config.colours);
+		style.text(svgStyles);
+
 		this.svgDefs = this.tmsvg.append("defs");
 		this.zoomg = this.tmsvg.append("g").attr("class", "zoomgroup");
 		// append a background rectangle so mouse scroll zoom works over sea
@@ -143,8 +150,7 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider,
 			.attr("width", "150%")
 			.attr("height", "150%")
 			.attr("y", "-150")
-			.attr("class", "mapocean")
-			.attr("fill", config.colours["OCEAN"]);
+			.attr("class", "mapocean");
 		this.controlg = this.tmsvg.append("g").attr("class", "controlgroup");
 
 		this.changeOverTimeElement.html(yearSliderSkeleton);

@@ -25,15 +25,21 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre", "config"
 	 * decodes countries and borders and draws them
 	 */
 	init: function(svgZoomg, controlg, svgDefs, mapConfig, svg) {
+		this.projection = d3.geoMercator();
+		this.pathmaker = d3.geoPath().projection(this.projection).pointRadius(1);
+
 		this.zoomg = svgZoomg;
+		this.mapg = this.zoomg.append("g").attr("class", "mapgroup");
+
 		this.controlg = controlg;
 		this.svgDefs = svgDefs;
 		this.config = mapConfig;
 		this.svg = svg;
-		this.width = mapConfig.width  || 960;
-	 this.height = mapConfig.height  || 400;
+		this.width = mapConfig.width || 960;
+		this.height = mapConfig.height || 400;
 		this.addPatternDefs();
 		this.drawMap();
+		this.addOverlays();
 		this.setupZoom();
 		this.makeCountryNameHash();
 	},
@@ -67,37 +73,27 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre", "config"
 	},
 
 	drawMap: function() {
-		this.projection = d3.geoMercator();
-			//.scale(mapWidth/1.25)
-			//.translate([mapWidth/4, mapHeight/2+10]);
-		this.pathmaker = d3.geoPath().projection(this.projection);
-
 		this.countries = topojson.feature(mapdata, mapdata.objects.subunits).features;
+
 		this.borders = topojson.mesh(mapdata, mapdata.objects.subunits,
 			function(a, b) { return true; });
+
 		this.disputed = topojson.feature(disputedareas, disputedareas.objects.disputeunit).features;
 		// don't need to draw disputed borders
 		/*this.disputedborders = topojson.mesh(disputedareas, disputedareas.objects.disputeunit,
 			function(a, b) { return true; });*/
-
-		this.mapg = this.zoomg.append("g")
-			.attr("class", "mapgroup");
 
 		this.mapg.selectAll(".subunit")
 			.data(this.countries)
 			.enter()
 				.append("path")
 				.attr("d", this.pathmaker)
-				.attr("fill", config.colours["COUNTRY"])
 				.attr("class", function(d) { return "country " + d.id; });
 
 		this.mapg.append("path")
 			.datum(this.borders)
 			.attr("d", this.pathmaker)
-			.attr("class", "country-border")
-			.attr("stroke", config.colours["COUNTRY_BORDER"])
-			.attr("stroke-linejoin", "round")
-			.attr("fill", "none");
+			.attr("class", "country-border");
 
 		this.mapg.selectAll(".disputed")
 			.data(this.disputed)
@@ -106,6 +102,123 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre", "config"
 				.attr("d", this.pathmaker)
 				.attr("class", function(d) { return "disputed " + d.id; })
 				.attr("fill", "url(#diagonalHatch)");
+	},
+
+	// load overlays from the overlays= variable in the query string
+	addOverlays: function () {
+		var params = (new URL(document.location)).searchParams;
+		var urls = params.get('overlays');
+
+		if (urls === null) {
+			return;
+		}
+
+		urls = urls.split(',');
+		console.log('FETCHING OVERLAYS FROM URLS:', urls);
+
+		urls.forEach(this.loadTopojsonFromURL.bind(this));
+	},
+
+	loadTopojsonFromURL: function(url) {
+		var self = this;
+
+		d3.json(url).then(
+			function (data) {
+				try {
+					self.loadTopojson(data);
+				}
+				catch (error) {
+					console.error("unable to parse topojson file", error);
+				}
+			},
+
+			function (error) {
+				console.error("unable to download", error);
+			}
+		);
+	},
+
+	loadTopojson: function (data) {
+		// lines need drawing with class overlay-line;
+		// polygons need drawing with class overlay-area, but also need to
+		// add lines denoting their boundaries;
+		// points can be treated the same way as polygons and don't need boundaries
+		// to be derived
+		var polygons = {
+			type: "GeometryCollection",
+			geometries: []
+		};
+
+		var lines = {
+			type: "GeometryCollection",
+			geometries: []
+		};
+
+		var points = {
+			type: "GeometryCollection",
+			geometries: []
+		};
+
+		// sort the geometries so they can be drawn appropriately
+		var geometries, i, geometry;
+		for (var propertyName in data.objects) {
+			geometries = data.objects[propertyName].geometries;
+
+			for (i = 0; i < geometries.length; i++) {
+				var geometry = geometries[i];
+
+				if (geometry.type === "Polygon" || geometry.type === "MultiPolygon") {
+					polygons.geometries.push(geometry);
+				} else if (geometry.type === "LineString" || geometry.type === "MultiLineString") {
+					lines.geometries.push(geometry);
+				} else if (geometry.type === "Point" || geometry.type === "MultiPoint") {
+					points.geometries.push(geometry);
+				}
+			}
+		}
+
+		if (polygons.geometries.length > 0) {
+			var polygonFeatures = topojson.feature(data, polygons).features;
+
+			this.mapg.selectAll(".overlay-polygon")
+				.data(polygonFeatures)
+				.enter()
+					.append("path")
+					.attr("d", this.pathmaker)
+					.attr("class", "overlay-polygon");
+
+			// extract lines around polygons; this creates a multiline which draws
+			// around the polygons and shows their borders
+			var boundaries = topojson.mesh(data, polygons, function(a, b) { return a !== b; });
+			this.mapg.append("path")
+				.datum(boundaries)
+				.attr("d", this.pathmaker)
+				.attr("class", "overlay-polygon-boundary");
+		}
+
+		// draw lines
+		if (lines.geometries.length > 0) {
+			var lineFeatures = topojson.feature(data, lines).features;
+			this.mapg.selectAll(".overlay-line")
+				.data(lineFeatures)
+				.enter()
+					.append("path")
+					.attr("d", this.pathmaker)
+					.attr("class", "overlay-line");
+		}
+
+		// draw points
+		if (points.geometries.length > 0) {
+			var pointFeatures = topojson.feature(data, points).features;
+			this.mapg.selectAll(".overlay-point")
+				.data(pointFeatures)
+				.enter()
+					.append("path")
+					.attr("d", this.pathmaker)
+					.attr("class", "overlay-point");
+		}
+
+		console.log("loaded topojson");
 	},
 
 	setupZoom: function() {
@@ -210,10 +323,8 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre", "config"
 		this.mapg.selectAll(".country")
 			.classed("trading", function(d, idx, nodes) {
 				if (countriesObj.hasOwnProperty(d.id)) {
-					this.setAttribute("fill", config.colours["COUNTRY_TRADING"]);
 					return true;
 				} else {
-					this.setAttribute("fill", config.colours["COUNTRY"]);
 					return false;
 				}
 			});

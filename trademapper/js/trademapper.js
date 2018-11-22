@@ -184,6 +184,9 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider,
 		this.imageExport = imageExport;
 
 		videoExport.init(this.videoExportButtonElement, this);
+		this.setVideoExportButtonActive(false);
+
+		// only enable the video export button when the CSV is loaded
 
 		// bind events on the video exporter to a progress modal instance
 		var videoProgress = Progress(document.body);
@@ -434,10 +437,19 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider,
 		this.updateMaxSingleYearQuantity();
 		this.showFilteredCsv(filterform.filterValues);
 		this.addChangeFilterSpecToDataTab();
+		this.setVideoExportButtonActive(true);
 		var errorsShown = this.reportCsvLoadErrors();
 		if (!errorsShown) {
 			// switch to filters tab
 			$('#panel-tabs a[href="#filters"]').tab('show');
+		}
+	},
+
+	setVideoExportButtonActive: function(on) {
+		if (on) {
+			this.videoExportButtonElement.attr("disabled", null);
+		}	else {
+			this.videoExportButtonElement.attr("disabled", "disabled");
 		}
 	},
 

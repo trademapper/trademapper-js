@@ -1,4 +1,8 @@
 /* CSS styles to be injected into the map CSS */
+* {
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
 .mapocean { fill: {{OCEAN}}; }
 
 .country { fill: {{COUNTRY}}; }
@@ -34,3 +38,8 @@
 }
 .overlay-polygon-boundary { stroke: {{OVERLAY_POLYGON_BOUNDARY}}; }
 .overlay-line { stroke: {{OVERLAY_LINE}}; }
+
+.year-text {
+	font-size: 24px;
+	fill: #000;
+}

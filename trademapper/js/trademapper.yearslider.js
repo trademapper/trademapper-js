@@ -35,7 +35,41 @@ function($, d3) {
 		playInterval: 2000,  // ms
 
 		// variables for the async sleep stuff
+		isPlaying: false,
 		intervalId: null,
+
+		savedState: null,
+
+		// save the current state of the year slider and switch so they can
+		// be re-applied at a later date; this is used to reset them after
+		// playing the video at a fast rate to export it as an image
+		saveState: function () {
+			this.savedState = {
+				currentYear: this.currentYear,
+				sliderEnabled: this.sliderEnabled,
+				isPlaying: this.isPlaying,
+			};
+		},
+
+		applySavedState: function () {
+			if (this.savedState !== null) {
+				this.currentYear = this.savedState.currentYear;
+				this.setSliderValue(this.currentYear);
+
+				this.sliderEnabled = this.savedState.sliderEnabled;
+				this.setSliderState();
+
+				if (this.sliderEnabled) {
+					this.showTradeForYear(this.currentYear);
+				} else {
+					this.showTradeForAllYears();
+				}
+
+				if (this.savedState.isPlaying) {
+					this.play();
+				}
+			}
+		},
 
 		disable: function(reason) {
 			this.enabled = false;
@@ -82,6 +116,31 @@ function($, d3) {
 			this.setSliderState();
 		},
 
+		play: function () {
+			// reset year if at end
+			if (this.currentYear === this.maxYear) {
+				this.currentYear = this.minYear;
+			}
+			var incrementYearSlider = function() {
+				this.incrementYearSlider();
+			}.bind(this);
+			this.intervalId = setInterval(incrementYearSlider, this.playInterval);
+			this.togglePlayButton(true);
+			// and do an increment immediately
+			incrementYearSlider();
+
+			this.isPlaying = true;
+		},
+
+		pause: function () {
+			// if currently playing then pause
+			if (this.intervalId !== null) {
+				clearInterval(this.intervalId);
+				this.intervalId = null;
+			}
+			this.togglePlayButton(false);
+			this.isPlaying = false;
+		},
 
 		togglePlayButton: function(isPlaying) {
 			var playButton = this.getPlayButtonElement();
@@ -105,28 +164,17 @@ function($, d3) {
 		playPauseYearSlider: function() {
 			// if not enabled, do nothing
 			if (this.enabled === false) { return; }
-			// don't play if enable() hasn't been called
+
+			// if data hasn't been loaded, do nothing
 			if (this.minYear === 0) { return; }
 
 			this.implicitEnableSlider();
+
 			// is null if not currently playing
-			if (this.intervalId === null) {
-				// reset year if at end
-				if (this.currentYear === this.maxYear) {
-					this.currentYear = this.minYear;
-				}
-				var incrementYearSlider = function() {
-					this.incrementYearSlider();
-				}.bind(this);
-				this.intervalId = setInterval(incrementYearSlider, this.playInterval);
-				this.togglePlayButton(true);
-				// and do an increment immediately
-				incrementYearSlider();
+			if (this.isPlaying) {
+				this.pause();
 			} else {
-				// if currently playing then pause
-				clearInterval(this.intervalId);
-				this.intervalId = null;
-				this.togglePlayButton(false);
+				this.play();
 			}
 		},
 

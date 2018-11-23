@@ -83,6 +83,8 @@ define([
 	"trademapper.route",
 	"trademapper.yearslider",
 	"trademapper.imageexport",
+	"trademapper.videoexport",
+	"trademapper.progress",
 	"util",
 	"config",
 	"text!../fragments/filterskeleton.html",
@@ -92,8 +94,8 @@ define([
 	"text!../fragments/svgstyles.css",
 ],
 function($, d3, arrows, csv, filterform, mapper, route, yearslider,
-			imageExport, util, config, filterSkeleton, csvFormSkeleton, yearSliderSkeleton,
-			reopenCustomCsv, svgStylesTemplate) {
+			imageExport, videoExport, Progress, util, config, filterSkeleton,
+			csvFormSkeleton, yearSliderSkeleton, reopenCustomCsv, svgStylesTemplate) {
 	"use strict";
 
 	return {
@@ -118,16 +120,20 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider,
 	currentUnit: null,
 	queryString: null,
 	yearColumnName: null,
+	yearSlider: null,
+	imageExport: null,
 
 	defaultConfig: config,
 
 	init: function(mapId, fileFormElementId, filterFormElementId,
-	               imageExportButtonElementId, changeOverTimeElementId, tmConfig) {
+								 imageExportButtonElementId, videoExportButtonElementId,
+								 changeOverTimeElementId, tmConfig) {
 		this.queryString = util.queryString();
 		this.mapRootElement = d3.select(mapId);
 		this.fileFormElement = d3.select(fileFormElementId);
 		this.filterFormElement = d3.select(filterFormElementId);
 		this.imageExportButtonElement = d3.select(imageExportButtonElementId);
+		this.videoExportButtonElement = d3.select(videoExportButtonElementId);
 		this.changeOverTimeElement = d3.select(changeOverTimeElementId);
 		this.setConfigDefaults(tmConfig);
 
@@ -174,7 +180,15 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider,
 
 		// NB we want the raw DOM node so we can wrap it with jQuery, to make
 		// height/width retrieval simpler
-		imageExport.init(this.imageExportButtonElement, this.tmsvg.node());
+		imageExport.init(this.imageExportButtonElement, this.tmsvg.node(), this);
+		this.imageExport = imageExport;
+
+		videoExport.init(this.videoExportButtonElement, this);
+		// the video export button is enabled after the CSV loads
+		this.setVideoExportButtonActive(false);
+
+		// bind events on the video exporter to a progress modal instance
+		this.createVideoProgressModal(videoExport);
 
 		route.setCountryGetPointFunc(function(countryCode) {return mapper.countryCentrePoint(countryCode);});
 		route.setLatLongToPointFunc(function(latLong) {return mapper.latLongToPoint(latLong);});
@@ -183,9 +197,12 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider,
 		// slightly misnamed as we go back to the filter values for the years
 		yearslider.showTradeForAllYears = function() {return moduleThis.filterformChangedCallback(); };
 		yearslider.enableDisableCallback = function(enable) {return moduleThis.yearSliderEnableDisableCallback(enable); };
+
 		this.setUpAsideToggle();
 		this.hideUnusedTabs();
 		yearslider.create();
+
+		this.yearslider = yearslider;
 
 		if (this.queryString.hasOwnProperty("loadcsv")) {
 			this.loadCsvFromUrl();
@@ -300,6 +317,18 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider,
 		document.querySelector('li[role=filters]').style.display = "block";
 	},
 
+	createVideoProgressModal: function (videoExport) {
+		var videoProgress = Progress(document.body);
+		videoExport.on('start', function () {
+			videoProgress.setProgress(0);
+			videoProgress.show();
+		});
+		videoExport.on('progress', function (event, progress) {
+			videoProgress.setProgress(progress);
+		});
+		videoExport.on('end', videoProgress.hide.bind(videoProgress));
+	},
+
 	addChangeFilterSpecLink: function(elFilterSpecChange) {
 		elFilterSpecChange.html(reopenCustomCsv);
 
@@ -411,10 +440,19 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider,
 		this.updateMaxSingleYearQuantity();
 		this.showFilteredCsv(filterform.filterValues);
 		this.addChangeFilterSpecToDataTab();
+		this.setVideoExportButtonActive(true);
 		var errorsShown = this.reportCsvLoadErrors();
 		if (!errorsShown) {
 			// switch to filters tab
 			$('#panel-tabs a[href="#filters"]').tab('show');
+		}
+	},
+
+	setVideoExportButtonActive: function(on) {
+		if (on) {
+			this.videoExportButtonElement.attr("disabled", null);
+		}	else {
+			this.videoExportButtonElement.attr("disabled", "disabled");
 		}
 	},
 

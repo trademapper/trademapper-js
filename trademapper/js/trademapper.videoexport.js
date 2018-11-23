@@ -12,7 +12,7 @@ define(["gif", "jquery", "util"], function (GIF, $, util) {
 
 			button.on("click", function () {
 				this.eventFirer.trigger("start");
-				setTimeout(this.run.bind(this), 0);
+				this.run();
 			}.bind(this));
 
 			// to handle the download

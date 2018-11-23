@@ -4,8 +4,6 @@ define(["gif", "jquery", "util"], function (GIF, $, util) {
 		// button: button which when clicked initiates the export
 		// trademapper: trademapper instance
 		init: function (button, trademapper) {
-			var self = this;
-
 			this.trademapper = trademapper;
 
 			// provide a way to trigger events, even though this component has no
@@ -13,9 +11,9 @@ define(["gif", "jquery", "util"], function (GIF, $, util) {
 			this.eventFirer = $({});
 
 			button.on("click", function () {
-				self.eventFirer.trigger("start");
-				setTimeout(self.run.bind(self), 0);
-			});
+				this.eventFirer.trigger("start");
+				setTimeout(this.run.bind(this), 0);
+			}.bind(this));
 
 			// to handle the download
 			this.link = document.createElement("a");
@@ -42,8 +40,6 @@ define(["gif", "jquery", "util"], function (GIF, $, util) {
 		 *	 end => video export finished
 		 */
 		run: function () {
-			var self = this;
-
 			var height = this.trademapper.config.height;
 			var width = this.trademapper.config.width;
 
@@ -67,12 +63,12 @@ define(["gif", "jquery", "util"], function (GIF, $, util) {
 			});
 
 			gif.on("finished", function (blob) {
-				self.link.href = window.URL.createObjectURL(blob);
-				self.link.click();
-				self.eventFirer.trigger("progress", 100);
-				self.eventFirer.trigger("end");
-				self.trademapper.yearslider.applySavedState();
-			});
+				this.link.href = window.URL.createObjectURL(blob);
+				this.link.click();
+				this.eventFirer.trigger("progress", 100);
+				this.eventFirer.trigger("end");
+				this.trademapper.yearslider.applySavedState();
+			}.bind(this));
 
 			// this is called each time an SVG snapshot is exported to an image,
 			// and counts the number of images which are ready; when they are done,
@@ -82,17 +78,17 @@ define(["gif", "jquery", "util"], function (GIF, $, util) {
 				if (numImagesLoaded === numImagesExpected) {
 					for (var i = 0; i < images.length; i++) {
 						gif.addFrame(images[i], { delay: 2000 });
-						self.eventFirer.trigger("progress", parseInt((i / images.length) * 100));
+						this.eventFirer.trigger("progress", parseInt((i / images.length) * 100));
 					}
 
 					gif.render();
 				}
-			};
+			}.bind(this);
 
 			var yearContainer = $("<svg class='year-container' x='0' y='0'>" +
 				"<text class='year-text' x='0.25em' y='1em'></text>" +
 				"</svg>");
-			var yearText = yearContainer.find("text");
+			var yearText = yearContainer.find(".year-text");
 
 			// step through the years in the data, exporting the SVG to an image
 			// data URL at each step

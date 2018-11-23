@@ -77,7 +77,7 @@ define([
 		// - text: verboseNames !!!
 
 		/*
-		 * the 2nd argument can be null, in which case auto detection
+		 * the 3rd argument can be null, in which case auto detection
 		 * will be attempted before displaying the form
 		 */
 		init: function(rowData, rowCount, filterSpec, callback) {

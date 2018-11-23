@@ -184,20 +184,11 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider,
 		this.imageExport = imageExport;
 
 		videoExport.init(this.videoExportButtonElement, this);
+		// the video export button is enabled after the CSV loads
 		this.setVideoExportButtonActive(false);
 
-		// only enable the video export button when the CSV is loaded
-
 		// bind events on the video exporter to a progress modal instance
-		var videoProgress = Progress(document.body);
-		videoExport.on('start', function () {
-			videoProgress.setProgress(0);
-			videoProgress.show();
-		});
-		videoExport.on('progress', function (event, progress) {
-			videoProgress.setProgress(progress);
-		});
-		videoExport.on('end', videoProgress.hide.bind(videoProgress));
+		this.createVideoProgressModal(videoExport);
 
 		route.setCountryGetPointFunc(function(countryCode) {return mapper.countryCentrePoint(countryCode);});
 		route.setLatLongToPointFunc(function(latLong) {return mapper.latLongToPoint(latLong);});
@@ -324,6 +315,18 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider,
 		this.addChangeFilterSpecLink(elFilterSpecChange);
 		// finally ensure the tab is now available
 		document.querySelector('li[role=filters]').style.display = "block";
+	},
+
+	createVideoProgressModal: function (videoExport) {
+		var videoProgress = Progress(document.body);
+		videoExport.on('start', function () {
+			videoProgress.setProgress(0);
+			videoProgress.show();
+		});
+		videoExport.on('progress', function (event, progress) {
+			videoProgress.setProgress(progress);
+		});
+		videoExport.on('end', videoProgress.hide.bind(videoProgress));
 	},
 
 	addChangeFilterSpecLink: function(elFilterSpecChange) {

@@ -40,6 +40,6 @@
 .overlay-line { stroke: {{OVERLAY_LINE}}; }
 
 .year-text {
-	font-size: 2em;
+	font-size: 24px;
 	fill: #000;
 }

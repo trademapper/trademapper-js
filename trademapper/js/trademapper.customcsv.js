@@ -107,8 +107,9 @@ define([
 		 */
 		createForm: function(containerEl, rowData, rowCount, filterSpec, errors) {
 			var moduleThis = this;
-			containerEl.innerHTML = doT.template(tmplCustomCsv)
-					(this.createContext(rowData, rowCount, filterSpec, errors));
+
+			var ctx = this.createContext(rowData, rowCount, filterSpec, errors);
+			containerEl.innerHTML = doT.template(tmplCustomCsv)(ctx);
 			var optionsEl = containerEl.querySelector('.customcsv__options');
 
 			// set the data-type when the column type is changed so that the CSS
@@ -163,6 +164,12 @@ define([
 		},
 
 		detectColumnType: function(val) {
+			// if rows are the incorrect length or otherwise broken,
+			// val won't be defined, so we mark the column to be ignored
+			if (val === undefined) {
+				return "ignore";
+			}
+
 			val = val.trim();
 			if (val.length === 0) {
 				return 'ignore';
@@ -215,7 +222,7 @@ define([
 		 * create a filter spec based on the CSV row data
 		 */
 		autoCreateFilterSpec: function(rowData) {
-			var colType, role, header,
+			var colType, role, header, val,
 				rowsToTry = Math.min(6, rowData.length),
 				roleToOrder = {
 					origin: 1,
@@ -229,10 +236,22 @@ define([
 
 			for (var i = 0; i < headers.length; i++) {
 				header = headers[i];
+
+				// if the header line is malformed, some of the header names may
+				// be empty strings or otherwise undefined; in this case, just use
+				// the index of the column as its identifier to prevent everything
+				// from breaking invisibly
+				if (!header) {
+					header = "" + i;
+					headers[i] = "" + i;
+				}
+
 				// try to find column type in first few columns
 				colType = 'ignore';
 				for (var j = 1; j < rowsToTry; j++) {
-					colType = this.detectColumnType(rowData[j][i]);
+					val = rowData[j][i];
+
+					colType = this.detectColumnType(val);
 					if (colType !== 'ignore') {
 						break;
 					}
@@ -253,6 +272,7 @@ define([
 					type: colType,
 					shortName: header
 				};
+
 				if (colType === 'location') {
 					role = this.headerNameToLocationRole(header, false);
 					filterSpec[header].locationType = 'country_code';
@@ -279,6 +299,7 @@ define([
 					filterSpec[header].multiSelect = true;
 				}
 			}
+
 			return filterSpec;
 		},
 

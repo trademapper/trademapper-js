@@ -31,6 +31,13 @@ define(
 				q.equal(customcsv.detectColumnType('XX'), 'location');
 			});
 
+			q.test('check detectColumnType returns location for 4 letter ICAO port codes', function() {
+				q.equal(customcsv.detectColumnType('AYGA'), 'location');
+
+				// we only do a location mapping if the value occurs in the openroutes data
+				q.equal(customcsv.detectColumnType('XXXX'), 'text');
+			});
+
 			q.test('check detectColumnType returns text for other text strings', function() {
 				q.equal(customcsv.detectColumnType('hello'), 'text');
 				q.equal(customcsv.detectColumnType('_'), 'text');
@@ -144,6 +151,29 @@ define(
 							multiSelect: true
 						}
 					});
+			});
+
+			q.test('check autoCreateFilterSpec finds location column from ICAO port code', function () {
+				// we want to check it doesn't fall over due to lack of data
+				var rowData = [
+					['header1', 'Exporter'],
+					['', 'AYGA']
+				];
+
+				q.deepEqual(customcsv.autoCreateFilterSpec(rowData), {
+					header1: {
+						type: 'ignore',
+						shortName: 'header1'
+					},
+					"Exporter": {
+						type: 'location',
+						shortName: 'Exporter',
+						locationType: 'port_code',
+						locationRole: 'exporter',
+						locationOrder: 2,
+						multiSelect: true
+					}
+				});
 			});
 
 			q.test('check autoCreateFilterSpec finds location column from column header', function() {

@@ -1,11 +1,13 @@
 define([
 	'jquery',
+	'trademapper.portlookup',
 	'util',
 	'vendor/bean',
 	'vendor/doT',
 	"text!../fragments/customcsv.html"
 ], function(
 	$,
+	portlookup,
 	util,
 	bean,
 	doT,
@@ -33,7 +35,8 @@ define([
 			options: [
 				{ text: 'Country Code', value: 'country_code' },
 				{ text: 'Country Code (Multiple values)', value: 'country_code_list' },
-				{ text: 'Latitude/Longitude place name', value: 'latLongName' }
+				{ text: 'Latitude/Longitude place name', value: 'latLongName' },
+				{ text: 'Port code', value: 'port_code' },
 			]
 		},
 		locationExtraTypeSelectConfig: {
@@ -183,6 +186,10 @@ define([
 				return 'quantity';
 			} else if (val.match(/^[A-Z]{2}$/)) {
 				return 'location';
+			} else if (portlookup.isICAOCode(val)) {
+				return 'port_code';
+			} else if (portlookup.isIATACode(val)) {
+				return 'port_code';
 			} else {
 				return 'text';
 			}
@@ -248,6 +255,7 @@ define([
 
 				// try to find column type in first few columns
 				colType = 'ignore';
+
 				for (var j = 1; j < rowsToTry; j++) {
 					val = rowData[j][i];
 
@@ -256,12 +264,16 @@ define([
 						break;
 					}
 				}
-				if (colType !== 'location') {
+
+				if (colType !== 'location' && colType !== 'port_code') {
 					role = this.headerNameToLocationRole(header, true);
 					if (role !== '') {
 						if (header.toLowerCase().indexOf('long') > -1 ||
 								header.toLowerCase().indexOf('lat') > -1) {
 							colType = 'location_extra';
+						} else if (header.toLowerCase().indexOf('iata') > -1 ||
+											 header.toLowerCase().indexOf('icao') > -1) {
+							colType = 'port_code';
 						} else {
 							colType = 'location';
 						}
@@ -279,11 +291,19 @@ define([
 					filterSpec[header].locationRole = role;
 					filterSpec[header].locationOrder = roleToOrder[role];
 					filterSpec[header].multiSelect = true;
+				} else if (colType === 'port_code') {
+					// port codes are actually a location type, so we change the type
+					// to "location" here and set a sub type of "port_code"
+					role = this.headerNameToLocationRole(header, false);
+					filterSpec[header].type = 'location';
+					filterSpec[header].locationType = 'port_code';
+					filterSpec[header].locationRole = role;
+					filterSpec[header].locationOrder = roleToOrder[role];
 				} else if (colType === 'location_extra') {
 					role = this.headerNameToLocationRole(header, false);
 					if (header.toLowerCase().indexOf('long') > -1) {
 						filterSpec[header].locationExtraType = 'longitude';
-					} else {
+					} else if (header.toLowerCase().indexOf('lat') > -1) {
 						filterSpec[header].locationExtraType = 'latitude';
 					}
 					filterSpec[header].locationOrder = roleToOrder[role];

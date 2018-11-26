@@ -32,10 +32,13 @@ define(
 			});
 
 			q.test('check detectColumnType returns location for 4 letter ICAO port codes', function() {
-				q.equal(customcsv.detectColumnType('AYGA'), 'location');
-
-				// we only do a location mapping if the value occurs in the openroutes data
+				q.equal(customcsv.detectColumnType('AYGA'), 'port_code');
 				q.equal(customcsv.detectColumnType('XXXX'), 'text');
+			});
+
+			q.test('check detectColumnType returns location for 3 letter IATA port codes', function() {
+				q.equal(customcsv.detectColumnType('SGX'), 'port_code');
+				q.equal(customcsv.detectColumnType('XXX'), 'text');
 			});
 
 			q.test('check detectColumnType returns text for other text strings', function() {
@@ -153,11 +156,11 @@ define(
 					});
 			});
 
-			q.test('check autoCreateFilterSpec finds location column from ICAO port code', function () {
+			q.test('check autoCreateFilterSpec finds location column from port codes', function () {
 				// we want to check it doesn't fall over due to lack of data
 				var rowData = [
-					['header1', 'Exporter'],
-					['', 'AYGA']
+					['header1', 'Exporter','Importer'],
+					['', 'AYGA','SGX']
 				];
 
 				q.deepEqual(customcsv.autoCreateFilterSpec(rowData), {
@@ -171,7 +174,13 @@ define(
 						locationType: 'port_code',
 						locationRole: 'exporter',
 						locationOrder: 2,
-						multiSelect: true
+					},
+					"Importer": {
+						type: 'location',
+						shortName: 'Importer',
+						locationType: 'port_code',
+						locationRole: 'importer',
+						locationOrder: 4,
 					}
 				});
 			});
@@ -194,6 +203,34 @@ define(
 							locationRole: 'exporter',
 							locationOrder: 2,
 							multiSelect: true
+						}
+					});
+			});
+
+			q.test('check autoCreateFilterSpec finds port code column from column header', function() {
+				// we want to check it doesn't fall over due to lack of data
+				var rowData = [
+					['header1', 'Exporter IATA port code', 'Importer ICAO port code'],
+					['', '']
+				];
+				q.deepEqual(customcsv.autoCreateFilterSpec(rowData), {
+						header1: {
+							type: 'ignore',
+							shortName: 'header1'
+						},
+						"Exporter IATA port code": {
+							type: 'location',
+							shortName: 'Exporter IATA port code',
+							locationType: 'port_code',
+							locationRole: 'exporter',
+							locationOrder: 2,
+						},
+						"Importer ICAO port code": {
+							type: 'location',
+							shortName: 'Importer ICAO port code',
+							locationType: 'port_code',
+							locationRole: 'importer',
+							locationOrder: 4,
 						}
 					});
 			});

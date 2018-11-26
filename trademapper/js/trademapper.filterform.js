@@ -5,7 +5,7 @@ define(["d3"], function(d3) {
 	return {
 
 		/*
-		 * This will store the values as 
+		 * This will store the values as
 		 * filterValues[columnName] => {type: <sometype>, ...}
 		 *
 		 * For category it will look like:
@@ -60,6 +60,9 @@ define(["d3"], function(d3) {
 		},
 
 		addLocationField: function(fieldset, filters, columnName, countryCodeToName) {
+			if (columnName.indexOf('IATA') !== -1) {
+				debugger;
+			}
 			var cName = this.columnNameToClassName(columnName);
 			var values = filters[columnName].values;
 			var textName = filters[columnName].hasOwnProperty("shortName") ? filters[columnName].shortName : columnName;
@@ -79,6 +82,7 @@ define(["d3"], function(d3) {
 					.text("Any " + textName);
 			}
 			for (var i = 0; i < values.length; i++) {
+				// TODO need to map port codes to port names
 				var textValue = countryCodeToName[values[i]] || values[i] || "<Blank " + textName + ">";
 				locationSelect.append("option")
 					.attr("value", values[i])

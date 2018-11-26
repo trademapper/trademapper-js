@@ -577,6 +577,8 @@ define([
 					} else if (filterSpec[column].locationType === "latitude" ||
 							filterSpec[column].locationType === "longitude") {
 						// do nothing, handled by latLongName column
+					} else if (filterSpec[column].locationType === "port_code") {
+						filters[column].values = this.getUniqueValuesFromCsvColumn(csvData, column);
 					} else {
 						console.log("Unknown locationType: " + filterSpec[column].locationType);
 					}

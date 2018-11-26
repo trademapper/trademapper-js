@@ -1,8 +1,8 @@
 
-define([], function() {
+define(["trademapper.portlookup"], function(portlookup) {
 	"use strict";
 	// this is done to avoid circular dependencies
-	var countryGetPointFunc, latLongToPointFunc,
+	var countryGetPointFunc, portGetPointFunc, latLongToPointFunc,
 	locationRoles = ["origin", "exporter", "transit", "importer"],
 
 	setLatLongToPointFunc = function(func) {
@@ -11,6 +11,10 @@ define([], function() {
 
 	setCountryGetPointFunc = function(func) {
 		countryGetPointFunc = func;
+	},
+
+	setPortGetPointFunc = function(func) {
+		portGetPointFunc = func;
 	};
 
 	function RolesCollection(role) {
@@ -83,6 +87,18 @@ define([], function() {
 
 	PointCountry.prototype.toString = function() {
 		return this.countryCode;
+	};
+
+	function PointPort(portCode, role) {
+		this.roles = new RolesCollection(role);
+		this.type = "port";
+		this.portCode = portCode;
+		this.portName = portlookup.getPortName(portCode);
+		this.point = portGetPointFunc(portCode);
+	}
+
+	PointPort.prototype.toString = function() {
+		return this.portName;
 	};
 
 	/*
@@ -170,7 +186,7 @@ define([], function() {
 				}
 			}
 		}
-		
+
 		// now convert to list of center and terminals
 		maxSourceQuantity = 0;
 		sourceKeys = Object.keys(centerTerminalObj);
@@ -276,12 +292,14 @@ define([], function() {
 
 	return {
 		setCountryGetPointFunc: setCountryGetPointFunc,
+		setPortGetPointFunc: setPortGetPointFunc,
 		setLatLongToPointFunc: setLatLongToPointFunc,
 		locationRoles: locationRoles,
 		RolesCollection: RolesCollection,
 		PointLatLong: PointLatLong,
 		PointNameLatLong: PointNameLatLong,
 		PointCountry: PointCountry,
+		PointPort: PointPort,
 		Route: Route,
 		RouteCollection: RouteCollection
 	};

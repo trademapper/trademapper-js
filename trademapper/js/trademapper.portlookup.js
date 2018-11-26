@@ -13,10 +13,7 @@ define(["map/ports"], function (ports) {
 			return ports.iata.hasOwnProperty(text);
 		},
 
-		// returns port name, either by looking it up via ICAO codes or by
-		// the mapping from IATA codes to ICAO codes; returns name string,
-		// or null if name not found
-		getPortName: function (code) {
+		getPortDetails: function (code) {
 			if (!code) {
 				return null;
 			}
@@ -25,13 +22,24 @@ define(["map/ports"], function (ports) {
 			if (code.length === 4) {
 				var port = ports.icao[code];
 				if (port) {
-					return port.name;
+					return port;
 				}
 			}	else {
-				return this.getPortName(ports.iata[code]);
+				return this.getPortDetails(ports.iata[code]);
 			}
 
-			return undefined;
+			return null;
+		},
+
+		// returns port name, either by looking it up via ICAO codes or by
+		// the mapping from IATA codes to ICAO codes; returns name string,
+		// or null if name not found
+		getPortName: function (code) {
+			var port = this.getPortDetails(code);
+			if (port) {
+				return port.name;
+			}
+			return null;
 		},
 
 	};

@@ -407,11 +407,8 @@ define([
 			return;
 		}
 
-		// TODO create the point
-		console.log('port code: ' + portCode + '; role: ' + role);
-		var portPoint = undefined;
-
-		if (portPoint !== undefined) {
+		var portPoint = new route.PointPort(portCode, role);
+		if (portPoint.point !== undefined) {
 			points.push(portPoint);
 		} else if (this.loadingCsv) {
 			this.loadErrors.unknownPorts[portCode] = {

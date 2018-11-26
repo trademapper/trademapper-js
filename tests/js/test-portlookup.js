@@ -26,6 +26,22 @@ define(
 				// non-existent code
 				q.equal(portlookup.getPortName("YYEYYYEYEYS"), null);
 			});
+
+			q.test("check port details lookup", function () {
+				// lookup via ICAO code
+				var expectedICAO = {
+					"lat": -4.871520042,
+					"lon": -66.89749908,
+					"name": "Carauari Airport",
+					"city": "Carauari",
+					"country": "Brazil"
+				}
+
+				q.deepEqual(portlookup.getPortDetails("SWCA"), expectedICAO);
+
+				// non-existent port
+				q.equal(portlookup.getPortDetails("XAASAAAA"), null);
+			});
 		};
 
 		return {run: run};

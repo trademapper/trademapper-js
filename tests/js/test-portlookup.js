@@ -15,6 +15,17 @@ define(
 				q.equal(portlookup.isICAOCode("YFBS"), true);
 				q.equal(portlookup.isICAOCode("XXXX"), false);
 			});
+
+			q.test("check port name lookup", function () {
+				// ICAO code
+				q.equal(portlookup.getPortName("AYGA"), "Goroka Airport");
+
+				// IATA code
+				q.equal(portlookup.getPortName("MAG"), "Madang Airport");
+
+				// non-existent code
+				q.equal(portlookup.getPortName("YYEYYYEYEYS"), null);
+			});
 		};
 
 		return {run: run};

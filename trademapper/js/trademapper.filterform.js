@@ -1,5 +1,5 @@
 
-define(["d3"], function(d3) {
+define(["d3", "trademapper.portlookup"], function(d3, portlookup) {
 	"use strict";
 
 	return {
@@ -60,9 +60,6 @@ define(["d3"], function(d3) {
 		},
 
 		addLocationField: function(fieldset, filters, columnName, countryCodeToName) {
-			if (columnName.indexOf('IATA') !== -1) {
-				debugger;
-			}
 			var cName = this.columnNameToClassName(columnName);
 			var values = filters[columnName].values;
 			var textName = filters[columnName].hasOwnProperty("shortName") ? filters[columnName].shortName : columnName;
@@ -81,12 +78,26 @@ define(["d3"], function(d3) {
 					.attr("value", this.anyString)
 					.text("Any " + textName);
 			}
+
+			var textValues = [];
 			for (var i = 0; i < values.length; i++) {
-				// TODO need to map port codes to port names
-				var textValue = countryCodeToName[values[i]] || values[i] || "<Blank " + textName + ">";
+				textValues.push({
+					value: values[i],
+					text: countryCodeToName[values[i]] || portlookup.getPortName(values[i]) || values[i] || "<Blank " + textName + ">"
+				});
+			}
+			textValues.sort(function (a, b) {
+				if (a.text < b.text) {
+					return -1;
+				} else if (a.text > b.text) {
+					return 1;
+				}
+				return 0;
+			});
+			for (var j = 0; j < textValues.length; j++) {
 				locationSelect.append("option")
-					.attr("value", values[i])
-					.text(textValue);
+					.attr("value", textValues[j].value)
+					.text(textValues[j].text);
 			}
 
 			var moduleThis = this;

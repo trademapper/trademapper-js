@@ -1,5 +1,5 @@
 
-define(["trademapper.portlookup"], function(portlookup) {
+define([], function() {
 	"use strict";
 	// this is done to avoid circular dependencies
 	var countryGetPointFunc, portGetPointFunc, latLongToPointFunc,
@@ -89,16 +89,23 @@ define(["trademapper.portlookup"], function(portlookup) {
 		return this.countryCode;
 	};
 
+	PointCountry.prototype.getCode = function() {
+		return this.countryCode;
+	}
+
 	function PointPort(portCode, role) {
 		this.roles = new RolesCollection(role);
 		this.type = "port";
 		this.portCode = portCode;
-		this.portName = portlookup.getPortName(portCode);
 		this.point = portGetPointFunc(portCode);
 	}
 
 	PointPort.prototype.toString = function() {
-		return this.portName;
+		return this.portCode;
+	};
+
+	PointPort.prototype.getCode = function() {
+		return this.portCode;
 	};
 
 	/*

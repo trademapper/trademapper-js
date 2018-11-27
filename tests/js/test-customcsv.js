@@ -356,18 +356,23 @@ define(
 			});
 
 			q.test('check checkLocationOrdering detects duplicate locationOrder', function() {
+				// NB this counts as a duplicate because locationOrder 13 is used
+				// for both an exporter and transit location
 				var filterSpec = {
 					headerA: {
 						type: "location",
-						locationOrder: 13
+						locationOrder: 13,
+						locationRole: "exporter",
 					},
 					headerB: {
 						type: "location",
-						locationOrder: 13
+						locationOrder: 13,
+						locationRole: "transit",
 					},
 					headerC: {
 						type: "location",
-						locationOrder: 21
+						locationOrder: 21,
+						locationRole: "importer",
 					}
 				},
 				locationErrors = customcsv.checkLocationOrdering(filterSpec);
@@ -384,15 +389,41 @@ define(
 				var filterSpec = {
 					headerA: {
 						type: "location",
-						locationOrder: 3
+						locationOrder: 3,
+						locationRole: "exporter",
 					},
 					headerB: {
 						type: "location",
-						locationOrder: 13
+						locationOrder: 13,
+						locationRole: "transit",
 					},
 					headerC: {
 						type: "location",
-						locationOrder: 21
+						locationOrder: 21,
+						locationRole: "importer",
+					}
+				},
+				locationErrors = customcsv.checkLocationOrdering(filterSpec);
+				q.equal(locationErrors.length, 0);
+			});
+
+			q.test('check checkLocationOrdering allows duplicate locationOrder for columns with the same role', function() {
+				// location 13 is used twice for two exporters, which is valid
+				var filterSpec = {
+					headerA: {
+						type: "location",
+						locationOrder: 13,
+						locationRole: "exporter",
+					},
+					headerB: {
+						type: "location",
+						locationOrder: 13,
+						locationRole: "exporter",
+					},
+					headerC: {
+						type: "location",
+						locationOrder: 21,
+						locationRole: "importer",
 					}
 				},
 				locationErrors = customcsv.checkLocationOrdering(filterSpec);

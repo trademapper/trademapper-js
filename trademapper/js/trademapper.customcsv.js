@@ -504,33 +504,60 @@ define([
 		},
 
 		checkLocationOrdering: function(filterSpec) {
-			// check there are no duplicate orders
-			var errors = [],
-				counts = {},
-				columns = {};
+			// check that where there are duplicate location columns with the same
+			// ordering, those columns specify the same type of trade node
+			//
+			// use case: multiple columns which specify origin can have the same order
+			// and are treated as alternatives, with the most specific taking precedence
+			// (lat/long > port > country);
+			// but an origin and an importer with the same location order are not OK etc.
+			var errors = [];
+
+			// map from a location group identifier (its order) to its roles and
+			// the columns which participate in those roles
+			var locationGroups = {};
+
 			Object.keys(filterSpec).forEach(function(key) {
-				if (filterSpec[key].type === 'location') {
-					var order = filterSpec[key].locationOrder;
-					if (counts[order]) {
-						counts[order] = counts[order] + 1;
-						columns[order].push(key);
-					} else {
-						counts[order] = 1;
-						columns[order] = [key];
+				var columnSpec = filterSpec[key];
+
+				if (columnSpec.type === 'location') {
+					var locationGroupId = columnSpec.locationOrder;
+
+					if (!locationGroups[locationGroupId]) {
+						locationGroups[locationGroupId] = {
+							columns: [],
+							roles: [],
+						};
 					}
+
+					locationGroups[locationGroupId].columns.push(key);
+					locationGroups[locationGroupId].roles.push(columnSpec.locationRole);
 				}
 			});
 
-			Object.keys(counts).forEach(function(key) {
-				if (counts[key] > 1) {
+			// check whether any location groups have a roles array whose elements
+			// have different values; if yes, we have a group of columns in the same
+			// group (i.e. with the same order) which have different roles, which is
+			// invalid
+			Object.keys(locationGroups).forEach(function(locationGroupId) {
+				var roles = locationGroups[locationGroupId].roles;
+				var allRolesTheSame = roles.length > 0 && roles.every(function (value) {
+					return value === roles[0];
+				});
+
+				if (!allRolesTheSame) {
+					var columns = locationGroups[locationGroupId].columns;
+
 					errors.push({
-						msg: "More than one location column has the order: " +
-						     key + " (columns are: " +
-						     columns[key].join(', ') + ").",
-						columns: columns[key]
+						msg: "Location columns in location order " +
+								 locationGroupId + " have different roles (columns are " +
+								 columns.join(', ') + " with roles " + roles.join(', ') +
+								 " respectively).",
+						columns: columns
 					});
 				}
 			});
+
 			return errors;
 		},
 

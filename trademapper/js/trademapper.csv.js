@@ -384,11 +384,12 @@ define([
 		return locationColumns;
 	},
 
-	addCountryCodeToPoints: function(countryCode, role, points, rowIndex, columnName, columnType) {
+	// points is modified in place
+	addCountryCodeToPoints: function(countryCode, role, locationGroupId, points, rowIndex, columnName, columnType) {
 		if (countryCode === "") {
 			return;
 		}
-		var country = new route.PointCountry(countryCode, role);
+		var country = new route.PointCountry(countryCode, role, locationGroupId);
 		if (country.point !== undefined) {
 			points.push(country);
 		} else if (this.loadingCsv) {
@@ -402,12 +403,13 @@ define([
 		}
 	},
 
-	addPortCodeToPoints: function (portCode, role, points, rowIndex, columnName, columnType) {
+	// points is modified in place
+	addPortCodeToPoints: function (portCode, role, locationGroupId, points, rowIndex, columnName, columnType) {
 		if (portCode === "") {
 			return;
 		}
 
-		var portPoint = new route.PointPort(portCode, role);
+		var portPoint = new route.PointPort(portCode, role, locationGroupId);
 		if (portPoint.point !== undefined) {
 			points.push(portPoint);
 		} else if (this.loadingCsv) {
@@ -424,34 +426,36 @@ define([
 		for (i = 0; i < locationColumns.length; i++) {
 			var locationType = locationColumns[i].locationType,
 				locName = locationColumns[i].name,
-				role = locationColumns[i].locationRole;
+				role = locationColumns[i].locationRole,
+				locationGroupId = locationColumns[i].order;
 
 			if (locationType === "country_code") {
 				var countryCode = row[locationColumns[i].name].trim();
 				this.addCountryCodeToPoints(
-					countryCode, role, points, rowIndex, locName, "single");
+					countryCode, role, locationGroupId, points, rowIndex, locName, "single");
 
 			} else if (locationType === "country_code_list") {
 				var countryCodes = row[locationColumns[i].name].split(",");
 				for (j = 0; j < countryCodes.length; j++) {
 					this.addCountryCodeToPoints(
-						countryCodes[j].trim(), role, points, rowIndex, locName, "list");
+						countryCodes[j].trim(), role, locationGroupId, points, rowIndex, locName, "list");
 				}
 
 			} else if (locationType === "latlong") {
 				var name = row[locationColumns[i].name];
 				var latitude = parseFloat(row[locationColumns[i].latitude]);
 				var longitude = parseFloat(row[locationColumns[i].longitude]);
-				points.push(new route.PointNameLatLong(name, role, latitude, longitude));
+				points.push(new route.PointNameLatLong(name, role, latitude, longitude, locationGroupId));
 
 			} else if (locationType === "port_code") {
 				var portCode = row[locationColumns[i].name].trim();
-				this.addPortCodeToPoints(portCode, role, points, rowIndex, locName, "single");
+				this.addPortCodeToPoints(portCode, role, locationGroupId, points, rowIndex, locName, "single");
 			} else {
 				// TODO: deal with lat/long
 				console.log("unknown locationType: " + locationType);
 			}
 		}
+
 		return points;
 	},
 

@@ -32,7 +32,7 @@ define(
 
 			q.test('check PointLatLong sets point using latLongToPointFunc', function() {
 				route.setLatLongToPointFunc(function() { return [3, 4]; });
-				var point = new route.PointLatLong("exporter", 5, 6);
+				var point = new route.PointLatLong("exporter", 5, 6, 1);
 				q.equal(point.latlong[0], 6, 'The x of latlong should be 6');
 				q.equal(point.latlong[1], 5, 'The y of latlong should be 5');
 				q.equal(point.point[0], 3, 'The x of point should be 3');
@@ -40,15 +40,15 @@ define(
 			});
 
 			q.test('check PointLatLong toString() includes lat and long', function() {
-				var point = new route.PointLatLong("exporter", 5.34, 6.12);
+				var point = new route.PointLatLong("exporter", 5.34, 6.12, 1);
 				var pointString = point.toString();
 				q.ok(pointString.indexOf("5.34") > -1);
 				q.ok(pointString.indexOf("6.12") > -1);
 			});
 
 			q.test('check PointLatLong toString() is same for two points with same lat/long', function() {
-				var point1 = new route.PointLatLong("exporter", 5.34, 6.12);
-				var point2 = new route.PointLatLong("exporter", 5.34, 6.12);
+				var point1 = new route.PointLatLong("exporter", 5.34, 6.12, 1);
+				var point2 = new route.PointLatLong("exporter", 5.34, 6.12, 2);
 				q.equal(point1.toString(), point2.toString());
 			});
 
@@ -60,21 +60,21 @@ define(
 			});
 
 			q.test('check PointCountry sets point using countryGetPointFunc', function() {
-				var point = new route.PointCountry("GB", "importer");
+				var point = new route.PointCountry("GB", "importer", 1);
 				q.equal("GB", point.countryCode, 'The countryCode should be "GB"');
 				q.equal(8, point.point[0], 'The x of point should be 8');
 				q.equal(9, point.point[1], 'The y of point should be 9');
 			});
 
 			q.test('check PointCountry toString() includes country code', function() {
-				var point = new route.PointCountry("KE", "importer");
+				var point = new route.PointCountry("KE", "importer", 1);
 				var pointString = point.toString();
 				q.ok(pointString.indexOf("KE") > -1);
 			});
 
 			q.test('check PointCountry toString() is same for two points with same country code', function() {
-				var point1 = new route.PointCountry("ZA", "importer");
-				var point2 = new route.PointCountry("ZA", "importer");
+				var point1 = new route.PointCountry("ZA", "importer", 1);
+				var point2 = new route.PointCountry("ZA", "importer", 2);
 				q.equal(point1.toString(), point2.toString());
 			});
 
@@ -83,39 +83,37 @@ define(
 					// set a default function - required before we can create points
 					route.setLatLongToPointFunc(function() { return [3, 4]; });
 					route.setCountryGetPointFunc(function() { return [8, 9]; });
-					pointL1 = new route.PointLatLong("exporter", 5.34, 6.12);
-					pointC1 = new route.PointCountry("ZA", "importer");
-					pointC2 = new route.PointCountry("GB", "importer");
+					route.setPortGetPointFunc(function() { return [5, 6]; });
+					pointL1 = new route.PointLatLong("exporter", 5.34, 6.12, 1);
+					pointC1 = new route.PointCountry("ZA", "importer", 2);
+					pointC2 = new route.PointCountry("GB", "importer", 3);
+					pointC3 = new route.PointCountry("AO", "importer", 3);
 				}
 			});
 
 			q.test('check Route toString() contains strings for all points', function() {
-				var route1 = new route.Route([pointL1, pointC1, pointC2], 20);
+				var point1 = new route.PointLatLong("exporter", 5.34, 6.12, 1);
+				var point2 = new route.PointCountry("ZA", "importer", 2);
+				var point3 = new route.PointCountry("GB", "importer", 3);
+
+				var route1 = new route.Route([point1, point2, point3], 20);
 
 				var routeString = route1.toString();
-				q.ok(routeString.indexOf(pointL1.toString()) > -1);
-				q.ok(routeString.indexOf(pointC1.toString()) > -1);
-				q.ok(routeString.indexOf(pointC2.toString()) > -1);
+				q.ok(routeString.indexOf(point1.toString()) > -1);
+				q.ok(routeString.indexOf(point2.toString()) > -1);
+				q.ok(routeString.indexOf(point3.toString()) > -1);
 			});
 
 			q.test('check Route toString() is same for two routes with same points in same order', function() {
 				var route1 = new route.Route([pointL1, pointC1, pointC2], 20);
 				var route2 = new route.Route([pointL1, pointC1, pointC2], 20);
-
 				q.equal(route1.toString(), route2.toString());
 			});
 
-			q.test('check Route toString() is different for two routes with same points in different order', function() {
-				var route1 = new route.Route([pointL1, pointC1, pointC2], 20);
-				var route2 = new route.Route([pointL1, pointC2, pointC1], 20);
-
-				q.notEqual(route1.toString(), route2.toString());
-			});
-
 			q.test('check Route doesn\'t combine consecutive points with different string', function() {
-				var pOrigin = new route.PointCountry("KE", "origin"),
-					pExporter = new route.PointCountry("ZW", "exporter"),
-					pImporter = new route.PointCountry("TH", "importer"),
+				var pOrigin = new route.PointCountry("KE", "origin", 1),
+					pExporter = new route.PointCountry("ZW", "exporter", 2),
+					pImporter = new route.PointCountry("TH", "importer", 3),
 					route1 = new route.Route([pOrigin, pExporter, pImporter], 20);
 
 				q.equal(route1.points.length, 3);
@@ -124,10 +122,24 @@ define(
 				q.deepEqual(route1.points[2].roles.toArray(), ["importer"]);
 			});
 
+			q.test('check Route uses the point with the highest precedence if given points of all three types', function() {
+				var pOrigin1 = new route.PointCountry("ZW", "origin", 1);
+				var pOrigin2 = new route.PointPort("AGYA", "origin", 1);
+				var pOrigin3 = new route.PointLatLong("origin", 10, 10, 1);
+				var pImporter = new route.PointCountry("TH", "importer", 2);
+				var route1 = new route.Route([pOrigin1, pOrigin2, pOrigin3, pImporter], 20);
+
+				q.equal(route1.points.length, 2);
+				q.deepEqual(route1.points[0].roles.toArray(), ["origin"]);
+				q.deepEqual(route1.points[1].roles.toArray(), ["importer"]);
+				q.deepEqual(route1.points[0], pOrigin3);
+				q.deepEqual(route1.points[1], pImporter);
+			});
+
 			q.test('check Route combines consecutive points with same string', function() {
-				var pOrigin = new route.PointCountry("ZW", "origin"),
-					pExporter = new route.PointCountry("ZW", "exporter"),
-					pImporter = new route.PointCountry("TH", "importer"),
+				var pOrigin = new route.PointCountry("ZW", "origin", 1),
+					pExporter = new route.PointCountry("ZW", "exporter", 2),
+					pImporter = new route.PointCountry("TH", "importer", 3),
 					route1 = new route.Route([pOrigin, pExporter, pImporter], 20);
 
 				q.equal(route1.points.length, 2);
@@ -136,8 +148,13 @@ define(
 			});
 
 			q.test('check RouteCollection adds new routes not in it currently', function() {
-				var route1 = new route.Route([pointL1, pointC1, pointC2], 20);
-				var route2 = new route.Route([pointL1, pointC2, pointC1], 20);
+				var point1 = new route.PointLatLong("exporter", 5.34, 6.12, 1);
+				var point2 = new route.PointCountry("ZA", "importer", 2);
+				var point3 = new route.PointCountry("GB", "importer", 3);
+				var point4 = new route.PointCountry("AO", "importer", 3);
+
+				var route1 = new route.Route([point1, point2, point3], 20);
+				var route2 = new route.Route([point1, point2, point4], 20);
 
 				var collection = new route.RouteCollection();
 				q.equal(0, collection.routeCount());
@@ -208,9 +225,9 @@ define(
 				setup: function() {
 					// set a default function - required before we can create points
 					route.setCountryGetPointFunc(function() { return [8, 9]; });
-					pointC1o = new route.PointCountry("ZA", "origin");
-					pointC1e = new route.PointCountry("ZA", "exporter");
-					pointC2i = new route.PointCountry("GB", "importer");
+					pointC1o = new route.PointCountry("ZA", "origin", 1);
+					pointC1e = new route.PointCountry("ZA", "exporter", 2);
+					pointC2i = new route.PointCountry("GB", "importer", 3);
 				}
 			});
 
@@ -231,10 +248,10 @@ define(
 				setup: function() {
 					// set a default function - required before we can create points
 					route.setLatLongToPointFunc(function(latlong) { return [latlong[0], latlong[1]]; });
-					pointL1 = new route.PointLatLong("exporter", 2.34, 3.45);
-					pointL2 = new route.PointLatLong("exporter", 4.56, 5.67);
-					pointL3 = new route.PointLatLong("exporter", 6.78, 7.89);
-					pointL4 = new route.PointLatLong("exporter", 8.90, 9.01);
+					pointL1 = new route.PointLatLong("exporter", 2.34, 3.45, 1);
+					pointL2 = new route.PointLatLong("exporter", 4.56, 5.67, 2);
+					pointL3 = new route.PointLatLong("exporter", 6.78, 7.89, 3);
+					pointL4 = new route.PointLatLong("exporter", 8.90, 9.01, 4);
 				}
 			});
 
@@ -404,11 +421,11 @@ define(
 				setup: function() {
 					// set a default function - required before we can create points
 					route.setCountryGetPointFunc(function() { return [8, 9]; });
-					pointC1 = new route.PointCountry("ZA", "origin");
-					pointC2e = new route.PointCountry("ZW", "exporter");
-					pointC2t = new route.PointCountry("ZW", "transit");
-					pointC3 = new route.PointCountry("GB", "importer");
-					pointC4 = new route.PointCountry("AR", "importer");
+					pointC1 = new route.PointCountry("ZA", "origin", 1);
+					pointC2e = new route.PointCountry("ZW", "exporter", 2);
+					pointC2t = new route.PointCountry("ZW", "transit", 3);
+					pointC3 = new route.PointCountry("GB", "importer", 4);
+					pointC4 = new route.PointCountry("AR", "importer", 5);
 				}
 			});
 

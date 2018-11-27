@@ -55,8 +55,15 @@ define([], function() {
 		return this.toArray().join(",");
 	};
 
-	function PointLatLong(role, latitude, longitude) {
+	// Point* classes have a locationGroupId which is used to
+	// determine the actual route: if a Route has multiple points with the
+	// same locationGroupId, only the most specific of the points is used
+	// (latlong is more specific than port; port is more specific than country);
+	// locationGroupId is specified using locationOrder in the form, which doubles
+	// up as a grouping mechanism for columns
+	function PointLatLong(role, latitude, longitude, locationGroupId) {
 		this.roles = new RolesCollection(role);
+		this.locationGroupId = locationGroupId;
 		this.type = "latlong";
 		this.latlong = [longitude, latitude];
 		this.point = latLongToPointFunc(this.latlong);
@@ -66,8 +73,9 @@ define([], function() {
 		return this.latlong[0] + '-' + this.latlong[1];
 	};
 
-	function PointNameLatLong(name, role, latitude, longitude) {
+	function PointNameLatLong(name, role, latitude, longitude, locationGroupId) {
 		this.roles = new RolesCollection(role);
+		this.locationGroupId = locationGroupId;
 		this.type = "namelatlong";
 		this.name = name;
 		this.latlong = [longitude, latitude];
@@ -78,8 +86,9 @@ define([], function() {
 		return this.name;
 	};
 
-	function PointCountry(countryCode, role) {
+	function PointCountry(countryCode, role, locationGroupId) {
 		this.roles = new RolesCollection(role);
+		this.locationGroupId = locationGroupId;
 		this.type = "country";
 		this.countryCode = countryCode;
 		this.point = countryGetPointFunc(countryCode);
@@ -93,8 +102,9 @@ define([], function() {
 		return this.countryCode;
 	}
 
-	function PointPort(portCode, role) {
+	function PointPort(portCode, role, locationGroupId) {
 		this.roles = new RolesCollection(role);
+		this.locationGroupId = locationGroupId;
 		this.type = "port";
 		this.portCode = portCode;
 		this.point = portGetPointFunc(portCode);
@@ -120,7 +130,8 @@ define([], function() {
 		} else {
 			this.points = [points[0]];
 			for (var i = 1; i < points.length; i++) {
-				// if last of this.points has same roles string as next of points
+				// if last of this.points has same roles string as next of points,
+				// combine the two points into one and add both of their roles together
 				var lastThisPoint = this.points.slice(-1)[0];
 				if (lastThisPoint.toString() === points[i].toString()) {
 					lastThisPoint.roles.addRoles(points[i].roles.toArray());
@@ -129,7 +140,75 @@ define([], function() {
 				}
 			}
 		}
+
+		this.collapsePoints();
 	}
+
+	// If there are multiple points with the same locationGroupId in the
+	// points array, use the point with the highest precedence
+	// for that role (latlong > port > country code).
+	//
+	// e.g. if points contains:
+	//   [origin:countryCode, origin:PointPort, origin:PointNameLatLong]
+	// and all three have values, use the value for origin:PointNameLatLong
+	// (the most specific).
+	//
+	// The less-specific points (from the Route's perspective) are discarded
+	// from the route.
+	//
+	// If there are no location groups with multiple points in them, don't do
+	// anything. This insures that existing behaviour still works.
+	Route.prototype.collapsePoints = function() {
+		// gather the points into location groups
+		var locationGroups = {};
+
+		for (var i = 0; i < this.points.length; i++) {
+			var point = this.points[i];
+			var locationGroupId = point.locationGroupId;
+			if (!(locationGroups.hasOwnProperty(locationGroupId))) {
+				locationGroups[locationGroupId] = [];
+			}
+
+			locationGroups[locationGroupId].push(point);
+		}
+
+		// for each location group, choose the most-specific location
+		for (var key in locationGroups) {
+			var points = locationGroups[key];
+
+			// order the points, most-specific first
+			points.sort(function (a, b) {
+				var aType = typeof(a);
+				if (aType === PointNameLatLong) {
+					return -1;
+				}
+
+				var bType = typeof(b);
+				if (bType === PointNameLatLong) {
+					return 1;
+				}
+
+				if (aType === PointPort && bType === PointCountry) {
+					return -1;
+				}
+
+				return 1;
+			});
+
+			locationGroups[key] = points[0];
+		}
+
+		// sort the remaining points by location group ID (which is also the
+		// location order)
+		var keys = Object.keys(locationGroups);
+		keys.sort();
+
+		var reducedPoints = [];
+		for (var j = 0; j < keys.length; j++) {
+			reducedPoints.push(locationGroups[keys[j]]);
+		}
+		this.points = reducedPoints;
+	};
 
 	Route.prototype.toString = function(joinStr) {
 		return this.points.map(function(p){return p.toString();}).join(joinStr);

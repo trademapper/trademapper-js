@@ -37,6 +37,7 @@ require(
 		test_arrow.run();
 		test_csv.run();
 		test_customcsv.run();
+		test_route.run();
 		test_mapper.run();
 		test_util.run();
 		test_portlookup.run();

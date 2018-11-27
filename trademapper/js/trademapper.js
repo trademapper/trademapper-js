@@ -77,6 +77,7 @@ define([
 	"jquery",
 	"d3",
 	"trademapper.arrows",
+	"trademapper.analytics",
 	"trademapper.csv",
 	"trademapper.filterform",
 	"trademapper.mapper",
@@ -93,7 +94,7 @@ define([
 	"text!../fragments/reopencustomcsv.html",
 	"text!../fragments/svgstyles.css",
 ],
-function($, d3, arrows, csv, filterform, mapper, route, yearslider,
+function($, d3, analytics, arrows, csv, filterform, mapper, route, yearslider,
 			imageExport, videoExport, Progress, util, config, filterSkeleton,
 			csvFormSkeleton, yearSliderSkeleton, reopenCustomCsv, svgStylesTemplate) {
 	"use strict";
@@ -207,6 +208,9 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider,
 		if (this.queryString.hasOwnProperty("loadcsv")) {
 			this.loadCsvFromUrl();
 		}
+
+		// When all else is ready, set up analytics
+		analytics.init();
 	},
 
 	setConfigDefaults: function(tmConfig) {

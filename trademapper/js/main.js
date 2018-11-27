@@ -2,6 +2,7 @@ require.config({
 	baseUrl: 'js',
 	paths: {
 		gif: "lib/gif.min",
+		configextra: ["configextra", "configextra.default"],
 		// require.js bits
 		domReady: "lib/domReady",
 		text: "lib/text",

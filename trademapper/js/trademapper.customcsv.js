@@ -190,6 +190,8 @@ define([
 				return 'port_code';
 			} else if (portlookup.isIATACode(val)) {
 				return 'port_code';
+			} else if (portlookup.isUnlocode(val)) {
+				return 'port_code';
 			} else {
 				return 'text';
 			}
@@ -272,7 +274,8 @@ define([
 								header.toLowerCase().indexOf('lat') > -1) {
 							colType = 'location_extra';
 						} else if (header.toLowerCase().indexOf('iata') > -1 ||
-											 header.toLowerCase().indexOf('icao') > -1) {
+											 header.toLowerCase().indexOf('icao') > -1 ||
+											 header.toLowerCase().indexOf('unlocode') > -1) {
 							colType = 'port_code';
 						} else {
 							colType = 'location';

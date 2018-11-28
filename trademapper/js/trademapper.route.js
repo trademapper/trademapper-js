@@ -201,17 +201,15 @@ define(["trademapper.portlookup"], function(portlookup) {
 
 			// order the points, most-specific first
 			points.sort(function (a, b) {
-				var aType = typeof(a);
-				if (aType === PointNameLatLong) {
+				if (a.type === "namelatlong" || a.type === "latlong") {
 					return -1;
 				}
 
-				var bType = typeof(b);
-				if (bType === PointNameLatLong) {
+				if (b.type === "namelatlong" || b.type === "latlong") {
 					return 1;
 				}
 
-				if (aType === PointPort && bType === PointCountry) {
+				if (a.type === "port" && b.type === "country") {
 					return -1;
 				}
 

@@ -1,5 +1,5 @@
 
-define([], function() {
+define(["trademapper.portlookup"], function(portlookup) {
 	"use strict";
 	// this is done to avoid circular dependencies
 	var countryGetPointFunc, portGetPointFunc, latLongToPointFunc,
@@ -61,6 +61,9 @@ define([], function() {
 	// (latlong is more specific than port; port is more specific than country);
 	// locationGroupId is specified using locationOrder in the form, which doubles
 	// up as a grouping mechanism for columns
+	//
+	// getPointIdentifier() should return the country code relating to the point (if
+	// available) or the port code if the country code is unavailable
 	function PointLatLong(role, latitude, longitude, locationGroupId) {
 		this.roles = new RolesCollection(role);
 		this.locationGroupId = locationGroupId;
@@ -71,6 +74,10 @@ define([], function() {
 
 	PointLatLong.prototype.toString = function() {
 		return this.latlong[0] + '-' + this.latlong[1];
+	};
+
+	PointLatLong.prototype.getPointIdentifier = function() {
+		return null;
 	};
 
 	function PointNameLatLong(name, role, latitude, longitude, locationGroupId) {
@@ -84,6 +91,10 @@ define([], function() {
 
 	PointNameLatLong.prototype.toString = function() {
 		return this.name;
+	};
+
+	PointNameLatLong.prototype.getPointIdentifier = function() {
+		return null;
 	};
 
 	function PointCountry(countryCode, role, locationGroupId) {
@@ -100,7 +111,11 @@ define([], function() {
 
 	PointCountry.prototype.getCode = function() {
 		return this.countryCode;
-	}
+	};
+
+	PointCountry.prototype.getPointIdentifier = function() {
+		return this.countryCode;
+	};
 
 	function PointPort(portCode, role, locationGroupId) {
 		this.roles = new RolesCollection(role);
@@ -115,6 +130,14 @@ define([], function() {
 	};
 
 	PointPort.prototype.getCode = function() {
+		return this.portCode;
+	};
+
+	PointPort.prototype.getPointIdentifier = function() {
+		var port = portlookup.getPortDetails(this.portCode);
+		if (port !== null && port.hasOwnProperty('countryCode')) {
+			return port['countryCode'];
+		}
 		return this.portCode;
 	};
 
@@ -323,24 +346,34 @@ define([], function() {
 
 	/*
 	 * Create an object with a key for each point, and for each point
-	 * record whether it is an origin, importer, transit and/or exporter
+	 * record whether it is an origin, importer, transit and/or exporter.
+	 * If a point is a port, add a key for that port's country instead if
+	 * available, or the port code if not. If the port code is used, this
+	 * will result in the country containing that port being uncoloured.
+	 * TODO if a point is a lat/lon, add the country the point lies within
 	 */
 	RouteCollection.prototype.getPointRoles = function() {
-		var i, j, route, pointName,
+		var i, j, route, pointIdentifier,
 			pointRoles = {},
 			routeKeys = Object.keys(this.routes);
 
 		for (i = 0; i < routeKeys.length; i++) {
 			route = this.routes[routeKeys[i]];
 			for (j = 0; j < route.points.length; j++) {
-				pointName = route.points[j].toString();
-				if (!pointRoles.hasOwnProperty(pointName)) {
-					pointRoles[pointName] = {
-						point: route.points[j].point,
-						roles: new RolesCollection()
-					};
+				// if a port, uses the code of the country containing that port,
+				// or the port code if the country code isn't known;
+				// if a country, uses the code for the country;
+				// if a lat/lon, we don't know the country code (yet)
+				pointIdentifier = route.points[j].getPointIdentifier();
+				if (pointIdentifier !== null) {
+					if (!pointRoles.hasOwnProperty(pointIdentifier)) {
+						pointRoles[pointIdentifier] = {
+							point: route.points[j].point,
+							roles: new RolesCollection()
+						};
+					}
+					pointRoles[pointIdentifier].roles.addRoles(route.points[j].roles.toArray());
 				}
-				pointRoles[pointName].roles.addRoles(route.points[j].roles.toArray());
 			}
 		}
 		return pointRoles;

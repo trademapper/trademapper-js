@@ -379,7 +379,8 @@ function($, d3, analytics, arrows, csv, filterform, mapper, route, yearslider,
 		this.currentUnit = csv.getUnit(this.currentFilterSpec, filterValues);
 		this.drawArrows(routes,pointRoles, maxQuantity);
 
-		// colour in the countries that are trading
+		// colour in the countries that are trading and/or countries containing a port
+		// which is trading
 		mapper.setTradingCountries(pointRoles);
 		this.stopNowWorking();
 	},

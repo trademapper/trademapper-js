@@ -76,7 +76,11 @@ define(["trademapper.portlookup"], function(portlookup) {
 		return this.latlong[0] + '-' + this.latlong[1];
 	};
 
-	PointLatLong.prototype.getPointIdentifier = function() {
+	PointLatLong.prototype.getCode = function() {
+		return this.toString();
+	};
+
+	PointLatLong.prototype.getCountryCode = function() {
 		return null;
 	};
 
@@ -93,7 +97,11 @@ define(["trademapper.portlookup"], function(portlookup) {
 		return this.name;
 	};
 
-	PointNameLatLong.prototype.getPointIdentifier = function() {
+	PointNameLatLong.prototype.getCode = function() {
+		return this.toString();
+	};
+
+	PointNameLatLong.prototype.getCountryCode = function() {
 		return null;
 	};
 
@@ -113,7 +121,7 @@ define(["trademapper.portlookup"], function(portlookup) {
 		return this.countryCode;
 	};
 
-	PointCountry.prototype.getPointIdentifier = function() {
+	PointCountry.prototype.getCountryCode = function() {
 		return this.countryCode;
 	};
 
@@ -133,12 +141,12 @@ define(["trademapper.portlookup"], function(portlookup) {
 		return this.portCode;
 	};
 
-	PointPort.prototype.getPointIdentifier = function() {
+	PointPort.prototype.getCountryCode = function() {
 		var port = portlookup.getPortDetails(this.portCode);
 		if (port !== null && port.hasOwnProperty('countryCode')) {
 			return port['countryCode'];
 		}
-		return this.portCode;
+		return null;
 	};
 
 	/*
@@ -342,13 +350,32 @@ define(["trademapper.portlookup"], function(portlookup) {
 		};
 	};
 
+	/**
+	 * Get the country codes relating to points along all routes.
+	 * This just returns the country codes for all countries and countries of
+	 * ports along the route. It ignores lat/lon points as we don't know their
+	 * countries yet.
+	 */
+	RouteCollection.prototype.getCountryCodes = function() {
+		var i, j, route, countryCode,
+			countryCodes = {},
+			routeKeys = Object.keys(this.routes);
+
+		for (i = 0; i < routeKeys.length; i++) {
+			route = this.routes[routeKeys[i]];
+			for (j = 0; j < route.points.length; j++) {
+				countryCode = route.points[j].getCountryCode();
+				if (countryCode !== null) {
+					countryCodes[countryCode] = true;
+				}
+			}
+		}
+		return countryCodes;
+	};
+
 	/*
 	 * Create an object with a key for each point, and for each point
 	 * record whether it is an origin, importer, transit and/or exporter.
-	 * If a point is a port, add a key for that port's country instead if
-	 * available, or the port code if not. If the port code is used, this
-	 * will result in the country containing that port being uncoloured.
-	 * TODO if a point is a lat/lon, add the country the point lies within
 	 */
 	RouteCollection.prototype.getPointRoles = function() {
 		var i, j, route, pointIdentifier,
@@ -358,20 +385,14 @@ define(["trademapper.portlookup"], function(portlookup) {
 		for (i = 0; i < routeKeys.length; i++) {
 			route = this.routes[routeKeys[i]];
 			for (j = 0; j < route.points.length; j++) {
-				// if a port, uses the code of the country containing that port,
-				// or the port code if the country code isn't known;
-				// if a country, uses the code for the country;
-				// if a lat/lon, we don't know the country code (yet)
-				pointIdentifier = route.points[j].getPointIdentifier();
-				if (pointIdentifier !== null) {
-					if (!pointRoles.hasOwnProperty(pointIdentifier)) {
-						pointRoles[pointIdentifier] = {
-							point: route.points[j].point,
-							roles: new RolesCollection()
-						};
-					}
-					pointRoles[pointIdentifier].roles.addRoles(route.points[j].roles.toArray());
+				pointIdentifier = route.points[j].getCode();
+				if (!pointRoles.hasOwnProperty(pointIdentifier)) {
+					pointRoles[pointIdentifier] = {
+						point: route.points[j].point,
+						roles: new RolesCollection()
+					};
 				}
+				pointRoles[pointIdentifier].roles.addRoles(route.points[j].roles.toArray());
 			}
 		}
 		return pointRoles;

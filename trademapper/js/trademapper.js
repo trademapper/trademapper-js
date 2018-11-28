@@ -381,7 +381,7 @@ function($, d3, analytics, arrows, csv, filterform, mapper, route, yearslider,
 
 		// colour in the countries that are trading and/or countries containing a port
 		// which is trading
-		mapper.setTradingCountries(pointRoles);
+		mapper.setTradingCountries(routes.getCountryCodes());
 		this.stopNowWorking();
 	},
 	drawArrows: function(routes,pointRoles,maxQuantity) {

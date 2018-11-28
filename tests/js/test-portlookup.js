@@ -30,11 +30,11 @@ define(
 			q.test("check port details lookup", function () {
 				// lookup via ICAO code
 				var expectedICAO = {
+					"countryCode": "BR",
 					"lat": -4.871520042,
 					"lon": -66.89749908,
 					"name": "Carauari Airport",
-					"city": "Carauari",
-					"country": "Brazil"
+					"portType": "air"
 				}
 
 				q.deepEqual(portlookup.getPortDetails("SWCA"), expectedICAO);

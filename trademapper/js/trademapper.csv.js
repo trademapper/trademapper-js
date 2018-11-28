@@ -228,9 +228,8 @@ define([
 	/*
 	 * make a RouteCollection from a CSV string
 	 */
-	processCSVString: function(fileText) {
+	processCSVString: function(fileText, filterSpec) {
 		var csvData, csvFirstTenRows,
-			filterSpec = null,
 			firstLine = fileText.substring(0, fileText.indexOf("\n"));
 
 		fileText = this.trimCsvColumnNames(fileText);
@@ -238,7 +237,7 @@ define([
 		csvFirstTenRows = d3.csvParseRows(fileText).slice(0, 10);
 
 		// skipCsvAutoDetect is set by URL parameter - to help development
-		if (!this.skipCsvAutoDetect) {
+		if (!filterSpec && !this.skipCsvAutoDetect) {
 			filterSpec = this.autoFetchFilterSpec(firstLine);
 		}
 		if (filterSpec) {

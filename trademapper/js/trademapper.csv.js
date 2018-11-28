@@ -234,7 +234,11 @@ define([
 
 		fileText = this.trimCsvColumnNames(fileText);
 		csvData = d3.csvParse(fileText);
-		csvFirstTenRows = d3.csvParseRows(fileText).slice(0, 10);
+
+		csvFirstTenRows = [csvData.columns];
+		for (var i = 0; i < Math.min(csvData.length, 9); i++) {
+			csvFirstTenRows.push(Object.values(csvData[i]));
+		}
 
 		// skipCsvAutoDetect is set by URL parameter - to help development
 		if (!filterSpec && !this.skipCsvAutoDetect) {

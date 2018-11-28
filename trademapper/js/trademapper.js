@@ -76,8 +76,8 @@
 define([
 	"jquery",
 	"d3",
-	"trademapper.arrows",
 	"trademapper.analytics",
+	"trademapper.arrows",
 	"trademapper.csv",
 	"trademapper.filterform",
 	"trademapper.mapper",

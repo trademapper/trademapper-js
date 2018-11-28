@@ -16,6 +16,11 @@ define(
 				q.equal(portlookup.isICAOCode("XXXX"), false);
 			});
 
+			q.test("check verification of UNLOCODE codes", function() {
+				q.equal(portlookup.isUnlocode("AEFJR"), true);
+				q.equal(portlookup.isUnlocode("XXXXX"), false);
+			});
+
 			q.test("check port name lookup", function () {
 				// ICAO code
 				q.equal(portlookup.getPortName("AYGA"), "Goroka Airport");
@@ -23,11 +28,14 @@ define(
 				// IATA code
 				q.equal(portlookup.getPortName("MAG"), "Madang Airport");
 
+				// UNLOCODE
+				q.equal(portlookup.getPortName("AEFJR"), "Fujairah");
+
 				// non-existent code
 				q.equal(portlookup.getPortName("YYEYYYEYEYS"), null);
 			});
 
-			q.test("check port details lookup", function () {
+			q.test("check port details lookup by ICAO code", function () {
 				// lookup via ICAO code
 				var expectedICAO = {
 					"countryCode": "BR",
@@ -41,6 +49,19 @@ define(
 
 				// non-existent port
 				q.equal(portlookup.getPortDetails("XAASAAAA"), null);
+			});
+
+			q.test("check port details lookup by UNLOCODE", function () {
+				// lookup via UNLOCODE code
+				var expectedICAO = {
+					"lat": 50.71933,
+					"lon": -127.4907,
+					"name":"Port Hardy",
+					"portType":"sea",
+					"countryCode":"CA"
+				}
+
+				q.deepEqual(portlookup.getPortDetails("CAPHY"), expectedICAO);
 			});
 		};
 

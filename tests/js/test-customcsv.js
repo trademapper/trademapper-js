@@ -31,6 +31,16 @@ define(
 				q.equal(customcsv.detectColumnType('XX'), 'location');
 			});
 
+			q.test('check detectColumnType returns location for 4 letter ICAO port codes', function() {
+				q.equal(customcsv.detectColumnType('AYGA'), 'port_code');
+				q.equal(customcsv.detectColumnType('XXXX'), 'text');
+			});
+
+			q.test('check detectColumnType returns location for 3 letter IATA port codes', function() {
+				q.equal(customcsv.detectColumnType('SGX'), 'port_code');
+				q.equal(customcsv.detectColumnType('XXX'), 'text');
+			});
+
 			q.test('check detectColumnType returns text for other text strings', function() {
 				q.equal(customcsv.detectColumnType('hello'), 'text');
 				q.equal(customcsv.detectColumnType('_'), 'text');
@@ -146,6 +156,35 @@ define(
 					});
 			});
 
+			q.test('check autoCreateFilterSpec finds location column from port codes', function () {
+				// we want to check it doesn't fall over due to lack of data
+				var rowData = [
+					['header1', 'Exporter','Importer'],
+					['', 'AYGA','SGX']
+				];
+
+				q.deepEqual(customcsv.autoCreateFilterSpec(rowData), {
+					header1: {
+						type: 'ignore',
+						shortName: 'header1'
+					},
+					"Exporter": {
+						type: 'location',
+						shortName: 'Exporter',
+						locationType: 'port_code',
+						locationRole: 'exporter',
+						locationOrder: 2,
+					},
+					"Importer": {
+						type: 'location',
+						shortName: 'Importer',
+						locationType: 'port_code',
+						locationRole: 'importer',
+						locationOrder: 4,
+					}
+				});
+			});
+
 			q.test('check autoCreateFilterSpec finds location column from column header', function() {
 				// we want to check it doesn't fall over due to lack of data
 				var rowData = [
@@ -164,6 +203,34 @@ define(
 							locationRole: 'exporter',
 							locationOrder: 2,
 							multiSelect: true
+						}
+					});
+			});
+
+			q.test('check autoCreateFilterSpec finds port code column from column header', function() {
+				// we want to check it doesn't fall over due to lack of data
+				var rowData = [
+					['header1', 'Exporter IATA port code', 'Importer ICAO port code'],
+					['', '']
+				];
+				q.deepEqual(customcsv.autoCreateFilterSpec(rowData), {
+						header1: {
+							type: 'ignore',
+							shortName: 'header1'
+						},
+						"Exporter IATA port code": {
+							type: 'location',
+							shortName: 'Exporter IATA port code',
+							locationType: 'port_code',
+							locationRole: 'exporter',
+							locationOrder: 2,
+						},
+						"Importer ICAO port code": {
+							type: 'location',
+							shortName: 'Importer ICAO port code',
+							locationType: 'port_code',
+							locationRole: 'importer',
+							locationOrder: 4,
 						}
 					});
 			});
@@ -289,18 +356,23 @@ define(
 			});
 
 			q.test('check checkLocationOrdering detects duplicate locationOrder', function() {
+				// NB this counts as a duplicate because locationOrder 13 is used
+				// for both an exporter and transit location
 				var filterSpec = {
 					headerA: {
 						type: "location",
-						locationOrder: 13
+						locationOrder: 13,
+						locationRole: "exporter",
 					},
 					headerB: {
 						type: "location",
-						locationOrder: 13
+						locationOrder: 13,
+						locationRole: "transit",
 					},
 					headerC: {
 						type: "location",
-						locationOrder: 21
+						locationOrder: 21,
+						locationRole: "importer",
 					}
 				},
 				locationErrors = customcsv.checkLocationOrdering(filterSpec);
@@ -317,15 +389,41 @@ define(
 				var filterSpec = {
 					headerA: {
 						type: "location",
-						locationOrder: 3
+						locationOrder: 3,
+						locationRole: "exporter",
 					},
 					headerB: {
 						type: "location",
-						locationOrder: 13
+						locationOrder: 13,
+						locationRole: "transit",
 					},
 					headerC: {
 						type: "location",
-						locationOrder: 21
+						locationOrder: 21,
+						locationRole: "importer",
+					}
+				},
+				locationErrors = customcsv.checkLocationOrdering(filterSpec);
+				q.equal(locationErrors.length, 0);
+			});
+
+			q.test('check checkLocationOrdering allows duplicate locationOrder for columns with the same role', function() {
+				// location 13 is used twice for two exporters, which is valid
+				var filterSpec = {
+					headerA: {
+						type: "location",
+						locationOrder: 13,
+						locationRole: "exporter",
+					},
+					headerB: {
+						type: "location",
+						locationOrder: 13,
+						locationRole: "exporter",
+					},
+					headerC: {
+						type: "location",
+						locationOrder: 21,
+						locationRole: "importer",
 					}
 				},
 				locationErrors = customcsv.checkLocationOrdering(filterSpec);

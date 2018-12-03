@@ -87,12 +87,7 @@ define(["d3", "trademapper.portlookup"], function(d3, portlookup) {
 				});
 			}
 			textValues.sort(function (a, b) {
-				if (a.text < b.text) {
-					return -1;
-				} else if (a.text > b.text) {
-					return 1;
-				}
-				return 0;
+				return a.text.localeCompare(b.text);
 			});
 			for (var j = 0; j < textValues.length; j++) {
 				locationSelect.append("option")

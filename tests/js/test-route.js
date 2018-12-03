@@ -122,18 +122,40 @@ define(
 				q.deepEqual(route1.points[2].roles.toArray(), ["importer"]);
 			});
 
-			q.test('check Route uses the point with the highest precedence if given points of all three types', function() {
+			q.test('check Route uses the points with the highest precedence if given points of all three types for a role', function() {
+				// if three points for a role, lat/lon is most specific
 				var pOrigin1 = new route.PointCountry("ZW", "origin", 1);
 				var pOrigin2 = new route.PointPort("AGYA", "origin", 1);
 				var pOrigin3 = new route.PointLatLong("origin", 10, 10, 1);
-				var pImporter = new route.PointCountry("TH", "importer", 2);
-				var route1 = new route.Route([pOrigin1, pOrigin2, pOrigin3, pImporter], 20);
 
-				q.equal(route1.points.length, 2);
+				// port is more specific than country
+				var pTransit1a = new route.PointCountry("PK", "transit", 2);
+				var pTransit1b = new route.PointPort("OPST", "transit", 2);
+
+				// lat/lon is more specific than port
+				var pTransit2a = new route.PointPort("RUARH", "transit", 3);
+				var pTransit2b = new route.PointLatLong("transit", 20, 20, 3);
+
+				var pImporter = new route.PointCountry("TH", "importer", 4);
+
+				var route1 = new route.Route([
+					pOrigin1, pOrigin2, pOrigin3,
+					pTransit1a,	pTransit1b,
+					pTransit2a, pTransit2b,
+					pImporter
+				], 20);
+
+				q.equal(route1.points.length, 4);
+
 				q.deepEqual(route1.points[0].roles.toArray(), ["origin"]);
-				q.deepEqual(route1.points[1].roles.toArray(), ["importer"]);
+				q.deepEqual(route1.points[1].roles.toArray(), ["transit"]);
+				q.deepEqual(route1.points[2].roles.toArray(), ["transit"]);
+				q.deepEqual(route1.points[3].roles.toArray(), ["importer"]);
+
 				q.deepEqual(route1.points[0], pOrigin3);
-				q.deepEqual(route1.points[1], pImporter);
+				q.deepEqual(route1.points[1], pTransit1b);
+				q.deepEqual(route1.points[2], pTransit2b);
+				q.deepEqual(route1.points[3], pImporter);
 			});
 
 			q.test('check Route combines consecutive points with same string', function() {

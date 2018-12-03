@@ -136,9 +136,9 @@ define([
 	},
 
 	loadErrorsToStrings: function() {
-		var countryInfo, errorMsgs = [],
+		var countryInfo, portInfo, errorMsgs = [],
 			unknownCountries = Object.keys(this.loadErrors.unknownCountries),
-			unknownPorts = Object.keys(this.loadErrors.unknownCountries);
+			unknownPorts = Object.keys(this.loadErrors.unknownPorts);
 		errorMsgs = errorMsgs.concat(this.loadErrors.badUrl);
 		errorMsgs = errorMsgs.concat(this.loadErrors.unknownCSVFormat);
 		unknownCountries.sort();
@@ -151,17 +151,17 @@ define([
 						', column "' + countryInfo.columnName + '")');
 			} else {
 				errorMsgs.push('Unknown country code "' + unknownCountries[i] +
-						'" (eg. row ' + countryInfo.rowIndex +
+						'" (e.g. row ' + countryInfo.rowIndex +
 						', column "' + countryInfo.columnName + '")');
 			}
 		}
 
 		unknownPorts.sort();
 		for (var j = 0; j < unknownPorts.length; j++) {
-			countryInfo = this.loadErrors.unknownPorts[unknownPorts[i]];
+			portInfo = this.loadErrors.unknownPorts[unknownPorts[i]];
 			errorMsgs.push('Unknown port code "' + unknownPorts[i] +
-					'" (e.g. row ' + countryInfo.rowIndex +
-					', column "' + countryInfo.columnName + '")');
+					'" (e.g. row ' + portInfo.rowIndex +
+					', column "' + portInfo.columnName + '")');
 		}
 
 		return errorMsgs;

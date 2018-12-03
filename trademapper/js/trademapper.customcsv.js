@@ -231,7 +231,7 @@ define([
 		 * create a filter spec based on the CSV row data
 		 */
 		autoCreateFilterSpec: function(rowData) {
-			var colType, role, header, val,
+			var colType, role, header, headerLow, val,
 				rowsToTry = Math.min(6, rowData.length),
 				roleToOrder = {
 					origin: 1,
@@ -269,13 +269,14 @@ define([
 
 				if (colType !== 'location' && colType !== 'port_code') {
 					role = this.headerNameToLocationRole(header, true);
+					headerLow = header.toLowerCase();
 					if (role !== '') {
-						if (header.toLowerCase().indexOf('long') > -1 ||
-								header.toLowerCase().indexOf('lat') > -1) {
+						if (headerLow.indexOf('long') > -1 ||
+								headerLow.indexOf('lat') > -1) {
 							colType = 'location_extra';
-						} else if (header.toLowerCase().indexOf('iata') > -1 ||
-											 header.toLowerCase().indexOf('icao') > -1 ||
-											 header.toLowerCase().indexOf('unlocode') > -1) {
+						} else if (headerLow.indexOf('iata') > -1 ||
+											 headerLow.indexOf('icao') > -1 ||
+											 headerLow.indexOf('unlocode') > -1) {
 							colType = 'port_code';
 						} else {
 							colType = 'location';

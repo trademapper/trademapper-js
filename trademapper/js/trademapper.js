@@ -86,6 +86,7 @@ define([
 	"trademapper.imageexport",
 	"trademapper.videoexport",
 	"trademapper.progress",
+	"trademapper.layerloader",
 	"util",
 	"config",
 	"text!../fragments/filterskeleton.html",
@@ -95,8 +96,9 @@ define([
 	"text!../fragments/svgstyles.css",
 ],
 function($, d3, analytics, arrows, csv, filterform, mapper, route, yearslider,
-			imageExport, videoExport, Progress, util, config, filterSkeleton,
-			csvFormSkeleton, yearSliderSkeleton, reopenCustomCsv, svgStylesTemplate) {
+			imageExport, videoExport, Progress, layerLoader, util, config,
+			filterSkeleton,	csvFormSkeleton, yearSliderSkeleton, reopenCustomCsv,
+			svgStylesTemplate) {
 	"use strict";
 
 	return {
@@ -126,7 +128,7 @@ function($, d3, analytics, arrows, csv, filterform, mapper, route, yearslider,
 
 	defaultConfig: config,
 
-	init: function(mapId, fileFormElementId, filterFormElementId,
+	init: function(mapId, fileFormElementId, layerFormElementId, filterFormElementId,
 								 imageExportButtonElementId, videoExportButtonElementId,
 								 changeOverTimeElementId, tmConfig) {
 		this.queryString = util.queryString();
@@ -139,6 +141,8 @@ function($, d3, analytics, arrows, csv, filterform, mapper, route, yearslider,
 		this.setConfigDefaults(tmConfig);
 
 		this.createCsvOnlyForm();
+
+		layerLoader.init(layerFormElementId);
 
 		this.tmsvg = this.mapRootElement.insert("svg")
 			.attr("id", "mapcanvas")

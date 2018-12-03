@@ -38,6 +38,7 @@ define([
 		this.loadErrors = {
 			unknownCSVFormat: [],
 			unknownCountries: {},
+			unknownPorts: {},
 			badUrl: []
 		};
 	},
@@ -135,8 +136,9 @@ define([
 	},
 
 	loadErrorsToStrings: function() {
-		var countryInfo, errorMsgs = [],
-			unknownCountries = Object.keys(this.loadErrors.unknownCountries);
+		var countryInfo, portInfo, errorMsgs = [],
+			unknownCountries = Object.keys(this.loadErrors.unknownCountries),
+			unknownPorts = Object.keys(this.loadErrors.unknownPorts);
 		errorMsgs = errorMsgs.concat(this.loadErrors.badUrl);
 		errorMsgs = errorMsgs.concat(this.loadErrors.unknownCSVFormat);
 		unknownCountries.sort();
@@ -149,10 +151,19 @@ define([
 						', column "' + countryInfo.columnName + '")');
 			} else {
 				errorMsgs.push('Unknown country code "' + unknownCountries[i] +
-						'" (eg. row ' + countryInfo.rowIndex +
+						'" (e.g. row ' + countryInfo.rowIndex +
 						', column "' + countryInfo.columnName + '")');
 			}
 		}
+
+		unknownPorts.sort();
+		for (var j = 0; j < unknownPorts.length; j++) {
+			portInfo = this.loadErrors.unknownPorts[unknownPorts[i]];
+			errorMsgs.push('Unknown port code "' + unknownPorts[i] +
+					'" (e.g. row ' + portInfo.rowIndex +
+					', column "' + portInfo.columnName + '")');
+		}
+
 		return errorMsgs;
 	},
 
@@ -217,17 +228,20 @@ define([
 	/*
 	 * make a RouteCollection from a CSV string
 	 */
-	processCSVString: function(fileText) {
+	processCSVString: function(fileText, filterSpec) {
 		var csvData, csvFirstTenRows,
-			filterSpec = null,
 			firstLine = fileText.substring(0, fileText.indexOf("\n"));
 
 		fileText = this.trimCsvColumnNames(fileText);
 		csvData = d3.csvParse(fileText);
-		csvFirstTenRows = d3.csvParseRows(fileText).slice(0, 10);
+
+		csvFirstTenRows = [csvData.columns];
+		for (var i = 0; i < Math.min(csvData.length, 9); i++) {
+			csvFirstTenRows.push(Object.values(csvData[i]));
+		}
 
 		// skipCsvAutoDetect is set by URL parameter - to help development
-		if (!this.skipCsvAutoDetect) {
+		if (!filterSpec && !this.skipCsvAutoDetect) {
 			filterSpec = this.autoFetchFilterSpec(firstLine);
 		}
 		if (filterSpec) {
@@ -345,7 +359,8 @@ define([
 				}
 
 				if (locationType === "country_code" ||
-						locationType === "country_code_list") {
+						locationType === "country_code_list" ||
+						locationType === "port_code") {
 					locationColumns.push({
 						name: key,
 						locationType: locationType,
@@ -372,11 +387,12 @@ define([
 		return locationColumns;
 	},
 
-	addCountryCodeToPoints: function(countryCode, role, points, rowIndex, columnName, columnType) {
+	// points is modified in place
+	addCountryCodeToPoints: function(countryCode, role, locationGroupId, points, rowIndex, columnName, columnType) {
 		if (countryCode === "") {
 			return;
 		}
-		var country = new route.PointCountry(countryCode, role);
+		var country = new route.PointCountry(countryCode, role, locationGroupId);
 		if (country.point !== undefined) {
 			points.push(country);
 		} else if (this.loadingCsv) {
@@ -390,36 +406,59 @@ define([
 		}
 	},
 
+	// points is modified in place
+	addPortCodeToPoints: function (portCode, role, locationGroupId, points, rowIndex, columnName, columnType) {
+		if (portCode === "") {
+			return;
+		}
+
+		var portPoint = new route.PointPort(portCode, role, locationGroupId);
+		if (portPoint.point !== undefined) {
+			points.push(portPoint);
+		} else if (this.loadingCsv) {
+			this.loadErrors.unknownPorts[portCode] = {
+				rowIndex: rowIndex,
+				columnName: columnName,
+				columnType: columnType
+			};
+		}
+	},
+
 	getPointsFromRow: function(row, locationColumns, rowIndex) {
 		var i, j, points = [];
 		for (i = 0; i < locationColumns.length; i++) {
 			var locationType = locationColumns[i].locationType,
 				locName = locationColumns[i].name,
-				role = locationColumns[i].locationRole;
+				role = locationColumns[i].locationRole,
+				locationGroupId = locationColumns[i].order;
 
 			if (locationType === "country_code") {
 				var countryCode = row[locationColumns[i].name].trim();
 				this.addCountryCodeToPoints(
-					countryCode, role, points, rowIndex, locName, "single");
+					countryCode, role, locationGroupId, points, rowIndex, locName, "single");
 
 			} else if (locationType === "country_code_list") {
 				var countryCodes = row[locationColumns[i].name].split(",");
 				for (j = 0; j < countryCodes.length; j++) {
 					this.addCountryCodeToPoints(
-						countryCodes[j].trim(), role, points, rowIndex, locName, "list");
+						countryCodes[j].trim(), role, locationGroupId, points, rowIndex, locName, "list");
 				}
 
 			} else if (locationType === "latlong") {
 				var name = row[locationColumns[i].name];
 				var latitude = parseFloat(row[locationColumns[i].latitude]);
 				var longitude = parseFloat(row[locationColumns[i].longitude]);
-				points.push(new route.PointNameLatLong(name, role, latitude, longitude));
+				points.push(new route.PointNameLatLong(name, role, latitude, longitude, locationGroupId));
 
+			} else if (locationType === "port_code") {
+				var portCode = row[locationColumns[i].name].trim();
+				this.addPortCodeToPoints(portCode, role, locationGroupId, points, rowIndex, locName, "single");
 			} else {
 				// TODO: deal with lat/long
 				console.log("unknown locationType: " + locationType);
 			}
 		}
+
 		return points;
 	},
 
@@ -429,8 +468,11 @@ define([
 			locationColumns = this.extractLocationColumns(filterSpec),
 			routes = new route.RouteCollection();
 
-		// only reset/update the unknownCountries when loading the CSV
-		if (this.loadingCsv) { this.loadErrors.unknownCountries = {}; }
+		// only reset/update the unknown countries and ports when loading the CSV
+		if (this.loadingCsv) {
+			this.loadErrors.unknownCountries = {};
+			this.loadErrors.unknownPorts = {};
+		}
 
 		for (var i = 0; i < csvData.length; i++) {
 			row = csvData[i];
@@ -577,6 +619,8 @@ define([
 					} else if (filterSpec[column].locationType === "latitude" ||
 							filterSpec[column].locationType === "longitude") {
 						// do nothing, handled by latLongName column
+					} else if (filterSpec[column].locationType === "port_code") {
+						filters[column].values = this.getUniqueValuesFromCsvColumn(csvData, column);
 					} else {
 						console.log("Unknown locationType: " + filterSpec[column].locationType);
 					}

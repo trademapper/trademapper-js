@@ -4,12 +4,13 @@
 define([
 	"jquery",
 	"d3",
+	"util",
 	// these extend the existing module so do them last and don't
 	// bother giving them variables in the function call.
 	"bootstrap-switch",
 	"bootstrap-slider",
 ],
-function($, d3) {
+function($, d3, util) {
 	"use strict";
 
 	return {
@@ -84,6 +85,10 @@ function($, d3) {
 		},
 
 		enable: function(minYear, maxYear, currentYear) {
+			if (!util.isInt(minYear)) {
+				return;
+			}
+
 			this.minYear = minYear;
 			this.maxYear = maxYear;
 			this.currentYear = currentYear ? currentYear : minYear;
@@ -235,7 +240,7 @@ function($, d3) {
 		},
 
 		setSliderValue: function (value) {
-			if (this.slider !== null) {
+			if (util.isInt(value) && this.slider !== null) {
 				this.slider.slider('setValue', value);
 			}
 		},

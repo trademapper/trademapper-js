@@ -1204,3 +1204,9 @@ p.tooltip-location {
 	margin-top: 20px;
 	font-size: 14px;
 }
+
+/*------Tab panel additional styling------*/
+#tabs .tab-pane.active {
+	max-height: 80vh;
+	overflow-y: auto;
+}

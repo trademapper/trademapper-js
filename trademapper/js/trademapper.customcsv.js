@@ -1,11 +1,13 @@
 define([
 	'jquery',
+	'trademapper.portlookup',
 	'util',
 	'vendor/bean',
 	'vendor/doT',
 	"text!../fragments/customcsv.html"
 ], function(
 	$,
+	portlookup,
 	util,
 	bean,
 	doT,
@@ -33,7 +35,8 @@ define([
 			options: [
 				{ text: 'Country Code', value: 'country_code' },
 				{ text: 'Country Code (Multiple values)', value: 'country_code_list' },
-				{ text: 'Latitude/Longitude place name', value: 'latLongName' }
+				{ text: 'Latitude/Longitude place name', value: 'latLongName' },
+				{ text: 'Port code', value: 'port_code' },
 			]
 		},
 		locationExtraTypeSelectConfig: {
@@ -77,7 +80,7 @@ define([
 		// - text: verboseNames !!!
 
 		/*
-		 * the 2nd argument can be null, in which case auto detection
+		 * the 3rd argument can be null, in which case auto detection
 		 * will be attempted before displaying the form
 		 */
 		init: function(rowData, rowCount, filterSpec, callback) {
@@ -183,6 +186,12 @@ define([
 				return 'quantity';
 			} else if (val.match(/^[A-Z]{2}$/)) {
 				return 'location';
+			} else if (portlookup.isICAOCode(val)) {
+				return 'port_code';
+			} else if (portlookup.isIATACode(val)) {
+				return 'port_code';
+			} else if (portlookup.isUnlocode(val)) {
+				return 'port_code';
 			} else {
 				return 'text';
 			}
@@ -222,7 +231,7 @@ define([
 		 * create a filter spec based on the CSV row data
 		 */
 		autoCreateFilterSpec: function(rowData) {
-			var colType, role, header, val,
+			var colType, role, header, headerLow, val,
 				rowsToTry = Math.min(6, rowData.length),
 				roleToOrder = {
 					origin: 1,
@@ -248,6 +257,7 @@ define([
 
 				// try to find column type in first few columns
 				colType = 'ignore';
+
 				for (var j = 1; j < rowsToTry; j++) {
 					val = rowData[j][i];
 
@@ -256,12 +266,18 @@ define([
 						break;
 					}
 				}
-				if (colType !== 'location') {
+
+				if (colType !== 'location' && colType !== 'port_code') {
 					role = this.headerNameToLocationRole(header, true);
+					headerLow = header.toLowerCase();
 					if (role !== '') {
-						if (header.toLowerCase().indexOf('long') > -1 ||
-								header.toLowerCase().indexOf('lat') > -1) {
+						if (headerLow.indexOf('long') > -1 ||
+								headerLow.indexOf('lat') > -1) {
 							colType = 'location_extra';
+						} else if (headerLow.indexOf('iata') > -1 ||
+											 headerLow.indexOf('icao') > -1 ||
+											 headerLow.indexOf('unlocode') > -1) {
+							colType = 'port_code';
 						} else {
 							colType = 'location';
 						}
@@ -279,11 +295,19 @@ define([
 					filterSpec[header].locationRole = role;
 					filterSpec[header].locationOrder = roleToOrder[role];
 					filterSpec[header].multiSelect = true;
+				} else if (colType === 'port_code') {
+					// port codes are actually a location type, so we change the type
+					// to "location" here and set a sub type of "port_code"
+					role = this.headerNameToLocationRole(header, false);
+					filterSpec[header].type = 'location';
+					filterSpec[header].locationType = 'port_code';
+					filterSpec[header].locationRole = role;
+					filterSpec[header].locationOrder = roleToOrder[role];
 				} else if (colType === 'location_extra') {
 					role = this.headerNameToLocationRole(header, false);
 					if (header.toLowerCase().indexOf('long') > -1) {
 						filterSpec[header].locationExtraType = 'longitude';
-					} else {
+					} else if (header.toLowerCase().indexOf('lat') > -1) {
 						filterSpec[header].locationExtraType = 'latitude';
 					}
 					filterSpec[header].locationOrder = roleToOrder[role];
@@ -484,33 +508,60 @@ define([
 		},
 
 		checkLocationOrdering: function(filterSpec) {
-			// check there are no duplicate orders
-			var errors = [],
-				counts = {},
-				columns = {};
+			// check that where there are duplicate location columns with the same
+			// ordering, those columns specify the same type of trade node
+			//
+			// use case: multiple columns which specify origin can have the same order
+			// and are treated as alternatives, with the most specific taking precedence
+			// (lat/long > port > country);
+			// but an origin and an importer with the same location order are not OK etc.
+			var errors = [];
+
+			// map from a location group identifier (its order) to its roles and
+			// the columns which participate in those roles
+			var locationGroups = {};
+
 			Object.keys(filterSpec).forEach(function(key) {
-				if (filterSpec[key].type === 'location') {
-					var order = filterSpec[key].locationOrder;
-					if (counts[order]) {
-						counts[order] = counts[order] + 1;
-						columns[order].push(key);
-					} else {
-						counts[order] = 1;
-						columns[order] = [key];
+				var columnSpec = filterSpec[key];
+
+				if (columnSpec.type === 'location') {
+					var locationGroupId = columnSpec.locationOrder;
+
+					if (!locationGroups[locationGroupId]) {
+						locationGroups[locationGroupId] = {
+							columns: [],
+							roles: [],
+						};
 					}
+
+					locationGroups[locationGroupId].columns.push(key);
+					locationGroups[locationGroupId].roles.push(columnSpec.locationRole);
 				}
 			});
 
-			Object.keys(counts).forEach(function(key) {
-				if (counts[key] > 1) {
+			// check whether any location groups have a roles array whose elements
+			// have different values; if yes, we have a group of columns in the same
+			// group (i.e. with the same order) which have different roles, which is
+			// invalid
+			Object.keys(locationGroups).forEach(function(locationGroupId) {
+				var roles = locationGroups[locationGroupId].roles;
+				var allRolesTheSame = roles.length > 0 && roles.every(function (value) {
+					return value === roles[0];
+				});
+
+				if (!allRolesTheSame) {
+					var columns = locationGroups[locationGroupId].columns;
+
 					errors.push({
-						msg: "More than one location column has the order: " +
-						     key + " (columns are: " +
-						     columns[key].join(', ') + ").",
-						columns: columns[key]
+						msg: "Location columns in location order " +
+								 locationGroupId + " have different roles (columns are " +
+								 columns.join(', ') + " with roles " + roles.join(', ') +
+								 " respectively).",
+						columns: columns
 					});
 				}
 			});
+
 			return errors;
 		},
 

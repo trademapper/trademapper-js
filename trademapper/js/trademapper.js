@@ -192,6 +192,7 @@ function($, d3, analytics, arrows, csv, filterform, mapper, route, yearslider,
 		this.createVideoProgressModal(videoExport);
 
 		route.setCountryGetPointFunc(function(countryCode) {return mapper.countryCentrePoint(countryCode);});
+		route.setPortGetPointFunc(function(portCode) {return mapper.portCentrePoint(portCode);});
 		route.setLatLongToPointFunc(function(latLong) {return mapper.latLongToPoint(latLong);});
 		filterform.formChangedCallback = function(columnName) {return moduleThis.filterformChangedCallback(columnName); };
 		yearslider.showTradeForYear = function(year) {return moduleThis.showTradeForYear(year); };
@@ -378,8 +379,9 @@ function($, d3, analytics, arrows, csv, filterform, mapper, route, yearslider,
 		this.currentUnit = csv.getUnit(this.currentFilterSpec, filterValues);
 		this.drawArrows(routes,pointRoles, maxQuantity);
 
-		// colour in the countries that are trading
-		mapper.setTradingCountries(pointRoles);
+		// colour in the countries that are trading and/or countries containing a port
+		// which is trading
+		mapper.setTradingCountries(routes.getCountryCodes());
 		this.stopNowWorking();
 	},
 	drawArrows: function(routes,pointRoles,maxQuantity) {

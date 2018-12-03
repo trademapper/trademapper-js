@@ -1,14 +1,9 @@
-			<fieldset class="filters-group group-fileinput">
-				<legend class="filter-group-title fileinput">CSV Data Source</legend>
-				<p class="form-item">
-					<label for="fileinput">From Computer:</label>
-					<input type="file" id="fileinput"></input>
-				</p>
-				<p class="form-item">
-					<label for="urlinput">From URL:</label>
-					<input type="text" id="urlinput"/>
-					<button type="button" id="url-download-button" class="btn btn-primary">Download</button>
-				</p>
+			<fieldset class="filters-group group-fileinput group-custom-fileinput">
+				<label class="btn btn-primary custom-fileinput ">
+					<input type="file"  />
+					Select data
+				</label>
+				<div class="custom-fileinput-filename"></div>
 			</fieldset>
 			<fieldset class="filters-group change-filter-spec"></fieldset>
 			<fieldset class="filters-group csv-load-errors"></fieldset>

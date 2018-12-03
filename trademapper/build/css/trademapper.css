@@ -147,6 +147,25 @@ h1, h2 {
   font-weight: bold;
   padding: 1em; }
 
+.group-custom-fileinput {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center; }
+  .group-custom-fileinput input[type="file"] {
+    display: none; }
+  .group-custom-fileinput .custom-fileinput-filename {
+    font-style: italic;
+    margin-left: 10px; }
+  .group-custom-fileinput label.btn.custom-fileinput {
+    background-color: #ff6600;
+    border-color: #ff6600; }
+    .group-custom-fileinput label.btn.custom-fileinput:hover {
+      background-color: #e65c00; }
+
+#info .filters-group + .filters-group {
+  margin-top: 10px; }
+
 #urlinput {
   border: 3px solid #4579c4;
   margin: 0 0 1em;
@@ -244,10 +263,41 @@ span.showhide {
   position: relative;
   width: 100%; }
 
+.tab-pane section {
+  margin-top: 20px; }
+
+.tab-pane a, .tab-pane a:visited {
+  color: #ff6600;
+  font-weight: bold; }
+  .tab-pane a:hover, .tab-pane a:visited:hover {
+    text-decoration: underline; }
+
+.tab-pane .btn, .tab-pane a.btn:visited {
+  color: white;
+  font-weight: bold;
+  min-height: 49px;
+  display: inline-flex;
+  align-items: center;
+  font-size: 16px; }
+
+.tab-pane a.btn:hover {
+  text-decoration: none; }
+
 .tab-pane-title, .tab-pane > h3 {
   color: #ff6600;
   font-size: 1.4em;
-  margin: 2em 0 0.5em; }
+  margin: 0 0 0.5em; }
+
+.tab-pane section h3 {
+  color: #ff6600;
+  font-size: 16px;
+  font-weight: bold; }
+
+.tab-pane .tabpane-actionbox {
+  background-color: #F4F4F4;
+  border-radius: 4px;
+  border: 1px solid #D9D9D9;
+  padding: 10px; }
 
 .intro {
   padding-right: 30px; }
@@ -261,6 +311,28 @@ span.showhide {
 
 .csv-data-loaded .intro {
   display: none; }
+
+#tabpanel-info-supportus-buttons {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 -5px; }
+  #tabpanel-info-supportus-buttons > .btn {
+    flex: 1;
+    margin: 0 5px 5px 5px; }
+
+/*-- Export --*/
+.tab-pane .btn-export {
+  background-color: #ff6600;
+  border-color: #ff6600; }
+  .tab-pane .btn-export:hover {
+    background-color: #e65c00;
+    border-color: #e65c00; }
+  .tab-pane .btn-export[disabled] {
+    background-color: #ff751a;
+    border-color: #ff751a; }
 
 /*--Social Share--*/
 .social-share {
@@ -282,15 +354,37 @@ span.showhide {
   display: inline;
   margin-right: 0.25em; }
 
-.ss-share-link {
+.btn.ss-share-link {
+  display: inline-flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: center; }
+
+.btn.ss-share-link.ico-twitter {
+  background-color: #00ABDD; }
+  .btn.ss-share-link.ico-twitter:hover {
+    background-color: #0097c4; }
+
+.btn.ss-share-link.ico-survey {
+  background-color: #006957; }
+  .btn.ss-share-link.ico-survey:hover {
+    background-color: #005042; }
+
+.ss-share-link::after {
+  content: " ";
   background-image: url("../images/social-share-icons-sprite.png");
   background-repeat: no-repeat;
   display: inline-block;
   height: 25px;
-  width: 25px; }
+  width: 25px;
+  margin-left: 5px; }
 
-.ico-twitter {
+.ico-twitter::after {
   background-position: 25% center; }
+
+.ico-survey::after {
+  background-position: 50% center; }
 
 /*---Filter Groups --*/
 .filters-group {

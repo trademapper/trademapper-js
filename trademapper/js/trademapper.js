@@ -435,7 +435,7 @@ function($, d3, analytics, arrows, csv, filterform, mapper, route, yearslider,
 		}
 	},
 
-	csvLoadedCallback: function( csvFileName, csvData, csvFirstTenRows, filterSpec) {
+	csvLoadedCallback: function(csvFileName, csvData, csvFirstTenRows, filterSpec) {
 		// first cache the current values, so we can regenerate if we want
 		this.currentCsvData = csvData;
 		this.currentCsvFirstTenRows = csvFirstTenRows;

@@ -6,7 +6,7 @@ define({
 		COUNTRY_BORDER: "#FFFFFF",
 		OCEAN: "#FFFFFF",
 		DISPUTED: "#AAAAAA",
-		ARROW_WIDE: "rgba(255, 255, 255, 0.5)",
+		ARROW_WIDE: "rgba(102, 102, 102, 0.4)",
 		ARROW_NARROW: "#000000",
 		ARROW_NARROW_PLAIN: "rgba(102, 102, 102, 1.0)",
 
@@ -42,9 +42,9 @@ define({
 		transit: 2.5,
 		importer: 2
 	},
-	minArrowWidth: 0.75,
+	minArrowWidth: 1,
 	maxArrowWidth: 20,
-	arrowType: "plain-arrows",  // could be "plain-arrows" or "flowmap"
+	arrowType: "flowmap",  // could be "plain-arrows" or "flowmap"
 	skipCsvAutoDetect: false,
 	width: 950,
 	height: 500,

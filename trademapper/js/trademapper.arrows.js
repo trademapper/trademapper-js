@@ -51,7 +51,7 @@ define(["d3", "spiralTree", "trademapper.route", "util", "config"], function(d3,
 				.attr("markerUnits", "strokeWidth")
 				.attr("refX", "7")
 				.attr("refY", "5")
-				.attr("markerWidth", "0.7")
+				.attr("markerWidth", "1")
 				.attr("markerHeight", "1.4")
 				.attr("orient", "auto")
 			.append("path")
@@ -64,7 +64,7 @@ define(["d3", "spiralTree", "trademapper.route", "util", "config"], function(d3,
 				.attr("markerUnits", "userSpaceOnUse")
 				.attr("refX", "7")
 				.attr("refY", "5")
-				.attr("markerWidth", "4")
+				.attr("markerWidth", "2")
 				.attr("markerHeight", "8")
 				.attr("orient", "auto")
 			.append("path")
@@ -75,10 +75,10 @@ define(["d3", "spiralTree", "trademapper.route", "util", "config"], function(d3,
 				.attr("id", "markerPlainArrowWide")
 				.attr("viewBox", "0 0 10 10")
 				.attr("markerUnits", "strokeWidth")
-				.attr("refX", "17")
+				.attr("refX", "10")
 				.attr("refY", "5")
-				.attr("markerWidth", "0.8")
-				.attr("markerHeight", "1.4")
+				.attr("markerWidth", "2.8")
+				.attr("markerHeight", "2.4")
 				.attr("orient", "auto")
 			.append("path")
 				.attr("d", "M 1 2 L 10 5 L 1 8 z")
@@ -86,15 +86,15 @@ define(["d3", "spiralTree", "trademapper.route", "util", "config"], function(d3,
 
 		this.svgdefs.append("marker")
 				.attr("id", "markerPlainArrowNarrow")
-				.attr("viewBox", "0 0 10 10")
+				.attr("viewBox", "0 0 26 26")
 				.attr("markerUnits", "userSpaceOnUse")
-				.attr("refX", "20")
-				.attr("refY", "5")
-				.attr("markerWidth", "4")
-				.attr("markerHeight", "8")
+				.attr("refX", "45")
+				.attr("refY", "6")
+				.attr("markerWidth", "5")
+				.attr("markerHeight", "12")
 				.attr("orient", "auto")
 			.append("path")
-				.attr("d", "M 0 0 L 10 5 L 0 10 z")
+				.attr("d", "M 0 0 L 24 6 L 0 12 z")
 				.attr("class", "route-plain-arrow-head-narrow");
 
 		// this is for the legend
@@ -209,7 +209,7 @@ define(["d3", "spiralTree", "trademapper.route", "util", "config"], function(d3,
 			.attr("fill", "none")
 			.attr("data-origwidth", arrowWidth)
 			.on('mouseover', this.createPlainMouseOverFunc(route))
-			.on('mouseout', this.genericMouseOutPath);
+			.on('mouseout', this.createPlainMouseOutFunc(route));
 	},
 
 	drawRouteCollectionPlainArrows: function(collection, pointRoles, maxQuantity) {
@@ -343,14 +343,17 @@ define(["d3", "spiralTree", "trademapper.route", "util", "config"], function(d3,
 			gradientStops[i].setAttribute("stop-opacity", opacity);
 		}
 	},
-
+        
 	plainMouseOverPath: function(route) {
 		// clear the last non-transparent path
 		this.setPathOpacity(this.highlightedPath, this.arrowColours.opacity);
 		// make the path non-transparent
 		this.highlightedPath = route.toHtmlId();
 		this.setPathOpacity(this.highlightedPath, this.highlightOpacity);
-
+        
+        // set the path stroke colour
+        d3.selectAll("." + this.highlightedPath).style("stroke", '#ff6600');
+        
 		// now do the tooltip
 		var pathSelector = ".route-arrow." + route.toHtmlId(),
 			tooltiptext = '<div class="tooltip-summary">';
@@ -399,12 +402,19 @@ define(["d3", "spiralTree", "trademapper.route", "util", "config"], function(d3,
 		return function() { moduleThis.plainMouseOverPath(route); };
 	},
 
+    createPlainMouseOutFunc: function(route) {
+		var moduleThis = this;
+		return function() { moduleThis.plainMouseOutPath(route); };
+	},
+
 	plainMouseOutPath: function() {
-		return;
+        // remove path stroke
+        d3.selectAll("." + this.highlightedPath).style('stroke', null);
+		// return;
 		// TODO: decide what behaviour we want on mouseOut
 		this.setPathOpacity(this.highlightedPath, this.arrowColours.opacity);
 		this.highlightedPath = null;
-		this.clearTooltip();
+		// this.clearTooltip();
 	},
 
 	flowmapMouseOverPath: function(ctIndex) {
@@ -441,6 +451,7 @@ define(["d3", "spiralTree", "trademapper.route", "util", "config"], function(d3,
 	},
 
 	flowmapMouseOutPath: function() {
+        console.log('flowmapMouseOutPath')
 		return;
 		// TODO: decide what behaviour we want on mouseOut
 		d3.selectAll(".traderoute-highlight").classed("traderoute-highlight", false);
@@ -449,52 +460,25 @@ define(["d3", "spiralTree", "trademapper.route", "util", "config"], function(d3,
 
 	clearTooltip: function() {
 		this.pathTooltip.transition()
-			.duration(500)
+			.duration(250)
 			.style("opacity", 0);
+        console.log("ToolTip cleared");
 	},
 
-	drawRouteCollectionFlowmap: function(collection, pointRoles, maxQuantity) {
-		var center, terminals;
-		var ctAndMax = collection.getCenterTerminalList();
-		this.centerTerminals = ctAndMax.centerTerminalList;
-		if (maxQuantity) {
-			this.maxQuantity = maxQuantity;
-		} else {
-			this.maxQuantity = ctAndMax.maxSourceQuantity;
-		}
-		// round to 2 significant digits
-		this.maxQuantity = parseFloat(this.maxQuantity.toPrecision(2));
-
-		this.flowmap.clearSpiralPaths();
-		this.clearPoints();
-		this.flowmap.setMaxQuantity(this.maxQuantity);
-
-		for (var i = 0; i < this.centerTerminals.length; i++) {
-			center = this.centerTerminals[i].center;
-			terminals = this.centerTerminals[i].terminals;
-			// set up flowmap settings for this path
-			this.flowmap.extraSpiralClass = "traderoute zoompath center-" + center.point.toString();
-			this.flowmap.mouseOverFunc = this.createFlowmapMouseOverFunc(i);
-			this.flowmap.mouseOutFunc = this.flowmapMouseOutPath;
-
-			// now do preprocess and drawing
-			this.flowmap.preprocess(terminals, center);
-			this.flowmap.drawTree();
-		}
-
-		this.drawPointRoles(pointRoles);
-	},
-
+	
 	drawPointRoleLabel: function(role, gLegend, circleX, circleY) {
 		var roleLabel = role.charAt(0).toUpperCase() + role.slice(1);
-		this.drawPoint(circleX, circleY, role, "legend", gLegend);
-		gLegend.append("text")
-			.attr("x", circleX + 10)
-			.attr("y", circleY + 5)
-			.attr("font-size", "0.5em")
-			.attr("font-family", config["FONT_FAMILY"])
-			.attr("class", "legend tradenode-label")
-			.text(roleLabel);
+        if (roleLabel){
+            this.drawPoint(circleX, circleY, role, "legend", gLegend);
+            gLegend.append("text")
+                .attr("x", circleX + 10)
+                .attr("y", circleY + 5)
+                .attr("font-size", "0.5em")
+                .attr("font-family", config["FONT_FAMILY"])
+                .attr("class", "legend tradenode-label")
+                .text(roleLabel);
+            console.log("Role:"+roleLabel);
+        }
 	},
 
 	formatLegendValue: function(labelValue) {

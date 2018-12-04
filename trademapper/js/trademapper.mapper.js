@@ -39,9 +39,15 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre", "tradema
 		this.height = mapConfig.height || 400;
 		this.addPatternDefs();
 		this.drawMap();
-		this.addOverlays();
 		this.setupZoom();
 		this.makeCountryNameHash();
+	},
+
+	setStyles: function () {
+		// SVG styling, via a template with settings from config
+		var style = this.tmsvg.append("style").attr("id", "configured-styles");
+		var svgStyles = util.renderTemplate(svgStylesTemplate, config.colours);
+		style.text(svgStyles);
 	},
 
 	makeCountryNameHash: function() {
@@ -104,46 +110,26 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre", "tradema
 				.attr("fill", "url(#diagonalHatch)");
 	},
 
-	// load overlays from the overlays= variable in the query string
-	addOverlays: function () {
-		var params = (new URL(document.location)).searchParams;
-		var urls = params.get('overlays');
+	// layer: a Layer object (see trademapper.layerloader.js)
+	// layers are drawn using the data in the Layer, using the colour from the
+	// Layer; each element added from the data in this layer is assigned a
+	// "unique" ID from the layer
+	loadTopoJSON: function (layer) {
+		var layerId = layer.id;
+		var data = layer.data;
+		var colour = layer.colour;
 
-		if (urls === null) {
-			return;
-		}
+		// TODO rebuild the stylesheet in the svg...
+		/*
+		.overlay-polygon { fill: {{OVERLAY_POLYGON}}; }
+		.overlay-point { fill: {{OVERLAY_POINT}}; }
+		.overlay-polygon-boundary { stroke: {{OVERLAY_POLYGON_BOUNDARY}}; }
+		.overlay-line { stroke: {{OVERLAY_LINE}}; }
+		*/
 
-		urls = urls.split(',');
-		console.log('FETCHING OVERLAYS FROM URLS:', urls);
-
-		urls.forEach(this.loadTopojsonFromURL.bind(this));
-	},
-
-	loadTopojsonFromURL: function(url) {
-		var self = this;
-
-		d3.json(url).then(
-			function (data) {
-				try {
-					self.loadTopojson(data);
-				}
-				catch (error) {
-					console.error("unable to parse topojson file", error);
-				}
-			},
-
-			function (error) {
-				console.error("unable to download", error);
-			}
-		);
-	},
-
-	loadTopojson: function (data) {
+		// polygons need drawing with class overlay-area;
 		// lines need drawing with class overlay-line;
-		// polygons need drawing with class overlay-area, but also need to
-		// add lines denoting their boundaries;
-		// points can be treated the same way as polygons and don't need boundaries
-		// to be derived
+		// points need drawing with class overlay-point
 		var polygons = {
 			type: "GeometryCollection",
 			geometries: []
@@ -177,45 +163,38 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre", "tradema
 			}
 		}
 
+		// polygons
 		if (polygons.geometries.length > 0) {
 			var polygonFeatures = topojson.feature(data, polygons).features;
 
-			this.mapg.selectAll(".overlay-polygon")
+			this.mapg.selectAll(".overlay-polygon." + layerId)
 				.data(polygonFeatures)
 				.enter()
 					.append("path")
 					.attr("d", this.pathmaker)
-					.attr("class", "overlay-polygon");
-
-			// extract lines around polygons; this creates a multiline which draws
-			// around the polygons and shows their borders
-			var boundaries = topojson.mesh(data, polygons, function(a, b) { return a !== b; });
-			this.mapg.append("path")
-				.datum(boundaries)
-				.attr("d", this.pathmaker)
-				.attr("class", "overlay-polygon-boundary");
+					.attr("class", "overlay-polygon " + layerId);
 		}
 
-		// draw lines
-		if (lines.geometries.length > 0) {
-			var lineFeatures = topojson.feature(data, lines).features;
-			this.mapg.selectAll(".overlay-line")
-				.data(lineFeatures)
-				.enter()
-					.append("path")
-					.attr("d", this.pathmaker)
-					.attr("class", "overlay-line");
-		}
-
-		// draw points
+		// points
 		if (points.geometries.length > 0) {
 			var pointFeatures = topojson.feature(data, points).features;
-			this.mapg.selectAll(".overlay-point")
+			this.mapg.selectAll(".overlay-point." + layerId)
 				.data(pointFeatures)
 				.enter()
 					.append("path")
 					.attr("d", this.pathmaker)
-					.attr("class", "overlay-point");
+					.attr("class", "overlay-point " + layerId);
+		}
+
+		// lines
+		if (lines.geometries.length > 0) {
+			var lineFeatures = topojson.feature(data, lines).features;
+			this.mapg.selectAll(".overlay-line." + layerId)
+				.data(lineFeatures)
+				.enter()
+					.append("path")
+					.attr("d", this.pathmaker)
+					.attr("class", "overlay-line " + layerId);
 		}
 
 		console.log("loaded topojson");

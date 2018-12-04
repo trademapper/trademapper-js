@@ -142,8 +142,6 @@ function($, d3, analytics, arrows, csv, filterform, mapper, route, yearslider,
 
 		this.createCsvOnlyForm();
 
-		layerLoader.init(layerFormElementId);
-
 		this.tmsvg = this.mapRootElement.insert("svg")
 			.attr("id", "mapcanvas")
 			.attr("class", "map-svg flow")
@@ -194,6 +192,12 @@ function($, d3, analytics, arrows, csv, filterform, mapper, route, yearslider,
 
 		// bind events on the video exporter to a progress modal instance
 		this.createVideoProgressModal(videoExport);
+
+		// for loading topojson layers
+		layerLoader.init(layerFormElementId);
+		layerLoader.on("layer", function (event, layer) {
+			mapper.loadTopoJSON(layer);
+		});
 
 		route.setCountryGetPointFunc(function(countryCode) {return mapper.countryCentrePoint(countryCode);});
 		route.setPortGetPointFunc(function(portCode) {return mapper.portCentrePoint(portCode);});

@@ -31,38 +31,35 @@ define([
 ], function ($, util, layerElementSkeleton, layerFormSkeleton) {
 
 	// represents a layer and its related DOM elements
-	var Layer = function (filename, colour, data) {
-		var self = $({});
-
-		self.filename = filename;
-		self.colour = colour;
-		self.data = data;
-
+	var Layer = function (id, filename, colour, data) {
 		// template filled with filename and current colour
 		var ctx = {filename: filename, colour: colour};
 		var html = util.renderTemplate(layerElementSkeleton, ctx);
 
-		self.elt = $(html);
-
-		return self;
+		return {
+			id: id,
+			filename: filename,
+			colour: colour,
+			data: data,
+			elt: html,
+		};
 	};
 
 	// events:
   // "layer" -> payload is the Layer object which was created
+	// "error" -> payload is the error message
 	return {
 		// colours assigned to layers by default (in this order);
 		// the number of colours in this array also limits the number of layers
 		// which can be added (we only add layers for which we have colours)
 		LAYER_COLOURS: [
-			"rgba(255, 0, 0, 0.6)",
-			"rgba(0, 255, 0, 0.6)",
-			"rgba(0, 0, 255, 0.6)",
+			"rgba(168, 0, 0, 0.4)",
+			"rgba(0, 168, 0, 0.4)",
+			"rgba(0, 0, 168, 0.4)",
 		],
 
 		// Layer instances
 		layers: [],
-
-		reader: new FileReader(),
 
 		isLoading: false,
 
@@ -81,14 +78,21 @@ define([
 			this.button = this.form.find(".custom-fileinput");
 
 			// add layer using file input's value
-			this.button.find("input").on("change", function () {
-				if (this.files.length < 1) {
+			this.button.find("input").on("change", function (event) {
+				if (event.target.files.length < 1) {
 					// TODO error - no file to load
 					return;
 				}
 
-				moduleThis.addLayer(this.files[0].name);
+				moduleThis.addLayer(event.target.files[0]);
 			});
+		},
+
+		// proxy listener binding calls to the event firer
+		on: function () {
+			if (this.eventFirer) {
+				this.eventFirer.on.apply(this.eventFirer, arguments);
+			}
 		},
 
 		// bool: true if loading a topojson file, false otherwise
@@ -112,47 +116,64 @@ define([
 			this.button.attr("disabled", "disabled");
 		},
 
-		loadTopoJSON: function (filename) {
-			this.reader.onload = function (e) {
-				var data = reader.result;
+		// file: File object
+		loadTopoJSONFile: function (file) {
+			var reader = new FileReader();
 
-				// TODO error - bad JSON
+			var promise = new Promise(function (resolve, reject) {
+				reader.onload = function () {
+					var data = JSON.parse(reader.result);
 
-				// TODO return parsed JSON
-			};
+					// TODO parse error - bad JSON - reject()
 
-			this.reader.readAsText(filename);
+					// return parsed JSON
+					resolve(data);
+				};
+			});
+
+			reader.readAsText(file);
+
+			return promise;
 		},
 
-		addLayer: function (filename) {
-			this.setIsLoading(true);
-
+		// file: File object
+		addLayer: function (file) {
 			var layerNumber = this.layers.length + 1;
 			var maxLayers = this.LAYER_COLOURS.length;
-
 			if (layerNumber > maxLayers) {
 				return;
 			}
+
+			// we can load the layer
+			this.setIsLoading(true);
 
 			// hide the "Add layer" button if we have the maximum number of layers
 			if (layerNumber === maxLayers) {
 				this.button.fadeOut();
 			}
 
-			// TODO load layer JSON
-			var data = null;
+			// load layer JSON
+			this.loadTopoJSONFile(file).then(
+				function (data) {
+					// make Layer
+					var layer = Layer("layer-" + layerNumber, file.name,
+						this.LAYER_COLOURS[layerNumber - 1], data);
 
-			// make Layer
-			var layer = Layer(filename, this.LAYER_COLOURS[layerNumber - 1], data);
-			this.layers.push(layer);
+					this.layers.push(layer);
 
-			// add layer.elt to DOM
-			this.layerContainer.append(layer.elt);
+					// add layer element to DOM
+					this.layerContainer.append(layer.elt);
 
-			// TODO notify listeners that layer is ready
+					this.setIsLoading(false);
 
-			// TODO wait until loaded before calling this
-			this.setIsLoading(false);
+					// notify listeners that layer is ready
+					this.eventFirer.trigger("layer", layer);
+				}.bind(this),
+
+				function (error) {
+					// TODO show errors
+				}.bind(this)
+			);
 		},
 	};
 

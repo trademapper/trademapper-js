@@ -30,9 +30,13 @@ define([
 	"text!../fragments/layerformskeleton.html",
 ], function ($, util, layerElementSkeleton, layerFormSkeleton) {
 
-	// represents a layer and its UI pieces
-	var Layer = function (filename, colour) {
+	// represents a layer and its related DOM elements
+	var Layer = function (filename, colour, data) {
 		var self = $({});
+
+		self.filename = filename;
+		self.colour = colour;
+		self.data = data;
 
 		// template filled with filename and current colour
 		var ctx = {filename: filename, colour: colour};
@@ -40,23 +44,19 @@ define([
 
 		self.elt = $(html);
 
-		// TODO initialise colour picker
-
-		// TODO bind to clicks on the colour picker
-
-		// TODO setColour() method which fires a "colour" event
-
 		return self;
 	};
 
+	// events:
+  // "layer" -> payload is the Layer object which was created
 	return {
 		// colours assigned to layers by default (in this order);
 		// the number of colours in this array also limits the number of layers
-		// which can be added (only add layers for which we have colours)
+		// which can be added (we only add layers for which we have colours)
 		LAYER_COLOURS: [
-			"rgba(255, 0, 0, 0.2)",
-			"rgba(0, 255, 0, 0.2)",
-			"rgba(0, 0, 255, 0.2)",
+			"rgba(255, 0, 0, 0.6)",
+			"rgba(0, 255, 0, 0.6)",
+			"rgba(0, 0, 255, 0.6)",
 		],
 
 		// Layer instances
@@ -103,12 +103,17 @@ define([
 				this.button.fadeOut();
 			}
 
+			// TODO load layer JSON
+			var data = null;
+
 			// make Layer
-			var layer = Layer(filename, this.LAYER_COLOURS[layerNumber - 1]);
+			var layer = Layer(filename, this.LAYER_COLOURS[layerNumber - 1], data);
 			this.layers.push(layer);
 
 			// add layer.elt to DOM
 			this.layerContainer.append(layer.elt);
+
+			// TODO notify listeners that layer is ready
 		},
 	};
 

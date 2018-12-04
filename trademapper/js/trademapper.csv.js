@@ -264,7 +264,7 @@ define([
 	processParsedCSV: function(csvData, csvFirstTenRows, filterSpec) {
 		this.filters = this.csvToFilters(csvData, filterSpec);
 		this.csvFilterLoadedCallback(csvData, filterSpec, this.filters);
-		this.csvDataLoadedCallback(csvData, csvFirstTenRows, filterSpec);
+		this.csvDataLoadedCallback(this.csvFileName, csvData, csvFirstTenRows, filterSpec);
 	},
 
 	getMinMaxYear: function(filters) {

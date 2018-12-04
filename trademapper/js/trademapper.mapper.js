@@ -1,4 +1,4 @@
-define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre", "trademapper.portlookup", "config"], function(d3, topojson, mapdata, disputedareas, countryCentre, portlookup, config) {
+define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre", "trademapper.portlookup", "config", "util", "text!../fragments/svgstyles.css"], function(d3, topojson, mapdata, disputedareas, countryCentre, portlookup, config, util, svgStylesTemplate) {
 	"use strict";
 
 	return {
@@ -41,6 +41,11 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre", "tradema
 		this.drawMap();
 		this.setupZoom();
 		this.makeCountryNameHash();
+
+		// SVG styling, via a template with settings from config
+		var style = svg.append("style");
+		var svgStyles = util.renderTemplate(svgStylesTemplate, mapConfig.colours);
+		style.text(svgStyles);
 	},
 
 	setStyles: function () {

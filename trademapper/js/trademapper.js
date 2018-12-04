@@ -93,12 +93,10 @@ define([
 	"text!../fragments/csvformskeleton.html",
 	"text!../fragments/yearsliderskeleton.html",
 	"text!../fragments/reopencustomcsv.html",
-	"text!../fragments/svgstyles.css",
 ],
 function($, d3, analytics, arrows, csv, filterform, mapper, route, yearslider,
 			imageExport, videoExport, Progress, layerLoader, util, config,
-			filterSkeleton,	csvFormSkeleton, yearSliderSkeleton, reopenCustomCsv,
-			svgStylesTemplate) {
+			filterSkeleton,	csvFormSkeleton, yearSliderSkeleton, reopenCustomCsv) {
 	"use strict";
 
 	return {
@@ -146,11 +144,6 @@ function($, d3, analytics, arrows, csv, filterform, mapper, route, yearslider,
 			.attr("id", "mapcanvas")
 			.attr("class", "map-svg flow")
 			.attr("viewBox", "0 0 "+this.config.width+" "+this.config.height);
-
-		// SVG styling, via a template with settings from config
-		var style = this.tmsvg.append("style");
-		var svgStyles = util.renderTemplate(svgStylesTemplate, config.colours);
-		style.text(svgStyles);
 
 		this.svgDefs = this.tmsvg.append("defs");
 		this.zoomg = this.tmsvg.append("g").attr("class", "zoomgroup");

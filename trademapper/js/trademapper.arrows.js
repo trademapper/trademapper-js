@@ -1,5 +1,5 @@
 
-define(["d3", "spiralTree", "trademapper.route", "util", "config"], function(d3, flowmap, tmroute, util, config) {
+define(["d3", "spiralTree", "trademapper.route", "trademapper.portlookup", "util", "config"], function(d3, flowmap, tmroute, portlookup, util, config) {
 	"use strict";
 	return {
 	mapsvg: null,
@@ -381,12 +381,17 @@ define(["d3", "spiralTree", "trademapper.route", "util", "config"], function(d3,
 					role.charAt(0).toUpperCase() + '</span>';
 				for (var j = 0; j < pointsWithRole.length; j++) {
 					var titleAttr = '',
-						countryCode = pointsWithRole[j];
-					if (this.countryCodeToInfo.hasOwnProperty(countryCode)) {
-						titleAttr = ' title="' + this.countryCodeToInfo[countryCode].formal_en + '"';
+						code = pointsWithRole[j].getCode();
+					if (this.countryCodeToInfo.hasOwnProperty(code)) {
+						titleAttr = ' title="' + this.countryCodeToInfo[code].formal_en + '"';
+					} else {
+						var port = portlookup.getPortDetails(code);
+						if (port) {
+							titleAttr = ' title="' + port.name + '"';
+						}
 					}
 					tooltiptext += ' <span class="location-role-country ' +
-						countryCode + '"' + titleAttr + '>' + countryCode + '</span>';
+						code + '"' + titleAttr + '>' + code + '</span>';
 				}
 				tooltiptext += '</p>';
 			}

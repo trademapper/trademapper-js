@@ -7,9 +7,19 @@ $transit-colour: #20AF9F;
 $importer-colour: #ff6600;
 
 $hilight-colour: $importer-colour;
+$pane-link-colour: $importer-colour;
 
 $darkbg-colour: #006957;
 $errorbg-colour: #177F73;
+$cookiebg-colour: #EEE;
+
+$twitterbtnbg-colour: #00ABDD;
+$sharebtnbg-colour: $darkbg-colour;
+$fileinputbtnbg-colour: $importer-colour;
+$exportbtnbg-colour: $importer-colour;
+
+$actionboxbg-colour: #F4F4F4;
+$actionboxborder-colour: #D9D9D9;
 
 %vertical-align {
 	position:relative;
@@ -196,6 +206,34 @@ h1,h2 {
     padding: 1em;
 }
 
+.group-custom-fileinput {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	align-items: center;
+
+	input[type="file"] {
+		display: none;
+	}
+
+	.custom-fileinput-filename {
+		font-style: italic;
+		margin-left: 10px;
+	}
+
+	label.btn.custom-fileinput {
+		background-color: $fileinputbtnbg-colour;
+		border-color: $fileinputbtnbg-colour;
+		&:hover {
+			background-color: darken($fileinputbtnbg-colour, 5%)
+		}
+	}
+}
+
+#info .filters-group + .filters-group {
+	margin-top: 10px;
+}
+
 #urlinput {
     border: 3px solid #4579c4;
     margin: 0 0 1em;
@@ -294,10 +332,49 @@ span.showhide {
     width: 100%;
 }
 
+.tab-pane section {
+	margin-top: 20px;
+}
+
+.tab-pane a, .tab-pane a:visited {
+	color: $pane-link-colour;
+	font-weight: bold;
+
+	&:hover {
+		text-decoration: underline;
+	}
+}
+
+.tab-pane .btn, .tab-pane a.btn:visited {
+	color: white;
+	font-weight: bold;
+	min-height: 49px;
+	display: inline-flex;
+	align-items: center;
+	font-size: 16px;
+}
+
+.tab-pane a.btn:hover {
+	text-decoration: none;
+}
+
 .tab-pane-title, .tab-pane > h3 {
     color: $importer-colour;
     font-size: 1.4em;
-    margin: 2em 0 0.5em;
+    margin: 0 0 0.5em;
+}
+
+.tab-pane section h3 {
+	color: $importer-colour;
+	font-size: 16px;
+	font-weight: bold;
+}
+
+.tab-pane .tabpane-actionbox {
+	background-color: $actionboxbg-colour;
+	border-radius: 4px;
+	border: 1px solid $actionboxborder-colour;
+	padding: 10px;
 }
 
 .intro {
@@ -316,7 +393,38 @@ span.showhide {
 	display:none;
 }
 
+#tabpanel-info-supportus-buttons {
+	width: 100%;
+	overflow: hidden;
 
+	> .flex-inner {
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
+		margin: 0 -5px;
+
+		> .btn {
+			flex: 1;
+			margin: 0 5px 5px 5px;
+		}
+	}
+}
+
+/*-- Export --*/
+.tab-pane .btn-export {
+	background-color: $exportbtnbg-colour;
+	border-color: $exportbtnbg-colour;
+	&:hover {
+		background-color: darken($exportbtnbg-colour, 5%);
+		border-color: darken($exportbtnbg-colour, 5%);
+	}
+    &[disabled] {
+		background-color: lighten($exportbtnbg-colour, 5%);
+		border-color: lighten($exportbtnbg-colour, 5%);
+    }
+}
 
 /*--Social Share--*/
 
@@ -343,16 +451,44 @@ span.showhide {
     margin-right: 0.25em;
 }
 
-.ss-share-link {
+.btn.ss-share-link {
+    display: inline-flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn.ss-share-link.ico-twitter {
+	background-color: $twitterbtnbg-colour;
+	&:hover {
+		background-color: darken($twitterbtnbg-colour, 5%)
+	}
+}
+
+.btn.ss-share-link.ico-survey {
+	background-color: $sharebtnbg-colour;
+	&:hover {
+		background-color: darken($sharebtnbg-colour, 5%)
+	}
+}
+
+.ss-share-link::after {
+    content: " ";
     background-image: url("../images/social-share-icons-sprite.png");
     background-repeat: no-repeat;
     display: inline-block;
     height: 25px;
     width: 25px;
+    margin-left: 5px;
 }
 
-.ico-twitter {
+.ico-twitter::after {
     background-position: 25% center;
+}
+
+.ico-survey::after {
+    background-position: 50% center;
 }
 
 /*---Filter Groups --*/
@@ -1038,4 +1174,44 @@ p.tooltip-location {
 
 .progress-modal .progress-bar {
 	background-color: #dc3545 !important;
+}
+
+/* ---------- Cookie banner & dialog ---------- */
+#cookiedialog {
+	display: none;
+
+	position: fixed;
+	bottom: 0;
+	width: 100%;
+	z-index: 100;
+	padding: 20px;
+
+	border-top: 2px solid $hilight-colour;
+	background: $cookiebg-colour;
+}
+
+#cookiedialog-banner {
+	font-size: 24px;
+	position: relative;
+
+	.cookie-banner-x {
+		display: block;
+		position: absolute;
+		top: -10px;
+		right: -10px;
+		font-size: 16px;
+		cursor: pointer;
+	}
+}
+
+#cookiedialog-settings {
+	display: none;
+	margin-top: 20px;
+	font-size: 14px;
+}
+
+/*------Tab panel additional styling------*/
+#tabs .tab-pane.active {
+	max-height: 80vh;
+	overflow-y: auto;
 }

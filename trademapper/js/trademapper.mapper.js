@@ -1,4 +1,4 @@
-define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre", "config"], function(d3, topojson, mapdata, disputedareas, countryCentre, config) {
+define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre", "trademapper.portlookup", "config"], function(d3, topojson, mapdata, disputedareas, countryCentre, portlookup, config) {
 	"use strict";
 
 	return {
@@ -316,6 +316,13 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre", "config"
 			var latitude = countryCentre[countryCode].latitude,
 				longitude = countryCentre[countryCode].longitude;
 			return this.projection([longitude, latitude]);
+		}
+	},
+
+	portCentrePoint: function(portCode) {
+		var port = portlookup.getPortDetails(portCode);
+		if (port) {
+			return this.projection([port.lon, port.lat]);
 		}
 	},
 

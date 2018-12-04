@@ -1,11 +1,11 @@
 
-define(["d3"], function(d3) {
+define(["d3", "trademapper.portlookup"], function(d3, portlookup) {
 	"use strict";
 
 	return {
 
 		/*
-		 * This will store the values as 
+		 * This will store the values as
 		 * filterValues[columnName] => {type: <sometype>, ...}
 		 *
 		 * For category it will look like:
@@ -78,11 +78,21 @@ define(["d3"], function(d3) {
 					.attr("value", this.anyString)
 					.text("Any " + textName);
 			}
+
+			var textValues = [];
 			for (var i = 0; i < values.length; i++) {
-				var textValue = countryCodeToName[values[i]] || values[i] || "<Blank " + textName + ">";
+				textValues.push({
+					value: values[i],
+					text: countryCodeToName[values[i]] || portlookup.getPortName(values[i]) || values[i] || "<Blank " + textName + ">"
+				});
+			}
+			textValues.sort(function (a, b) {
+				return a.text.localeCompare(b.text);
+			});
+			for (var j = 0; j < textValues.length; j++) {
 				locationSelect.append("option")
-					.attr("value", values[i])
-					.text(textValue);
+					.attr("value", textValues[j].value)
+					.text(textValues[j].text);
 			}
 
 			var moduleThis = this;

@@ -76,6 +76,7 @@
 define([
 	"jquery",
 	"d3",
+	"trademapper.analytics",
 	"trademapper.arrows",
 	"trademapper.csv",
 	"trademapper.filterform",
@@ -93,7 +94,7 @@ define([
 	"text!../fragments/reopencustomcsv.html",
 	"text!../fragments/svgstyles.css",
 ],
-function($, d3, arrows, csv, filterform, mapper, route, yearslider,
+function($, d3, analytics, arrows, csv, filterform, mapper, route, yearslider,
 			imageExport, videoExport, Progress, util, config, filterSkeleton,
 			csvFormSkeleton, yearSliderSkeleton, reopenCustomCsv, svgStylesTemplate) {
 	"use strict";
@@ -173,7 +174,7 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider,
 		// set up the various callbacks we need to link things together
 		var moduleThis = this;
 		csv.init(
-			function(csvData, csvFirstTenRows, filterSpec) { moduleThis.csvLoadedCallback(csvData, csvFirstTenRows, filterSpec); },
+			this.csvLoadedCallback.bind(this),
 			function(csvData, filterSpec, filters) { moduleThis.filterLoadedCallback(csvData, filterSpec, filters); },
 			function() { moduleThis.csvLoadErrorCallback(); },
 			this.config.skipCsvAutoDetect);
@@ -191,6 +192,7 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider,
 		this.createVideoProgressModal(videoExport);
 
 		route.setCountryGetPointFunc(function(countryCode) {return mapper.countryCentrePoint(countryCode);});
+		route.setPortGetPointFunc(function(portCode) {return mapper.portCentrePoint(portCode);});
 		route.setLatLongToPointFunc(function(latLong) {return mapper.latLongToPoint(latLong);});
 		filterform.formChangedCallback = function(columnName) {return moduleThis.filterformChangedCallback(columnName); };
 		yearslider.showTradeForYear = function(year) {return moduleThis.showTradeForYear(year); };
@@ -207,6 +209,9 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider,
 		if (this.queryString.hasOwnProperty("loadcsv")) {
 			this.loadCsvFromUrl();
 		}
+
+		// When all else is ready, set up analytics
+		analytics.init();
 	},
 
 	setConfigDefaults: function(tmConfig) {
@@ -298,7 +303,7 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider,
 		this.fileFormElement.html(csvFormSkeleton);
 		// stop the form "submitting" and causing page reload
 		$('form#tm-file-select').submit(function() { return false; });
-		this.fileInputElement = this.fileFormElement.select("#fileinput");
+		this.fileInputElement = this.fileFormElement.select('input[type="file"]');
 		csv.setFileInputElement(this.fileInputElement);
 		csv.setUrlInputElement(this.fileFormElement.select("#urlinput"),
 							this.fileFormElement.select("#url-download-button"));
@@ -376,8 +381,9 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider,
 		this.currentUnit = csv.getUnit(this.currentFilterSpec, filterValues);
 		this.drawArrows(routes,pointRoles, maxQuantity);
 
-		// colour in the countries that are trading
-		mapper.setTradingCountries(pointRoles);
+		// colour in the countries that are trading and/or countries containing a port
+		// which is trading
+		mapper.setTradingCountries(routes.getCountryCodes());
 		this.stopNowWorking();
 	},
 	drawArrows: function(routes,pointRoles,maxQuantity) {
@@ -431,11 +437,14 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider,
 		}
 	},
 
-	csvLoadedCallback: function(csvData, csvFirstTenRows, filterSpec) {
+	csvLoadedCallback: function(csvFileName, csvData, csvFirstTenRows, filterSpec) {
 		// first cache the current values, so we can regenerate if we want
 		this.currentCsvData = csvData;
 		this.currentCsvFirstTenRows = csvFirstTenRows;
 		this.currentFilterSpec = filterSpec;
+
+		// update file name
+		this.fileFormElement.select('.custom-fileinput-filename').text(csvFileName);
 
 		document.querySelector("body").classList.add("csv-data-loaded");
 		this.updateMapperZoom();

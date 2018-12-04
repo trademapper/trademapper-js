@@ -62,6 +62,10 @@ define([
 		// Layer instances
 		layers: [],
 
+		reader: new FileReader(),
+
+		isLoading: false,
+
 		init: function (formElementId) {
 			var moduleThis = this;
 
@@ -76,10 +80,28 @@ define([
 			// the "Add layer" button
 			this.button = this.form.find(".custom-fileinput");
 
-			// TODO add layer properly using file input's value
-			this.button.find("input").on("click", function () {
-				moduleThis.addLayer("file " + (moduleThis.layers.length + 1));
+			// add layer using file input's value
+			this.button.find("input").on("change", function () {
+				if (this.files.length < 1) {
+					// TODO error - no file to load
+					return;
+				}
+
+				moduleThis.addLayer(this.files[0].name);
 			});
+		},
+
+		// bool: true if loading a topojson file, false otherwise
+		// this also disables the button while a file is loading
+		setIsLoading: function (bool) {
+			this.isLoading = bool;
+
+			if (bool) {
+				this.disableButton();
+				return;
+			}
+
+			this.enableButton();
 		},
 
 		enableButton: function () {
@@ -90,7 +112,21 @@ define([
 			this.button.attr("disabled", "disabled");
 		},
 
+		loadTopoJSON: function (filename) {
+			this.reader.onload = function (e) {
+				var data = reader.result;
+
+				// TODO error - bad JSON
+
+				// TODO return parsed JSON
+			};
+
+			this.reader.readAsText(filename);
+		},
+
 		addLayer: function (filename) {
+			this.setIsLoading(true);
+
 			var layerNumber = this.layers.length + 1;
 			var maxLayers = this.LAYER_COLOURS.length;
 
@@ -114,6 +150,9 @@ define([
 			this.layerContainer.append(layer.elt);
 
 			// TODO notify listeners that layer is ready
+
+			// TODO wait until loaded before calling this
+			this.setIsLoading(false);
 		},
 	};
 

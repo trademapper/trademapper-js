@@ -209,7 +209,7 @@ define(["d3", "spiralTree", "trademapper.route", "trademapper.portlookup", "util
 			.attr("fill", "none")
 			.attr("data-origwidth", arrowWidth)
 			.on('mouseover', this.createPlainMouseOverFunc(route))
-			.on('mouseout', this.createPlainMouseOutFunc(route));
+			.on('mouseout', this.plainMouseOutPath.bind(this));
 	},
 
 	drawRouteCollectionPlainArrows: function(collection, pointRoles, maxQuantity) {
@@ -228,6 +228,34 @@ define(["d3", "spiralTree", "trademapper.route", "trademapper.portlookup", "util
 			if (routeList[i].points.length >= 2) {
 				this.drawRoute(routeList[i]);
 			}
+		}
+		this.drawPointRoles(pointRoles);
+	},
+
+	drawRouteCollectionFlowmap: function(collection, pointRoles, maxQuantity) {
+		var center, terminals;
+		var ctAndMax = collection.getCenterTerminalList();
+		this.centerTerminals = ctAndMax.centerTerminalList;
+		if (maxQuantity) {
+			this.maxQuantity = maxQuantity;
+		} else {
+			this.maxQuantity = ctAndMax.maxSourceQuantity;
+		}
+		// round to 2 significant digits
+		this.maxQuantity = parseFloat(this.maxQuantity.toPrecision(2));
+		this.flowmap.clearSpiralPaths();
+		this.clearPoints();
+		this.flowmap.setMaxQuantity(this.maxQuantity);
+		for (var i = 0; i < this.centerTerminals.length; i++) {
+			center = this.centerTerminals[i].center;
+			terminals = this.centerTerminals[i].terminals;
+			// set up flowmap settings for this path
+			this.flowmap.extraSpiralClass = "traderoute zoompath center-" + center.point.toString();
+			this.flowmap.mouseOverFunc = this.createFlowmapMouseOverFunc(i);
+			this.flowmap.mouseOutFunc = this.flowmapMouseOutPath;
+			// now do preprocess and drawing
+			this.flowmap.preprocess(terminals, center);
+			this.flowmap.drawTree();
 		}
 		this.drawPointRoles(pointRoles);
 	},
@@ -343,17 +371,17 @@ define(["d3", "spiralTree", "trademapper.route", "trademapper.portlookup", "util
 			gradientStops[i].setAttribute("stop-opacity", opacity);
 		}
 	},
-        
+
 	plainMouseOverPath: function(route) {
 		// clear the last non-transparent path
 		this.setPathOpacity(this.highlightedPath, this.arrowColours.opacity);
 		// make the path non-transparent
 		this.highlightedPath = route.toHtmlId();
 		this.setPathOpacity(this.highlightedPath, this.highlightOpacity);
-        
-        // set the path stroke colour
-        d3.selectAll("." + this.highlightedPath).style("stroke", '#ff6600');
-        
+
+		// set the path stroke colour
+		d3.selectAll("." + this.highlightedPath).style("stroke", '#ff6600');
+
 		// now do the tooltip
 		var pathSelector = ".route-arrow." + route.toHtmlId(),
 			tooltiptext = '<div class="tooltip-summary">';
@@ -407,19 +435,11 @@ define(["d3", "spiralTree", "trademapper.route", "trademapper.portlookup", "util
 		return function() { moduleThis.plainMouseOverPath(route); };
 	},
 
-    createPlainMouseOutFunc: function(route) {
-		var moduleThis = this;
-		return function() { moduleThis.plainMouseOutPath(route); };
-	},
-
 	plainMouseOutPath: function() {
-        // remove path stroke
-        d3.selectAll("." + this.highlightedPath).style('stroke', null);
-		// return;
-		// TODO: decide what behaviour we want on mouseOut
+		// remove path stroke
+		d3.selectAll("." + this.highlightedPath).style('stroke', null);
 		this.setPathOpacity(this.highlightedPath, this.arrowColours.opacity);
 		this.highlightedPath = null;
-		// this.clearTooltip();
 	},
 
 	flowmapMouseOverPath: function(ctIndex) {
@@ -456,7 +476,6 @@ define(["d3", "spiralTree", "trademapper.route", "trademapper.portlookup", "util
 	},
 
 	flowmapMouseOutPath: function() {
-        console.log('flowmapMouseOutPath')
 		return;
 		// TODO: decide what behaviour we want on mouseOut
 		d3.selectAll(".traderoute-highlight").classed("traderoute-highlight", false);
@@ -467,23 +486,21 @@ define(["d3", "spiralTree", "trademapper.route", "trademapper.portlookup", "util
 		this.pathTooltip.transition()
 			.duration(250)
 			.style("opacity", 0);
-        console.log("ToolTip cleared");
 	},
 
-	
+
 	drawPointRoleLabel: function(role, gLegend, circleX, circleY) {
 		var roleLabel = role.charAt(0).toUpperCase() + role.slice(1);
-        if (roleLabel){
-            this.drawPoint(circleX, circleY, role, "legend", gLegend);
-            gLegend.append("text")
-                .attr("x", circleX + 10)
-                .attr("y", circleY + 5)
-                .attr("font-size", "0.5em")
-                .attr("font-family", config["FONT_FAMILY"])
-                .attr("class", "legend tradenode-label")
-                .text(roleLabel);
-            console.log("Role:"+roleLabel);
-        }
+		if (roleLabel) {
+			this.drawPoint(circleX, circleY, role, "legend", gLegend);
+			gLegend.append("text")
+				.attr("x", circleX + 10)
+				.attr("y", circleY + 5)
+				.attr("font-size", "0.5em")
+				.attr("font-family", config["FONT_FAMILY"])
+				.attr("class", "legend tradenode-label")
+				.text(roleLabel);
+		}
 	},
 
 	formatLegendValue: function(labelValue) {

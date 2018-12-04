@@ -291,11 +291,9 @@ function($, d3, analytics, arrows, csv, filterform, mapper, route, yearslider,
 
 	showNowWorking: function() {
 		console.log("start working");
-        console.log("test");
 	},
 
 	stopNowWorking: function() {
-		console.log("work finished");
 		console.log("work finished");
 	},
 

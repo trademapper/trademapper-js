@@ -46,7 +46,7 @@ define(["configextra"], function(configextra) {
 		},
 		minArrowWidth: 0.75,
 		maxArrowWidth: 20,
-		arrowType: "flowmap",  // could be "plain-arrows" or "flowmap"
+		arrowType: "plain-arrows",  // could be "plain-arrows" or "flowmap"
 		skipCsvAutoDetect: false,
 		width: 950,
 		height: 500,

@@ -3,43 +3,47 @@
 	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
-.mapocean { fill: {{OCEAN}}; }
+.mapocean { fill: {{=it.OCEAN}}; }
 
-.country { fill: {{COUNTRY}}; }
-.country.trading { fill: {{COUNTRY_TRADING}}; }
+.country { fill: {{=it.COUNTRY}}; }
+.country.trading { fill: {{=it.COUNTRY_TRADING}}; }
 .country-border {
-	stroke: {{COUNTRY_BORDER}};
+	stroke: {{=it.COUNTRY_BORDER}};
 	fill: none;
 	stroke-linejoin: round;
 }
 
 #legendcontainer, g.legend { opacity: 1; }
 .legend-background {
-	fill: {{LEGEND_BACKGROUND}};
+	fill: {{=it.LEGEND_BACKGROUND}};
 	opacity: 0.6;
 }
 
-.legend text { fill: {{LEGEND_TEXT}}; }
+.legend text { fill: {{=it.LEGEND_TEXT}}; }
 
-.route-arrow-head-wide { fill: {{ARROW_WIDE}}; }
-.route-arrow-head-narrow { fill: {{ARROW_NARROW}}; }
-.route-plain-arrow-head-narrow { fill: {{ARROW_NARROW_PLAIN}}; }
+.route-arrow-head-wide { fill: {{=it.ARROW_WIDE}}; }
+.route-arrow-head-narrow { fill: {{=it.ARROW_NARROW}}; }
+.route-plain-arrow-head-narrow { fill: {{=it.ARROW_NARROW_PLAIN}}; }
 
-.tradenode.exporter { fill: {{TRADE_EXPORTER}}; }
-.tradenode.origin { fill: {{TRADE_ORIGIN}}; }
-.tradenode.transit { fill: {{TRADE_TRANSIT}}; }
-.tradenode.importer { fill: {{TRADE_IMPORTER}}; }
-
-.overlay-polygon { fill: {{OVERLAY_POLYGON}}; }
-.overlay-point { fill: {{OVERLAY_POINT}}; }
-.overlay-polygon-boundary, .overlay-line {
-	stroke-width: 0.03px;
-	fill: none;
-}
-.overlay-polygon-boundary { stroke: {{OVERLAY_POLYGON_BOUNDARY}}; }
-.overlay-line { stroke: {{OVERLAY_LINE}}; }
+.tradenode.exporter { fill: {{=it.TRADE_EXPORTER}}; }
+.tradenode.origin { fill: {{=it.TRADE_ORIGIN}}; }
+.tradenode.transit { fill: {{=it.TRADE_TRANSIT}}; }
+.tradenode.importer { fill: {{=it.TRADE_IMPORTER}}; }
 
 .year-text {
 	font-size: 24px;
 	fill: #000;
 }
+
+/* styling for layers */
+{{~Object.keys(it.LAYER_COLOURS) :layerId}}
+.{{=layerId}}-poly, .{{=layerId}}-point {
+	fill: {{=it.LAYER_COLOURS[layerId]}};
+}
+
+.{{=layerId}}-line {
+	stroke-width: 0.03px;
+	fill: none;
+	stroke: {{=it.LAYER_COLOURS[layerId]}};
+}
+{{~}}

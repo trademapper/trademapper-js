@@ -1,4 +1,4 @@
-define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre", "trademapper.portlookup", "config", "util", "text!../fragments/svgstyles.css"], function(d3, topojson, mapdata, disputedareas, countryCentre, portlookup, config, util, svgStylesTemplate) {
+define(["d3", "topojson", "vendor/doT", "worldmap", "disputedareas", "countrycentre", "trademapper.portlookup", "config", "util", "text!../fragments/svgstyles.css"], function(d3, topojson, doT, mapdata, disputedareas, countryCentre, portlookup, config, util, svgStylesTemplate) {
 	"use strict";
 
 	return {
@@ -42,16 +42,28 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre", "tradema
 		this.setupZoom();
 		this.makeCountryNameHash();
 
-		// SVG styling, via a template with settings from config
-		var style = svg.append("style");
-		var svgStyles = util.renderTemplate(svgStylesTemplate, mapConfig.colours);
-		style.text(svgStyles);
+		this.setStyles();
 	},
 
+	// layers have custom colours which can be set by the user;
+	// these are stored in the config object in the style.LAYER_COLOURS map,
+	// where the keys are the layer IDs; these then become part of CSS
+	// selectors produced via the fragments/svgstyles.css template, which in
+	// turn style the SVG elements
+	setLayerColour: function (layerId, colour) {
+		this.config.styles.LAYER_COLOURS[layerId] = colour;
+		this.setStyles();
+	},
+
+	// SVG styling, via a template with settings from config;
+	// must be inserted as first child for the styling to work in the standalone SVG
 	setStyles: function () {
-		// SVG styling, via a template with settings from config
-		var style = this.tmsvg.append("style").attr("id", "configured-styles");
-		var svgStyles = util.renderTemplate(svgStylesTemplate, config.colours);
+		var style = this.svg.select("style#configured-styles");
+		if (style.size() === 0) {
+			style = this.svg.insert("style", ":first-child").attr("id", "configured-styles");
+		}
+
+		var svgStyles = doT.template(svgStylesTemplate)(this.config.styles);
 		style.text(svgStyles);
 	},
 
@@ -122,15 +134,8 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre", "tradema
 	loadTopoJSON: function (layer) {
 		var layerId = layer.id;
 		var data = layer.data;
-		var colour = layer.colour;
 
-		// TODO rebuild the stylesheet in the svg...
-		/*
-		.overlay-polygon { fill: {{OVERLAY_POLYGON}}; }
-		.overlay-point { fill: {{OVERLAY_POINT}}; }
-		.overlay-polygon-boundary { stroke: {{OVERLAY_POLYGON_BOUNDARY}}; }
-		.overlay-line { stroke: {{OVERLAY_LINE}}; }
-		*/
+		this.setLayerColour(layerId, layer.colour);
 
 		// polygons need drawing with class overlay-area;
 		// lines need drawing with class overlay-line;
@@ -172,34 +177,34 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre", "tradema
 		if (polygons.geometries.length > 0) {
 			var polygonFeatures = topojson.feature(data, polygons).features;
 
-			this.mapg.selectAll(".overlay-polygon." + layerId)
+			this.mapg.selectAll("." + layerId + "-poly")
 				.data(polygonFeatures)
 				.enter()
 					.append("path")
 					.attr("d", this.pathmaker)
-					.attr("class", "overlay-polygon " + layerId);
+					.attr("class", layerId + "-poly");
 		}
 
 		// points
 		if (points.geometries.length > 0) {
 			var pointFeatures = topojson.feature(data, points).features;
-			this.mapg.selectAll(".overlay-point." + layerId)
+			this.mapg.selectAll("." + layerId + "-point")
 				.data(pointFeatures)
 				.enter()
 					.append("path")
 					.attr("d", this.pathmaker)
-					.attr("class", "overlay-point " + layerId);
+					.attr("class", layerId + "-point");
 		}
 
 		// lines
 		if (lines.geometries.length > 0) {
 			var lineFeatures = topojson.feature(data, lines).features;
-			this.mapg.selectAll(".overlay-line." + layerId)
+			this.mapg.selectAll("." + layerId + "-line")
 				.data(lineFeatures)
 				.enter()
 					.append("path")
 					.attr("d", this.pathmaker)
-					.attr("class", "overlay-line " + layerId);
+					.attr("class", layerId + "-line");
 		}
 
 		console.log("loaded topojson");
@@ -289,7 +294,7 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre", "tradema
 				.attr("width", "4")
 				.attr("height", "4")
 			.append("g")
-				.attr("stroke", config.colours["DISPUTED"])
+				.attr("stroke", config.styles["DISPUTED"])
 				.attr("stroke-width", "1px")
 			.append("path")
 				.attr("d", "M-1,1 l2,-2 M0,4 l4,-4 M3,5 l2,-2");

@@ -25,16 +25,16 @@
  */
 define([
 	"jquery",
-	"util",
+	"vendor/doT",
 	"text!../fragments/layerelementskeleton.html",
 	"text!../fragments/layerformskeleton.html",
-], function ($, util, layerElementSkeleton, layerFormSkeleton) {
+], function ($, doT, layerElementSkeleton, layerFormSkeleton) {
 
 	// represents a layer and its related DOM elements
 	var Layer = function (id, filename, colour, data) {
 		// template filled with filename and current colour
 		var ctx = {filename: filename, colour: colour};
-		var html = util.renderTemplate(layerElementSkeleton, ctx);
+		var html = doT.template(layerElementSkeleton)(ctx);
 
 		return {
 			id: id,
@@ -156,7 +156,7 @@ define([
 			this.loadTopoJSONFile(file).then(
 				function (data) {
 					// make Layer
-					var layer = Layer("layer-" + layerNumber, file.name,
+					var layer = Layer("layer" + layerNumber, file.name,
 						this.LAYER_COLOURS[layerNumber - 1], data);
 
 					this.layers.push(layer);

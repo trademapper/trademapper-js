@@ -498,7 +498,7 @@ define(["d3", "spiralTree", "trademapper.route", "trademapper.portlookup", "util
 				.attr("x", circleX + 10)
 				.attr("y", circleY + 5)
 				.attr("font-size", "0.5em")
-				.attr("font-family", config["FONT_FAMILY"])
+				.attr("font-family", config.styles["FONT_FAMILY"])
 				.attr("class", "legend tradenode-label")
 				.text(roleLabel);
 		}
@@ -577,7 +577,7 @@ define(["d3", "spiralTree", "trademapper.route", "trademapper.portlookup", "util
 				.attr("x", lineLength + xOffset + (margin +5))
 				.attr("y", lineVertical + 5 + yOffset)
 				.attr("font-size", "0.5em")
-				.attr("font-family", config["FONT_FAMILY"])
+				.attr("font-family", config.styles["FONT_FAMILY"])
 				.attr("class", "legend traderoute-label")
 				.text(valueText);
 		}

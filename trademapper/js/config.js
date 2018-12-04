@@ -2,7 +2,7 @@ define(["configextra"], function(configextra) {
 	/* Default settings */
 	var settings = {
 		// global colour settings
-		colours: {
+		styles: {
 			COUNTRY: "#DFDFDF",
 			COUNTRY_TRADING: "#B1C73E",
 			COUNTRY_BORDER: "#FFFFFF",
@@ -26,10 +26,13 @@ define(["configextra"], function(configextra) {
 			OVERLAY_POLYGON: "rgba(168, 0, 0, 0.4)",
 			OVERLAY_POLYGON_BOUNDARY: "rgba(0, 0, 0, 0.4)",
 			OVERLAY_LINE: "rgba(0, 0, 255, 0.8)",
-			OVERLAY_POINT: "rgba(0, 255, 0, 0.6)"
-		},
+			OVERLAY_POINT: "rgba(0, 255, 0, 0.6)",
 
-		FONT_FAMILY: "'Helvetica Neue',Helvetica,Arial,sans-serif",
+			// the values in here are set by the user when uploading topojson layers
+			LAYER_COLOURS: {},
+
+			FONT_FAMILY: "'Helvetica Neue',Helvetica,Arial,sans-serif",
+		},
 
 		// properties used by trademapper.js
 		ratio: 0.86,

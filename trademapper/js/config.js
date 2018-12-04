@@ -8,7 +8,7 @@ define(["configextra"], function(configextra) {
 			COUNTRY_BORDER: "#FFFFFF",
 			OCEAN: "#FFFFFF",
 			DISPUTED: "#AAAAAA",
-			ARROW_WIDE: "rgba(255, 255, 255, 0.5)",
+			ARROW_WIDE: "rgba(102, 102, 102, 0.4)",
 			ARROW_NARROW: "#000000",
 			ARROW_NARROW_PLAIN: "rgba(102, 102, 102, 1.0)",
 

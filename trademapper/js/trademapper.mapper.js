@@ -131,7 +131,8 @@ define(["d3", "topojson", "vendor/doT", "worldmap", "disputedareas", "countrycen
 	// layers are drawn using the data in the Layer, using the colour from the
 	// Layer; each element added from the data in this layer is assigned a
 	// "unique" ID from the layer
-	loadTopoJSON: function (layer) {
+	// callback: function invoked with no args when SVG is in the DOM
+	loadTopoJSON: function (layer, callback) {
 		var layerId = layer.id;
 		var data = layer.data;
 
@@ -216,6 +217,10 @@ define(["d3", "topojson", "vendor/doT", "worldmap", "disputedareas", "countrycen
 		}
 
 		console.log("loaded topojson");
+
+		if (callback) {
+			callback();
+		}
 	},
 
 	setupZoom: function() {

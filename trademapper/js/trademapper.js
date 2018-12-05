@@ -86,6 +86,7 @@ define([
 	"trademapper.imageexport",
 	"trademapper.videoexport",
 	"trademapper.progress",
+	"trademapper.spinner",
 	"trademapper.layerloader",
 	"util",
 	"config",
@@ -95,7 +96,7 @@ define([
 	"text!../fragments/reopencustomcsv.html",
 ],
 function($, d3, analytics, arrows, csv, filterform, mapper, route, yearslider,
-			imageExport, videoExport, Progress, layerLoader, util, config,
+			imageExport, videoExport, Progress, Spinner, layerLoader, util, config,
 			filterSkeleton,	csvFormSkeleton, yearSliderSkeleton, reopenCustomCsv) {
 	"use strict";
 
@@ -327,13 +328,17 @@ function($, d3, analytics, arrows, csv, filterform, mapper, route, yearslider,
 	},
 
 	createLayerLoadingModal: function (layerLoader, mapper) {
-		// TODO
-		layerLoader.on("start", function () {
+		var layerSpinner = Spinner(document.body);
 
+		layerLoader.on("start", function () {
+			layerSpinner.show();
 		});
 
 		layerLoader.on("layer", function (event, layer) {
-			mapper.loadTopoJSON(layer);
+			// the mapper knows when the topojson has been drawn, so allow that to
+			// control when the spinner is hidden
+			// TODO don't pass callbacks around, use events consistently throughout
+			mapper.loadTopoJSON(layer, layerSpinner.hide.bind(layerSpinner));
 		});
 	},
 

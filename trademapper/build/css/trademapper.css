@@ -132,7 +132,8 @@ h1, h2 {
 /*---File Select--*/
 .user-actions {
   display: table;
-  padding: 0; }
+  padding: 0;
+  width: 100%; }
 
 .group-fileinput,
 .csv-load-errors,
@@ -302,7 +303,8 @@ span.showhide {
   background-color: #F4F4F4;
   border-radius: 4px;
   border: 1px solid #D9D9D9;
-  padding: 10px; }
+  padding: 10px;
+  overflow-x: hidden; }
 
 .intro {
   padding-right: 30px; }
@@ -950,26 +952,35 @@ p.tooltip-location {
   padding: 1em 0; }
 
 /*------Progress modal------*/
-.progress-modal {
-  display: flex !important;
+.tm-modal {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100%; }
-
-.progress-modal .progress-modal-content {
-  width: 50%;
-  position: relative;
-  top: -220px; }
-
-.progress-modal p {
+  background-color: rgba(0, 0, 0, 0.6);
+  height: 100%;
   width: 100%;
-  text-align: center;
-  color: white;
-  font-weight: 800; }
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 999;
+  margin: 0; }
+  .tm-modal .tm-modal-body {
+    width: 50%;
+    position: relative;
+    top: -220px; }
+    .tm-modal .tm-modal-body p {
+      width: 100%;
+      text-align: center;
+      color: white;
+      font-weight: 800; }
+    .tm-modal .tm-modal-body .progress-bar {
+      background-color: #dc3545 !important; }
 
-.progress-modal .progress-bar {
-  background-color: #dc3545 !important; }
+.tm-modal[data-visible="true"] {
+  display: flex !important; }
+
+.tm-modal[data-visible="false"] {
+  display: none; }
 
 /* ---------- Cookie banner & dialog ---------- */
 #cookiedialog {
@@ -1002,5 +1013,62 @@ p.tooltip-location {
 #tabs .tab-pane.active {
   max-height: 80vh;
   overflow-y: auto; }
+
+/*------TopoJSON import panel------*/
+[data-role="layers"] {
+  margin-bottom: 18px; }
+
+[data-role="layer"] {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  width: 94%;
+  margin-top: 4px; }
+
+[data-role="layer"] > div {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: start;
+  -ms-flex-pack: start;
+  justify-content: flex-start;
+  background-color: white;
+  border-color: #777;
+  border-style: solid;
+  border-left-width: 1px;
+  border-top-width: 1px;
+  border-bottom-width: 1px;
+  border-right-width: 0px;
+  padding: 0;
+  margin: 0;
+  height: 44px; }
+
+[data-role="layer"] > div:last-child {
+  border-right-width: 1px; }
+
+[data-role="layer"] svg {
+  display: block; }
+
+.layer-filename {
+  width: 90%;
+  overflow-x: hidden; }
+
+[data-role="filename"] {
+  padding: 0 10px 0 10px;
+  overflow-x: hidden;
+  -ms-flex-wrap: nowrap;
+  flex-wrap: nowrap;
+  -o-text-overflow: ellipsis;
+  text-overflow: ellipsis; }
 
 /*# sourceMappingURL=trademapper.css.map */

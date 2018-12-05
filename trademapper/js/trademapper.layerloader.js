@@ -46,8 +46,10 @@ define([
 	};
 
 	// events:
+	// "start" -> starting to load layer JSON
   // "layer" -> payload is the Layer object which was created
 	// "error" -> payload is the error message
+	// "end" -> done loading layer JSON
 	return {
 		// colours assigned to layers by default (in this order);
 		// the number of colours in this array also limits the number of layers
@@ -138,6 +140,8 @@ define([
 
 		// file: File object
 		addLayer: function (file) {
+			this.eventFirer.trigger("start");
+
 			var layerNumber = this.layers.length + 1;
 			var maxLayers = this.LAYER_COLOURS.length;
 			if (layerNumber > maxLayers) {
@@ -168,6 +172,9 @@ define([
 
 					// notify listeners that layer is ready
 					this.eventFirer.trigger("layer", layer);
+
+					// notify listeners that we're finished
+					this.eventFirer.trigger("end");
 				}.bind(this),
 
 				function (error) {

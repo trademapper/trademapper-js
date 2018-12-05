@@ -1157,29 +1157,45 @@ p.tooltip-location {
 
 /*------Progress modal------*/
 
-.progress-modal {
-	display: flex !important;
+.tm-modal {
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
+	background-color: rgba(0, 0, 0, 0.6);
+
 	height: 100%;
-}
-
-.progress-modal .progress-modal-content {
-	width: 50%;
-	position: relative;
-	top: -220px;
-}
-
-.progress-modal p {
 	width: 100%;
-	text-align: center;
-	color: white;
-	font-weight: 800;
+
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: 999;
+	margin: 0;
+
+	.tm-modal-body {
+		width: 50%;
+		position: relative;
+		top: -220px;
+
+		p {
+			width: 100%;
+			text-align: center;
+			color: white;
+			font-weight: 800;
+		}
+
+		.progress-bar {
+			background-color: #dc3545 !important;
+		}
+	}
 }
 
-.progress-modal .progress-bar {
-	background-color: #dc3545 !important;
+.tm-modal[data-visible="true"] {
+	display: flex !important;
+}
+
+.tm-modal[data-visible="false"] {
+	display: none;
 }
 
 /* ---------- Cookie banner & dialog ---------- */

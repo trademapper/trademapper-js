@@ -188,9 +188,7 @@ function($, d3, analytics, arrows, csv, filterform, mapper, route, yearslider,
 
 		// for loading topojson layers
 		layerLoader.init(layerFormElementId);
-		layerLoader.on("layer", function (event, layer) {
-			mapper.loadTopoJSON(layer);
-		});
+		this.createLayerLoadingModal(layerLoader, mapper);
 
 		route.setCountryGetPointFunc(function(countryCode) {return mapper.countryCentrePoint(countryCode);});
 		route.setPortGetPointFunc(function(portCode) {return mapper.portCentrePoint(portCode);});
@@ -326,6 +324,17 @@ function($, d3, analytics, arrows, csv, filterform, mapper, route, yearslider,
 			videoProgress.setProgress(progress);
 		});
 		videoExport.on('end', videoProgress.hide.bind(videoProgress));
+	},
+
+	createLayerLoadingModal: function (layerLoader, mapper) {
+		// TODO
+		layerLoader.on("start", function () {
+
+		});
+
+		layerLoader.on("layer", function (event, layer) {
+			mapper.loadTopoJSON(layer);
+		});
 	},
 
 	addChangeFilterSpecLink: function(elFilterSpecChange) {

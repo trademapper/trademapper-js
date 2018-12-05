@@ -19,11 +19,11 @@ define(["jquery", "text!../fragments/progressskeleton.html"], function ($, html)
 		$(element).append(modal);
 
 		this.show = function () {
-			modal.modal("show");
+			modal.attr("data-visible", "true");
 		};
 
 		this.hide = function () {
-			modal.modal("hide");
+			modal.attr("data-visible", "false");
 		};
 
 		// set progress percentage

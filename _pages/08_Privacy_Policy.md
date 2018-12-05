@@ -1,5 +1,4 @@
 ### Our Cookie Statement
-
 Last updated: 5th December 2018
 This Cookie Statement explains how TRAFFIC International (“TRAFFIC”, "we", "us", and "ours") use cookies and similar technologies to recognise you when you visit our website at www.trademapper.co.uk ("Website"). It explains what these technologies are and why we use them, as well as your rights to control our use of them.
 

@@ -1,4 +1,4 @@
-### Privacy Statement
+
 
 ### Our Cookie Statement
 Last updated: 5th December 2018

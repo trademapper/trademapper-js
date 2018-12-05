@@ -26,7 +26,7 @@ define(["configextra"], function(configextra) {
 			OVERLAY_POLYGON: "rgba(168, 0, 0, 0.4)",
 			OVERLAY_POLYGON_BOUNDARY: "rgba(0, 0, 0, 0.4)",
 			OVERLAY_LINE: "rgba(0, 0, 255, 0.8)",
-			OVERLAY_POINT: "rgba(0, 255, 0, 0.6)",
+			OVERLAY_POINT: "rgba(0, 255, 0, 0.6)"
 		},
 
 		FONT_FAMILY: "'Helvetica Neue',Helvetica,Arial,sans-serif",
@@ -36,7 +36,7 @@ define(["configextra"], function(configextra) {
 		arrowColours: {
 			opacity: 0.6,
 			pathStart: "rgba(0,0,0,1)",
-			pathEnd: "rgba(0,0,0,0.4)"
+			pathEnd: "rgba(0,0,0,0.1)"
 		},
 		pointTypeSize: {
 			origin: 5.5,
@@ -44,8 +44,8 @@ define(["configextra"], function(configextra) {
 			transit: 2.5,
 			importer: 2
 		},
-		minArrowWidth: 0.75,
-		maxArrowWidth: 20,
+		minArrowWidth: 1,
+		maxArrowWidth: 10,
 		arrowType: "plain-arrows",  // could be "plain-arrows" or "flowmap"
 		skipCsvAutoDetect: false,
 		width: 950,

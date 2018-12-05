@@ -1,5 +1,5 @@
 
-define(["d3", "spiralTree", "trademapper.route", "trademapper.portlookup", "util", "config"], function(d3, flowmap, tmroute, portlookup, util, config) {
+define(["d3", "spiralTree", "trademapper.route", "trademapper.portlookup", "util", "config"], function(d3, flowmap, tmroute, portlookup, util, config){
 	"use strict";
 	return {
 	mapsvg: null,
@@ -18,7 +18,7 @@ define(["d3", "spiralTree", "trademapper.route", "trademapper.portlookup", "util
 	countryCodeToInfo: null,
 	maxQuantity: null,
 	centerTerminals: null,
-	narrowWideStrokeThreshold: 3,  // used for deciding whether to use arrows inside or outside line
+	narrowWideStrokeThreshold: 1.5,  // used for deciding whether to use narrow or wide arrows
 	highlightOpacity: 1,
 	currentUnit: "Any Unit",
 
@@ -45,6 +45,7 @@ define(["d3", "spiralTree", "trademapper.route", "trademapper.portlookup", "util
 
 	addDefsToSvg: function() {
 		// first add arrow head
+        // Flow tree arrows
 		this.svgdefs.append("marker")
 				.attr("id", "markerFlowmapTreeArrowWide")
 				.attr("viewBox", "0 0 10 10")
@@ -70,15 +71,15 @@ define(["d3", "spiralTree", "trademapper.route", "trademapper.portlookup", "util
 			.append("path")
 				.attr("d", "M 10 0 L 0 5 L 10 10 z")
 				.attr("class", "route-arrow-head-narrow");
-
+        // Plain arrows
 		this.svgdefs.append("marker")
 				.attr("id", "markerPlainArrowWide")
 				.attr("viewBox", "0 0 10 10")
 				.attr("markerUnits", "strokeWidth")
-				.attr("refX", "10")
-				.attr("refY", "5")
-				.attr("markerWidth", "2.8")
-				.attr("markerHeight", "2.4")
+				.attr("refX", "20")
+				.attr("refY", "4")
+				.attr("markerWidth", "3.8")
+				.attr("markerHeight", "3.4")
 				.attr("orient", "auto")
 			.append("path")
 				.attr("d", "M 1 2 L 10 5 L 1 8 z")

@@ -46,7 +46,7 @@ define(["d3", "topojson", "vendor/doT", "worldmap", "disputedareas", "countrycen
 	},
 
 	// layers have custom colours which can be set by the user;
-	// these are stored in the config object in the style.LAYER_COLOURS map,
+	// these are stored in the config object in the styles.LAYER_COLOURS map,
 	// where the keys are the layer IDs; these then become part of CSS
 	// selectors produced via the fragments/svgstyles.css template, which in
 	// turn style the SVG elements
@@ -138,9 +138,9 @@ define(["d3", "topojson", "vendor/doT", "worldmap", "disputedareas", "countrycen
 
 		this.setLayerColour(layerId, layer.colour);
 
-		// polygons need drawing with class overlay-area;
-		// lines need drawing with class overlay-line;
-		// points need drawing with class overlay-point
+		// polygons need drawing with class layer-poly;
+		// lines need drawing with class layer-line;
+		// points need drawing with class layer-point
 		var polygons = {
 			type: "GeometryCollection",
 			geometries: []

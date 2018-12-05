@@ -72,17 +72,19 @@ define([
 			this.form.html(layerFormSkeleton);
 
 			this.layerContainer = this.form.find("[data-role='layers']");
+			this.errorsPanel = this.form.find(".layer-load-errors")
 
 			// for firing events
 			this.eventFirer = $({});
 
 			// the "Add layer" button
-			this.button = this.form.find(".custom-fileinput");
+			this.buttonContainer = this.form.find(".group-custom-fileinput");
+			this.button = this.buttonContainer.find(".custom-fileinput");
 
 			// add layer using file input's value
 			this.button.find("input").on("change", function (event) {
 				if (event.target.files.length < 1) {
-					// TODO error - no file to load
+					this.showError("Please specify valid file to load");
 					return;
 				}
 
@@ -124,12 +126,13 @@ define([
 
 			var promise = new Promise(function (resolve, reject) {
 				reader.onload = function () {
-					var data = JSON.parse(reader.result);
-
-					// TODO parse error - bad JSON - reject()
-
+					try {
+						var data = JSON.parse(reader.result);
 					// return parsed JSON
 					resolve(data);
+					} catch (e) {
+						reject("Unable to load JSON from file " + file.name);
+					}
 				};
 			});
 
@@ -138,23 +141,43 @@ define([
 			return promise;
 		},
 
+		showError: function (message) {
+			this.errorsPanel.append("<p>" + message + "</p>");
+		},
+
+		clearErrors: function () {
+			this.errorsPanel.html("");
+		},
+
+		// add the layer to the panel; this is done separately so that the
+		// layer is only shown if its SVG is successfully loaded into the DOM
+		layerReady: function (layer) {
+			this.layerContainer.append(layer.elt);
+
+			this.layers.push(layer);
+
+			// hide the "Add layer" button if we have the maximum number of layers
+			if (this.layers.length === this.LAYER_COLOURS.length) {
+				this.buttonContainer.fadeOut();
+			}
+
+			this.setIsLoading(false);
+			this.eventFirer.trigger("end");
+		},
+
 		// file: File object
 		addLayer: function (file) {
 			this.eventFirer.trigger("start");
 
+			this.clearErrors();
+
 			var layerNumber = this.layers.length + 1;
-			var maxLayers = this.LAYER_COLOURS.length;
-			if (layerNumber > maxLayers) {
+			if (layerNumber > this.LAYER_COLOURS.length) {
 				return;
 			}
 
 			// we can load the layer
 			this.setIsLoading(true);
-
-			// hide the "Add layer" button if we have the maximum number of layers
-			if (layerNumber === maxLayers) {
-				this.button.fadeOut();
-			}
 
 			// load layer JSON
 			this.loadTopoJSONFile(file).then(
@@ -163,22 +186,14 @@ define([
 					var layer = Layer("layer" + layerNumber, file.name,
 						this.LAYER_COLOURS[layerNumber - 1], data);
 
-					this.layers.push(layer);
-
-					// add layer element to DOM
-					this.layerContainer.append(layer.elt);
-
-					this.setIsLoading(false);
-
 					// notify listeners that layer is ready
 					this.eventFirer.trigger("layer", layer);
-
-					// notify listeners that we're finished
-					this.eventFirer.trigger("end");
 				}.bind(this),
 
 				function (error) {
-					// TODO show errors
+					this.showError(error);
+					this.eventFirer.trigger("error", error);
+					this.setIsLoading(false);
 				}.bind(this)
 			);
 		},

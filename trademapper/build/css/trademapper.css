@@ -1015,7 +1015,10 @@ p.tooltip-location {
   overflow-y: auto; }
 
 /*------TopoJSON import panel------*/
-[data-role="layers"] {
+#tm-layer-select .group-custom-fileinput {
+  padding-bottom: 20px; }
+
+[data-role="layers"] [data-role="layer"]:last-child {
   margin-bottom: 18px; }
 
 [data-role="layer"] {
@@ -1070,5 +1073,9 @@ p.tooltip-location {
   flex-wrap: nowrap;
   -o-text-overflow: ellipsis;
   text-overflow: ellipsis; }
+
+.layer-load-errors {
+  font-weight: bold;
+  color: red; }
 
 /*# sourceMappingURL=trademapper.css.map */

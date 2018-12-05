@@ -334,11 +334,29 @@ function($, d3, analytics, arrows, csv, filterform, mapper, route, yearslider,
 			layerSpinner.show();
 		});
 
+		layerLoader.on("error", function () {
+			layerSpinner.hide();
+		});
+
 		layerLoader.on("layer", function (event, layer) {
 			// the mapper knows when the topojson has been drawn, so allow that to
 			// control when the spinner is hidden
 			// TODO don't pass callbacks around, use events consistently throughout
-			mapper.loadTopoJSON(layer, layerSpinner.hide.bind(layerSpinner));
+			try {
+				mapper.loadTopoJSON(layer, function () {
+					layerSpinner.hide();
+					layerLoader.layerReady(layer);
+				});
+			} catch (e) {
+				console.error(e);
+
+				// very unlikely to reach this, as any valid JSON is handled correctly
+				// by d3's topojson loader, even if it doesn't contain any
+				// geometry data at all
+				layerSpinner.hide();
+				layerLoader.showError("Error rendering topojson; check your file.");
+				layerLoader.setIsLoading(false);
+			}
 		});
 	},
 

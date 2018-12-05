@@ -262,7 +262,6 @@ h1,h2 {
     border: 3px solid #ff6600;
     border-top-width:0;
     padding: 1em;
-    position: absolute;
     z-index: 2;
 }
 .csv-load-errors.haserror > p > strong {
@@ -315,6 +314,11 @@ span.showhide {
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ededed', GradientType=0 );
     padding-bottom: 2em;
 }
+/* Hide unused tabs till data loaded */
+.nav-tabs > li[role=filters],
+.nav-tabs > li[role=export],
+.nav-tabs > li[role=options]
+{display: none;}
 
 .nav-tabs > li > a {color:$exporter-colour; font-weight:bold;}
 

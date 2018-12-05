@@ -200,7 +200,6 @@ h1, h2 {
   border: 3px solid #ff6600;
   border-top-width: 0;
   padding: 1em;
-  position: absolute;
   z-index: 2; }
 
 .csv-load-errors.haserror > p > strong {
@@ -246,6 +245,12 @@ span.showhide {
   background: linear-gradient(to bottom, white 0%, rgba(251, 251, 251, 0) 39%, rgba(246, 246, 246, 0) 82%, rgba(237, 237, 237, 0) 100%);
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ededed', GradientType=0 );
   padding-bottom: 2em; }
+
+/* Hide unused tabs till data loaded */
+.nav-tabs > li[role=filters],
+.nav-tabs > li[role=export],
+.nav-tabs > li[role=options] {
+  display: none; }
 
 .nav-tabs > li > a {
   color: #45689f;

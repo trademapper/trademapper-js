@@ -201,7 +201,6 @@ function($, d3, analytics, arrows, csv, filterform, mapper, route, yearslider,
 		yearslider.enableDisableCallback = function(enable) {return moduleThis.yearSliderEnableDisableCallback(enable); };
 
 		this.setUpAsideToggle();
-		this.hideUnusedTabs();
 		yearslider.create();
 
 		this.yearslider = yearslider;
@@ -276,13 +275,6 @@ function($, d3, analytics, arrows, csv, filterform, mapper, route, yearslider,
 		};
 	},
 
-	hideUnusedTabs: function() {
-		// this is hidden to start with and re-added when we add the filters
-		document.querySelector('li[role=filters]').style.display = "none";
-		// the options line will be deleted when we actually use the display
-		// TODO: remove when options available
-		document.querySelector('li[role=options]').style.display = "none";
-	},
 
 	loadCsvFromUrl: function() {
 		var csvUrl = decodeURIComponent(this.queryString.loadcsv);
@@ -320,6 +312,7 @@ function($, d3, analytics, arrows, csv, filterform, mapper, route, yearslider,
 		this.addChangeFilterSpecLink(elFilterSpecChange);
 		// finally ensure the tab is now available
 		document.querySelector('li[role=filters]').style.display = "block";
+        document.querySelector('li[role=export]').style.display = "block";
 	},
 
 	createVideoProgressModal: function (videoExport) {

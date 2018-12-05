@@ -313,7 +313,6 @@ function($, d3, analytics, arrows, csv, filterform, mapper, route, yearslider,
 		// finally ensure the tab is now available
 		document.querySelector('li[role=filters]').style.display = "block";
         document.querySelector('li[role=export]').style.display = "block";
-        document.querySelector('li[role=options]').style.display = "block";
 	},
 
 	createVideoProgressModal: function (videoExport) {

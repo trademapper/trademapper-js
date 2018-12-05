@@ -107,12 +107,12 @@ define(["d3", "spiralTree", "trademapper.route", "trademapper.portlookup", "util
 			.attr("y2", 0);*/
 		legendGradient.append("stop")
 			.attr("offset", "0%")
-			.attr("stop-color", this.arrowColours.pathStart)
-			.attr("stop-opacity", this.arrowColours.opacity);
+			.attr("stop-color", this.arrowColours.pathStartColour)
+			.attr("stop-opacity", this.arrowColours.pathStartOpacity);
 		legendGradient.append("stop")
 			.attr("offset", "100%")
-			.attr("stop-color", this.arrowColours.pathEnd)
-			.attr("stop-opacity", this.arrowColours.opacity);
+			.attr("stop-color", this.arrowColours.pathEndColour)
+			.attr("stop-opacity", this.arrowColours.pathEndOpacity);
 	},
 
 	setUpFlowmap: function() {
@@ -175,12 +175,12 @@ define(["d3", "spiralTree", "trademapper.route", "trademapper.portlookup", "util
 			.attr("y2", y2);
 		gradient.append("stop")
 			.attr("offset", "0%")
-			.attr("stop-color", this.arrowColours.pathStart)
-			.attr("stop-opacity", this.arrowColours.opacity);
+			.attr("stop-color", this.arrowColours.pathStartColour)
+			.attr("stop-opacity", this.arrowColours.pathStartOpacity);
 		gradient.append("stop")
 			.attr("offset", "100%")
-			.attr("stop-color", this.arrowColours.pathEnd)
-			.attr("stop-opacity", this.arrowColours.opacity);
+			.attr("stop-color", this.arrowColours.pathEndColour)
+			.attr("stop-opacity", this.arrowColours.pathEndOpacity);
 
 		return gradientId;
 	},

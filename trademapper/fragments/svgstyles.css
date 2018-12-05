@@ -21,9 +21,18 @@
 
 .legend text { fill: {{=it.LEGEND_TEXT}}; }
 
-.route-arrow-head-wide { fill: {{=it.ARROW_WIDE}}; }
-.route-arrow-head-narrow { fill: {{=it.ARROW_NARROW}}; }
-.route-plain-arrow-head-narrow { fill: {{=it.ARROW_NARROW_PLAIN}}; }
+.route-arrow-head-wide {
+	fill: {{=it.ARROW_WIDE}};
+	opacity: {{=it.ARROW_WIDE_OPACITY}};
+}
+.route-arrow-head-narrow {
+	fill: {{=it.ARROW_NARROW}};
+	opacity: {{=it.ARROW_NARROW_OPACITY}};
+}
+.route-plain-arrow-head-narrow {
+	fill: {{=it.ARROW_NARROW_PLAIN}};
+	opacity: {{=it.ARROW_NARROW_OPACITY}};
+}
 
 .tradenode.exporter { fill: {{=it.TRADE_EXPORTER}}; }
 .tradenode.origin { fill: {{=it.TRADE_ORIGIN}}; }
@@ -36,14 +45,22 @@
 }
 
 /* styling for layers */
+.layer-poly, .layer-point {
+	opacity: 0.4;
+}
+
+.layer-line {
+	stroke-width: 0.03px;
+	fill: none;
+	opacity: 0.4;
+}
+
 {{~Object.keys(it.LAYER_COLOURS) :layerId}}
-.{{=layerId}}-poly, .{{=layerId}}-point {
+.{{=layerId}}.layer-poly, .{{=layerId}}.layer-point {
 	fill: {{=it.LAYER_COLOURS[layerId]}};
 }
 
-.{{=layerId}}-line {
-	stroke-width: 0.03px;
-	fill: none;
+.{{=layerId}}.layer-line {
 	stroke: {{=it.LAYER_COLOURS[layerId]}};
 }
 {{~}}

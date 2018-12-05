@@ -53,9 +53,9 @@ define([
 		// the number of colours in this array also limits the number of layers
 		// which can be added (we only add layers for which we have colours)
 		LAYER_COLOURS: [
-			"rgba(168, 0, 0, 0.4)",
-			"rgba(0, 168, 0, 0.4)",
-			"rgba(0, 0, 168, 0.4)",
+			"#a80000",
+			"#00a800",
+			"#0000a8",
 		],
 
 		// Layer instances

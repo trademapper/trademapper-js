@@ -177,34 +177,34 @@ define(["d3", "topojson", "vendor/doT", "worldmap", "disputedareas", "countrycen
 		if (polygons.geometries.length > 0) {
 			var polygonFeatures = topojson.feature(data, polygons).features;
 
-			this.mapg.selectAll("." + layerId + "-poly")
+			this.mapg.selectAll("." + layerId + " layer-poly")
 				.data(polygonFeatures)
 				.enter()
 					.append("path")
 					.attr("d", this.pathmaker)
-					.attr("class", layerId + "-poly");
+					.attr("class", layerId + " layer-poly");
 		}
 
 		// points
 		if (points.geometries.length > 0) {
 			var pointFeatures = topojson.feature(data, points).features;
-			this.mapg.selectAll("." + layerId + "-point")
+			this.mapg.selectAll("." + layerId + " layer-point")
 				.data(pointFeatures)
 				.enter()
 					.append("path")
 					.attr("d", this.pathmaker)
-					.attr("class", layerId + "-point");
+					.attr("class", layerId + " layer-point");
 		}
 
 		// lines
 		if (lines.geometries.length > 0) {
 			var lineFeatures = topojson.feature(data, lines).features;
-			this.mapg.selectAll("." + layerId + "-line")
+			this.mapg.selectAll("." + layerId + " layer-line")
 				.data(lineFeatures)
 				.enter()
 					.append("path")
 					.attr("d", this.pathmaker)
-					.attr("class", layerId + "-line");
+					.attr("class", layerId + " layer-line");
 		}
 
 		console.log("loaded topojson");

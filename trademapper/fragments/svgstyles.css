@@ -45,14 +45,17 @@
 }
 
 /* styling for layers */
-.layer-poly, .layer-point {
+.layer-poly, .layer-point, .layer-line {
 	opacity: 0.4;
 }
 
-.layer-line {
+.layer-boundary {
+	opacity: 0.7;
+}
+
+.layer-line, .layer-boundary {
 	stroke-width: 0.03px;
 	fill: none;
-	opacity: 0.4;
 }
 
 {{~Object.keys(it.LAYER_COLOURS) :layerId}}
@@ -60,7 +63,7 @@
 	fill: {{=it.LAYER_COLOURS[layerId]}};
 }
 
-.{{=layerId}}.layer-line {
+.{{=layerId}}.layer-line, .{{=layerId}}.layer-boundary {
 	stroke: {{=it.LAYER_COLOURS[layerId]}};
 }
 {{~}}

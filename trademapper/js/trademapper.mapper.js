@@ -183,6 +183,14 @@ define(["d3", "topojson", "vendor/doT", "worldmap", "disputedareas", "countrycen
 					.append("path")
 					.attr("d", this.pathmaker)
 					.attr("class", layerId + " layer-poly");
+
+			// extract lines around polygons; this creates a multiline which draws
+			// around the polygons and shows their borders
+			var boundaries = topojson.mesh(data, polygons, function(a, b) { return a !== b; });
+			this.mapg.append("path")
+				.datum(boundaries)
+				.attr("d", this.pathmaker)
+				.attr("class", layerId + " layer-boundary");
 		}
 
 		// points

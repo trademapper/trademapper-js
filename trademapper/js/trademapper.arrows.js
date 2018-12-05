@@ -45,7 +45,7 @@ define(["d3", "spiralTree", "trademapper.route", "trademapper.portlookup", "util
 
 	addDefsToSvg: function() {
 		// first add arrow head
-        // Flow tree arrows
+		// Flow tree arrows
 		this.svgdefs.append("marker")
 				.attr("id", "markerFlowmapTreeArrowWide")
 				.attr("viewBox", "0 0 10 10")
@@ -71,7 +71,7 @@ define(["d3", "spiralTree", "trademapper.route", "trademapper.portlookup", "util
 			.append("path")
 				.attr("d", "M 10 0 L 0 5 L 10 10 z")
 				.attr("class", "route-arrow-head-narrow");
-        // Plain arrows
+		// Plain arrows
 		this.svgdefs.append("marker")
 				.attr("id", "markerPlainArrowWide")
 				.attr("viewBox", "0 0 10 10")

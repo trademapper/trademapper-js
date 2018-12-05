@@ -1,4 +1,3 @@
-
 ---
 permalink: /privacy/
 layout:    default

@@ -414,6 +414,7 @@ span.showhide {
 		> .btn {
 			flex: 1;
 			margin: 0 5px 5px 5px;
+			padding: 6px 8px;
 		}
 	}
 }
@@ -1234,7 +1235,7 @@ p.tooltip-location {
 
 /*------Tab panel additional styling------*/
 #tabs .tab-pane.active {
-	max-height: 80vh;
+	max-height: calc(100vh - 190px); /* Modified in js on window resize */
 	overflow-y: auto;
 }
 

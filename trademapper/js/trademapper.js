@@ -209,6 +209,10 @@ function($, d3, analytics, arrows, csv, filterform, mapper, route, yearslider,
 			this.loadCsvFromUrl();
 		}
 
+		// Ensure we react to window resizes when needed
+		$(window).resize(this.updateLayout.bind(this));
+		this.updateLayout();
+
 		// When all else is ready, set up analytics
 		analytics.init();
 	},
@@ -521,6 +525,16 @@ function($, d3, analytics, arrows, csv, filterform, mapper, route, yearslider,
 
 	csvLoadErrorCallback: function() {
 		return this.reportCsvLoadErrors();
+	},
+
+
+	/**
+	 * Adjust layout when needed
+	 */
+	updateLayout: function() {
+		// Resize the active pane
+		var $activePane = $('#tabs .tab-pane.active');
+		$activePane.css('max-height', $(window).height() - $activePane.offset().top);
 	}
 
 	};

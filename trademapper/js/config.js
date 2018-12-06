@@ -2,15 +2,21 @@ define(["configextra"], function(configextra) {
 	/* Default settings */
 	var settings = {
 		// global colour settings
-		colours: {
+		// TODO allow these to be set as rgba values, but parse them into separate
+		// hex colour code and opacity values; this is because Inkscape (and
+		// possibly other SVG editors) can't cope with rgba colour values
+		styles: {
 			COUNTRY: "#DFDFDF",
 			COUNTRY_TRADING: "#B1C73E",
 			COUNTRY_BORDER: "#FFFFFF",
 			OCEAN: "#FFFFFF",
 			DISPUTED: "#AAAAAA",
-			ARROW_WIDE: "rgba(102, 102, 102, 0.4)",
+			ARROW_WIDE: "#666666",
+			ARROW_WIDE_OPACITY: "0.4",
 			ARROW_NARROW: "#000000",
-			ARROW_NARROW_PLAIN: "rgba(102, 102, 102, 1.0)",
+			ARROW_NARROW_OPACITY: "1.0",
+			ARROW_NARROW_PLAIN: "#666666",
+			ARROW_NARROW_PLAIN_OPACITY: "1.0",
 
 			// colours for nodes; if these are changed here, the corresponding
 			// variables at the top of the trademapper.scss file should also be edited
@@ -22,21 +28,22 @@ define(["configextra"], function(configextra) {
 			LEGEND_TEXT: "#333333",
 			LEGEND_BACKGROUND: "#F8F8F8",
 
-			// this may eventually be customisable by the user and/or set per overlay
-			OVERLAY_POLYGON: "rgba(168, 0, 0, 0.4)",
-			OVERLAY_POLYGON_BOUNDARY: "rgba(0, 0, 0, 0.4)",
-			OVERLAY_LINE: "rgba(0, 0, 255, 0.8)",
-			OVERLAY_POINT: "rgba(0, 255, 0, 0.6)"
-		},
+			// the values in here are set by the user when uploading topojson layers
+			LAYER_COLOURS: {},
 
-		FONT_FAMILY: "'Helvetica Neue',Helvetica,Arial,sans-serif",
+			FONT_FAMILY: "'Helvetica Neue',Helvetica,Arial,sans-serif",
+		},
 
 		// properties used by trademapper.js
 		ratio: 0.86,
 		arrowColours: {
+			// opacity for the highlighted path
 			opacity: 0.6,
-			pathStart: "rgba(0,0,0,1)",
-			pathEnd: "rgba(0,0,0,0.1)"
+
+			pathStartColour: "#000",
+			pathStartOpacity: "1.0",
+			pathEndColour: "#000",
+			pathEndOpacity: "0.1"
 		},
 		pointTypeSize: {
 			origin: 5.5,

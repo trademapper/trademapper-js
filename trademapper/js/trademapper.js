@@ -86,17 +86,18 @@ define([
 	"trademapper.imageexport",
 	"trademapper.videoexport",
 	"trademapper.progress",
+	"trademapper.spinner",
+	"trademapper.layerloader",
 	"util",
 	"config",
 	"text!../fragments/filterskeleton.html",
 	"text!../fragments/csvformskeleton.html",
 	"text!../fragments/yearsliderskeleton.html",
 	"text!../fragments/reopencustomcsv.html",
-	"text!../fragments/svgstyles.css",
 ],
 function($, d3, analytics, arrows, csv, filterform, mapper, route, yearslider,
-			imageExport, videoExport, Progress, util, config, filterSkeleton,
-			csvFormSkeleton, yearSliderSkeleton, reopenCustomCsv, svgStylesTemplate) {
+			imageExport, videoExport, Progress, Spinner, layerLoader, util, config,
+			filterSkeleton,	csvFormSkeleton, yearSliderSkeleton, reopenCustomCsv) {
 	"use strict";
 
 	return {
@@ -126,7 +127,7 @@ function($, d3, analytics, arrows, csv, filterform, mapper, route, yearslider,
 
 	defaultConfig: config,
 
-	init: function(mapId, fileFormElementId, filterFormElementId,
+	init: function(mapId, fileFormElementId, layerFormElementId, filterFormElementId,
 								 imageExportButtonElementId, videoExportButtonElementId,
 								 changeOverTimeElementId, tmConfig) {
 		this.queryString = util.queryString();
@@ -144,11 +145,6 @@ function($, d3, analytics, arrows, csv, filterform, mapper, route, yearslider,
 			.attr("id", "mapcanvas")
 			.attr("class", "map-svg flow")
 			.attr("viewBox", "0 0 "+this.config.width+" "+this.config.height);
-
-		// SVG styling, via a template with settings from config
-		var style = this.tmsvg.append("style");
-		var svgStyles = util.renderTemplate(svgStylesTemplate, config.colours);
-		style.text(svgStyles);
 
 		this.svgDefs = this.tmsvg.append("defs");
 		this.zoomg = this.tmsvg.append("g").attr("class", "zoomgroup");
@@ -190,6 +186,10 @@ function($, d3, analytics, arrows, csv, filterform, mapper, route, yearslider,
 
 		// bind events on the video exporter to a progress modal instance
 		this.createVideoProgressModal(videoExport);
+
+		// for loading topojson layers
+		layerLoader.init(layerFormElementId);
+		this.createLayerLoadingModal(layerLoader, mapper);
 
 		route.setCountryGetPointFunc(function(countryCode) {return mapper.countryCentrePoint(countryCode);});
 		route.setPortGetPointFunc(function(portCode) {return mapper.portCentrePoint(portCode);});
@@ -325,6 +325,39 @@ function($, d3, analytics, arrows, csv, filterform, mapper, route, yearslider,
 			videoProgress.setProgress(progress);
 		});
 		videoExport.on('end', videoProgress.hide.bind(videoProgress));
+	},
+
+	createLayerLoadingModal: function (layerLoader, mapper) {
+		var layerSpinner = Spinner(document.body);
+
+		layerLoader.on("start", function () {
+			layerSpinner.show();
+		});
+
+		layerLoader.on("error", function () {
+			layerSpinner.hide();
+		});
+
+		layerLoader.on("layer", function (event, layer) {
+			// the mapper knows when the topojson has been drawn, so allow that to
+			// control when the spinner is hidden
+			// TODO don't pass callbacks around, use events consistently throughout
+			try {
+				mapper.loadTopoJSON(layer, function () {
+					layerSpinner.hide();
+					layerLoader.layerReady(layer);
+				});
+			} catch (e) {
+				console.error(e);
+
+				// very unlikely to reach this, as any valid JSON is handled correctly
+				// by d3's topojson loader, even if it doesn't contain any
+				// geometry data at all
+				layerSpinner.hide();
+				layerLoader.showError("Error rendering topojson; check your file.");
+				layerLoader.setIsLoading(false);
+			}
+		});
 	},
 
 	addChangeFilterSpecLink: function(elFilterSpecChange) {

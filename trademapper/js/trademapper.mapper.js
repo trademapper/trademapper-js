@@ -1,4 +1,4 @@
-define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre", "trademapper.portlookup", "config"], function(d3, topojson, mapdata, disputedareas, countryCentre, portlookup, config) {
+define(["d3", "topojson", "vendor/doT", "worldmap", "disputedareas", "countrycentre", "trademapper.portlookup", "config", "util", "text!../fragments/svgstyles.css"], function(d3, topojson, doT, mapdata, disputedareas, countryCentre, portlookup, config, util, svgStylesTemplate) {
 	"use strict";
 
 	return {
@@ -39,9 +39,32 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre", "tradema
 		this.height = mapConfig.height || 400;
 		this.addPatternDefs();
 		this.drawMap();
-		this.addOverlays();
 		this.setupZoom();
 		this.makeCountryNameHash();
+
+		this.setStyles();
+	},
+
+	// layers have custom colours which can be set by the user;
+	// these are stored in the config object in the styles.LAYER_COLOURS map,
+	// where the keys are the layer IDs; these then become part of CSS
+	// selectors produced via the fragments/svgstyles.css template, which in
+	// turn style the SVG elements
+	setLayerColour: function (layerId, colour) {
+		this.config.styles.LAYER_COLOURS[layerId] = colour;
+		this.setStyles();
+	},
+
+	// SVG styling, via a template with settings from config;
+	// must be inserted as first child for the styling to work in the standalone SVG
+	setStyles: function () {
+		var style = this.svg.select("style#configured-styles");
+		if (style.size() === 0) {
+			style = this.svg.insert("style", ":first-child").attr("id", "configured-styles");
+		}
+
+		var svgStyles = doT.template(svgStylesTemplate)(this.config.styles);
+		style.text(svgStyles);
 	},
 
 	makeCountryNameHash: function() {
@@ -104,46 +127,20 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre", "tradema
 				.attr("fill", "url(#diagonalHatch)");
 	},
 
-	// load overlays from the overlays= variable in the query string
-	addOverlays: function () {
-		var params = (new URL(document.location)).searchParams;
-		var urls = params.get('overlays');
+	// layer: a Layer object (see trademapper.layerloader.js)
+	// layers are drawn using the data in the Layer, using the colour from the
+	// Layer; each element added from the data in this layer is assigned a
+	// "unique" ID from the layer
+	// callback: function invoked with no args when SVG is in the DOM
+	loadTopoJSON: function (layer, callback) {
+		var layerId = layer.id;
+		var data = layer.data;
 
-		if (urls === null) {
-			return;
-		}
+		this.setLayerColour(layerId, layer.colour);
 
-		urls = urls.split(',');
-		console.log('FETCHING OVERLAYS FROM URLS:', urls);
-
-		urls.forEach(this.loadTopojsonFromURL.bind(this));
-	},
-
-	loadTopojsonFromURL: function(url) {
-		var self = this;
-
-		d3.json(url).then(
-			function (data) {
-				try {
-					self.loadTopojson(data);
-				}
-				catch (error) {
-					console.error("unable to parse topojson file", error);
-				}
-			},
-
-			function (error) {
-				console.error("unable to download", error);
-			}
-		);
-	},
-
-	loadTopojson: function (data) {
-		// lines need drawing with class overlay-line;
-		// polygons need drawing with class overlay-area, but also need to
-		// add lines denoting their boundaries;
-		// points can be treated the same way as polygons and don't need boundaries
-		// to be derived
+		// polygons need drawing with class layer-poly;
+		// lines need drawing with class layer-line;
+		// points need drawing with class layer-point
 		var polygons = {
 			type: "GeometryCollection",
 			geometries: []
@@ -177,15 +174,16 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre", "tradema
 			}
 		}
 
+		// polygons
 		if (polygons.geometries.length > 0) {
 			var polygonFeatures = topojson.feature(data, polygons).features;
 
-			this.mapg.selectAll(".overlay-polygon")
+			this.mapg.selectAll("." + layerId + " layer-poly")
 				.data(polygonFeatures)
 				.enter()
 					.append("path")
 					.attr("d", this.pathmaker)
-					.attr("class", "overlay-polygon");
+					.attr("class", layerId + " layer-poly");
 
 			// extract lines around polygons; this creates a multiline which draws
 			// around the polygons and shows their borders
@@ -193,32 +191,36 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre", "tradema
 			this.mapg.append("path")
 				.datum(boundaries)
 				.attr("d", this.pathmaker)
-				.attr("class", "overlay-polygon-boundary");
+				.attr("class", layerId + " layer-boundary");
 		}
 
-		// draw lines
-		if (lines.geometries.length > 0) {
-			var lineFeatures = topojson.feature(data, lines).features;
-			this.mapg.selectAll(".overlay-line")
-				.data(lineFeatures)
-				.enter()
-					.append("path")
-					.attr("d", this.pathmaker)
-					.attr("class", "overlay-line");
-		}
-
-		// draw points
+		// points
 		if (points.geometries.length > 0) {
 			var pointFeatures = topojson.feature(data, points).features;
-			this.mapg.selectAll(".overlay-point")
+			this.mapg.selectAll("." + layerId + " layer-point")
 				.data(pointFeatures)
 				.enter()
 					.append("path")
 					.attr("d", this.pathmaker)
-					.attr("class", "overlay-point");
+					.attr("class", layerId + " layer-point");
+		}
+
+		// lines
+		if (lines.geometries.length > 0) {
+			var lineFeatures = topojson.feature(data, lines).features;
+			this.mapg.selectAll("." + layerId + " layer-line")
+				.data(lineFeatures)
+				.enter()
+					.append("path")
+					.attr("d", this.pathmaker)
+					.attr("class", layerId + " layer-line");
 		}
 
 		console.log("loaded topojson");
+
+		if (callback) {
+			callback();
+		}
 	},
 
 	setupZoom: function() {
@@ -305,7 +307,7 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre", "tradema
 				.attr("width", "4")
 				.attr("height", "4")
 			.append("g")
-				.attr("stroke", config.colours["DISPUTED"])
+				.attr("stroke", config.styles["DISPUTED"])
 				.attr("stroke-width", "1px")
 			.append("path")
 				.attr("d", "M-1,1 l2,-2 M0,4 l4,-4 M3,5 l2,-2");

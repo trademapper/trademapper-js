@@ -76,10 +76,10 @@ define(["d3", "spiralTree", "trademapper.route", "trademapper.portlookup", "util
 				.attr("id", "markerPlainArrowWide")
 				.attr("viewBox", "0 0 10 10")
 				.attr("markerUnits", "strokeWidth")
-				.attr("refX", "20")
-				.attr("refY", "4")
-				.attr("markerWidth", "3.8")
-				.attr("markerHeight", "3.4")
+				.attr("refX", "15")
+				.attr("refY", "5")
+				.attr("markerWidth", "0.8")
+				.attr("markerHeight", "1.4")
 				.attr("orient", "auto")
 			.append("path")
 				.attr("d", "M 1 2 L 10 5 L 1 8 z")
@@ -106,11 +106,11 @@ define(["d3", "spiralTree", "trademapper.route", "trademapper.portlookup", "util
 			.attr("x2", 1)
 			.attr("y2", 0);*/
 		legendGradient.append("stop")
-			.attr("offset", "0%")
+			.attr("offset", "30%")
 			.attr("stop-color", this.arrowColours.pathStartColour)
 			.attr("stop-opacity", this.arrowColours.pathStartOpacity);
 		legendGradient.append("stop")
-			.attr("offset", "100%")
+			.attr("offset", "70%")
 			.attr("stop-color", this.arrowColours.pathEndColour)
 			.attr("stop-opacity", this.arrowColours.pathEndOpacity);
 	},
@@ -174,11 +174,11 @@ define(["d3", "spiralTree", "trademapper.route", "trademapper.portlookup", "util
 			.attr("x2", x2)
 			.attr("y2", y2);
 		gradient.append("stop")
-			.attr("offset", "0%")
+			.attr("offset", "30%")
 			.attr("stop-color", this.arrowColours.pathStartColour)
 			.attr("stop-opacity", this.arrowColours.pathStartOpacity);
 		gradient.append("stop")
-			.attr("offset", "100%")
+			.attr("offset", "70%")
 			.attr("stop-color", this.arrowColours.pathEndColour)
 			.attr("stop-opacity", this.arrowColours.pathEndOpacity);
 
@@ -381,7 +381,7 @@ define(["d3", "spiralTree", "trademapper.route", "trademapper.portlookup", "util
 		this.setPathOpacity(this.highlightedPath, this.highlightOpacity);
 
 		// set the path stroke colour
-		d3.selectAll("." + this.highlightedPath).style("stroke", '#ff6600');
+		d3.selectAll("." + this.highlightedPath).style("stroke", '#FF0000');
 
 		// now do the tooltip
 		var pathSelector = ".route-arrow." + route.toHtmlId(),
@@ -535,8 +535,10 @@ define(["d3", "spiralTree", "trademapper.route", "trademapper.portlookup", "util
 			.attr("id", "legendcontainer")
 			.attr("class", "legend")
 			.attr("x", "76%") // pin at 76% of map width
-			.attr("y", "0");
+			.attr("y", "10");
 		gLegend = legendContainer.append("g").attr("class", "legend");
+		
+		
 		gLegend.append("rect")
 			.attr("x", 5 + xOffset)
 			.attr("y", svgHeight - (margin) - legendHeight + yOffset)
@@ -581,11 +583,18 @@ define(["d3", "spiralTree", "trademapper.route", "trademapper.portlookup", "util
 				.attr("class", "legend traderoute-label")
 				.text(valueText);
 		}
+		gLegend.append("text")
+				.attr("x", margin + xOffset)
+				.attr("y", 20)
+				.attr("font-size", "0.5em")
+				.attr("font-family", config.styles["FONT_FAMILY"])
+				.attr("class", "legend traderoute-label")
+				.text('Routes →');
 
 		// Now add a legend for the circles
 		circleX = lineLength + xOffset + (margin * 2) +
 			this.maxQuantity.toFixed(1).length * 7;
-		circleY = (svgHeight + yOffset)-13;
+		circleY = (svgHeight + yOffset)-10;
 
 		for (i = tmroute.locationRoles.length-1; i >= 0; i--) {
 			circleY -= 18;

@@ -11,11 +11,11 @@ define(["configextra"], function(configextra) {
 			COUNTRY_BORDER: "#FFFFFF",
 			OCEAN: "#FFFFFF",
 			DISPUTED: "#AAAAAA",
-			ARROW_WIDE: "#666666",
-			ARROW_WIDE_OPACITY: "0.4",
-			ARROW_NARROW: "#000000",
+			ARROW_WIDE: "#FFF",
+			ARROW_WIDE_OPACITY: "1",
+			ARROW_NARROW: "#666",
 			ARROW_NARROW_OPACITY: "1.0",
-			ARROW_NARROW_PLAIN: "#666666",
+			ARROW_NARROW_PLAIN: "#666",
 			ARROW_NARROW_PLAIN_OPACITY: "1.0",
 
 			// colours for nodes; if these are changed here, the corresponding
@@ -27,6 +27,9 @@ define(["configextra"], function(configextra) {
 
 			LEGEND_TEXT: "#333333",
 			LEGEND_BACKGROUND: "#F8F8F8",
+			LEGEND_STROKE_COLOUR: "#999",
+			LEGEND_STROKE_WIDTH:"1",
+			
 
 			// the values in here are set by the user when uploading topojson layers
 			LAYER_COLOURS: {},
@@ -38,12 +41,11 @@ define(["configextra"], function(configextra) {
 		ratio: 0.86,
 		arrowColours: {
 			// opacity for the highlighted path
-			opacity: 0.6,
-
-			pathStartColour: "#000",
-			pathStartOpacity: "1.0",
-			pathEndColour: "#000",
-			pathEndOpacity: "0.1"
+			opacity: 0.9,
+			pathStartColour: "#6719d1",
+			pathStartOpacity: "0.8",
+			pathEndColour: "#e488f4",
+			pathEndOpacity: "0.8"
 		},
 		pointTypeSize: {
 			origin: 5.5,
@@ -52,7 +54,7 @@ define(["configextra"], function(configextra) {
 			importer: 2
 		},
 		minArrowWidth: 1,
-		maxArrowWidth: 10,
+		maxArrowWidth: 6,
 		arrowType: "plain-arrows",  // could be "plain-arrows" or "flowmap"
 		skipCsvAutoDetect: false,
 		width: 950,

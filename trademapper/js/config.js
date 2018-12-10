@@ -28,6 +28,13 @@ define(["configextra"], function(configextra) {
 			LEGEND_TEXT: "#333333",
 			LEGEND_BACKGROUND: "#F8F8F8",
 
+			// these are the default colours used for layers
+			DEFAULT_LAYER_COLOURS: [
+				"#a80000",
+				"#00a800",
+				"#0000a8",
+			],
+
 			// the values in here are set by the user when uploading topojson layers
 			LAYER_COLOURS: {},
 

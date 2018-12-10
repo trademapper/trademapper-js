@@ -1,7 +1,7 @@
 require.config({
 	baseUrl: 'js',
 	paths: {
-		gif: "lib/gif.min",
+		Animated_GIF: "lib/Animated_GIF.min",
 		jscookie: "lib/js-cookie.min",
 		configextra: ["configextra", "configextra.default"],
 		// require.js bits

@@ -17,6 +17,7 @@ $twitterbtnbg-colour: #00ABDD;
 $sharebtnbg-colour: $darkbg-colour;
 $fileinputbtnbg-colour: $importer-colour;
 $exportbtnbg-colour: $importer-colour;
+$errorboxbg-color:$importer-colour;
 
 $actionboxbg-colour: #F4F4F4;
 $actionboxborder-colour: #D9D9D9;
@@ -83,6 +84,7 @@ h1,h2 {
   color:$importer-colour;
 }
 
+abbr[title]{text-decoration: none}
 /*----------General Layout---
  =====================================*/
 
@@ -225,14 +227,18 @@ h1,h2 {
 	label.btn.custom-fileinput {
 		background-color: $fileinputbtnbg-colour;
 		border-color: $fileinputbtnbg-colour;
-		&:hover {
+		&:hover,
+		&:focus{
 			background-color: darken($fileinputbtnbg-colour, 5%)
 		}
 	}
 }
 
+.change-filter-spec p{
+	margin-top: 1rem;
+}
 #info .filters-group + .filters-group {
-	margin-top: 10px;
+	// margin-top: 10px;
 }
 
 #urlinput {
@@ -251,8 +257,7 @@ h1,h2 {
 .user-actions  .group-fileinput > p > label {font-size:0.9em; color: #333; padding-top:2em;}
 
 .csv-load-errors > p {
-    border-bottom: 3px solid #ff6600;
-    color: #ff6600;
+    color: $errorboxbg-color;
     margin-bottom: 0;
     margin-top: 0.5em;
     padding: 1em;
@@ -260,14 +265,12 @@ h1,h2 {
 
 #csv-load-error-details {
     background-color: #fff;
-    border: 3px solid #ff6600;
-    border-top-width:0;
+    border: 3px solid $errorboxbg-color;
     padding: 1em;
     z-index: 2;
 }
 .csv-load-errors.haserror > p > strong {
     bottom: 0.5em;
-    float: left;
     left: -1em;
     position: relative;
 }
@@ -369,9 +372,9 @@ span.showhide {
     margin: 0 0 0.5em;
 }
 
-.tab-pane section h3 {
+.tab-pane section h1 {
 	color: $importer-colour;
-	font-size: 16px;
+	font-size: 1.6rem;
 	font-weight: bold;
 }
 
@@ -381,6 +384,13 @@ span.showhide {
 	border: 1px solid $actionboxborder-colour;
 	padding: 10px;
 	overflow-x: hidden;
+	h1{
+		font-size: 1.4rem;
+		font-weight: bold;
+		margin-bottom: 2px;
+		margin-top: 4px;
+		color: inherit;
+	}
 }
 
 .intro {
@@ -578,7 +588,6 @@ span.showhide {
 
 .group-location > p > label {
     color:#fff;
-    font-size:1.4em;
     width:40%;
 }
 
@@ -605,7 +614,7 @@ span.showhide {
 
 .group-location > .form-item {
     background-image: url("../images/icon-origin.svg");
-    background-position: 10px 10px;
+    background-position: 10px 50%;
     background-repeat: no-repeat;
     padding-left: 40px;
 }
@@ -653,11 +662,11 @@ span.showhide {
 /*---Quantity selectors--*/
 
 .form-item.category-quantity > label {
-    width: 20%;
+    width: 50%;
 }
 
 .form-item.category-quantity > select {
-    width: 80%;
+    width: 50%;
 }
 
 /*---Category selectors--*/
@@ -1197,6 +1206,92 @@ p.tooltip-location {
 
 .tm-modal[data-visible="false"] {
 	display: none;
+}
+
+/* ---------- Loading spinner ----------------- */
+.lds-roller {
+  display: inline-block;
+  position: relative;
+  width: 64px;
+  height: 64px;
+}
+.lds-roller div {
+  animation: lds-roller 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  transform-origin: 32px 32px;
+}
+.lds-roller div:after {
+  content: " ";
+  display: block;
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #fff;
+  margin: -3px 0 0 -3px;
+}
+.lds-roller div:nth-child(1) {
+  animation-delay: -0.036s;
+}
+.lds-roller div:nth-child(1):after {
+  top: 50px;
+  left: 50px;
+}
+.lds-roller div:nth-child(2) {
+  animation-delay: -0.072s;
+}
+.lds-roller div:nth-child(2):after {
+  top: 54px;
+  left: 45px;
+}
+.lds-roller div:nth-child(3) {
+  animation-delay: -0.108s;
+}
+.lds-roller div:nth-child(3):after {
+  top: 57px;
+  left: 39px;
+}
+.lds-roller div:nth-child(4) {
+  animation-delay: -0.144s;
+}
+.lds-roller div:nth-child(4):after {
+  top: 58px;
+  left: 32px;
+}
+.lds-roller div:nth-child(5) {
+  animation-delay: -0.18s;
+}
+.lds-roller div:nth-child(5):after {
+  top: 57px;
+  left: 25px;
+}
+.lds-roller div:nth-child(6) {
+  animation-delay: -0.216s;
+}
+.lds-roller div:nth-child(6):after {
+  top: 54px;
+  left: 19px;
+}
+.lds-roller div:nth-child(7) {
+  animation-delay: -0.252s;
+}
+.lds-roller div:nth-child(7):after {
+  top: 50px;
+  left: 14px;
+}
+.lds-roller div:nth-child(8) {
+  animation-delay: -0.288s;
+}
+.lds-roller div:nth-child(8):after {
+  top: 45px;
+  left: 10px;
+}
+@keyframes lds-roller {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* ---------- Cookie banner & dialog ---------- */

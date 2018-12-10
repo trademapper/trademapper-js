@@ -17,6 +17,9 @@
 .legend-background {
 	fill: {{=it.LEGEND_BACKGROUND}};
 	opacity: 0.6;
+	stroke-width:{{=it.LEGEND_STROKE_WIDTH}};
+	stroke:{{=it.LEGEND_STROKE_COLOUR}};
+	
 }
 
 .legend text { fill: {{=it.LEGEND_TEXT}}; }

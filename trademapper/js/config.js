@@ -10,7 +10,7 @@ define(["configextra"], function(configextra) {
 			COUNTRY_TRADING: "#9b9b9b",
 			COUNTRY_BORDER: "#FFFFFF",
 			OCEAN: "#FFFFFF",
-			DISPUTED: "#AAAAAA",
+			DISPUTED: "#4a4a4a",
 			ARROW_WIDE: "#FFF",
 			ARROW_WIDE_OPACITY: "1",
 			ARROW_NARROW: "#4a4a4a",

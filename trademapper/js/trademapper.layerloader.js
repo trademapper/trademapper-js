@@ -55,9 +55,9 @@ define([
 		// the number of colours in this array also limits the number of layers
 		// which can be added (we only add layers for which we have colours)
 		LAYER_COLOURS: [
-			"#dcb2eb",
-			"#f79f77",
-			"#f8ff2d",
+			"#1f9f2f",
+			"#a27d29",
+			"#b5132d",
 		],
 
 		// Layer instances

@@ -7,15 +7,15 @@ define(["configextra"], function(configextra) {
 		// possibly other SVG editors) can't cope with rgba colour values
 		styles: {
 			COUNTRY: "#DFDFDF",
-			COUNTRY_TRADING: "#B1C73E",
+			COUNTRY_TRADING: "#9b9b9b",
 			COUNTRY_BORDER: "#FFFFFF",
 			OCEAN: "#FFFFFF",
 			DISPUTED: "#AAAAAA",
 			ARROW_WIDE: "#FFF",
 			ARROW_WIDE_OPACITY: "1",
-			ARROW_NARROW: "#666",
+			ARROW_NARROW: "#4a4a4a",
 			ARROW_NARROW_OPACITY: "1.0",
-			ARROW_NARROW_PLAIN: "#666",
+			ARROW_NARROW_PLAIN: "#4a4a4a",
 			ARROW_NARROW_PLAIN_OPACITY: "1.0",
 
 			// colours for nodes; if these are changed here, the corresponding
@@ -42,9 +42,9 @@ define(["configextra"], function(configextra) {
 		arrowColours: {
 			// opacity for the highlighted path
 			opacity: 0.9,
-			pathStartColour: "#6719d1",
+			pathStartColour: "#4a2879",
 			pathStartOpacity: "0.8",
-			pathEndColour: "#e488f4",
+			pathEndColour: "#656465",
 			pathEndOpacity: "0.8"
 		},
 		pointTypeSize: {

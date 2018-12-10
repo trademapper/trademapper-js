@@ -1,4 +1,5 @@
-define(["gif", "jquery", "util", "trademapper.imageloader"], function (GIF, $, util, ImageLoader) {
+define(["Animated_GIF", "jquery", "util", "trademapper.imageloader"],
+function (Animated_GIF, $, util, ImageLoader) {
 
 	return {
 		// button: button which when clicked initiates the export
@@ -39,28 +40,33 @@ define(["gif", "jquery", "util", "trademapper.imageloader"], function (GIF, $, u
 		// Image objects into a gif
 		// this fires progress events, but not the start/end events
 		createGif: function (images) {
+			var self = this;
+
 			return new Promise(function (resolve, reject) {
-				var gif = new GIF({
-					workers: 6,
-					quality: 5,
-					height: this.height,
-					width: this.width,
-					workerScript: "./js/lib/gif.worker.js",
-					repeat: -1,
+				var ag = new Animated_GIF({
+					sampleInterval: 1,
+					numWorkers: 8,
+					useQuantizer: false,
+					dither: "closest",
 				});
 
-				gif.on("finished", function (blob) {
-					this.eventFirer.trigger("progress", 100);
-					resolve(blob);
-				}.bind(this));
+				ag.setDelay(2000);
+				ag.setRepeat(null);
+				ag.setSize(self.width, self.height);
 
 				for (var i = 0; i < images.length; i++) {
-					gif.addFrame(images[i], { delay: 2000 });
-					this.eventFirer.trigger("progress", parseInt((i / images.length) * 100));
+					ag.addFrame(images[i]);
+					self.eventFirer.trigger("progress", parseInt((i / images.length) * 100));
 				}
 
-				gif.render();
-			}.bind(this));
+				var gif = new Image();
+
+				// This is asynchronous, rendered with WebWorkers
+				ag.getBase64GIF(function (dataURL) {
+					self.eventFirer.trigger("progress", 100);
+					resolve(dataURL);
+				});
+			});
 		},
 
 		/**
@@ -102,9 +108,10 @@ define(["gif", "jquery", "util", "trademapper.imageloader"], function (GIF, $, u
 			.then(function (images) {
 				return this.createGif(images);
 			}.bind(this))
-			.then(function (blob) {
-				this.link.href = window.URL.createObjectURL(blob);
+			.then(function (dataURL) {
+				this.link.href = dataURL;
 				this.link.click();
+
 				this.eventFirer.trigger("end");
 				this.trademapper.yearslider.applySavedState();
 			}.bind(this));

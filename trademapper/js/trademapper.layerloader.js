@@ -26,9 +26,10 @@
 define([
 	"jquery",
 	"vendor/doT",
+	"config",
 	"text!../fragments/layerelementskeleton.html",
 	"text!../fragments/layerformskeleton.html",
-], function ($, doT, layerElementSkeleton, layerFormSkeleton) {
+], function ($, doT, config, layerElementSkeleton, layerFormSkeleton) {
 
 	// represents a layer and its related DOM elements
 	var Layer = function (id, filename, colour, data) {
@@ -54,11 +55,7 @@ define([
 		// colours assigned to layers by default (in this order);
 		// the number of colours in this array also limits the number of layers
 		// which can be added (we only add layers for which we have colours)
-		LAYER_COLOURS: [
-			"#1f9f2f",
-			"#a27d29",
-			"#b5132d",
-		],
+		LAYER_COLOURS: config.styles.DEFAULT_LAYER_COLOURS,
 
 		// Layer instances
 		layers: [],

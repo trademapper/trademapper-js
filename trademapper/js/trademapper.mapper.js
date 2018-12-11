@@ -229,11 +229,6 @@ define(["d3", "topojson", "vendor/doT", "worldmap", "disputedareas", "countrycen
 			var translate = [d3.event.transform.x, d3.event.transform.y];
 			var scale = d3.event.transform.k;
 
-			console.log("PRE: scale: " + scale + " translate: " + translate);
-			translate[0] = Math.max(-(moduleThis.width/2)*scale, Math.min((moduleThis.width/2)*scale, translate[0]));
-			translate[1] = Math.max(-(moduleThis.height/2)*scale, Math.min((moduleThis.height/2)*scale, translate[1]));
-			console.log("POST: translate: " + translate);
-
 			moduleThis.zoomg.attr("transform", "translate(" + translate + ")scale(" + scale + ")");
 			d3.selectAll(".country-border").attr("stroke-width", (1/scale).toString());
 			// change the width of the paths after zoom

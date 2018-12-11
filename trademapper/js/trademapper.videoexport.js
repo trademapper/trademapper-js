@@ -1,5 +1,5 @@
-define(["Animated_GIF", "jquery", "util", "trademapper.imageloader"],
-function (Animated_GIF, $, util, ImageLoader) {
+define(["gif", "jquery", "util", "trademapper.imageloader"],
+function (GIF, $, util, ImageLoader) {
 
 	return {
 		// button: button which when clicked initiates the export
@@ -45,32 +45,26 @@ function (Animated_GIF, $, util, ImageLoader) {
 					reject("No images to process");
 				}
 
-				// get height and width from the first image
-				var width = images[0].width;
-				var height = images[0].height;
-				console.log("exporting gif with width " + width + " and height " + height);
-
-				var ag = new Animated_GIF({
-					sampleInterval: 10,
-					numWorkers: 8,
-					useQuantizer: false,
-					dither: "closest",
+				var gif = new GIF({
+					workers: 8,
+					quality: 1,
+					workerScript: "./js/lib/gif.worker.js",
+					repeat: -1,
+					dither: "FloydSteinberg-serpentine",
+					background: "#FFF",
 				});
 
-				ag.setDelay(2000);
-				ag.setRepeat(null);
-				ag.setSize(width, height);
-
 				for (var i = 0; i < images.length; i++) {
-					ag.addFrame(images[i]);
+					gif.addFrame(images[i], {delay: 2000});
 					self.eventFirer.trigger("progress", parseInt((i / images.length) * 100));
 				}
 
-				// This is asynchronous, rendered with WebWorkers
-				ag.getBase64GIF(function (dataURL) {
+				gif.on("finished", function (blob) {
 					self.eventFirer.trigger("progress", 100);
-					resolve(dataURL);
+					resolve(window.URL.createObjectURL(blob));
 				});
+
+				gif.render();
 			});
 		},
 

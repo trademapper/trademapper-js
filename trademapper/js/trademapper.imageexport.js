@@ -28,6 +28,9 @@ function($, util) {
 			this.link = document.createElement("a");
 			this.link.style.display = "none";
 
+			// for drawing the SVG onto, from where it can be downloaded
+			this.canvas = document.createElement("canvas");
+
 			// name given to file when downloaded
 			this.svgDownloadFilename = "map.svg";
 			this.pngDownloadFilename = "map.png";
@@ -61,33 +64,34 @@ function($, util) {
 			return newsvg;
 		},
 
-		// export the associated SVG element as a download
-		exportSVG: function() {
-			this.link.href = util.getSVGObjectURL(this.cloneSVG().get(0));
-			this.link.download = this.svgDownloadFilename;
+		download: function(dataURL, filename) {
+			this.link.download = filename;
+			this.link.href = dataURL;
 			this.link.click();
 			this.link.download = "";
 			this.link.href = "";
 		},
 
+		// export the associated SVG element as a download
+		exportSVG: function() {
+			var dataURL = util.getSVGObjectURL(this.cloneSVG().get(0));
+			this.download(dataURL, this.svgDownloadFilename);
+		},
+
 		// export the SVG element as a PNG download
 		exportPNG: function() {
-			var canvas = document.createElement("canvas");
-
 			var image = new Image();
 
 			image.onload = function () {
-				canvas.width = image.width;
-				canvas.height = image.height;
+				this.canvas.width = image.width;
+				this.canvas.height = image.height;
 
-				var ctx = canvas.getContext("2d");
+				var ctx = this.canvas.getContext("2d");
+				ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 				ctx.drawImage(image, 0, 0);
 
-				this.link.download = this.pngDownloadFilename;
-				this.link.href = canvas.toDataURL("image/png");
-				this.link.click();
-				this.link.download = "";
-				this.link.href = "";
+				var dataURL = this.canvas.toDataURL("image/png");
+				this.download(dataURL, this.pngDownloadFilename);
 			}.bind(this);
 
 			var svg = this.cloneSVG().get(0);

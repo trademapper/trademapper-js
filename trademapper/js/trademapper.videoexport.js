@@ -54,9 +54,12 @@ function (GIF, $, util, ImageLoader) {
 					background: "#FFF",
 				});
 
+				gif.on("progress", function (progress) {
+					self.eventFirer.trigger("progress", parseInt(progress * 100));
+				});
+
 				for (var i = 0; i < images.length; i++) {
 					gif.addFrame(images[i], {delay: 2000});
-					self.eventFirer.trigger("progress", parseInt((i / images.length) * 100));
 				}
 
 				gif.on("finished", function (blob) {

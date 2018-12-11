@@ -479,7 +479,7 @@ function($, d3, analytics, arrows, csv, filterform, mapper, route, yearslider,
 		this.updateMaxSingleYearQuantity();
 		this.showFilteredCsv(filterform.filterValues);
 		this.addChangeFilterSpecToDataTab();
-		this.setVideoExportButtonActive(true);
+		this.setVideoExportButtonActive(filterSpec);
 		var errorsShown = this.reportCsvLoadErrors();
 		if (!errorsShown) {
 			// switch to filters tab
@@ -487,7 +487,21 @@ function($, d3, analytics, arrows, csv, filterform, mapper, route, yearslider,
 		}
 	},
 
-	setVideoExportButtonActive: function(on) {
+	setVideoExportButtonActive: function(filterSpec) {
+		// if the filter spec has at least one year column,
+		// enable the video export button; note that if the year column is empty
+		// for all rows, the video export will be available but may break
+		var on = false;
+
+		if (filterSpec !== false) {
+			for (var columnName in filterSpec) {
+				if (filterSpec[columnName].type === "year") {
+					on = true;
+					break;
+				}
+			}
+		}
+
 		if (on) {
 			this.videoExportButtonElement.attr("disabled", null);
 		}	else {

@@ -11,7 +11,7 @@ $pane-link-colour: $importer-colour;
 
 $darkbg-colour: #006957;
 $errorbg-colour: #177F73;
-$cookiebg-colour: #EEE;
+$cookiebg-colour: $darkbg-colour;
 
 $twitterbtnbg-colour: #00ABDD;
 $sharebtnbg-colour: $darkbg-colour;
@@ -124,7 +124,7 @@ abbr[title]{text-decoration: none}
 
 #tabs {
   clear:both;
-  padding:20px 30px;
+  padding:20px;
 }
 .map-wrapper, .map, .inner {
     height: 100%;
@@ -135,32 +135,6 @@ abbr[title]{text-decoration: none}
     position: relative;
     width: 100%;
     z-index: 2;
-}
-
-#mapinfo {
-    border: medium none;
-}
-
-#mapinfo body {
-	padding:0;
-}
-
-#map-toolbar {
-}
-
-.tool-icons.left-tools {
-    float: left;
-}
-
-.tool-icons.right-tools {
-    float: right;
-}
-
-.tool-icons > .options:before {
-    background-image: url("../images/gear.svg");
-    background-position: 10px 10px;
-    background-repeat: no-repeat;
-    padding-left: 40px;
 }
 
 /*----------Header--------------------
@@ -174,7 +148,7 @@ abbr[title]{text-decoration: none}
 
 .branding {
     color: #fff;
-    padding: 30px;
+    padding: 4%;
 }
 .logo {
     margin: 0;
@@ -182,7 +156,7 @@ abbr[title]{text-decoration: none}
 }
 .logo img {
     display: block;
-    height: 48px;
+    height: 40px;
 	width: auto;
 }
 
@@ -227,8 +201,7 @@ abbr[title]{text-decoration: none}
 	label.btn.custom-fileinput {
 		background-color: $fileinputbtnbg-colour;
 		border-color: $fileinputbtnbg-colour;
-		&:hover,
-		&:focus{
+		&:hover, &:focus{
 			background-color: darken($fileinputbtnbg-colour, 5%)
 		}
 	}
@@ -257,10 +230,8 @@ abbr[title]{text-decoration: none}
 .user-actions  .group-fileinput > p > label {font-size:0.9em; color: #333; padding-top:2em;}
 
 .csv-load-errors > p {
-    color: $errorboxbg-color;
-    margin-bottom: 0;
-    margin-top: 0.5em;
-    padding: 1em;
+    margin: 0;
+    padding: 0 1em;
 }
 
 #csv-load-error-details {
@@ -273,12 +244,6 @@ abbr[title]{text-decoration: none}
     bottom: 0.5em;
     left: -1em;
     position: relative;
-}
-
-span.showhide {
-	cursor: pointer;
-	color: $hilight-colour;
-	text-decoration: underline;
 }
 
 
@@ -326,12 +291,6 @@ span.showhide {
 
 .nav-tabs > li > a {color:$exporter-colour; font-weight:bold;}
 
-.tab-pane-wrapper {
-  display:block;
-  position:relative;
-  width:400%;
-  float:left;
-}
 
 .tab-pane {
     display: block;
@@ -348,7 +307,7 @@ span.showhide {
 	color: $pane-link-colour;
 	font-weight: bold;
 
-	&:hover {
+	&:hover, &:focus{
 		text-decoration: underline;
 	}
 }
@@ -364,12 +323,6 @@ span.showhide {
 
 .tab-pane a.btn:hover {
 	text-decoration: none;
-}
-
-.tab-pane-title, .tab-pane > h3 {
-    color: $importer-colour;
-    font-size: 1.4em;
-    margin: 0 0 0.5em;
 }
 
 .tab-pane section h1 {
@@ -433,7 +386,7 @@ span.showhide {
 .tab-pane .btn-export {
 	background-color: $exportbtnbg-colour;
 	border-color: $exportbtnbg-colour;
-	&:hover {
+	&:hover, &:focus {
 		background-color: darken($exportbtnbg-colour, 5%);
 		border-color: darken($exportbtnbg-colour, 5%);
 	}
@@ -445,28 +398,6 @@ span.showhide {
 
 /*--Social Share--*/
 
-.social-share {
-    margin-left: 0.5em;
-    margin-top: 1em;
-}
-
-.social-share h3 {
-    float: left;
-    margin-right: 20px;
-    margin-top: 0;
-}
-
-.ss-share {
-    list-style: none outside none;
-    margin: 0;
-    padding-bottom: 0.5em;
-    padding-left: 0;
-}
-
-.ss-share-item {
-    display: inline;
-    margin-right: 0.25em;
-}
 
 .btn.ss-share-link {
     display: inline-flex;
@@ -478,14 +409,14 @@ span.showhide {
 
 .btn.ss-share-link.ico-twitter {
 	background-color: $twitterbtnbg-colour;
-	&:hover {
+	&:hover, &:focus {
 		background-color: darken($twitterbtnbg-colour, 5%)
 	}
 }
 
 .btn.ss-share-link.ico-survey {
 	background-color: $sharebtnbg-colour;
-	&:hover {
+	&:hover, &:focus {
 		background-color: darken($sharebtnbg-colour, 5%)
 	}
 }
@@ -539,18 +470,6 @@ span.showhide {
 	color:#333;
 }
 
-/*---Map Title--*/
-
-#title {
-    background-color: transparent;
-    border: medium none;
-    font-family: sans-serif;
-    height: 2em;
-    margin: 0;
-    padding: 0;
-    resize: none;
-    width: 100%;
-}
 
 /*---Filter Group selectors--*/
 
@@ -923,13 +842,13 @@ p.tooltip-location {
 }
 
 .change-over-time.play-button-text.paused {
-	font-size: 30px;
+	font-size: 24px;
 	margin-left: 5px;
 }
 
 .change-over-time.play-button-text.playing {
-	font-size: 20px;
-	margin-left: -8px;
+	font-size: 16px;
+	margin-left: -6px;
 }
 
 .change-over-time.year-slider > .d3-slider-handle {
@@ -947,23 +866,6 @@ p.tooltip-location {
     z-index: 4;
 }
 
-/*----------Disclaimer-------------------
- =====================================*/
-
-
-.built-by {
-	width:100%;
-	float:right;
-	text-align:right;
-}
-
-.help-text {
-	color:#eee;
-}
-
-.disclaimer a, .built-by a, .help-text a {
-	color:#333;
-}
 
 /*----------Overlay-------------------
  =====================================*/
@@ -1297,20 +1199,32 @@ p.tooltip-location {
 /* ---------- Cookie banner & dialog ---------- */
 #cookiedialog {
 	display: none;
-
 	position: fixed;
 	bottom: 0;
 	width: 100%;
 	z-index: 100;
 	padding: 20px;
-
-	border-top: 2px solid $hilight-colour;
 	background: $cookiebg-colour;
+	box-shadow: 0 0 31px rgba(0, 0, 0, 0.9);
+	color:#fff;
 }
 
 #cookiedialog-banner {
-	font-size: 24px;
 	position: relative;
+	
+	h1 {
+		font-size: 18px; 
+		font-weight: bold;
+		margin: 1rem 0 0;
+	}
+	
+	a{
+		color: $importer-colour;
+		font-weight: bold;
+		&:hover, &:focus {
+			color: darken($importer-colour, 5%)
+		}
+	}
 
 	.cookie-banner-x {
 		display: block;
@@ -1319,13 +1233,14 @@ p.tooltip-location {
 		right: -10px;
 		font-size: 16px;
 		cursor: pointer;
+		color: #fff;
 	}
-}
-
-#cookiedialog-settings {
-	display: none;
-	margin-top: 20px;
-	font-size: 14px;
+	.btn.cookie-banner-ok {
+		background-color: $importer-colour;
+		&:hover, &:focus {
+			background-color: darken($importer-colour, 5%)
+		}
+	}
 }
 
 /*------Tab panel additional styling------*/
@@ -1335,9 +1250,6 @@ p.tooltip-location {
 }
 
 /*------TopoJSON import panel------*/
-#tm-layer-select .group-custom-fileinput {
-	padding-bottom: 20px;
-}
 
 [data-role="layers"] [data-role="layer"]:last-child {
 	margin-bottom: 18px;

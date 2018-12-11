@@ -83,7 +83,7 @@ abbr[title] {
 
 #tabs {
   clear: both;
-  padding: 20px 30px; }
+  padding: 20px; }
 
 .map-wrapper, .map, .inner {
   height: 100%; }
@@ -95,24 +95,6 @@ abbr[title] {
   width: 100%;
   z-index: 2; }
 
-#mapinfo {
-  border: medium none; }
-
-#mapinfo body {
-  padding: 0; }
-
-.tool-icons.left-tools {
-  float: left; }
-
-.tool-icons.right-tools {
-  float: right; }
-
-.tool-icons > .options:before {
-  background-image: url("../images/gear.svg");
-  background-position: 10px 10px;
-  background-repeat: no-repeat;
-  padding-left: 40px; }
-
 /*----------Header--------------------
  =====================================*/
 .header.tmrow {
@@ -121,7 +103,7 @@ abbr[title] {
 /*---Branding--*/
 .branding {
   color: #fff;
-  padding: 30px; }
+  padding: 4%; }
 
 .logo {
   margin: 0;
@@ -129,7 +111,7 @@ abbr[title] {
 
 .logo img {
   display: block;
-  height: 48px;
+  height: 40px;
   width: auto; }
 
 /*---File Select--*/
@@ -193,10 +175,8 @@ abbr[title] {
   padding-top: 2em; }
 
 .csv-load-errors > p {
-  color: #ff6600;
-  margin-bottom: 0;
-  margin-top: 0.5em;
-  padding: 1em; }
+  margin: 0;
+  padding: 0 1em; }
 
 #csv-load-error-details {
   background-color: #fff;
@@ -208,11 +188,6 @@ abbr[title] {
   bottom: 0.5em;
   left: -1em;
   position: relative; }
-
-span.showhide {
-  cursor: pointer;
-  color: #ff6600;
-  text-decoration: underline; }
 
 /*----------Info Panel--------------
  =====================================*/
@@ -257,12 +232,6 @@ span.showhide {
   color: #45689f;
   font-weight: bold; }
 
-.tab-pane-wrapper {
-  display: block;
-  position: relative;
-  width: 400%;
-  float: left; }
-
 .tab-pane {
   display: block;
   float: left;
@@ -275,7 +244,7 @@ span.showhide {
 .tab-pane a, .tab-pane a:visited {
   color: #ff6600;
   font-weight: bold; }
-  .tab-pane a:hover, .tab-pane a:visited:hover {
+  .tab-pane a:hover, .tab-pane a:focus, .tab-pane a:visited:hover, .tab-pane a:visited:focus {
     text-decoration: underline; }
 
 .tab-pane .btn, .tab-pane a.btn:visited {
@@ -288,11 +257,6 @@ span.showhide {
 
 .tab-pane a.btn:hover {
   text-decoration: none; }
-
-.tab-pane-title, .tab-pane > h3 {
-  color: #ff6600;
-  font-size: 1.4em;
-  margin: 0 0 0.5em; }
 
 .tab-pane section h1 {
   color: #ff6600;
@@ -344,7 +308,7 @@ span.showhide {
 .tab-pane .btn-export {
   background-color: #ff6600;
   border-color: #ff6600; }
-  .tab-pane .btn-export:hover {
+  .tab-pane .btn-export:hover, .tab-pane .btn-export:focus {
     background-color: #e65c00;
     border-color: #e65c00; }
   .tab-pane .btn-export[disabled] {
@@ -352,25 +316,6 @@ span.showhide {
     border-color: #ff751a; }
 
 /*--Social Share--*/
-.social-share {
-  margin-left: 0.5em;
-  margin-top: 1em; }
-
-.social-share h3 {
-  float: left;
-  margin-right: 20px;
-  margin-top: 0; }
-
-.ss-share {
-  list-style: none outside none;
-  margin: 0;
-  padding-bottom: 0.5em;
-  padding-left: 0; }
-
-.ss-share-item {
-  display: inline;
-  margin-right: 0.25em; }
-
 .btn.ss-share-link {
   display: inline-flex;
   flex-direction: row;
@@ -380,12 +325,12 @@ span.showhide {
 
 .btn.ss-share-link.ico-twitter {
   background-color: #00ABDD; }
-  .btn.ss-share-link.ico-twitter:hover {
+  .btn.ss-share-link.ico-twitter:hover, .btn.ss-share-link.ico-twitter:focus {
     background-color: #0097c4; }
 
 .btn.ss-share-link.ico-survey {
   background-color: #006957; }
-  .btn.ss-share-link.ico-survey:hover {
+  .btn.ss-share-link.ico-survey:hover, .btn.ss-share-link.ico-survey:focus {
     background-color: #005042; }
 
 .ss-share-link::after {
@@ -428,17 +373,6 @@ span.showhide {
 
 .form-item > label {
   color: #333; }
-
-/*---Map Title--*/
-#title {
-  background-color: transparent;
-  border: medium none;
-  font-family: sans-serif;
-  height: 2em;
-  margin: 0;
-  padding: 0;
-  resize: none;
-  width: 100%; }
 
 /*---Filter Group selectors--*/
 .form-item > label {
@@ -768,12 +702,12 @@ p.tooltip-location {
   background-color: grey; }
 
 .change-over-time.play-button-text.paused {
-  font-size: 30px;
+  font-size: 24px;
   margin-left: 5px; }
 
 .change-over-time.play-button-text.playing {
-  font-size: 20px;
-  margin-left: -8px; }
+  font-size: 16px;
+  margin-left: -6px; }
 
 .change-over-time.year-slider > .d3-slider-handle {
   background: #ff6600; }
@@ -786,19 +720,6 @@ p.tooltip-location {
  =====================================*/
 #map-options {
   z-index: 4; }
-
-/*----------Disclaimer-------------------
- =====================================*/
-.built-by {
-  width: 100%;
-  float: right;
-  text-align: right; }
-
-.help-text {
-  color: #eee; }
-
-.disclaimer a, .built-by a, .help-text a {
-  color: #333; }
 
 /*----------Overlay-------------------
  =====================================*/
@@ -1078,24 +999,33 @@ p.tooltip-location {
   width: 100%;
   z-index: 100;
   padding: 20px;
-  border-top: 2px solid #ff6600;
-  background: #EEE; }
+  background: #006957;
+  box-shadow: 0 0 31px rgba(0, 0, 0, 0.9);
+  color: #fff; }
 
 #cookiedialog-banner {
-  font-size: 24px;
   position: relative; }
+  #cookiedialog-banner h1 {
+    font-size: 18px;
+    font-weight: bold;
+    margin: 1rem 0 0; }
+  #cookiedialog-banner a {
+    color: #ff6600;
+    font-weight: bold; }
+    #cookiedialog-banner a:hover, #cookiedialog-banner a:focus {
+      color: #e65c00; }
   #cookiedialog-banner .cookie-banner-x {
     display: block;
     position: absolute;
     top: -10px;
     right: -10px;
     font-size: 16px;
-    cursor: pointer; }
-
-#cookiedialog-settings {
-  display: none;
-  margin-top: 20px;
-  font-size: 14px; }
+    cursor: pointer;
+    color: #fff; }
+  #cookiedialog-banner .btn.cookie-banner-ok {
+    background-color: #ff6600; }
+    #cookiedialog-banner .btn.cookie-banner-ok:hover, #cookiedialog-banner .btn.cookie-banner-ok:focus {
+      background-color: #e65c00; }
 
 /*------Tab panel additional styling------*/
 #tabs .tab-pane.active {
@@ -1104,9 +1034,6 @@ p.tooltip-location {
   overflow-y: auto; }
 
 /*------TopoJSON import panel------*/
-#tm-layer-select .group-custom-fileinput {
-  padding-bottom: 20px; }
-
 [data-role="layers"] [data-role="layer"]:last-child {
   margin-bottom: 18px; }
 

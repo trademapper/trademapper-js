@@ -50,7 +50,7 @@ function (GIF, $, util, ImageLoader) {
 					quality: 1,
 					workerScript: "./js/lib/gif.worker.js",
 					repeat: -1,
-					dither: "FloydSteinberg-serpentine",
+					dither: "Atkinson-serpentine",
 					background: "#FFF",
 				});
 

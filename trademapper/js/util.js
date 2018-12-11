@@ -80,6 +80,5 @@ define(['jquery'], function($) {
 			return window.URL.createObjectURL(blob);
 		},
 
-
 	};
 });

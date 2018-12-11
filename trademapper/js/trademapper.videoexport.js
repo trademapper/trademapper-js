@@ -6,8 +6,6 @@ function (Animated_GIF, $, util, ImageLoader) {
 		// trademapper: trademapper instance
 		init: function (button, trademapper) {
 			this.trademapper = trademapper;
-			this.height = this.trademapper.config.height;
-			this.width = this.trademapper.config.width;
 
 			// provide a way to trigger events, even though this component has no
 			// DOM element of its own
@@ -43,8 +41,17 @@ function (Animated_GIF, $, util, ImageLoader) {
 			var self = this;
 
 			return new Promise(function (resolve, reject) {
+				if (images.length < 1) {
+					reject("No images to process");
+				}
+
+				// get height and width from the first image
+				var width = images[0].width;
+				var height = images[0].height;
+				console.log("exporting gif with width " + width + " and height " + height);
+
 				var ag = new Animated_GIF({
-					sampleInterval: 1,
+					sampleInterval: 10,
 					numWorkers: 8,
 					useQuantizer: false,
 					dither: "closest",
@@ -52,14 +59,12 @@ function (Animated_GIF, $, util, ImageLoader) {
 
 				ag.setDelay(2000);
 				ag.setRepeat(null);
-				ag.setSize(self.width, self.height);
+				ag.setSize(width, height);
 
 				for (var i = 0; i < images.length; i++) {
 					ag.addFrame(images[i]);
 					self.eventFirer.trigger("progress", parseInt((i / images.length) * 100));
 				}
-
-				var gif = new Image();
 
 				// This is asynchronous, rendered with WebWorkers
 				ag.getBase64GIF(function (dataURL) {
@@ -95,13 +100,15 @@ function (Animated_GIF, $, util, ImageLoader) {
 			var urls = [];
 			for (var year = minYear; year <= maxYear; year++) {
 				this.trademapper.showTradeForYear(year);
-				var svgElement = this.trademapper.imageExport.cloneSvg();
+				var svgElement = this.trademapper.imageExport.cloneSVG();
 
 				// add the year text box in the top-left corner
 				svgElement.append(yearContainer);
 				yearText.html(year);
 
 				urls.push(util.getSVGObjectURL(svgElement.get(0)));
+
+				svgElement = null;
 			}
 
 			this.imageLoader.load(urls)

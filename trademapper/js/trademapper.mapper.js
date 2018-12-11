@@ -308,7 +308,7 @@ define(["d3", "topojson", "vendor/doT", "worldmap", "disputedareas", "countrycen
 				.attr("height", "4")
 			.append("g")
 				.attr("stroke", config.styles["DISPUTED"])
-				.attr("stroke-width", "1px")
+				.attr("stroke-width", "0.25px")
 			.append("path")
 				.attr("d", "M-1,1 l2,-2 M0,4 l4,-4 M3,5 l2,-2");
 	},

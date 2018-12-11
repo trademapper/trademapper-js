@@ -53,7 +53,7 @@ function($, util) {
 
 		// get a data URL for the current content of the SVG element
 		getSvgDataUrl: function () {
-			return util.svgToObjectURL(this.cloneSvg().get(0));
+			return util.getSVGObjectURL(this.cloneSvg().get(0));
 		},
 
 		// export the associated SVG element as a download

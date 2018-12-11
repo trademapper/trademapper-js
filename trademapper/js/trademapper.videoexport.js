@@ -101,7 +101,7 @@ function (Animated_GIF, $, util, ImageLoader) {
 				svgElement.append(yearContainer);
 				yearText.html(year);
 
-				urls.push(util.svgToObjectURL(svgElement.get(0)));
+				urls.push(util.getSVGObjectURL(svgElement.get(0)));
 			}
 
 			this.imageLoader.load(urls)

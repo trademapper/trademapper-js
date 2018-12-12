@@ -41,18 +41,6 @@ define([
 			this.startAnalytics();
 		}.bind(this));
 
-		// View more info
-		$('.cookie-banner-more', $dialog).click(function() {
-			$('#cookiedialog-banner button').hide();
-			$('#cookiedialog-settings', $dialog).fadeIn();
-		});
-
-		// Reject cookies
-		$('.cookie-banner-disable', $dialog).click(function() {
-			$dialog.fadeOut();
-			cookies.set('cookiepref', 'required', { expires: 365 });
-		});
-
 		// Hide bits about analytics if not configured
 		if (!config.trackingId) {
 			$('.cookiedialog-analytics', $dialog).hide();

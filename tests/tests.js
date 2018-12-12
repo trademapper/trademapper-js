@@ -30,16 +30,14 @@ require(
 		'../../tests/js/test-customcsv',
 		'../../tests/js/test-route',
 		'../../tests/js/test-mapper',
-		'../../tests/js/test-util',
 		'../../tests/js/test-portlookup',
 	],
-	function(QUnit, test_arrow, test_csv, test_customcsv, test_route, test_mapper, test_util, test_portlookup) {
+	function(QUnit, test_arrow, test_csv, test_customcsv, test_route, test_mapper, test_portlookup) {
 		test_arrow.run();
 		test_csv.run();
 		test_customcsv.run();
 		test_route.run();
 		test_mapper.run();
-		test_util.run();
 		test_portlookup.run();
 		QUnit.load();
 		QUnit.start();

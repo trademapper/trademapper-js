@@ -3,6 +3,10 @@
 	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
+#mapcanvas {
+	background-color: {{=it.OCEAN}};
+}
+
 .mapocean { fill: {{=it.OCEAN}}; }
 
 .country { fill: {{=it.COUNTRY}}; }

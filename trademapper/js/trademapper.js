@@ -128,13 +128,14 @@ function($, d3, analytics, arrows, csv, filterform, mapper, route, yearslider,
 	defaultConfig: config,
 
 	init: function(mapId, fileFormElementId, layerFormElementId, filterFormElementId,
-								 imageExportButtonElementId, videoExportButtonElementId,
-								 changeOverTimeElementId, tmConfig) {
+								 svgExportButtonElementId, pngExportButtonElementId,
+								 videoExportButtonElementId, changeOverTimeElementId, tmConfig) {
 		this.queryString = util.queryString();
 		this.mapRootElement = d3.select(mapId);
 		this.fileFormElement = d3.select(fileFormElementId);
 		this.filterFormElement = d3.select(filterFormElementId);
-		this.imageExportButtonElement = d3.select(imageExportButtonElementId);
+		this.svgExportButtonElement = d3.select(svgExportButtonElementId);
+		this.pngExportButtonElement = d3.select(pngExportButtonElementId);
 		this.videoExportButtonElement = d3.select(videoExportButtonElementId);
 		this.changeOverTimeElement = d3.select(changeOverTimeElementId);
 		this.setConfigDefaults(tmConfig);
@@ -175,9 +176,8 @@ function($, d3, analytics, arrows, csv, filterform, mapper, route, yearslider,
 			function() { moduleThis.csvLoadErrorCallback(); },
 			this.config.skipCsvAutoDetect);
 
-		// NB we want the raw DOM node so we can wrap it with jQuery, to make
-		// height/width retrieval simpler
-		imageExport.init(this.imageExportButtonElement, this.tmsvg.node(), this);
+		imageExport.init(this.svgExportButtonElement, this.pngExportButtonElement,
+			this.tmsvg.node(), this);
 		this.imageExport = imageExport;
 
 		videoExport.init(this.videoExportButtonElement, this);
@@ -479,7 +479,7 @@ function($, d3, analytics, arrows, csv, filterform, mapper, route, yearslider,
 		this.updateMaxSingleYearQuantity();
 		this.showFilteredCsv(filterform.filterValues);
 		this.addChangeFilterSpecToDataTab();
-		this.setVideoExportButtonActive(true);
+		this.setVideoExportButtonActive(filterSpec);
 		var errorsShown = this.reportCsvLoadErrors();
 		if (!errorsShown) {
 			// switch to filters tab
@@ -487,7 +487,21 @@ function($, d3, analytics, arrows, csv, filterform, mapper, route, yearslider,
 		}
 	},
 
-	setVideoExportButtonActive: function(on) {
+	setVideoExportButtonActive: function(filterSpec) {
+		// if the filter spec has at least one year column,
+		// enable the video export button; note that if the year column is empty
+		// for all rows, the video export will be available but may break
+		var on = false;
+
+		if (filterSpec !== false) {
+			for (var columnName in filterSpec) {
+				if (filterSpec[columnName].type === "year") {
+					on = true;
+					break;
+				}
+			}
+		}
+
 		if (on) {
 			this.videoExportButtonElement.attr("disabled", null);
 		}	else {

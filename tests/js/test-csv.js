@@ -3,7 +3,7 @@ define(
 	function(q, csv, csvdefs, route) {
 		"use strict";
 		var returnedCsv,
-			setReturnedCsv = function(csvData, csvFirstTenRows, filterSpec) {
+			setReturnedCsv = function(csvFilename, csvData, csvFirstTenRows, filterSpec) {
 				returnedCsv = csvData;
 			},
 			returnedFilters,

@@ -1,7 +1,8 @@
 require.config({
 	baseUrl: 'js',
 	paths: {
-		Animated_GIF: "lib/Animated_GIF.min",
+		gif: "lib/gif",
+
 		jscookie: "lib/js-cookie.min",
 		configextra: ["configextra", "configextra.default"],
 		// require.js bits
@@ -36,5 +37,6 @@ require(["trademapper", "bootstrap", "domReady!"], function(tm) {
 	"use strict";
 	var config = {arrowType:"plain-arrows"};
 	tm.init("#trademapper", "#tm-file-select", "#tm-layer-select", "#form-filters",
-			'#tm-image-export', '#tm-video-export', '#change-over-time', config);
+			'#tm-svg-export', '#tm-png-export', '#tm-video-export',
+			'#change-over-time', config);
 });

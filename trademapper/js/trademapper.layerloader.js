@@ -81,7 +81,7 @@ define([
 			// add layer using file input's value
 			this.button.find("input").on("change", function (event) {
 				if (event.target.files.length < 1) {
-					this.showError("Please specify valid file to load");
+					moduleThis.showError("Please specify valid file to load");
 					return;
 				}
 

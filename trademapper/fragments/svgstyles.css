@@ -19,7 +19,6 @@
 	opacity: 0.6;
 	stroke-width:{{=it.LEGEND_STROKE_WIDTH}};
 	stroke:{{=it.LEGEND_STROKE_COLOUR}};
-	
 }
 
 .legend text { fill: {{=it.LEGEND_TEXT}}; }
@@ -48,8 +47,12 @@
 }
 
 /* styling for layers */
-.layer-poly, .layer-point, .layer-line {
+.layer-poly{
 	opacity: 0.4;
+}
+
+.layer-point, .layer-line {
+	opacity: 0.8;
 }
 
 .layer-boundary {
@@ -59,6 +62,9 @@
 .layer-line, .layer-boundary {
 	stroke-width: 0.03px;
 	fill: none;
+}
+.layer-line{
+	stroke-width:0.25px
 }
 
 {{~Object.keys(it.LAYER_COLOURS) :layerId}}

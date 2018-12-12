@@ -49,9 +49,9 @@ define(["configextra"], function(configextra) {
 		arrowColours: {
 			// opacity for the highlighted path
 			opacity: 0.9,
-			pathStartColour: "#4a2879",
+			pathStartColour: "#656465",
 			pathStartOpacity: "0.8",
-			pathEndColour: "#656465",
+			pathEndColour: "#4a2879",
 			pathEndOpacity: "0.8"
 		},
 		pointTypeSize: {

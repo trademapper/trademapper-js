@@ -13,6 +13,17 @@ define(['jquery'], function($) {
 			return ret;
 		},
 
+		// get unique values from an array
+		unique: function(arr1) {
+			var uniq = [];
+			for (var i = 0; i < arr1.length; i++) {
+				if (uniq.indexOf(arr1[i]) === -1) {
+					uniq.push(arr1[i]);
+				}
+			}
+			return uniq;
+		},
+
 		isInt: function(value) {
 			return (typeof value === 'number' && (value%1) === 0);
 		},

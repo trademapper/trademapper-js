@@ -419,7 +419,8 @@ function($, d3, analytics, arrows, csv, filterform, mapper, route, yearslider,
 		mapper.setTradingCountries(routes.getCountryCodes());
 		this.stopNowWorking();
 	},
-	drawArrows: function(routes,pointRoles,maxQuantity) {
+
+	drawArrows: function(routes, pointRoles, maxQuantity) {
 			arrows.currentUnit = this.currentUnit;
 			// now draw the routes
 			if (this.config.arrowType === "plain-arrows") {
@@ -429,9 +430,11 @@ function($, d3, analytics, arrows, csv, filterform, mapper, route, yearslider,
 			} else {
 					console.log("unknown config.arrowType: " + this.config.arrowType);
 			}
-			arrows.drawLegend();
-	},
 
+			// check which roles are actually used in routes and only draw nodes
+			// in the legend for those roles
+			arrows.drawLegend(routes.getUniqueRoles());
+	},
 
 	yearSliderEnableDisableCallback: function(enable) {
 		if (enable) {

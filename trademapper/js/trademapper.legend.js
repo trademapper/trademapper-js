@@ -1,4 +1,4 @@
-define(["d3", "config"], function (d3, config) {
+define(["d3", "jquery", "config"], function (d3, $, config) {
 	// constructor
 	//
 	// mapsvg: d3 selection to append the legend to
@@ -28,12 +28,14 @@ define(["d3", "config"], function (d3, config) {
 		//   locationRoles property
 		// - pointTypeSize: map from role names to point sizes, e.g.
 		//   {origin: 5.5, exporter: 4, ...}
+		// - layers: Layer objects to render entries for in the legend
 		var state = {
 			pointTypeSize: config.pointTypeSize,
 			minArrowWidth: config.minArrowWidth,
 			maxArrowWidth: config.maxArrowWidth,
-			maxQuantity: 1,
+			maxQuantity: 0,
 			locationRoles: [],
+			layers: [],
 		};
 
 		var formatLegendValue = function (labelValue) {
@@ -76,14 +78,100 @@ define(["d3", "config"], function (d3, config) {
 		};
 
 		var draw = function () {
-			// just to protect ourselves in case we try to draw the legend without
-			// setting max quantity first
-			if (!state.maxQuantity) {
-				console.error("Trying to draw legend without setting maxQuantity; using 1");
-				state.maxQuantity = 1;
+			// padding within the column (left, top and bottom)
+			var padding = 8;
+			var fontSize = 12;
+
+			// remove old legend
+			$("#legendcontainer").remove();
+
+			// make a new one
+			var legendContainer = mapsvg.append("svg")
+				.attr("id", "legendcontainer")
+				.attr("class", "legend")
+				.attr("x", "76%") // pin at 76% of map width
+				.attr("y", "10");
+
+			var gLegend = legendContainer.append("g").attr("class", "legend");
+			var legendBackground = gLegend.append("rect")
+				.attr("x", 0)
+				.attr("y", 0)
+				.attr("width", 100)
+				.attr("height", 100)
+				.attr("class", "legend legend-background");
+
+			// which columns do we need in the legend?
+			// a column consists of the required SVG element for each row, height
+			// per row, and width properties; the tallest column sets the height of the
+			// whole legend, and the combined widths of the columns sets the legend's width
+			var columns = [];
+
+			// layers
+			if (state.layers.length > 0) {
 			}
 
-			// use parseFloat as the height has "px" at the end
+			// route lines, thickness governed by quantity
+			if (state.maxQuantity > 0) {
+				var lineLength = state.maxArrowWidth + 5;
+
+				var routesColumn = legendContainer.append("g").attr("x", padding).attr("y", padding);
+
+				routesColumn.append("text")
+					.attr("x", 0)
+					.attr("y", 0)
+					.attr("font-size", fontSize + "px")
+					.attr("font-family", config.styles["FONT_FAMILY"])
+					.attr("class", "legend traderoute-label")
+					.text('Routes →');
+
+				var routeLineWidth, routeValue, routeValueText, routeLineY,
+					routeLabelX, routeLabelY;
+
+				for (var i = 0; i < 4; i++) {
+					if (i === 0) {
+						routeLineWidth = state.maxArrowWidth;
+						routeValue = state.maxQuantity;
+					} else if (i === 1) {
+						routeLineWidth = state.maxArrowWidth * 0.5;
+						routeValue = state.maxQuantity * 0.5;
+					} else if (i === 2) {
+						routeLineWidth = state.maxArrowWidth * 0.25;
+						routeValue = state.maxQuantity * 0.25;
+					} else {
+						routeLineWidth = state.minArrowWidth;
+						routeValue = (state.maxQuantity * state.minArrowWidth) / state.maxArrowWidth;
+					}
+					routeValueText = formatLegendValue(routeValue);
+					if (i === 3) {
+						routeValueText = "< " + routeValueText;
+					}
+
+					routeLineY = fontSize + padding + (i * state.maxArrowWidth) + (state.maxArrowWidth / 2);
+
+					routesColumn.append("rect")
+						.attr("x", 0)
+						.attr("y", routeLineY - (routeLineWidth / 2))
+						.attr("width", lineLength)
+						.attr("height", routeLineWidth)
+						.attr("fill", "url(#legendGradient)")
+						.attr("class", "legend traderoute");
+
+					routesColumn.append("text")
+						.attr("x", lineLength + padding)
+						.attr("y", routeLineY - 8)
+						.attr("font-size", "16px")
+						.attr("font-family", config.styles["FONT_FAMILY"])
+						.attr("class", "legend traderoute-label")
+						.text(routeValueText);
+				}
+			}
+
+			// nodes
+
+			// set the dimensions of the rectangle, based on the columns
+		};
+
+		var drawOld = function () {
 			var legendContainer, gLegend, i, strokeWidth, value, valueText, circleX, circleY,
 				xOffset = 100,
 				yOffset = 100,
@@ -96,69 +184,56 @@ define(["d3", "config"], function (d3, config) {
 				svgHeight = 0,
 				lineVertical = svgHeight;
 
-			// clear any old legend
-			mapsvg.selectAll(".legend").remove();
-			legendContainer = mapsvg.append("svg")
-				.attr("id", "legendcontainer")
-				.attr("class", "legend")
-				.attr("x", "76%") // pin at 76% of map width
-				.attr("y", "10");
-			gLegend = legendContainer.append("g").attr("class", "legend");
+			// routes
+			if (state.maxQuantity > 0) {
+				for (i = 0; i < 4; i++) {
+					if (i === 0) {
+						strokeWidth = state.maxArrowWidth;
+						value = state.maxQuantity;
+					} else if (i === 1) {
+						strokeWidth = state.maxArrowWidth * 0.5;
+						value = state.maxQuantity * 0.5;
+					} else if (i === 2) {
+						strokeWidth = state.maxArrowWidth * 0.25;
+						value = state.maxQuantity * 0.25;
+					} else {
+						strokeWidth = state.minArrowWidth;
+						value = (state.maxQuantity * state.minArrowWidth) / state.maxArrowWidth;
+					}
+					valueText = formatLegendValue(value);
+					if (i === 3) {
+						valueText = "< " + valueText;
+					}
 
-			gLegend.append("rect")
-				.attr("x", 5 + xOffset)
-				.attr("y", svgHeight - (margin) - legendHeight + yOffset)
-				.attr("width", legendWidth)
-				.attr("height", legendHeight)
-				.attr("class", "legend legend-background");
+					lineVertical = lineVertical - (Math.max(strokeWidth, 8) + margin);
 
-			for (i = 0; i < 4; i++) {
-				if (i === 0) {
-					strokeWidth = state.maxArrowWidth;
-					value = state.maxQuantity;
-				} else if (i === 1) {
-					strokeWidth = state.maxArrowWidth * 0.5;
-					value = state.maxQuantity * 0.5;
-				} else if (i === 2) {
-					strokeWidth = state.maxArrowWidth * 0.25;
-					value = state.maxQuantity * 0.25;
-				} else {
-					strokeWidth = state.minArrowWidth;
-					value = (state.maxQuantity * state.minArrowWidth) / state.maxArrowWidth;
+					gLegend.append("rect")
+						.attr("x", margin + xOffset)
+						.attr("y", lineVertical - (strokeWidth/2) + yOffset)
+						.attr("width", lineLength)
+						.attr("height", strokeWidth)
+						.attr("fill", "url(#legendGradient)")
+						.attr("class", "legend traderoute");
+
+					gLegend.append("text")
+						.attr("x", lineLength + xOffset + (margin +5))
+						.attr("y", lineVertical + 2.5 + yOffset)
+						.attr("font-size", "0.5em")
+						.attr("font-family", config.styles["FONT_FAMILY"])
+						.attr("class", "legend traderoute-label")
+						.text(valueText);
 				}
-				valueText = formatLegendValue(value);
-				if (i === 3) {
-					valueText = "< " + valueText;
-				}
-
-				lineVertical = lineVertical - (Math.max(strokeWidth, 8) + margin);
-
-				gLegend.append("rect")
-					.attr("x", margin + xOffset)
-					.attr("y", lineVertical - (strokeWidth/2) + yOffset)
-					.attr("width", lineLength)
-					.attr("height", strokeWidth)
-					.attr("fill", "url(#legendGradient)")
-					.attr("class", "legend traderoute");
 
 				gLegend.append("text")
-					.attr("x", lineLength + xOffset + (margin +5))
-					.attr("y", lineVertical + 2.5 + yOffset)
-					.attr("font-size", "0.5em")
-					.attr("font-family", config.styles["FONT_FAMILY"])
-					.attr("class", "legend traderoute-label")
-					.text(valueText);
+						.attr("x", margin + xOffset)
+						.attr("y", 18)
+						.attr("font-size", "0.5em")
+						.attr("font-family", config.styles["FONT_FAMILY"])
+						.attr("class", "legend traderoute-label")
+						.text('Routes →');
 			}
 
-			gLegend.append("text")
-					.attr("x", margin + xOffset)
-					.attr("y", 18)
-					.attr("font-size", "0.5em")
-					.attr("font-family", config.styles["FONT_FAMILY"])
-					.attr("class", "legend traderoute-label")
-					.text('Routes →');
-
-			// Now add a legend for the circles
+			// nodes
 			circleX = lineLength + xOffset + (margin * 2) + state.maxQuantity.toFixed(1).length * 7;
 			circleY = 0;
 

@@ -1,4 +1,4 @@
-define(["d3", "config"], function (d3, config) {
+define(["d3", "jquery", "config"], function (d3, $, config) {
 	// constructor
 	//
 	// mapsvg: d3 selection to append the legend to
@@ -28,12 +28,14 @@ define(["d3", "config"], function (d3, config) {
 		//   locationRoles property
 		// - pointTypeSize: map from role names to point sizes, e.g.
 		//   {origin: 5.5, exporter: 4, ...}
+		// - layers: Layer objects to render entries for in the legend
 		var state = {
 			pointTypeSize: config.pointTypeSize,
 			minArrowWidth: config.minArrowWidth,
 			maxArrowWidth: config.maxArrowWidth,
-			maxQuantity: 1,
+			maxQuantity: 0,
 			locationRoles: [],
+			layers: [],
 		};
 
 		var formatLegendValue = function (labelValue) {
@@ -83,7 +85,6 @@ define(["d3", "config"], function (d3, config) {
 				state.maxQuantity = 1;
 			}
 
-			// use parseFloat as the height has "px" at the end
 			var legendContainer, gLegend, i, strokeWidth, value, valueText, circleX, circleY,
 				xOffset = 100,
 				yOffset = 100,

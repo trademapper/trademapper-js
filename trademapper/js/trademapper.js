@@ -355,6 +355,7 @@ function($, d3, analytics, arrows, csv, filterform, mapper, route, yearslider,
 				mapper.loadTopoJSON(layer, function () {
 					layerSpinner.hide();
 					layerLoader.layerReady(layer);
+					arrows.drawLegend({layers: layerLoader.layers});
 				});
 			} catch (e) {
 				console.error(e);
@@ -433,7 +434,7 @@ function($, d3, analytics, arrows, csv, filterform, mapper, route, yearslider,
 
 			// check which roles are actually used in routes and only draw nodes
 			// in the legend for those roles
-			arrows.drawLegend(routes.getUniqueRoles());
+			arrows.drawLegend({locationRoles: routes.getUniqueRoles()});
 	},
 
 	yearSliderEnableDisableCallback: function(enable) {

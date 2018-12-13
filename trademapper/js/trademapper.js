@@ -334,7 +334,12 @@ function($, d3, analytics, arrows, csv, filterform, mapper, route, yearslider,
 	createLayerLoadingModal: function (layerLoader, mapper) {
 		var layerSpinner = Spinner(document.body);
 
-		layerLoader.on("start", function () {
+		layerLoader.on("start", function (event, filesize) {
+			if (filesize > 1000000) {
+				var msg = "WARNING: layer files > 1Mb in size are likely to cause " +
+					"performance issues";
+				layerSpinner.setMessage(msg);
+			}
 			layerSpinner.show();
 		});
 

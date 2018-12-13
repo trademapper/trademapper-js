@@ -17,6 +17,8 @@ define(["jquery", "text!../fragments/spinnerskeleton.html"], function ($, html) 
 		var modal = $(html);
 		$(element).append(modal);
 
+		var messagePara = modal.find("[data-role='tm-modal-spinner-message']");
+
 		return {
 			show: function () {
 				modal.attr("data-visible", "true");
@@ -24,7 +26,20 @@ define(["jquery", "text!../fragments/spinnerskeleton.html"], function ($, html) 
 
 			hide: function () {
 				modal.attr("data-visible", "false");
-			}
+				this.setMessage("");
+			},
+
+			// set an additional message on the overlay; if message is falsy,
+			// hide the message paragraph, otherwise show it
+			setMessage: function (text) {
+				if (!text) {
+					text = "";
+				}
+
+				messagePara.text(text);
+
+				messagePara.attr("data-visible", text !== "");
+			},
 		};
 	};
 

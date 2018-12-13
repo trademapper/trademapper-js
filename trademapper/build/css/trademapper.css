@@ -902,6 +902,9 @@ p.tooltip-location {
       font-weight: 800; }
     .tm-modal .tm-modal-body .progress-bar {
       background-color: #dc3545 !important; }
+    .tm-modal .tm-modal-body [data-role="tm-modal-spinner-message"] {
+      color: #D00 !important;
+      font-weight: bold; }
 
 .tm-modal[data-visible="true"] {
   display: flex !important; }

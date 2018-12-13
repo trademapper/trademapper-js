@@ -490,8 +490,13 @@ define(["d3", "spiralTree", "trademapper.route", "trademapper.portlookup", "trad
 			.style("opacity", 0);
 	},
 
-	drawLegend: function(rolesInRoutes) {
-		this.legend.draw(this.maxQuantity, rolesInRoutes);
+	drawLegend: function(locationRoles) {
+		// the legend decides when to draw itself based on state changes
+		var state = {
+			maxQuantity: this.maxQuantity,
+			locationRoles: locationRoles,
+		};
+		this.legend.setState(state);
 	},
 
 	};

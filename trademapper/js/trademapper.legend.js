@@ -3,10 +3,38 @@ define(["d3", "config"], function (d3, config) {
 	//
 	// mapsvg: d3 selection to append the legend to
 	return function (mapsvg) {
-		var obj = {};
-		var pointTypeSize = config.pointTypeSize;
-		var minArrowWidth = config.minArrowWidth;
-		var maxArrowWidth = config.maxArrowWidth;
+		var legendObj = {};
+
+		// sort roles by point size; returns array of role names
+		var sortRolesByPointSize = function (pointSizes) {
+			var condensed = [];
+			for (var role in pointSizes) {
+				condensed.push([role, pointSizes[role]]);
+			}
+
+			condensed = condensed.sort(function (a, b) {
+				return ("" + b[1]).localeCompare("" + a[1]);
+			});
+
+			var roles = [];
+			for (var i = 0; i < condensed.length; i++) {
+				roles.push(condensed[i][0]);
+			}
+
+			return roles;
+		};
+
+		// - locationRoles: array of one or more values from trademapper.route,
+		//   locationRoles property
+		// - pointTypeSize: map from role names to point sizes, e.g.
+		//   {origin: 5.5, exporter: 4, ...}
+		var state = {
+			pointTypeSize: config.pointTypeSize,
+			minArrowWidth: config.minArrowWidth,
+			maxArrowWidth: config.maxArrowWidth,
+			maxQuantity: 1,
+			locationRoles: [],
+		};
 
 		var formatLegendValue = function (labelValue) {
 			var abs = Math.abs(Number(labelValue));
@@ -19,7 +47,7 @@ define(["d3", "config"], function (d3, config) {
 	 	};
 
 		var drawPoint = function (x, y, pointType, extraclass, svgContainer) {
-			if (!pointTypeSize.hasOwnProperty(pointType)) {
+			if (!state.pointTypeSize.hasOwnProperty(pointType)) {
 				console.log("unknown pointType: " + pointType);
 				return;
 			}
@@ -28,8 +56,8 @@ define(["d3", "config"], function (d3, config) {
 			svgContainer.append("circle")
 				.attr("cx", x)
 				.attr("cy", y)
-				.attr("r", pointTypeSize[pointType])
-				.attr("data-orig-r", pointTypeSize[pointType])
+				.attr("r", state.pointTypeSize[pointType])
+				.attr("data-orig-r", state.pointTypeSize[pointType])
 				.attr("class", "tradenode " + pointType + " " + extraclass);
 		};
 
@@ -47,15 +75,12 @@ define(["d3", "config"], function (d3, config) {
 			}
 		};
 
-		// maxQuantity: depends on the data loaded
-		// locationRoles: array of one or more values from trademapper.route,
-		// locationRoles property
-		obj.draw = function (maxQuantity, locationRoles) {
+		var draw = function () {
 			// just to protect ourselves in case we try to draw the legend without
 			// setting max quantity first
-			if (!maxQuantity) {
-				console.error("Trying to draw legend without setting maxQuantity");
-				maxQuantity = 1;
+			if (!state.maxQuantity) {
+				console.error("Trying to draw legend without setting maxQuantity; using 1");
+				state.maxQuantity = 1;
 			}
 
 			// use parseFloat as the height has "px" at the end
@@ -63,11 +88,11 @@ define(["d3", "config"], function (d3, config) {
 				xOffset = 100,
 				yOffset = 100,
 				margin = 10,
-				lineLength = maxArrowWidth + 5,
-				maxWidth = maxArrowWidth,
+				lineLength = state.maxArrowWidth + 5,
+				maxWidth = state.maxArrowWidth,
 				roundUpWidth = function (factor) { return Math.max(maxWidth*factor, 8); },
 				legendHeight = Math.max(90, margin*3 + 8 + roundUpWidth(1) + roundUpWidth(0.25) + roundUpWidth(0.25)),
-				legendWidth = lineLength + margin*4 + 10 + maxQuantity.toFixed(1).length*8 + 20,
+				legendWidth = lineLength + margin*4 + 10 + state.maxQuantity.toFixed(1).length*8 + 20,
 				svgHeight = 0,
 				lineVertical = svgHeight;
 
@@ -89,17 +114,17 @@ define(["d3", "config"], function (d3, config) {
 
 			for (i = 0; i < 4; i++) {
 				if (i === 0) {
-					strokeWidth = maxArrowWidth;
-					value = maxQuantity;
+					strokeWidth = state.maxArrowWidth;
+					value = state.maxQuantity;
 				} else if (i === 1) {
-					strokeWidth = maxArrowWidth * 0.5;
-					value = maxQuantity * 0.5;
+					strokeWidth = state.maxArrowWidth * 0.5;
+					value = state.maxQuantity * 0.5;
 				} else if (i === 2) {
-					strokeWidth = maxArrowWidth * 0.25;
-					value = maxQuantity * 0.25;
+					strokeWidth = state.maxArrowWidth * 0.25;
+					value = state.maxQuantity * 0.25;
 				} else {
-					strokeWidth = minArrowWidth;
-					value = (maxQuantity * minArrowWidth) / maxArrowWidth;
+					strokeWidth = state.minArrowWidth;
+					value = (state.maxQuantity * state.minArrowWidth) / state.maxArrowWidth;
 				}
 				valueText = formatLegendValue(value);
 				if (i === 3) {
@@ -134,15 +159,38 @@ define(["d3", "config"], function (d3, config) {
 					.text('Routes →');
 
 			// Now add a legend for the circles
-			circleX = lineLength + xOffset + (margin * 2) + maxQuantity.toFixed(1).length * 7;
+			circleX = lineLength + xOffset + (margin * 2) + state.maxQuantity.toFixed(1).length * 7;
 			circleY = 0;
 
-			for (i = 0; i < locationRoles.length; i++) {
-				circleY += 18;
-				drawPointRoleLabel(locationRoles[i], gLegend, circleX, circleY);
+			// sort roles by point size
+			var possibleRoles = sortRolesByPointSize(state.pointTypeSize);
+
+			// only show the roles which are in the data
+			for (i = 0; i < possibleRoles.length; i++) {
+				if (state.locationRoles.indexOf(possibleRoles[i]) !== -1) {
+					circleY += 18;
+					drawPointRoleLabel(possibleRoles[i], gLegend, circleX, circleY);
+				}
 			}
 		};
 
-		return obj;
+		// set the state for the legend; if state changes, redraw;
+		// see the state variable for valid keys for newState
+		legendObj.setState = function (newState) {
+			var changed = false;
+
+			for (var key in newState) {
+				if (state[key] !== newState[key]) {
+					state[key] = newState[key];
+					changed = true;
+				}
+			}
+
+			if (changed) {
+				draw();
+			}
+		};
+
+		return legendObj;
 	};
 });

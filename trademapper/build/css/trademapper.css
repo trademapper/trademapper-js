@@ -208,7 +208,7 @@ abbr[title] {
   z-index: 1; }
 
 .toggle:hover {
-  background: #20af9f;
+  background: #20AF9F;
   color: #fff; }
 
 .tab-pane.active {
@@ -219,7 +219,7 @@ abbr[title] {
   background: -o-linear-gradient(top, white 0%, rgba(251, 251, 251, 0) 39%, rgba(246, 246, 246, 0) 82%, rgba(237, 237, 237, 0) 100%);
   background: -ms-linear-gradient(top, white 0%, rgba(251, 251, 251, 0) 39%, rgba(246, 246, 246, 0) 82%, rgba(237, 237, 237, 0) 100%);
   background: linear-gradient(to bottom, white 0%, rgba(251, 251, 251, 0) 39%, rgba(246, 246, 246, 0) 82%, rgba(237, 237, 237, 0) 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#ededed', GradientType=0 );
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ededed', GradientType=0 );
   padding-bottom: 2em; }
 
 /* Hide unused tabs till data loaded */
@@ -264,9 +264,9 @@ abbr[title] {
   font-weight: bold; }
 
 .tab-pane .tabpane-actionbox {
-  background-color: #f4f4f4;
+  background-color: #F4F4F4;
   border-radius: 4px;
-  border: 1px solid #d9d9d9;
+  border: 1px solid #D9D9D9;
   padding: 10px;
   overflow-x: hidden; }
   .tab-pane .tabpane-actionbox h1 {
@@ -324,14 +324,14 @@ abbr[title] {
   justify-content: center; }
 
 .btn.ss-share-link.ico-twitter {
-  background-color: #00abdd; }
+  background-color: #00ABDD; }
   .btn.ss-share-link.ico-twitter:hover, .btn.ss-share-link.ico-twitter:focus {
     background-color: #0097c4; }
 
 .btn.ss-share-link.ico-survey {
   background-color: #006957; }
   .btn.ss-share-link.ico-survey:hover, .btn.ss-share-link.ico-survey:focus {
-    background-color: #004f42; }
+    background-color: #005042; }
 
 .ss-share-link::after {
   content: " ";
@@ -423,7 +423,7 @@ abbr[title] {
   background-color: #45689f; }
 
 .form-item.location-transit {
-  background-color: #20af9f; }
+  background-color: #20AF9F; }
 
 .form-item.location-importer {
   background-color: #ff6600; }
@@ -629,7 +629,7 @@ p.tooltip-location {
   background-image: url("../images/icon-exporter.svg"); }
 
 .tooltip-location.transit:before {
-  background-color: #20af9f;
+  background-color: #20AF9F;
   background-image: url("../images/icon-transit.svg"); }
 
 .tooltip-location.importer:before {
@@ -714,7 +714,7 @@ p.tooltip-location {
 
 .disabled .change-over-time.year-slider > .d3-slider-handle {
   background: #eee;
-  background: linear-gradient(to bottom, #eeeeee 0%, #dddddd 100%); }
+  background: linear-gradient(to bottom, #eee 0%, #ddd 100%); }
 
 /*----------Options Dialog--------------
  =====================================*/
@@ -996,10 +996,8 @@ p.tooltip-location {
 @keyframes lds-roller {
   0% {
     transform: rotate(0deg); }
-
   100% {
     transform: rotate(360deg); } }
-
 /* ---------- Cookie banner & dialog ---------- */
 #cookiedialog {
   display: none;
@@ -1102,3 +1100,5 @@ p.tooltip-location {
 .layer-load-errors {
   font-weight: bold;
   color: red; }
+
+/*# sourceMappingURL=trademapper.css.map */

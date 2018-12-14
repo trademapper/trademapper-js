@@ -1101,8 +1101,12 @@ p.tooltip-location {
 		}
 
 		[data-role="tm-modal-spinner-message"] {
-			color: #D00 !important;
+			background-color: $importer-colour;
 			font-weight: bold;
+			border-radius: 4px;
+			width: 50%;
+			margin: 1rem auto;
+			padding: 1rem;
 		}
 	}
 }

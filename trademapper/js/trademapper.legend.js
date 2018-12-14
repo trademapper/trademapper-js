@@ -69,7 +69,7 @@ define(["d3", "jquery", "config"], function (d3, $, config) {
 		// returns an object with column and maxHeight properties;
 		// column: an array of arrays; each sub-array has two elements,
 		// which should be spaced equally
-		var makeRoutesElements = function (fontSizePx) {
+		var makeRouteElements = function (fontSizePx) {
 			var elements = {
 				column: [],
 				minHeight: fontSizePx,
@@ -81,6 +81,7 @@ define(["d3", "jquery", "config"], function (d3, $, config) {
 			text.attr("font-family", config.styles["FONT_FAMILY"]);
 			text.attr("class", "legend traderoute-label");
 			text.text('Routes →');
+			text.attr("data-offset-y", (fontSizePx / 2) - 1.5);
 
 			elements.column.push({label: text, graphic: null});
 
@@ -148,16 +149,16 @@ define(["d3", "jquery", "config"], function (d3, $, config) {
 					}
 
 					var graphic = d3.create("svg:circle");
-					graphic.attr("r", radius)
-					graphic.attr("data-orig-r", radius)
+					graphic.attr("r", radius);
+					graphic.attr("data-orig-r", radius);
 					graphic.attr("class", "legend tradenode " + role);
 
 					var roleLabel = role.charAt(0).toUpperCase() + role.slice(1);
 
 					var label = d3.create("svg:text");
-					label.attr("font-size", fontSizePx + "px")
-					label.attr("font-family", config.styles["FONT_FAMILY"])
-					label.attr("class", "legend tradenode-label")
+					label.attr("font-size", fontSizePx + "px");
+					label.attr("font-family", config.styles["FONT_FAMILY"]);
+					label.attr("class", "legend tradenode-label");
 					label.text(roleLabel);
 
 					elements.column.push({graphic: graphic, label: label});
@@ -177,6 +178,33 @@ define(["d3", "jquery", "config"], function (d3, $, config) {
 			}
 
 			elements.minHeight = widest;
+			return elements;
+		};
+
+		var makeLayerElements = function (fontSizePx) {
+			var elements = {column: [], minHeight: fontSizePx * 2};
+			var graphicWidth = fontSizePx * 2;
+			var graphicHeight = fontSizePx;
+
+			for (var i = 0; i < state.layers.length; i++) {
+				var graphic = d3.create("svg:rect");
+				graphic.attr("width", graphicWidth);
+				graphic.attr("height", graphicHeight);
+				graphic.attr("fill", state.layers[i].colour);
+				graphic.attr("class", "legend");
+				graphic.attr("data-offset-y", -(graphicHeight / 2));
+
+				var label = d3.create("svg:text");
+				label.attr("font-size", fontSizePx + "px")
+				label.attr("font-family", config.styles["FONT_FAMILY"])
+				label.attr("class", "legend")
+				label.text("Layer " + (i + 1));
+				label.attr("data-offset-x", graphicWidth + (fontSizePx / 2));
+				label.attr("data-offset-y", (fontSizePx / 2) - 1.5);
+
+				elements.column.push({label: label, graphic: graphic});
+			}
+
 			return elements;
 		};
 
@@ -225,15 +253,12 @@ define(["d3", "jquery", "config"], function (d3, $, config) {
 		};
 
 		var draw = function () {
-			// just to protect ourselves in case we try to draw the legend without
-			// setting max quantity first
-			if (!state.maxQuantity) {
-				console.error("Trying to draw legend without setting maxQuantity; using 1");
-				state.maxQuantity = 1;
-			}
-
 			var padding = 8;
 			var fontSizePx = padding;
+			var columnOffsetY = padding;
+			var columnOffsetX = 0;
+			var columnWidth = 60;
+			var numColumns = 0;
 
 			// clear any old legend
 			d3.select("#legendcontainer").remove();
@@ -248,22 +273,31 @@ define(["d3", "jquery", "config"], function (d3, $, config) {
 			var gRect = gLegend.append("rect");
 			gRect.attr("class", "legend legend-background");
 
-			var columnOffsetX = 0;
-			var columnOffsetY = padding;
+			// layers
+			if (state.layers.length > 0) {
+				var layerElements = makeLayerElements(fontSizePx);
+				columnOffsetX = numColumns * columnWidth;
+				numColumns += 1;
+				drawColumn(layerElements, columnOffsetX, columnOffsetY, padding, gLegend);
+			}
 
-			// route lines and labels
-			var routeElements = makeRoutesElements(fontSizePx);
-			drawColumn(routeElements, columnOffsetX, columnOffsetY, padding, gLegend);
+			// routes
+			if (state.maxQuantity > 0) {
+				var routeElements = makeRouteElements(fontSizePx);
+				columnOffsetX = numColumns * columnWidth;
+				numColumns += 1;
+				drawColumn(routeElements, columnOffsetX, columnOffsetY, padding, gLegend);
+			}
 
 			// trade nodes
-			var tradeNodeElements = makeTradenodeElements(fontSizePx);
-			columnOffsetX += 50;
-			drawColumn(tradeNodeElements, columnOffsetX, columnOffsetY, padding, gLegend);
+			if (state.locationRoles.length > 0) {
+				var tradeNodeElements = makeTradenodeElements(fontSizePx);
+				columnOffsetX = numColumns * columnWidth;
+				numColumns += 1;
+				drawColumn(tradeNodeElements, columnOffsetX, columnOffsetY, padding, gLegend);
+			}
 
-			// TODO layers
-
-			// TODO set dimensions based on the real total width of columns
-			var legendWidth = 100 + (padding * 3);
+			var legendWidth = numColumns * (columnWidth + padding);
 			gRect.attr("height", 100);
 			gRect.attr("width", legendWidth);
 

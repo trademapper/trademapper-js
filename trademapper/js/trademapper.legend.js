@@ -352,7 +352,7 @@ define(["d3", "jquery", "config"], function (d3, $, config) {
 
 			var viewbox = mapsvg.node().viewBox.baseVal;
 			legendContainer.attr("y", padding);
-			legendContainer.attr("x", viewbox.width - legendWidth - 50);
+			legendContainer.attr("x", viewbox.width - legendWidth - 25);
 		};
 
 		// set the state for the legend; if state changes, redraw;

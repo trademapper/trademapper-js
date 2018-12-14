@@ -48,32 +48,21 @@ define(["d3", "jquery", "config"], function (d3, $, config) {
 					: abs.toFixed(0);
 	 	};
 
-		var drawPoint = function (x, y, pointType, extraclass, svgContainer) {
-			if (!state.pointTypeSize.hasOwnProperty(pointType)) {
-				console.log("unknown pointType: " + pointType);
-				return;
-			}
-
-			// set tradenode fill depending on the type of point
-			svgContainer.append("circle")
-				.attr("cx", x)
-				.attr("cy", y)
-				.attr("r", state.pointTypeSize[pointType])
-				.attr("data-orig-r", state.pointTypeSize[pointType])
-				.attr("class", "tradenode " + pointType + " " + extraclass);
+		var getOffsetX = function (elt) {
+			return parseFloat(elt.attr("data-offset-x")) || 0;
 		};
 
-		var drawPointRoleLabel = function (role, gLegend, circleX, circleY) {
-			var roleLabel = role.charAt(0).toUpperCase() + role.slice(1);
-			if (roleLabel) {
-				drawPoint(circleX, circleY, role, "legend", gLegend);
-				gLegend.append("text")
-					.attr("x", circleX + 10)
-					.attr("y", circleY + 2.5)
-					.attr("font-size", "0.5em")
-					.attr("font-family", config.styles["FONT_FAMILY"])
-					.attr("class", "legend tradenode-label")
-					.text(roleLabel);
+		var getOffsetY = function (elt) {
+			return parseFloat(elt.attr("data-offset-y")) || 0;
+		};
+
+		// returns diameter for svg:circle, width for svg:rect
+		var getWidth = function (elt) {
+			var nodeName = elt.node().nodeName.toLowerCase();
+			if (nodeName === "rect") {
+				return parseFloat(elt.attr("width")) || 0;
+			} else if (nodeName === "circle") {
+				return parseFloat(elt.attr("r") * 2) || 0;
 			}
 		};
 
@@ -97,6 +86,7 @@ define(["d3", "jquery", "config"], function (d3, $, config) {
 
 			// route lines and labels
 			var strokeWidth, value, valueText;
+			var routeWidth = state.maxArrowWidth + (fontSizePx / 2);
 			for (i = 3; i >= 0; i--) {
 				if (i === 0) {
 					strokeWidth = state.maxArrowWidth;
@@ -121,12 +111,13 @@ define(["d3", "jquery", "config"], function (d3, $, config) {
 				}
 
 				var routeLine = d3.create("svg:rect");
-				routeLine.attr("width", state.maxArrowWidth + (fontSizePx / 2));
+				routeLine.attr("width", routeWidth);
 				routeLine.attr("height", strokeWidth);
 				routeLine.attr("fill", "url(#legendGradient)");
 				routeLine.attr("class", "legend traderoute");
 
 				var routeText = d3.create("svg:text");
+				routeText.attr("data-offset-x", routeWidth + (fontSizePx / 2));
 				routeText.attr("data-offset-y", (strokeWidth / 2) + (fontSizePx / 2) - 1.5);
 				routeText.attr("font-size", fontSizePx + "px");
 				routeText.attr("font-family", config.styles["FONT_FAMILY"]);
@@ -139,26 +130,67 @@ define(["d3", "jquery", "config"], function (d3, $, config) {
 			return elements;
 		};
 
-		var getOffsetX = function (elt) {
-			var value = elt.attr("data-offset-x");
-			if (value === null) {
-				return 0;
+		var makeTradenodeElements = function (fontSizePx) {
+			var widest = 0;
+			var elements = {column: [], minHeight: 0};
+
+			// sort roles by point size, largest first
+			var possibleRoles = sortRolesByPointSize(state.pointTypeSize);
+
+			// only show the roles which are in the data
+			for (var i = 0; i < possibleRoles.length; i++) {
+				if (state.locationRoles.indexOf(possibleRoles[i]) !== -1) {
+					var role = possibleRoles[i];
+
+					var radius = state.pointTypeSize[role];
+					if (radius * 2 > widest) {
+						widest = radius * 2;
+					}
+
+					var graphic = d3.create("svg:circle");
+					graphic.attr("r", radius)
+					graphic.attr("data-orig-r", radius)
+					graphic.attr("class", "legend tradenode " + role);
+
+					var roleLabel = role.charAt(0).toUpperCase() + role.slice(1);
+
+					var label = d3.create("svg:text");
+					label.attr("font-size", fontSizePx + "px")
+					label.attr("font-family", config.styles["FONT_FAMILY"])
+					label.attr("class", "legend tradenode-label")
+					label.text(roleLabel);
+
+					elements.column.push({graphic: graphic, label: label});
+				}
 			}
-			return parseFloat(value);
+
+			// padding is based on the largest circle, so that the centres of
+			// the circles line up, and the left-hand edges of the labels line up
+			for (i = 0; i < elements.column.length; i++) {
+				graphic = elements.column[i].graphic;
+				graphic.attr("data-offset-x", widest / 2);
+				graphic.attr("data-offset-y", 0);
+
+				label = elements.column[i].label;
+				label.attr("data-offset-x", widest + (fontSizePx / 2));
+				label.attr("data-offset-y", (fontSizePx / 2) - 1.5);
+			}
+
+			elements.minHeight = widest;
+			return elements;
 		};
 
-		var getOffsetY = function (elt) {
-			var value = elt.attr("data-offset-y");
-			if (value === null) {
-				return 0;
-			}
-			return parseFloat(value);
-		};
-
+		// this does the positioning of graphics and labels within a column of
+		// the legend;
+		// elements is a list of objects with "graphic" and "label" properties;
+		// both graphic and label objects can have data-offset-x and data-offset-y
+		// properties, which position the object with respect to the offset for
+		// a row within the column; this is used to position text with the centre
+		// of the route lines, offset the centre of circles etc.
 		var drawColumn = function (elements, columnOffsetX, columnOffsetY, padding, gLegend) {
 			var rowHeight = elements.minHeight;
-			var label, graphic, graphicWidth, offsetX, offsetY, labelX, labelY,
-				graphicX, graphicY;
+			var label, graphic, graphicNode, graphicWidth, offsetX, offsetY, labelX,
+				labelY,	graphicX, graphicY;
 
 			for (var row = 0; row < elements.column.length; row++) {
 				label = elements.column[row].label;
@@ -168,26 +200,27 @@ define(["d3", "jquery", "config"], function (d3, $, config) {
 				offsetY = columnOffsetY + padding + (row * rowHeight) + (row * padding);
 
 				if (graphic !== null) {
-					graphicWidth = parseFloat(graphic.attr("width"));
+					graphicNode = graphic.node();
 
-					// show the graphic then the label
 					graphicX = offsetX + getOffsetX(graphic);
 					graphicY = offsetY + getOffsetY(graphic);
-					graphic.attr("x", graphicX);
-					graphic.attr("y", graphicY);
-					gLegend.node().appendChild(graphic.node());
 
-					labelX = graphicX + graphicWidth + (padding / 2) + getOffsetX(label);
-					labelY = offsetY + getOffsetY(label);
-					label.attr("x", labelX);
-					label.attr("y", labelY);
-					gLegend.node().appendChild(label.node());
-				} else {
-					// no line, just show the label
-					label.attr("x", offsetX + getOffsetX(label));
-					label.attr("y", offsetY + getOffsetY(label));
-					gLegend.node().appendChild(label.node());
+					// set x, y for rectangles; cx, cy for circles
+					if (graphicNode.nodeName.toLowerCase() === "rect") {
+						graphic.attr("x", graphicX);
+						graphic.attr("y", graphicY);
+					} else if (graphicNode.nodeName.toLowerCase() === "circle") {
+						graphic.attr("cx", graphicX);
+						graphic.attr("cy", graphicY);
+					}
+					gLegend.node().appendChild(graphicNode);
 				}
+
+				labelX = offsetX + getOffsetX(label);
+				labelY = offsetY + getOffsetY(label);
+				label.attr("x", labelX);
+				label.attr("y", labelY);
+				gLegend.node().appendChild(label.node());
 			}
 		};
 
@@ -199,8 +232,8 @@ define(["d3", "jquery", "config"], function (d3, $, config) {
 				state.maxQuantity = 1;
 			}
 
-			var fontSize = 8;
-			var padding = fontSize;
+			var padding = 8;
+			var fontSizePx = padding;
 
 			// clear any old legend
 			d3.select("#legendcontainer").remove();
@@ -215,39 +248,28 @@ define(["d3", "jquery", "config"], function (d3, $, config) {
 			var gRect = gLegend.append("rect");
 			gRect.attr("class", "legend legend-background");
 
-			// TODO make this generic to draw nodes and layers in legend too
-			var previousColumnsWidth = 0;
-			var totalColumnWidths = 0;
+			var columnOffsetX = 0;
+			var columnOffsetY = padding;
 
 			// route lines and labels
-			var elements = makeRoutesElements(fontSize);
-			var columnOffsetX = previousColumnsWidth;
-			var columnOffsetY = padding;
-			drawColumn(elements, columnOffsetX, columnOffsetY, padding, gLegend);
+			var routeElements = makeRoutesElements(fontSizePx);
+			drawColumn(routeElements, columnOffsetX, columnOffsetY, padding, gLegend);
 
-			// TODO set dimensions based on the total width of columns
+			// trade nodes
+			var tradeNodeElements = makeTradenodeElements(fontSizePx);
+			columnOffsetX += 50;
+			drawColumn(tradeNodeElements, columnOffsetX, columnOffsetY, padding, gLegend);
+
+			// TODO layers
+
+			// TODO set dimensions based on the real total width of columns
+			var legendWidth = 100 + (padding * 3);
 			gRect.attr("height", 100);
-			gRect.attr("width", 100);
+			gRect.attr("width", legendWidth);
 
-			// TODO use real width of the legend
 			var viewbox = mapsvg.node().viewBox.baseVal;
 			legendContainer.attr("y", padding);
-			legendContainer.attr("x", viewbox.width - 150);
-
-			// Now add a legend for the circles
-			/*circleX = lineLength + xOffset + (margin * 2) + state.maxQuantity.toFixed(1).length * 7;
-			circleY = 0;
-
-			// sort roles by point size
-			var possibleRoles = sortRolesByPointSize(state.pointTypeSize);
-
-			// only show the roles which are in the data
-			for (i = 0; i < possibleRoles.length; i++) {
-				if (state.locationRoles.indexOf(possibleRoles[i]) !== -1) {
-					circleY += 18;
-					drawPointRoleLabel(possibleRoles[i], gLegend, circleX, circleY);
-				}
-			}*/
+			legendContainer.attr("x", viewbox.width - legendWidth);
 		};
 
 		// set the state for the legend; if state changes, redraw;

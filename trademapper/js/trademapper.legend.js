@@ -194,11 +194,12 @@ define(["d3", "jquery", "config"], function (d3, $, config) {
 				graphic.attr("class", "legend");
 				graphic.attr("data-offset-y", -(graphicHeight / 2));
 
+				var layerName = state.layers[i].filename.replace(/\.json/, '').substr(0, 10);
 				var label = d3.create("svg:text");
 				label.attr("font-size", fontSizePx + "px")
 				label.attr("font-family", config.styles["FONT_FAMILY"])
 				label.attr("class", "legend")
-				label.text("Layer " + (i + 1));
+				label.text(layerName);
 				label.attr("data-offset-x", graphicWidth + (fontSizePx / 2));
 				label.attr("data-offset-y", (fontSizePx / 2) - 1.5);
 
@@ -259,7 +260,7 @@ define(["d3", "jquery", "config"], function (d3, $, config) {
 			var fontSizePx = padding;
 			var columnOffsetY = padding;
 			var columnOffsetX = 0;
-			var columnWidth = 60;
+			var columnWidth = 75;
 			var numColumns = 0;
 
 			// clear any old legend
@@ -299,13 +300,14 @@ define(["d3", "jquery", "config"], function (d3, $, config) {
 				drawColumn(tradeNodeElements, columnOffsetX, columnOffsetY, padding, gLegend);
 			}
 
+			// position the legend and its background
 			var legendWidth = numColumns * (columnWidth + padding);
 			gRect.attr("height", 100);
 			gRect.attr("width", legendWidth);
 
 			var viewbox = mapsvg.node().viewBox.baseVal;
 			legendContainer.attr("y", padding);
-			legendContainer.attr("x", viewbox.width - legendWidth);
+			legendContainer.attr("x", viewbox.width - legendWidth - 50);
 		};
 
 		// set the state for the legend; if state changes, redraw;

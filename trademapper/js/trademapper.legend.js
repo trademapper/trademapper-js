@@ -292,7 +292,7 @@ define(["d3", "jquery", "config"], function (d3, $, config) {
 			}
 		};
 
-		var draw = function () {
+		legendObj.draw = function () {
 			console.log("drawing legend");
 
 			var padding = 8;
@@ -368,7 +368,7 @@ define(["d3", "jquery", "config"], function (d3, $, config) {
 			}
 
 			if (changed) {
-				draw();
+				legendObj.draw();
 			}
 		};
 

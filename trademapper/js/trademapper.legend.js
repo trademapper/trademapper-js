@@ -209,6 +209,45 @@ define(["d3", "jquery", "config"], function (d3, $, config) {
 			return elements;
 		};
 
+		var makeMapElements = function (fontSizePx) {
+			var elements = {column: [], minHeight: fontSizePx * 2};
+
+			var graphicWidth = fontSizePx * 2;
+			var graphicHeight = fontSizePx;
+
+			var mapFeatures = {
+				"No trade data": {
+					"class": "country",
+				},
+				"Trade data": {
+					"class": "country trading",
+				},
+				"Disputed area": {
+					"class": "disputed",
+				},
+			};
+
+			for (var labelText in mapFeatures) {
+				var graphic = d3.create("svg:rect");
+				graphic.attr("width", graphicWidth);
+				graphic.attr("height", graphicHeight);
+				graphic.attr("class", "legend " + mapFeatures[labelText]["class"]);
+				graphic.attr("data-offset-y", -(graphicHeight / 2));
+
+				var label = d3.create("svg:text");
+				label.attr("font-size", fontSizePx + "px")
+				label.attr("font-family", config.styles["FONT_FAMILY"])
+				label.attr("class", "legend")
+				label.text(labelText);
+				label.attr("data-offset-x", graphicWidth + (fontSizePx / 2));
+				label.attr("data-offset-y", (fontSizePx / 2) - 1.5);
+
+				elements.column.push({label: label, graphic: graphic});
+			}
+
+			return elements;
+		};
+
 		// this does the positioning of graphics and labels within a column of
 		// the legend;
 		// elements is a list of objects with "graphic" and "label" properties;
@@ -299,6 +338,12 @@ define(["d3", "jquery", "config"], function (d3, $, config) {
 				numColumns += 1;
 				drawColumn(tradeNodeElements, columnOffsetX, columnOffsetY, padding, gLegend);
 			}
+
+			// map colours (always shown)
+			var mapElements = makeMapElements(fontSizePx);
+			columnOffsetX = numColumns * columnWidth;
+			numColumns += 1;
+			drawColumn(mapElements, columnOffsetX, columnOffsetY, padding, gLegend);
 
 			// position the legend and its background
 			var legendWidth = numColumns * (columnWidth + padding);

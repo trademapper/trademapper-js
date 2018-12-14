@@ -123,8 +123,7 @@ define(["d3", "topojson", "vendor/doT", "worldmap", "disputedareas", "countrycen
 			.enter()
 				.append("path")
 				.attr("d", this.pathmaker)
-				.attr("class", function(d) { return "disputed " + d.id; })
-				.attr("fill", "url(#diagonalHatch)");
+				.attr("class", function(d) { return "disputed " + d.id; });
 	},
 
 	// layer: a Layer object (see trademapper.layerloader.js)

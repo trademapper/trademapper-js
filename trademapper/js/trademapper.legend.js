@@ -253,6 +253,8 @@ define(["d3", "jquery", "config"], function (d3, $, config) {
 		};
 
 		var draw = function () {
+			console.log("drawing legend");
+
 			var padding = 8;
 			var fontSizePx = padding;
 			var columnOffsetY = padding;

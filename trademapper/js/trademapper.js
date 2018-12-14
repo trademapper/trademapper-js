@@ -355,7 +355,14 @@ function($, d3, analytics, arrows, csv, filterform, mapper, route, yearslider,
 				mapper.loadTopoJSON(layer, function () {
 					layerSpinner.hide();
 					layerLoader.layerReady(layer);
-					arrows.drawLegend({layers: layerLoader.layers});
+
+					// we copy the layers list here, otherwise we can't detect changes
+					// to the number of layers
+					var layers = [];
+					for (var i = 0; i < layerLoader.layers.length; i++) {
+						layers.push(util.deepCopy(layerLoader.layers[i]));
+					}
+					arrows.drawLegend({layers: layers});
 				});
 			} catch (e) {
 				console.error(e);

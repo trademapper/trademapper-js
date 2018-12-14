@@ -77,43 +77,27 @@ define(["d3", "jquery", "config"], function (d3, $, config) {
 			}
 		};
 
-		var draw = function () {
-			// just to protect ourselves in case we try to draw the legend without
-			// setting max quantity first
-			if (!state.maxQuantity) {
-				console.error("Trying to draw legend without setting maxQuantity; using 1");
-				state.maxQuantity = 1;
-			}
+		// returns an object with column and maxHeight properties;
+		// column: an array of arrays; each sub-array has two elements,
+		// which should be spaced equally
+		var makeRoutesElements = function (fontSizePx) {
+			var elements = {
+				column: [],
+				minHeight: fontSizePx,
+			};
 
-			var legendContainer, gLegend, i, strokeWidth, value, valueText, circleX, circleY,
-				xOffset = 100,
-				yOffset = 100,
-				margin = 10,
-				lineLength = state.maxArrowWidth + 5,
-				maxWidth = state.maxArrowWidth,
-				roundUpWidth = function (factor) { return Math.max(maxWidth*factor, 8); },
-				legendHeight = Math.max(90, margin*3 + 8 + roundUpWidth(1) + roundUpWidth(0.25) + roundUpWidth(0.25)),
-				legendWidth = lineLength + margin*4 + 10 + state.maxQuantity.toFixed(1).length*8 + 20,
-				svgHeight = 0,
-				lineVertical = svgHeight;
+			// heading
+			var text = d3.create("svg:text");
+			text.attr("font-size", fontSizePx + "px");
+			text.attr("font-family", config.styles["FONT_FAMILY"]);
+			text.attr("class", "legend traderoute-label");
+			text.text('Routes →');
 
-			// clear any old legend
-			mapsvg.selectAll(".legend").remove();
-			legendContainer = mapsvg.append("svg")
-				.attr("id", "legendcontainer")
-				.attr("class", "legend")
-				.attr("x", "76%") // pin at 76% of map width
-				.attr("y", "10");
-			gLegend = legendContainer.append("g").attr("class", "legend");
+			elements.column.push({label: text, graphic: null});
 
-			gLegend.append("rect")
-				.attr("x", 5 + xOffset)
-				.attr("y", svgHeight - (margin) - legendHeight + yOffset)
-				.attr("width", legendWidth)
-				.attr("height", legendHeight)
-				.attr("class", "legend legend-background");
-
-			for (i = 0; i < 4; i++) {
+			// route lines and labels
+			var strokeWidth, value, valueText;
+			for (i = 3; i >= 0; i--) {
 				if (i === 0) {
 					strokeWidth = state.maxArrowWidth;
 					value = state.maxQuantity;
@@ -132,35 +116,126 @@ define(["d3", "jquery", "config"], function (d3, $, config) {
 					valueText = "< " + valueText;
 				}
 
-				lineVertical = lineVertical - (Math.max(strokeWidth, 8) + margin);
+				if (strokeWidth > elements.minHeight) {
+					elements.minHeight = strokeWidth;
+				}
 
-				gLegend.append("rect")
-					.attr("x", margin + xOffset)
-					.attr("y", lineVertical - (strokeWidth/2) + yOffset)
-					.attr("width", lineLength)
-					.attr("height", strokeWidth)
-					.attr("fill", "url(#legendGradient)")
-					.attr("class", "legend traderoute");
+				var routeLine = d3.create("svg:rect");
+				routeLine.attr("width", state.maxArrowWidth + (fontSizePx / 2));
+				routeLine.attr("height", strokeWidth);
+				routeLine.attr("fill", "url(#legendGradient)");
+				routeLine.attr("class", "legend traderoute");
 
-				gLegend.append("text")
-					.attr("x", lineLength + xOffset + (margin +5))
-					.attr("y", lineVertical + 2.5 + yOffset)
-					.attr("font-size", "0.5em")
-					.attr("font-family", config.styles["FONT_FAMILY"])
-					.attr("class", "legend traderoute-label")
-					.text(valueText);
+				var routeText = d3.create("svg:text");
+				routeText.attr("data-offset-y", (strokeWidth / 2) + (fontSizePx / 2) - 1.5);
+				routeText.attr("font-size", fontSizePx + "px");
+				routeText.attr("font-family", config.styles["FONT_FAMILY"]);
+				routeText.attr("class", "legend traderoute-label");
+				routeText.text(valueText);
+
+				elements.column.push({graphic: routeLine, label: routeText});
 			}
 
-			gLegend.append("text")
-					.attr("x", margin + xOffset)
-					.attr("y", 18)
-					.attr("font-size", "0.5em")
-					.attr("font-family", config.styles["FONT_FAMILY"])
-					.attr("class", "legend traderoute-label")
-					.text('Routes →');
+			return elements;
+		};
+
+		var getOffsetX = function (elt) {
+			var value = elt.attr("data-offset-x");
+			if (value === null) {
+				return 0;
+			}
+			return parseFloat(value);
+		};
+
+		var getOffsetY = function (elt) {
+			var value = elt.attr("data-offset-y");
+			if (value === null) {
+				return 0;
+			}
+			return parseFloat(value);
+		};
+
+		var drawColumn = function (elements, columnOffsetX, columnOffsetY, padding, gLegend) {
+			var rowHeight = elements.minHeight;
+			var label, graphic, graphicWidth, offsetX, offsetY, labelX, labelY,
+				graphicX, graphicY;
+
+			for (var row = 0; row < elements.column.length; row++) {
+				label = elements.column[row].label;
+				graphic = elements.column[row].graphic;
+
+				offsetX = columnOffsetX + padding;
+				offsetY = columnOffsetY + padding + (row * rowHeight) + (row * padding);
+
+				if (graphic !== null) {
+					graphicWidth = parseFloat(graphic.attr("width"));
+
+					// show the graphic then the label
+					graphicX = offsetX + getOffsetX(graphic);
+					graphicY = offsetY + getOffsetY(graphic);
+					graphic.attr("x", graphicX);
+					graphic.attr("y", graphicY);
+					gLegend.node().appendChild(graphic.node());
+
+					labelX = graphicX + graphicWidth + (padding / 2) + getOffsetX(label);
+					labelY = offsetY + getOffsetY(label);
+					label.attr("x", labelX);
+					label.attr("y", labelY);
+					gLegend.node().appendChild(label.node());
+				} else {
+					// no line, just show the label
+					label.attr("x", offsetX + getOffsetX(label));
+					label.attr("y", offsetY + getOffsetY(label));
+					gLegend.node().appendChild(label.node());
+				}
+			}
+		};
+
+		var draw = function () {
+			// just to protect ourselves in case we try to draw the legend without
+			// setting max quantity first
+			if (!state.maxQuantity) {
+				console.error("Trying to draw legend without setting maxQuantity; using 1");
+				state.maxQuantity = 1;
+			}
+
+			var fontSize = 8;
+			var padding = fontSize;
+
+			// clear any old legend
+			d3.select("#legendcontainer").remove();
+
+			var legendContainer = mapsvg.append("svg");
+			legendContainer.attr("id", "legendcontainer");
+			legendContainer.attr("class", "legend");
+
+			var gLegend = legendContainer.append("g");
+			gLegend.attr("class", "legend");
+
+			var gRect = gLegend.append("rect");
+			gRect.attr("class", "legend legend-background");
+
+			// TODO make this generic to draw nodes and layers in legend too
+			var previousColumnsWidth = 0;
+			var totalColumnWidths = 0;
+
+			// route lines and labels
+			var elements = makeRoutesElements(fontSize);
+			var columnOffsetX = previousColumnsWidth;
+			var columnOffsetY = padding;
+			drawColumn(elements, columnOffsetX, columnOffsetY, padding, gLegend);
+
+			// TODO set dimensions based on the total width of columns
+			gRect.attr("height", 100);
+			gRect.attr("width", 100);
+
+			// TODO use real width of the legend
+			var viewbox = mapsvg.node().viewBox.baseVal;
+			legendContainer.attr("y", padding);
+			legendContainer.attr("x", viewbox.width - 150);
 
 			// Now add a legend for the circles
-			circleX = lineLength + xOffset + (margin * 2) + state.maxQuantity.toFixed(1).length * 7;
+			/*circleX = lineLength + xOffset + (margin * 2) + state.maxQuantity.toFixed(1).length * 7;
 			circleY = 0;
 
 			// sort roles by point size
@@ -172,7 +247,7 @@ define(["d3", "jquery", "config"], function (d3, $, config) {
 					circleY += 18;
 					drawPointRoleLabel(possibleRoles[i], gLegend, circleX, circleY);
 				}
-			}
+			}*/
 		};
 
 		// set the state for the legend; if state changes, redraw;

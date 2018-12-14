@@ -110,68 +110,7 @@ define(["d3", "jquery", "config"], function (d3, $, config) {
 			if (state.layers.length > 0) {
 			}
 
-			// route lines, thickness governed by quantity
-			if (state.maxQuantity > 0) {
-				var lineLength = state.maxArrowWidth + 5;
 
-				var routesColumn = legendContainer.append("g").attr("x", padding).attr("y", padding);
-
-				routesColumn.append("text")
-					.attr("x", 0)
-					.attr("y", 0)
-					.attr("font-size", fontSize + "px")
-					.attr("font-family", config.styles["FONT_FAMILY"])
-					.attr("class", "legend traderoute-label")
-					.text('Routes →');
-
-				var routeLineWidth, routeValue, routeValueText, routeLineY,
-					routeLabelX, routeLabelY;
-
-				for (var i = 0; i < 4; i++) {
-					if (i === 0) {
-						routeLineWidth = state.maxArrowWidth;
-						routeValue = state.maxQuantity;
-					} else if (i === 1) {
-						routeLineWidth = state.maxArrowWidth * 0.5;
-						routeValue = state.maxQuantity * 0.5;
-					} else if (i === 2) {
-						routeLineWidth = state.maxArrowWidth * 0.25;
-						routeValue = state.maxQuantity * 0.25;
-					} else {
-						routeLineWidth = state.minArrowWidth;
-						routeValue = (state.maxQuantity * state.minArrowWidth) / state.maxArrowWidth;
-					}
-					routeValueText = formatLegendValue(routeValue);
-					if (i === 3) {
-						routeValueText = "< " + routeValueText;
-					}
-
-					routeLineY = fontSize + padding + (i * state.maxArrowWidth) + (state.maxArrowWidth / 2);
-
-					routesColumn.append("rect")
-						.attr("x", 0)
-						.attr("y", routeLineY - (routeLineWidth / 2))
-						.attr("width", lineLength)
-						.attr("height", routeLineWidth)
-						.attr("fill", "url(#legendGradient)")
-						.attr("class", "legend traderoute");
-
-					routesColumn.append("text")
-						.attr("x", lineLength + padding)
-						.attr("y", routeLineY - 8)
-						.attr("font-size", "16px")
-						.attr("font-family", config.styles["FONT_FAMILY"])
-						.attr("class", "legend traderoute-label")
-						.text(routeValueText);
-				}
-			}
-
-			// nodes
-
-			// set the dimensions of the rectangle, based on the columns
-		};
-
-		var drawOld = function () {
 			var legendContainer, gLegend, i, strokeWidth, value, valueText, circleX, circleY,
 				xOffset = 100,
 				yOffset = 100,

@@ -42,6 +42,9 @@ define(["d3", "spiralTree", "trademapper.route", "trademapper.portlookup", "trad
 		this.setUpFlowmap();
 		this.pathTooltip.style("opacity", 0);
 		this.legend = Legend(this.mapsvg);
+
+		// force drawing the legend
+		this.legend.draw();
 	},
 
 	addDefsToSvg: function() {
@@ -492,7 +495,10 @@ define(["d3", "spiralTree", "trademapper.route", "trademapper.portlookup", "trad
 
 	drawLegend: function(state) {
 		// the legend decides when to draw itself based on state changes
-		state.maxQuantity = this.maxQuantity;
+		if (!state) {
+			state = {};
+		}
+		state.maxQuantity = this.maxQuantity || 0;
 		this.legend.setState(state);
 	},
 

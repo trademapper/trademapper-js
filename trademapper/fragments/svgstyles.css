@@ -17,10 +17,14 @@
 	stroke-linejoin: round;
 }
 
+.disputed {
+	fill: url(#diagonalHatch);
+}
+
 #legendcontainer, g.legend { opacity: 1; }
 .legend-background {
 	fill: {{=it.LEGEND_BACKGROUND}};
-	opacity: 0.6;
+	opacity: 0.9;
 	stroke-width:{{=it.LEGEND_STROKE_WIDTH}};
 	stroke:{{=it.LEGEND_STROKE_COLOUR}};
 }

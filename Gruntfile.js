@@ -58,6 +58,7 @@ module.exports = function(grunt) {
 													'js/**',
 													'fragments/**',
 													'build/**',
+													'sample_data/**',
 													'!build/css/trademapper.css.map',
 													'!build/styles/bootstrap.css',
 													'!build/styles/bootstrap-switch.css',

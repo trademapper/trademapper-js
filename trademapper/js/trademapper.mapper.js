@@ -1,4 +1,4 @@
-define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre"], function(d3, topojson, mapdata, disputedareas, countryCentre) {
+define(["d3", "topojson", "vendor/doT", "worldmap", "disputedareas", "countrycentre", "trademapper.portlookup", "config", "util", "text!../fragments/svgstyles.css"], function(d3, topojson, doT, mapdata, disputedareas, countryCentre, portlookup, config, util, svgStylesTemplate) {
 	"use strict";
 
 	return {
@@ -8,6 +8,7 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre"], functio
 	controlg: null,
 	svgDefs: null,
 	config: null,
+	svg: null,
 	countries: null,
 	countryCodeToName: null,
 	countryCodeToInfo: null,
@@ -23,17 +24,47 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre"], functio
 	 * caches svg reference
 	 * decodes countries and borders and draws them
 	 */
-	init: function(svgZoomg, controlg, svgDefs, mapConfig) {
+	init: function(svgZoomg, controlg, svgDefs, mapConfig, svg) {
+		this.projection = d3.geoMercator();
+		this.pathmaker = d3.geoPath().projection(this.projection).pointRadius(1);
+
 		this.zoomg = svgZoomg;
+		this.mapg = this.zoomg.append("g").attr("class", "mapgroup");
+
 		this.controlg = controlg;
 		this.svgDefs = svgDefs;
 		this.config = mapConfig;
-		this.width = mapConfig.width  || 960;
-	 this.height = mapConfig.height  || 400;
+		this.svg = svg;
+		this.width = mapConfig.width || 960;
+		this.height = mapConfig.height || 400;
 		this.addPatternDefs();
 		this.drawMap();
 		this.setupZoom();
 		this.makeCountryNameHash();
+
+		this.setStyles();
+	},
+
+	// layers have custom colours which can be set by the user;
+	// these are stored in the config object in the styles.LAYER_COLOURS map,
+	// where the keys are the layer IDs; these then become part of CSS
+	// selectors produced via the fragments/svgstyles.css template, which in
+	// turn style the SVG elements
+	setLayerColour: function (layerId, colour) {
+		this.config.styles.LAYER_COLOURS[layerId] = colour;
+		this.setStyles();
+	},
+
+	// SVG styling, via a template with settings from config;
+	// must be inserted as first child for the styling to work in the standalone SVG
+	setStyles: function () {
+		var style = this.svg.select("style#configured-styles");
+		if (style.size() === 0) {
+			style = this.svg.insert("style", ":first-child").attr("id", "configured-styles");
+		}
+
+		var svgStyles = doT.template(svgStylesTemplate)(this.config.styles);
+		style.text(svgStyles);
 	},
 
 	makeCountryNameHash: function() {
@@ -65,21 +96,15 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre"], functio
 	},
 
 	drawMap: function() {
-		this.projection = d3.geo.mercator();
-			//.scale(mapWidth/1.25)
-			//.translate([mapWidth/4, mapHeight/2+10]);
-		this.pathmaker = d3.geo.path().projection(this.projection);
-
 		this.countries = topojson.feature(mapdata, mapdata.objects.subunits).features;
+
 		this.borders = topojson.mesh(mapdata, mapdata.objects.subunits,
 			function(a, b) { return true; });
+
 		this.disputed = topojson.feature(disputedareas, disputedareas.objects.disputeunit).features;
 		// don't need to draw disputed borders
 		/*this.disputedborders = topojson.mesh(disputedareas, disputedareas.objects.disputeunit,
 			function(a, b) { return true; });*/
-
-		this.mapg = this.zoomg.append("g")
-			.attr("class", "mapgroup");
 
 		this.mapg.selectAll(".subunit")
 			.data(this.countries)
@@ -87,9 +112,6 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre"], functio
 				.append("path")
 				.attr("d", this.pathmaker)
 				.attr("class", function(d) { return "country " + d.id; });
-				//.on("click", countryClicked)
-				//.on("mouseover", hoverCountry)
-				//.on("mouseout", unhoverCountry);
 
 		this.mapg.append("path")
 			.datum(this.borders)
@@ -101,26 +123,110 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre"], functio
 			.enter()
 				.append("path")
 				.attr("d", this.pathmaker)
-				.attr("class", function(d) { return "disputed " + d.id; })
-				.attr("fill", "url(#diagonalHatch)");
+				.attr("class", function(d) { return "disputed " + d.id; });
+	},
 
-		// don't need to draw disputed borders
-		/*this.mapg.append("path")
-			.datum(this.disputedborders)
-			.attr("d", this.pathmaker)
-			.attr("class", "disputed-border");*/
+	// layer: a Layer object (see trademapper.layerloader.js)
+	// layers are drawn using the data in the Layer, using the colour from the
+	// Layer; each element added from the data in this layer is assigned a
+	// "unique" ID from the layer
+	// callback: function invoked with no args when SVG is in the DOM
+	loadTopoJSON: function (layer, callback) {
+		var layerId = layer.id;
+		var data = layer.data;
+
+		this.setLayerColour(layerId, layer.colour);
+
+		// polygons need drawing with class layer-poly;
+		// lines need drawing with class layer-line;
+		// points need drawing with class layer-point
+		var polygons = {
+			type: "GeometryCollection",
+			geometries: []
+		};
+
+		var lines = {
+			type: "GeometryCollection",
+			geometries: []
+		};
+
+		var points = {
+			type: "GeometryCollection",
+			geometries: []
+		};
+
+		// sort the geometries so they can be drawn appropriately
+		var geometries, i, geometry;
+		for (var propertyName in data.objects) {
+			geometries = data.objects[propertyName].geometries;
+
+			for (i = 0; i < geometries.length; i++) {
+				var geometry = geometries[i];
+
+				if (geometry.type === "Polygon" || geometry.type === "MultiPolygon") {
+					polygons.geometries.push(geometry);
+				} else if (geometry.type === "LineString" || geometry.type === "MultiLineString") {
+					lines.geometries.push(geometry);
+				} else if (geometry.type === "Point" || geometry.type === "MultiPoint") {
+					points.geometries.push(geometry);
+				}
+			}
+		}
+
+		// polygons
+		if (polygons.geometries.length > 0) {
+			var polygonFeatures = topojson.feature(data, polygons).features;
+
+			this.mapg.selectAll("." + layerId + " layer-poly")
+				.data(polygonFeatures)
+				.enter()
+					.append("path")
+					.attr("d", this.pathmaker)
+					.attr("class", layerId + " layer-poly");
+
+			// extract lines around polygons; this creates a multiline which draws
+			// around the polygons and shows their borders
+			var boundaries = topojson.mesh(data, polygons, function(a, b) { return a !== b; });
+			this.mapg.append("path")
+				.datum(boundaries)
+				.attr("d", this.pathmaker)
+				.attr("class", layerId + " layer-boundary");
+		}
+
+		// points
+		if (points.geometries.length > 0) {
+			var pointFeatures = topojson.feature(data, points).features;
+			this.mapg.selectAll("." + layerId + " layer-point")
+				.data(pointFeatures)
+				.enter()
+					.append("path")
+					.attr("d", this.pathmaker)
+					.attr("class", layerId + " layer-point");
+		}
+
+		// lines
+		if (lines.geometries.length > 0) {
+			var lineFeatures = topojson.feature(data, lines).features;
+			this.mapg.selectAll("." + layerId + " layer-line")
+				.data(lineFeatures)
+				.enter()
+					.append("path")
+					.attr("d", this.pathmaker)
+					.attr("class", layerId + " layer-line");
+		}
+
+		console.log("loaded topojson");
+
+		if (callback) {
+			callback();
+		}
 	},
 
 	setupZoom: function() {
 		var moduleThis = this,
 		zoomed = function() {
-			var translate = d3.event.translate,
-				scale = d3.event.scale;
-			console.log("target: " + d3.target);
-			console.log("PRE: scale: " + scale + " translate: " + translate);
-				translate[0] = Math.max(-(moduleThis.width/2)*scale, Math.min((moduleThis.width/2)*scale, translate[0]));
-				translate[1] = Math.max(-(moduleThis.height/2)*scale, Math.min((moduleThis.height/2)*scale, translate[1]));
-			console.log("POST: translate: " + translate);
+			var translate = [d3.event.transform.x, d3.event.transform.y];
+			var scale = d3.event.transform.k;
 
 			moduleThis.zoomg.attr("transform", "translate(" + translate + ")scale(" + scale + ")");
 			d3.selectAll(".country-border").attr("stroke-width", (1/scale).toString());
@@ -136,13 +242,11 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre"], functio
 					(this.attributes["data-orig-r"].value/scale).toString());
 			});
 		},
-		zoom = d3.behavior.zoom()
-			.translate([0, 0])
-		 .scale(1)
-		 .size([this.width,this.height])
+		zoom = d3.zoom()
 			.scaleExtent([0.5, 20])
 			.on("zoom", zoomed);
-		this.zoomg.call(zoom);
+
+		this.svg.call(zoom);
 
 		// and add some controls to allow zooming - html or svg?
 		// add + and - text bits, function to change the scale thing
@@ -197,7 +301,8 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre"], functio
 				.attr("width", "4")
 				.attr("height", "4")
 			.append("g")
-				.attr("class", "diagonal-hatch-path")
+				.attr("stroke", config.styles["DISPUTED"])
+				.attr("stroke-width", "0.25px")
 			.append("path")
 				.attr("d", "M-1,1 l2,-2 M0,4 l4,-4 M3,5 l2,-2");
 	},
@@ -210,9 +315,16 @@ define(["d3", "topojson", "worldmap", "disputedareas", "countrycentre"], functio
 		}
 	},
 
+	portCentrePoint: function(portCode) {
+		var port = portlookup.getPortDetails(portCode);
+		if (port) {
+			return this.projection([port.lon, port.lat]);
+		}
+	},
+
 	setTradingCountries: function(countriesObj) {
 		this.mapg.selectAll(".country")
-			.classed("trading", function(d) {
+			.classed("trading", function(d, idx, nodes) {
 				if (countriesObj.hasOwnProperty(d.id)) {
 					return true;
 				} else {

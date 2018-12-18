@@ -1,8 +1,8 @@
 
-define([], function() {
+define(["trademapper.portlookup", "util"], function(portlookup, util) {
 	"use strict";
 	// this is done to avoid circular dependencies
-	var countryGetPointFunc, latLongToPointFunc,
+	var countryGetPointFunc, portGetPointFunc, latLongToPointFunc,
 	locationRoles = ["origin", "exporter", "transit", "importer"],
 
 	setLatLongToPointFunc = function(func) {
@@ -11,6 +11,10 @@ define([], function() {
 
 	setCountryGetPointFunc = function(func) {
 		countryGetPointFunc = func;
+	},
+
+	setPortGetPointFunc = function(func) {
+		portGetPointFunc = func;
 	};
 
 	function RolesCollection(role) {
@@ -51,8 +55,18 @@ define([], function() {
 		return this.toArray().join(",");
 	};
 
-	function PointLatLong(role, latitude, longitude) {
+	// Point* classes have a locationGroupId which is used to
+	// determine the actual route: if a Route has multiple points with the
+	// same locationGroupId, only the most specific of the points is used
+	// (latlong is more specific than port; port is more specific than country);
+	// locationGroupId is specified using locationOrder in the form, which doubles
+	// up as a grouping mechanism for columns
+	//
+	// getPointIdentifier() should return the country code relating to the point (if
+	// available) or the port code if the country code is unavailable
+	function PointLatLong(role, latitude, longitude, locationGroupId) {
 		this.roles = new RolesCollection(role);
+		this.locationGroupId = locationGroupId;
 		this.type = "latlong";
 		this.latlong = [longitude, latitude];
 		this.point = latLongToPointFunc(this.latlong);
@@ -62,8 +76,17 @@ define([], function() {
 		return this.latlong[0] + '-' + this.latlong[1];
 	};
 
-	function PointNameLatLong(name, role, latitude, longitude) {
+	PointLatLong.prototype.getCode = function() {
+		return this.toString();
+	};
+
+	PointLatLong.prototype.getCountryCode = function() {
+		return null;
+	};
+
+	function PointNameLatLong(name, role, latitude, longitude, locationGroupId) {
 		this.roles = new RolesCollection(role);
+		this.locationGroupId = locationGroupId;
 		this.type = "namelatlong";
 		this.name = name;
 		this.latlong = [longitude, latitude];
@@ -74,8 +97,17 @@ define([], function() {
 		return this.name;
 	};
 
-	function PointCountry(countryCode, role) {
+	PointNameLatLong.prototype.getCode = function() {
+		return this.toString();
+	};
+
+	PointNameLatLong.prototype.getCountryCode = function() {
+		return null;
+	};
+
+	function PointCountry(countryCode, role, locationGroupId) {
 		this.roles = new RolesCollection(role);
+		this.locationGroupId = locationGroupId;
 		this.type = "country";
 		this.countryCode = countryCode;
 		this.point = countryGetPointFunc(countryCode);
@@ -83,6 +115,38 @@ define([], function() {
 
 	PointCountry.prototype.toString = function() {
 		return this.countryCode;
+	};
+
+	PointCountry.prototype.getCode = function() {
+		return this.countryCode;
+	};
+
+	PointCountry.prototype.getCountryCode = function() {
+		return this.countryCode;
+	};
+
+	function PointPort(portCode, role, locationGroupId) {
+		this.roles = new RolesCollection(role);
+		this.locationGroupId = locationGroupId;
+		this.type = "port";
+		this.portCode = portCode;
+		this.point = portGetPointFunc(portCode);
+	}
+
+	PointPort.prototype.toString = function() {
+		return this.portCode;
+	};
+
+	PointPort.prototype.getCode = function() {
+		return this.portCode;
+	};
+
+	PointPort.prototype.getCountryCode = function() {
+		var port = portlookup.getPortDetails(this.portCode);
+		if (port !== null && port.hasOwnProperty('countryCode')) {
+			return port['countryCode'];
+		}
+		return null;
 	};
 
 	/*
@@ -97,7 +161,8 @@ define([], function() {
 		} else {
 			this.points = [points[0]];
 			for (var i = 1; i < points.length; i++) {
-				// if last of this.points has same roles string as next of points
+				// if last of this.points has same roles string as next of points,
+				// combine the two points into one and add both of their roles together
 				var lastThisPoint = this.points.slice(-1)[0];
 				if (lastThisPoint.toString() === points[i].toString()) {
 					lastThisPoint.roles.addRoles(points[i].roles.toArray());
@@ -106,7 +171,73 @@ define([], function() {
 				}
 			}
 		}
+
+		this.collapsePoints();
 	}
+
+	// If there are multiple points with the same locationGroupId in the
+	// points array, use the point with the highest precedence
+	// for that role (latlong > port > country code).
+	//
+	// e.g. if points contains:
+	//   [origin:countryCode, origin:PointPort, origin:PointNameLatLong]
+	// and all three have values, use the value for origin:PointNameLatLong
+	// (the most specific).
+	//
+	// The less-specific points (from the Route's perspective) are discarded
+	// from the route.
+	//
+	// If there are no location groups with multiple points in them, don't do
+	// anything. This insures that existing behaviour still works.
+	Route.prototype.collapsePoints = function() {
+		// gather the points into location groups
+		var locationGroups = {};
+
+		for (var i = 0; i < this.points.length; i++) {
+			var point = this.points[i];
+			var locationGroupId = point.locationGroupId;
+			if (!(locationGroups.hasOwnProperty(locationGroupId))) {
+				locationGroups[locationGroupId] = [];
+			}
+
+			locationGroups[locationGroupId].push(point);
+		}
+
+		// for each location group, choose the most-specific location
+		for (var key in locationGroups) {
+			var points = locationGroups[key];
+
+			// order the points, most-specific first
+			points.sort(function (a, b) {
+				if (a.type === "namelatlong" || a.type === "latlong") {
+					return -1;
+				}
+
+				if (b.type === "namelatlong" || b.type === "latlong") {
+					return 1;
+				}
+
+				if (a.type === "port" && b.type === "country") {
+					return -1;
+				}
+
+				return 1;
+			});
+
+			locationGroups[key] = points[0];
+		}
+
+		// sort the remaining points by location group ID (which is also the
+		// location order)
+		var keys = Object.keys(locationGroups);
+		keys.sort();
+
+		var reducedPoints = [];
+		for (var j = 0; j < keys.length; j++) {
+			reducedPoints.push(locationGroups[keys[j]]);
+		}
+		this.points = reducedPoints;
+	};
 
 	Route.prototype.toString = function(joinStr) {
 		return this.points.map(function(p){return p.toString();}).join(joinStr);
@@ -170,7 +301,7 @@ define([], function() {
 				}
 			}
 		}
-		
+
 		// now convert to list of center and terminals
 		maxSourceQuantity = 0;
 		sourceKeys = Object.keys(centerTerminalObj);
@@ -219,29 +350,69 @@ define([], function() {
 		};
 	};
 
+	/**
+	 * Get the country codes relating to points along all routes.
+	 * This just returns the country codes for all countries and countries of
+	 * ports along the route. It ignores lat/lon points as we don't know their
+	 * countries yet.
+	 */
+	RouteCollection.prototype.getCountryCodes = function() {
+		var i, j, route, countryCode,
+			countryCodes = {},
+			routeKeys = Object.keys(this.routes);
+
+		for (i = 0; i < routeKeys.length; i++) {
+			route = this.routes[routeKeys[i]];
+			for (j = 0; j < route.points.length; j++) {
+				countryCode = route.points[j].getCountryCode();
+				if (countryCode !== null) {
+					countryCodes[countryCode] = true;
+				}
+			}
+		}
+		return countryCodes;
+	};
+
 	/*
 	 * Create an object with a key for each point, and for each point
-	 * record whether it is an origin, importer, transit and/or exporter
+	 * record whether it is an origin, importer, transit and/or exporter.
 	 */
 	RouteCollection.prototype.getPointRoles = function() {
-		var i, j, route, pointName,
+		var i, j, route, pointIdentifier,
 			pointRoles = {},
 			routeKeys = Object.keys(this.routes);
 
 		for (i = 0; i < routeKeys.length; i++) {
 			route = this.routes[routeKeys[i]];
 			for (j = 0; j < route.points.length; j++) {
-				pointName = route.points[j].toString();
-				if (!pointRoles.hasOwnProperty(pointName)) {
-					pointRoles[pointName] = {
+				pointIdentifier = route.points[j].getCode();
+				if (!pointRoles.hasOwnProperty(pointIdentifier)) {
+					pointRoles[pointIdentifier] = {
 						point: route.points[j].point,
 						roles: new RolesCollection()
 					};
 				}
-				pointRoles[pointName].roles.addRoles(route.points[j].roles.toArray());
+				pointRoles[pointIdentifier].roles.addRoles(route.points[j].roles.toArray());
 			}
 		}
 		return pointRoles;
+	};
+
+	/*
+	 * Extract an array of all the roles which occur on the routes in the
+	 * collection.
+	 * Returns an array of roles, which is equal to or a subset of the roles
+	 * in locationRoles, with no duplicate values.
+	 */
+	RouteCollection.prototype.getUniqueRoles = function() {
+		var collectedRoles = [];
+		var pointRoles = this.getPointRoles();
+
+		for (var key in pointRoles) {
+			collectedRoles = collectedRoles.concat(pointRoles[key].roles.toArray());
+		}
+
+		return util.unique(collectedRoles);
 	};
 
 	RouteCollection.prototype.addRoute = function(route) {
@@ -276,12 +447,14 @@ define([], function() {
 
 	return {
 		setCountryGetPointFunc: setCountryGetPointFunc,
+		setPortGetPointFunc: setPortGetPointFunc,
 		setLatLongToPointFunc: setLatLongToPointFunc,
 		locationRoles: locationRoles,
 		RolesCollection: RolesCollection,
 		PointLatLong: PointLatLong,
 		PointNameLatLong: PointNameLatLong,
 		PointCountry: PointCountry,
+		PointPort: PointPort,
 		Route: Route,
 		RouteCollection: RouteCollection
 	};

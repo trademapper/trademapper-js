@@ -1,0 +1,86 @@
+/* CSS styles to be injected into the map CSS */
+* {
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+#mapcanvas {
+	background-color: {{=it.OCEAN}};
+}
+
+.mapocean { fill: {{=it.OCEAN}}; }
+
+.country { fill: {{=it.COUNTRY}}; }
+.country.trading { fill: {{=it.COUNTRY_TRADING}}; }
+.country-border {
+	stroke: {{=it.COUNTRY_BORDER}};
+	fill: none;
+	stroke-linejoin: round;
+}
+
+.disputed {
+	fill: url(#diagonalHatch);
+}
+
+#legendcontainer, g.legend { opacity: 1; }
+.legend-background {
+	fill: {{=it.LEGEND_BACKGROUND}};
+	opacity: 0.9;
+	stroke-width:{{=it.LEGEND_STROKE_WIDTH}};
+	stroke:{{=it.LEGEND_STROKE_COLOUR}};
+}
+
+.legend text { fill: {{=it.LEGEND_TEXT}}; }
+
+.route-arrow-head-wide {
+	fill: {{=it.ARROW_WIDE}};
+	opacity: {{=it.ARROW_WIDE_OPACITY}};
+}
+.route-arrow-head-narrow {
+	fill: {{=it.ARROW_NARROW}};
+	opacity: {{=it.ARROW_NARROW_OPACITY}};
+}
+.route-plain-arrow-head-narrow {
+	fill: {{=it.ARROW_NARROW_PLAIN}};
+	opacity: {{=it.ARROW_NARROW_OPACITY}};
+}
+
+.tradenode.exporter { fill: {{=it.TRADE_EXPORTER}}; }
+.tradenode.origin { fill: {{=it.TRADE_ORIGIN}}; }
+.tradenode.transit { fill: {{=it.TRADE_TRANSIT}}; }
+.tradenode.importer { fill: {{=it.TRADE_IMPORTER}}; }
+
+.year-text {
+	font-size: 24px;
+	fill: #000;
+}
+
+/* styling for layers */
+.layer-poly{
+	opacity: 0.4;
+}
+
+.layer-point, .layer-line {
+	opacity: 0.8;
+}
+
+.layer-boundary {
+	opacity: 0.7;
+}
+
+.layer-line, .layer-boundary {
+	stroke-width: 0.03px;
+	fill: none;
+}
+.layer-line{
+	stroke-width:0.25px
+}
+
+{{~Object.keys(it.LAYER_COLOURS) :layerId}}
+.{{=layerId}}.layer-poly, .{{=layerId}}.layer-point {
+	fill: {{=it.LAYER_COLOURS[layerId]}};
+}
+
+.{{=layerId}}.layer-line, .{{=layerId}}.layer-boundary {
+	stroke: {{=it.LAYER_COLOURS[layerId]}};
+}
+{{~}}

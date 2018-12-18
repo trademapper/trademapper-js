@@ -1,0 +1,20 @@
+#!/usr/bin/env node
+
+var fs = require('fs');
+var path = require('path');
+var process = require('process');
+var topojson = require('../trademapper/js/lib/topojson.v3.0.2.min');
+
+
+if (process.argv.length < 3) {
+  console.log('USAGE: ' + process.argv[0] + ' ' + process.argv[1] + ' <topojson file>');
+  process.exit(1);
+}
+
+var fileToSimplify = process.argv[2];
+var json = fs.readFileSync(fileToSimplify, {encoding: 'utf8'});
+
+var data = JSON.parse(json);
+data = topojson.presimplify(data);
+data = topojson.simplify(data);
+console.log(JSON.stringify(data));

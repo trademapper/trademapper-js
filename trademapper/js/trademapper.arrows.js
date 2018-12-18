@@ -1,5 +1,5 @@
 
-define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, flowmap, tmroute, util) {
+define(["d3", "spiralTree", "trademapper.route", "trademapper.portlookup", "trademapper.legend", "util", "config"], function(d3, flowmap, tmroute, portlookup, Legend, util, config){
 	"use strict";
 	return {
 	mapsvg: null,
@@ -18,7 +18,7 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, flowmap, 
 	countryCodeToInfo: null,
 	maxQuantity: null,
 	centerTerminals: null,
-	narrowWideStrokeThreshold: 3,  // used for deciding whether to use arrows inside or outside line
+	narrowWideStrokeThreshold: 1.5,  // used for deciding whether to use narrow or wide arrows
 	highlightOpacity: 1,
 	currentUnit: "Any Unit",
 
@@ -41,17 +41,22 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, flowmap, 
 		this.addDefsToSvg();
 		this.setUpFlowmap();
 		this.pathTooltip.style("opacity", 0);
+		this.legend = Legend(this.mapsvg);
+
+		// force drawing the legend
+		this.legend.draw();
 	},
 
 	addDefsToSvg: function() {
 		// first add arrow head
+		// Flow tree arrows
 		this.svgdefs.append("marker")
 				.attr("id", "markerFlowmapTreeArrowWide")
 				.attr("viewBox", "0 0 10 10")
 				.attr("markerUnits", "strokeWidth")
 				.attr("refX", "7")
 				.attr("refY", "5")
-				.attr("markerWidth", "0.7")
+				.attr("markerWidth", "1")
 				.attr("markerHeight", "1.4")
 				.attr("orient", "auto")
 			.append("path")
@@ -64,18 +69,18 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, flowmap, 
 				.attr("markerUnits", "userSpaceOnUse")
 				.attr("refX", "7")
 				.attr("refY", "5")
-				.attr("markerWidth", "4")
+				.attr("markerWidth", "2")
 				.attr("markerHeight", "8")
 				.attr("orient", "auto")
 			.append("path")
 				.attr("d", "M 10 0 L 0 5 L 10 10 z")
 				.attr("class", "route-arrow-head-narrow");
-
+		// Plain arrows
 		this.svgdefs.append("marker")
 				.attr("id", "markerPlainArrowWide")
 				.attr("viewBox", "0 0 10 10")
 				.attr("markerUnits", "strokeWidth")
-				.attr("refX", "17")
+				.attr("refX", "15")
 				.attr("refY", "5")
 				.attr("markerWidth", "0.8")
 				.attr("markerHeight", "1.4")
@@ -86,15 +91,15 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, flowmap, 
 
 		this.svgdefs.append("marker")
 				.attr("id", "markerPlainArrowNarrow")
-				.attr("viewBox", "0 0 10 10")
+				.attr("viewBox", "0 0 26 26")
 				.attr("markerUnits", "userSpaceOnUse")
-				.attr("refX", "20")
-				.attr("refY", "5")
-				.attr("markerWidth", "4")
-				.attr("markerHeight", "8")
+				.attr("refX", "45")
+				.attr("refY", "6")
+				.attr("markerWidth", "5")
+				.attr("markerHeight", "12")
 				.attr("orient", "auto")
 			.append("path")
-				.attr("d", "M 0 0 L 10 5 L 0 10 z")
+				.attr("d", "M 0 0 L 24 6 L 0 12 z")
 				.attr("class", "route-plain-arrow-head-narrow");
 
 		// this is for the legend
@@ -105,13 +110,13 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, flowmap, 
 			.attr("x2", 1)
 			.attr("y2", 0);*/
 		legendGradient.append("stop")
-			.attr("offset", "0%")
-			.attr("stop-color", this.arrowColours.pathStart)
-			.attr("stop-opacity", this.arrowColours.opacity);
+			.attr("offset", "30%")
+			.attr("stop-color", this.arrowColours.pathStartColour)
+			.attr("stop-opacity", this.arrowColours.pathStartOpacity);
 		legendGradient.append("stop")
-			.attr("offset", "100%")
-			.attr("stop-color", this.arrowColours.pathEnd)
-			.attr("stop-opacity", this.arrowColours.opacity);
+			.attr("offset", "70%")
+			.attr("stop-color", this.arrowColours.pathEndColour)
+			.attr("stop-opacity", this.arrowColours.pathEndOpacity);
 	},
 
 	setUpFlowmap: function() {
@@ -146,8 +151,8 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, flowmap, 
 			return "M" + start[0] + "," + start[1] + "A" + dr + "," + dr +
 				" 0 0,1 " + end[0] + "," + end[1];
 		} else {
-			return d3.svg.line()
-				.interpolate("monotone")
+			return d3.line()
+				.curve(d3.curveCatmullRom)
 				.x(function(d) { return d.point[0]; })
 				.y(function(d) { return d.point[1]; });
 		}
@@ -173,13 +178,13 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, flowmap, 
 			.attr("x2", x2)
 			.attr("y2", y2);
 		gradient.append("stop")
-			.attr("offset", "0%")
-			.attr("stop-color", this.arrowColours.pathStart)
-			.attr("stop-opacity", this.arrowColours.opacity);
+			.attr("offset", "30%")
+			.attr("stop-color", this.arrowColours.pathStartColour)
+			.attr("stop-opacity", this.arrowColours.pathStartOpacity);
 		gradient.append("stop")
-			.attr("offset", "100%")
-			.attr("stop-color", this.arrowColours.pathEnd)
-			.attr("stop-opacity", this.arrowColours.opacity);
+			.attr("offset", "70%")
+			.attr("stop-color", this.arrowColours.pathEndColour)
+			.attr("stop-opacity", this.arrowColours.pathEndOpacity);
 
 		return gradientId;
 	},
@@ -205,9 +210,11 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, flowmap, 
 			.attr("marker-end", markerEnd)
 			.attr("stroke", "url(#" + gradientId + ")")
 			.attr("stroke-width", arrowWidth)
+			.attr("stroke-linejoin", "round")
+			.attr("fill", "none")
 			.attr("data-origwidth", arrowWidth)
 			.on('mouseover', this.createPlainMouseOverFunc(route))
-			.on('mouseout', this.genericMouseOutPath);
+			.on('mouseout', this.plainMouseOutPath.bind(this));
 	},
 
 	drawRouteCollectionPlainArrows: function(collection, pointRoles, maxQuantity) {
@@ -230,12 +237,41 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, flowmap, 
 		this.drawPointRoles(pointRoles);
 	},
 
+	drawRouteCollectionFlowmap: function(collection, pointRoles, maxQuantity) {
+		var center, terminals;
+		var ctAndMax = collection.getCenterTerminalList();
+		this.centerTerminals = ctAndMax.centerTerminalList;
+		if (maxQuantity) {
+			this.maxQuantity = maxQuantity;
+		} else {
+			this.maxQuantity = ctAndMax.maxSourceQuantity;
+		}
+		// round to 2 significant digits
+		this.maxQuantity = parseFloat(this.maxQuantity.toPrecision(2));
+		this.flowmap.clearSpiralPaths();
+		this.clearPoints();
+		this.flowmap.setMaxQuantity(this.maxQuantity);
+		for (var i = 0; i < this.centerTerminals.length; i++) {
+			center = this.centerTerminals[i].center;
+			terminals = this.centerTerminals[i].terminals;
+			// set up flowmap settings for this path
+			this.flowmap.extraSpiralClass = "traderoute zoompath center-" + center.point.toString();
+			this.flowmap.mouseOverFunc = this.createFlowmapMouseOverFunc(i);
+			this.flowmap.mouseOutFunc = this.flowmapMouseOutPath;
+			// now do preprocess and drawing
+			this.flowmap.preprocess(terminals, center);
+			this.flowmap.drawTree();
+		}
+		this.drawPointRoles(pointRoles);
+	},
+
 	drawPoint: function(x, y, pointType, extraclass, svgContainer) {
 		if (!this.pointTypeSize.hasOwnProperty(pointType)) {
 			console.log("unknown pointType: " + pointType);
 			return;
 		}
 
+		// set tradenode fill depending on the type of point
 		svgContainer.append("circle")
 			.attr("cx", x)
 			.attr("cy", y)
@@ -348,6 +384,9 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, flowmap, 
 		this.highlightedPath = route.toHtmlId();
 		this.setPathOpacity(this.highlightedPath, this.highlightOpacity);
 
+		// set the path stroke colour
+		d3.selectAll("." + this.highlightedPath).style("stroke", '#FF0000');
+
 		// now do the tooltip
 		var pathSelector = ".route-arrow." + route.toHtmlId(),
 			tooltiptext = '<div class="tooltip-summary">';
@@ -375,12 +414,17 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, flowmap, 
 					role.charAt(0).toUpperCase() + '</span>';
 				for (var j = 0; j < pointsWithRole.length; j++) {
 					var titleAttr = '',
-						countryCode = pointsWithRole[j];
-					if (this.countryCodeToInfo.hasOwnProperty(countryCode)) {
-						titleAttr = ' title="' + this.countryCodeToInfo[countryCode].formal_en + '"';
+						code = pointsWithRole[j].getCode();
+					if (this.countryCodeToInfo.hasOwnProperty(code)) {
+						titleAttr = ' title="' + this.countryCodeToInfo[code].formal_en + '"';
+					} else {
+						var port = portlookup.getPortDetails(code);
+						if (port) {
+							titleAttr = ' title="' + port.name + '"';
+						}
 					}
 					tooltiptext += ' <span class="location-role-country ' +
-						countryCode + '"' + titleAttr + '>' + countryCode + '</span>';
+						code + '"' + titleAttr + '>' + code + '</span>';
 				}
 				tooltiptext += '</p>';
 			}
@@ -397,11 +441,10 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, flowmap, 
 	},
 
 	plainMouseOutPath: function() {
-		return;
-		// TODO: decide what behaviour we want on mouseOut
+		// remove path stroke
+		d3.selectAll("." + this.highlightedPath).style('stroke', null);
 		this.setPathOpacity(this.highlightedPath, this.arrowColours.opacity);
 		this.highlightedPath = null;
-		this.clearTooltip();
 	},
 
 	flowmapMouseOverPath: function(ctIndex) {
@@ -446,138 +489,18 @@ define(["d3", "spiralTree", "trademapper.route", "util"], function(d3, flowmap, 
 
 	clearTooltip: function() {
 		this.pathTooltip.transition()
-			.duration(500)
+			.duration(250)
 			.style("opacity", 0);
 	},
 
-	drawRouteCollectionFlowmap: function(collection, pointRoles, maxQuantity) {
-		var center, terminals;
-		var ctAndMax = collection.getCenterTerminalList();
-		this.centerTerminals = ctAndMax.centerTerminalList;
-		if (maxQuantity) {
-			this.maxQuantity = maxQuantity;
-		} else {
-			this.maxQuantity = ctAndMax.maxSourceQuantity;
+	drawLegend: function(state) {
+		// the legend decides when to draw itself based on state changes
+		if (!state) {
+			state = {};
 		}
-		// round to 2 significant digits
-		this.maxQuantity = parseFloat(this.maxQuantity.toPrecision(2));
-
-		this.flowmap.clearSpiralPaths();
-		this.clearPoints();
-		this.flowmap.setMaxQuantity(this.maxQuantity);
-
-		for (var i = 0; i < this.centerTerminals.length; i++) {
-			center = this.centerTerminals[i].center;
-			terminals = this.centerTerminals[i].terminals;
-			// set up flowmap settings for this path
-			this.flowmap.extraSpiralClass = "traderoute zoompath center-" + center.point.toString();
-			this.flowmap.mouseOverFunc = this.createFlowmapMouseOverFunc(i);
-			this.flowmap.mouseOutFunc = this.flowmapMouseOutPath;
-
-			// now do preprocess and drawing
-			this.flowmap.preprocess(terminals, center);
-			this.flowmap.drawTree();
-		}
-
-		this.drawPointRoles(pointRoles);
+		state.maxQuantity = this.maxQuantity || 0;
+		this.legend.setState(state);
 	},
-
-	drawPointRoleLabel: function(role, gLegend, circleX, circleY) {
-		var roleLabel = role.charAt(0).toUpperCase() + role.slice(1);
-		this.drawPoint(circleX, circleY, role, "legend", gLegend);
-		gLegend.append("text")
-			.attr("x", circleX + 10)
-			.attr("y", circleY + 5)
-			.attr("class", "legend tradenode-label")
-			.text(roleLabel);
-	},
-
-	formatLegendValue: function(labelValue) {
-		var abs = Math.abs(Number(labelValue));
-		return abs >= 1.0e+9 ?
-			(abs / 1.0e+9).toFixed(0) + " billion"
-			// Six Zeroes for Millions
-			: abs >= 1.0e+6 ?
-				(abs / 1.0e+6).toFixed(0) + " million"
-				: abs.toFixed(0);
- 	},
-	
-	drawLegend: function() {
-		// use parseFloat as the height has "px" at the end
-		var legendContainer, gLegend, i, strokeWidth, value, valueText, circleX, circleY,
-			xOffset = 100,
-			yOffset = 100,
-			margin = 10,
-			lineLength = this.maxArrowWidth + 5,
-			maxWidth = this.maxArrowWidth,
-			roundUpWidth = function (factor) { return Math.max(maxWidth*factor, 8); },
-			legendHeight = Math.max(90, margin*3 + 8 + roundUpWidth(1) + roundUpWidth(0.25) + roundUpWidth(0.25)),
-			legendWidth = lineLength + margin*4 + 10 + this.maxQuantity.toFixed(1).length*8 + 20,
-			//svgHeight = 430,  // from viewbox - TODO: get this properly
-			svgHeight = 0,
-			lineVertical = svgHeight;
-
-		// clear any old legend
-		d3.selectAll(".legend").remove();
-		legendContainer = this.mapsvg.append("svg")
-			.attr("id", "legendcontainer")
-			.attr("class", "legend")
-			.attr("x", "76%") // pin at 76% of map width
-			.attr("y", "0");
-		gLegend = legendContainer.append("g").attr("class", "legend");
-		gLegend.append("rect")
-			.attr("x", 5 + xOffset)
-			.attr("y", svgHeight - (margin) - legendHeight + yOffset)
-			.attr("width", legendWidth)
-			.attr("height", legendHeight)
-			.attr("class", "legend legend-background");
-
-		for (i = 0; i < 4; i++) {
-			if (i === 0) {
-				strokeWidth = this.maxArrowWidth;
-				value = this.maxQuantity;
-			} else if (i === 1) {
-				strokeWidth = this.maxArrowWidth * 0.5;
-				value = this.maxQuantity * 0.5;
-			} else if (i === 2) {
-				strokeWidth = this.maxArrowWidth * 0.25;
-				value = this.maxQuantity * 0.25;
-			} else {
-				strokeWidth = this.minArrowWidth;
-				value = (this.maxQuantity * this.minArrowWidth) / this.maxArrowWidth;
-			}
-			valueText = this.formatLegendValue(value);
-			if (i === 3) {
-				valueText = "< " + valueText;
-			}
-
-			lineVertical = lineVertical - (Math.max(strokeWidth, 8) + margin);
-
-			gLegend.append("rect")
-				.attr("x", margin + xOffset)
-				.attr("y", lineVertical - (strokeWidth/2) + yOffset)
-				.attr("width", lineLength)
-				.attr("height", strokeWidth)
-				.attr("fill", "url(#legendGradient)")
-				.attr("class", "legend traderoute");
-
-			gLegend.append("text")
-				.attr("x", lineLength + xOffset + (margin +5))
-				.attr("y", lineVertical + 5 + yOffset)
-				.attr("class", "legend traderoute-label")
-				.text(valueText);
-		}
-
-		// Now add a legend for the circles
-		circleX = lineLength + xOffset + (margin * 2) +
-			this.maxQuantity.toFixed(1).length * 7;
-		circleY = (svgHeight + yOffset)-13;
-
-		for (i = tmroute.locationRoles.length-1; i >= 0; i--) {
-			circleY -= 18;
-			this.drawPointRoleLabel(tmroute.locationRoles[i], gLegend, circleX, circleY);
-		}
-	}
 
 	};
 });

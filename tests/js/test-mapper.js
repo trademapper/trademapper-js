@@ -1,6 +1,6 @@
 define(
-  ['QUnit', 'trademapper.mapper', 'd3'],
-  function(q, mapper, d3) {
+  ['QUnit', 'trademapper.mapper', 'd3', 'config'],
+  function(q, mapper, d3, configFile) {
     "use strict";
     var
       run = function() {
@@ -14,9 +14,10 @@ define(
             var config = {
               arrowType: "plain-arrows" ,
               width: 1200, // parseInt(this.newsvg.style('width')),
-              height: 600// parseInt(this.newsvg.style('height'))
+              height: 600, // parseInt(this.newsvg.style('height'))
+							styles: configFile.styles,
             };
-            mapper.init(zoomg, controlg, svgdefs, config);
+            mapper.init(zoomg, controlg, svgdefs, config, newsvg);
           }
         });
 

@@ -13,6 +13,17 @@ define(['jquery'], function($) {
 			return ret;
 		},
 
+		// get unique values from an array
+		unique: function(arr1) {
+			var uniq = [];
+			for (var i = 0; i < arr1.length; i++) {
+				if (uniq.indexOf(arr1[i]) === -1) {
+					uniq.push(arr1[i]);
+				}
+			}
+			return uniq;
+		},
+
 		isInt: function(value) {
 			return (typeof value === 'number' && (value%1) === 0);
 		},
@@ -71,6 +82,14 @@ define(['jquery'], function($) {
 				}
 			}
 			return query_string;
-		}
+		},
+
+		// convert an SVG DOM element to an object URL of type "image/svg+xml"
+		getSVGObjectURL: function (svgDOMElement) {
+			var svgString = new XMLSerializer().serializeToString(svgDOMElement);
+			var blob = new Blob([svgString], {type: "image/svg+xml"});
+			return window.URL.createObjectURL(blob);
+		},
+
 	};
 });

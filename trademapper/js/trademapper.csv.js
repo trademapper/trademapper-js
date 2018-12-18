@@ -38,6 +38,7 @@ define([
 		this.loadErrors = {
 			unknownCSVFormat: [],
 			unknownCountries: {},
+			unknownPorts: {},
 			badUrl: []
 		};
 	},
@@ -74,7 +75,7 @@ define([
 
 	loadCSVFile: function() {
 		this.resetLoadErrors();
-		this.csvFile = this.fileInputElement[0][0].files[0];
+		this.csvFile = d3.event.target.files[0];
 		this.csvFileName = this.csvFile.name;
 
 		var reader = new FileReader();
@@ -94,45 +95,50 @@ define([
 			csvUrl = this.urlInputElement.node().value;
 		}
 		if(csvUrl && csvUrl.length > 0) {
-			var moduleThis = this,
-				succeeded = false,
-				finished = false,
-				urlList = [csvUrl, util.corsProxy(csvUrl)];
-			// if we use the corsProxy on a URL that already does CORS
-			// then the download will fail, so try both directly and via
-			// corsProxy
-			for (var i = 0; i < urlList.length; i++) {
-				var url = urlList[i];
-				d3.xhr(url, function (error, req) {
-					if (succeeded) { return; }
-					if (!error && req.status === 200) {
-						finished = succeeded = true;
-						moduleThis.processCSVString(req.response);
-					} else {
-						console.log("unable to download", error, req);
-						moduleThis.loadErrors.badUrl.push("unable to download " + url +
-							" due to error: " + error.toString());
-						finished = true;
-					}
-				});
-			}
-			// sleep for 5 seconds, if not succeeded then show errors
-			// TODO: add indicator to say we're trying
-			var reportErrors = function() {
-				// show errors - or clear them if necessary
-				moduleThis.errorCallback();
-				// if not finished, try showing errors again in a bit
-				if (!finished) {
-					window.setTimeout(reportErrors, 2000);
+			var moduleThis = this;
+
+			// try the original CSV url
+			d3.text(csvUrl)
+			.then(
+				function (data) {
+					return Promise.resolve(data);
+				},
+				function (error) {
+					// fetch failed, so try via the proxy
+					var proxyUrl = util.corsProxy(csvUrl);
+
+					moduleThis.loadErrors.badUrl.push("unable to download " + csvUrl +
+						" due to error: " + error.toString() + "; trying via proxy URL " +
+						proxyUrl + "...");
+
+					return d3.text(proxyUrl);
 				}
-			};
-			window.setTimeout(reportErrors, 1000);
+			)
+			.then(
+				// this either receives a resolved promise from the original URL,
+				// or waits on the promise returned by the proxy URL fetch
+				function (data) {
+					// success!
+					moduleThis.processCSVString(data);
+				},
+				function (error) {
+					// both original URL and proxy URL errored
+					console.log("unable to download", error);
+
+					var message = "unable to download " + csvUrl +
+						" due to error: " + error.toString();
+					moduleThis.loadErrors.badUrl.push(message);
+
+					moduleThis.errorCallback();
+				}
+			);
 		}
 	},
 
 	loadErrorsToStrings: function() {
-		var countryInfo, errorMsgs = [],
-			unknownCountries = Object.keys(this.loadErrors.unknownCountries);
+		var countryInfo, portInfo, errorMsgs = [],
+			unknownCountries = Object.keys(this.loadErrors.unknownCountries),
+			unknownPorts = Object.keys(this.loadErrors.unknownPorts);
 		errorMsgs = errorMsgs.concat(this.loadErrors.badUrl);
 		errorMsgs = errorMsgs.concat(this.loadErrors.unknownCSVFormat);
 		unknownCountries.sort();
@@ -145,10 +151,19 @@ define([
 						', column "' + countryInfo.columnName + '")');
 			} else {
 				errorMsgs.push('Unknown country code "' + unknownCountries[i] +
-						'" (eg. row ' + countryInfo.rowIndex +
+						'" (e.g. row ' + countryInfo.rowIndex +
 						', column "' + countryInfo.columnName + '")');
 			}
 		}
+
+		unknownPorts.sort();
+		for (var j = 0; j < unknownPorts.length; j++) {
+			portInfo = this.loadErrors.unknownPorts[unknownPorts[i]];
+			errorMsgs.push('Unknown port code "' + unknownPorts[i] +
+					'" (e.g. row ' + portInfo.rowIndex +
+					', column "' + portInfo.columnName + '")');
+		}
+
 		return errorMsgs;
 	},
 
@@ -183,7 +198,7 @@ define([
 		// split on commas - but use d3 for proper parsing
 		var i,
 			csvHeaderLine = csvString.substring(0, csvString.indexOf("\n")),
-			csvHeaders = d3.csv.parseRows(csvHeaderLine)[0],
+			csvHeaders = d3.csvParseRows(csvHeaderLine)[0],
 			quotesPresent = csvHeaderLine.indexOf('"') !== -1,
 			newCsvHeaders = [];
 
@@ -213,17 +228,20 @@ define([
 	/*
 	 * make a RouteCollection from a CSV string
 	 */
-	processCSVString: function(fileText) {
+	processCSVString: function(fileText, filterSpec) {
 		var csvData, csvFirstTenRows,
-			filterSpec = null,
 			firstLine = fileText.substring(0, fileText.indexOf("\n"));
 
 		fileText = this.trimCsvColumnNames(fileText);
-		csvData = d3.csv.parse(fileText);
-		csvFirstTenRows = d3.csv.parseRows(fileText).slice(0, 10);
+		csvData = d3.csvParse(fileText);
+
+		csvFirstTenRows = [csvData.columns];
+		for (var i = 0; i < Math.min(csvData.length, 9); i++) {
+			csvFirstTenRows.push(Object.values(csvData[i]));
+		}
 
 		// skipCsvAutoDetect is set by URL parameter - to help development
-		if (!this.skipCsvAutoDetect) {
+		if (!filterSpec && !this.skipCsvAutoDetect) {
 			filterSpec = this.autoFetchFilterSpec(firstLine);
 		}
 		if (filterSpec) {
@@ -246,7 +264,7 @@ define([
 	processParsedCSV: function(csvData, csvFirstTenRows, filterSpec) {
 		this.filters = this.csvToFilters(csvData, filterSpec);
 		this.csvFilterLoadedCallback(csvData, filterSpec, this.filters);
-		this.csvDataLoadedCallback(csvData, csvFirstTenRows, filterSpec);
+		this.csvDataLoadedCallback(this.csvFileName, csvData, csvFirstTenRows, filterSpec);
 	},
 
 	getMinMaxYear: function(filters) {
@@ -341,7 +359,8 @@ define([
 				}
 
 				if (locationType === "country_code" ||
-						locationType === "country_code_list") {
+						locationType === "country_code_list" ||
+						locationType === "port_code") {
 					locationColumns.push({
 						name: key,
 						locationType: locationType,
@@ -368,11 +387,12 @@ define([
 		return locationColumns;
 	},
 
-	addCountryCodeToPoints: function(countryCode, role, points, rowIndex, columnName, columnType) {
+	// points is modified in place
+	addCountryCodeToPoints: function(countryCode, role, locationGroupId, points, rowIndex, columnName, columnType) {
 		if (countryCode === "") {
 			return;
 		}
-		var country = new route.PointCountry(countryCode, role);
+		var country = new route.PointCountry(countryCode, role, locationGroupId);
 		if (country.point !== undefined) {
 			points.push(country);
 		} else if (this.loadingCsv) {
@@ -386,36 +406,59 @@ define([
 		}
 	},
 
+	// points is modified in place
+	addPortCodeToPoints: function (portCode, role, locationGroupId, points, rowIndex, columnName, columnType) {
+		if (portCode === "") {
+			return;
+		}
+
+		var portPoint = new route.PointPort(portCode, role, locationGroupId);
+		if (portPoint.point !== undefined) {
+			points.push(portPoint);
+		} else if (this.loadingCsv) {
+			this.loadErrors.unknownPorts[portCode] = {
+				rowIndex: rowIndex,
+				columnName: columnName,
+				columnType: columnType
+			};
+		}
+	},
+
 	getPointsFromRow: function(row, locationColumns, rowIndex) {
 		var i, j, points = [];
 		for (i = 0; i < locationColumns.length; i++) {
 			var locationType = locationColumns[i].locationType,
 				locName = locationColumns[i].name,
-				role = locationColumns[i].locationRole;
+				role = locationColumns[i].locationRole,
+				locationGroupId = locationColumns[i].order;
 
 			if (locationType === "country_code") {
 				var countryCode = row[locationColumns[i].name].trim();
 				this.addCountryCodeToPoints(
-					countryCode, role, points, rowIndex, locName, "single");
+					countryCode, role, locationGroupId, points, rowIndex, locName, "single");
 
 			} else if (locationType === "country_code_list") {
 				var countryCodes = row[locationColumns[i].name].split(",");
 				for (j = 0; j < countryCodes.length; j++) {
 					this.addCountryCodeToPoints(
-						countryCodes[j].trim(), role, points, rowIndex, locName, "list");
+						countryCodes[j].trim(), role, locationGroupId, points, rowIndex, locName, "list");
 				}
 
 			} else if (locationType === "latlong") {
 				var name = row[locationColumns[i].name];
 				var latitude = parseFloat(row[locationColumns[i].latitude]);
 				var longitude = parseFloat(row[locationColumns[i].longitude]);
-				points.push(new route.PointNameLatLong(name, role, latitude, longitude));
+				points.push(new route.PointNameLatLong(name, role, latitude, longitude, locationGroupId));
 
+			} else if (locationType === "port_code") {
+				var portCode = row[locationColumns[i].name].trim();
+				this.addPortCodeToPoints(portCode, role, locationGroupId, points, rowIndex, locName, "single");
 			} else {
 				// TODO: deal with lat/long
 				console.log("unknown locationType: " + locationType);
 			}
 		}
+
 		return points;
 	},
 
@@ -425,8 +468,11 @@ define([
 			locationColumns = this.extractLocationColumns(filterSpec),
 			routes = new route.RouteCollection();
 
-		// only reset/update the unknownCountries when loading the CSV
-		if (this.loadingCsv) { this.loadErrors.unknownCountries = {}; }
+		// only reset/update the unknown countries and ports when loading the CSV
+		if (this.loadingCsv) {
+			this.loadErrors.unknownCountries = {};
+			this.loadErrors.unknownPorts = {};
+		}
 
 		for (var i = 0; i < csvData.length; i++) {
 			row = csvData[i];
@@ -573,6 +619,8 @@ define([
 					} else if (filterSpec[column].locationType === "latitude" ||
 							filterSpec[column].locationType === "longitude") {
 						// do nothing, handled by latLongName column
+					} else if (filterSpec[column].locationType === "port_code") {
+						filters[column].values = this.getUniqueValuesFromCsvColumn(csvData, column);
 					} else {
 						console.log("Unknown locationType: " + filterSpec[column].locationType);
 					}

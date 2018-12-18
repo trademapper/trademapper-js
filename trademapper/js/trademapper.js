@@ -76,20 +76,28 @@
 define([
 	"jquery",
 	"d3",
+	"trademapper.analytics",
 	"trademapper.arrows",
 	"trademapper.csv",
 	"trademapper.filterform",
 	"trademapper.mapper",
 	"trademapper.route",
 	"trademapper.yearslider",
+	"trademapper.imageexport",
+	"trademapper.videoexport",
+	"trademapper.progress",
+	"trademapper.spinner",
+	"trademapper.layerloader",
 	"util",
+	"config",
 	"text!../fragments/filterskeleton.html",
 	"text!../fragments/csvformskeleton.html",
 	"text!../fragments/yearsliderskeleton.html",
 	"text!../fragments/reopencustomcsv.html",
 ],
-function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
-		 filterSkeleton, csvFormSkeleton, yearSliderSkeleton, reopenCustomCsv) {
+function($, d3, analytics, arrows, csv, filterform, mapper, route, yearslider,
+			imageExport, videoExport, Progress, Spinner, layerLoader, util, config,
+			filterSkeleton,	csvFormSkeleton, yearSliderSkeleton, reopenCustomCsv) {
 	"use strict";
 
 	return {
@@ -100,6 +108,7 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 	toolbarElement: null,
 	tooltipElement: null,
 	fileInputElement: null,
+	imageExportButtonElement: null,
 	changeOverTimeElement: null,
 	tmsvg: null,
 	svgDefs: null,
@@ -113,34 +122,21 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 	currentUnit: null,
 	queryString: null,
 	yearColumnName: null,
+	yearSlider: null,
+	imageExport: null,
 
-	defaultConfig: {
-			ratio: 0.86,
-			arrowColours: {
-				opacity: 0.6,
-				pathStart: "rgba(0,0,0,1)",
-				pathEnd: "rgba(0,0,0,0.4)"
-			},
-			pointTypeSize: {
-				origin: 5.5,
-				exporter: 4,
-				transit: 2.5,
-				importer: 2
-			},
-			minArrowWidth: 0.75,
-			maxArrowWidth: 20,
-			arrowType: "plain-arrows",  // could be "plain-arrows" or "flowmap"
-			skipCsvAutoDetect: false,
-			width: 950,
-			height: 500
-		},
+	defaultConfig: config,
 
-	init: function(mapId, fileFormElementId, filterFormElementId,
-	               changeOverTimeElementId, tmConfig) {
+	init: function(mapId, fileFormElementId, layerFormElementId, filterFormElementId,
+								 svgExportButtonElementId, pngExportButtonElementId,
+								 videoExportButtonElementId, changeOverTimeElementId, tmConfig) {
 		this.queryString = util.queryString();
 		this.mapRootElement = d3.select(mapId);
 		this.fileFormElement = d3.select(fileFormElementId);
 		this.filterFormElement = d3.select(filterFormElementId);
+		this.svgExportButtonElement = d3.select(svgExportButtonElementId);
+		this.pngExportButtonElement = d3.select(pngExportButtonElementId);
+		this.videoExportButtonElement = d3.select(videoExportButtonElementId);
 		this.changeOverTimeElement = d3.select(changeOverTimeElementId);
 		this.setConfigDefaults(tmConfig);
 
@@ -150,6 +146,7 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 			.attr("id", "mapcanvas")
 			.attr("class", "map-svg flow")
 			.attr("viewBox", "0 0 "+this.config.width+" "+this.config.height);
+
 		this.svgDefs = this.tmsvg.append("defs");
 		this.zoomg = this.tmsvg.append("g").attr("class", "zoomgroup");
 		// append a background rectangle so mouse scroll zoom works over sea
@@ -166,7 +163,7 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 
 		// need to init mapper before arrows otherwise the map is on top of
 		// the arrows
-		mapper.init(this.zoomg, this.controlg, this.svgDefs, this.config);
+		mapper.init(this.zoomg, this.controlg, this.svgDefs, this.config, this.tmsvg);
 		arrows.init(this.tmsvg, this.zoomg, this.svgDefs, '#maptooltip', this.config.arrowColours,
 			this.config.minArrowWidth, this.config.maxArrowWidth, this.config.pointTypeSize,
 			mapper.countryCodeToInfo);
@@ -174,25 +171,50 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 		// set up the various callbacks we need to link things together
 		var moduleThis = this;
 		csv.init(
-			function(csvData, csvFirstTenRows, filterSpec) { moduleThis.csvLoadedCallback(csvData, csvFirstTenRows, filterSpec); },
+			this.csvLoadedCallback.bind(this),
 			function(csvData, filterSpec, filters) { moduleThis.filterLoadedCallback(csvData, filterSpec, filters); },
 			function() { moduleThis.csvLoadErrorCallback(); },
 			this.config.skipCsvAutoDetect);
 
+		imageExport.init(this.svgExportButtonElement, this.pngExportButtonElement,
+			this.tmsvg.node(), this);
+		this.imageExport = imageExport;
+
+		videoExport.init(this.videoExportButtonElement, this);
+		// the video export button is enabled after the CSV loads
+		this.setVideoExportButtonActive(false);
+
+		// bind events on the video exporter to a progress modal instance
+		this.createVideoProgressModal(videoExport);
+
+		// for loading topojson layers
+		layerLoader.init(layerFormElementId);
+		this.createLayerLoadingModal(layerLoader, mapper);
+
 		route.setCountryGetPointFunc(function(countryCode) {return mapper.countryCentrePoint(countryCode);});
+		route.setPortGetPointFunc(function(portCode) {return mapper.portCentrePoint(portCode);});
 		route.setLatLongToPointFunc(function(latLong) {return mapper.latLongToPoint(latLong);});
 		filterform.formChangedCallback = function(columnName) {return moduleThis.filterformChangedCallback(columnName); };
 		yearslider.showTradeForYear = function(year) {return moduleThis.showTradeForYear(year); };
 		// slightly misnamed as we go back to the filter values for the years
 		yearslider.showTradeForAllYears = function() {return moduleThis.filterformChangedCallback(); };
 		yearslider.enableDisableCallback = function(enable) {return moduleThis.yearSliderEnableDisableCallback(enable); };
+
 		this.setUpAsideToggle();
-		this.hideUnusedTabs();
 		yearslider.create();
+
+		this.yearslider = yearslider;
 
 		if (this.queryString.hasOwnProperty("loadcsv")) {
 			this.loadCsvFromUrl();
 		}
+
+		// Ensure we react to window resizes when needed
+		$(window).resize(this.updateLayout.bind(this));
+		this.updateLayout();
+
+		// When all else is ready, set up analytics
+		analytics.init();
 	},
 
 	setConfigDefaults: function(tmConfig) {
@@ -257,13 +279,6 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 		};
 	},
 
-	hideUnusedTabs: function() {
-		// this is hidden to start with and re-added when we add the filters
-		document.querySelector('li[role=filters]').style.display = "none";
-		// the options line will be deleted when we actually use the display
-		// TODO: remove when options available
-		document.querySelector('li[role=options]').style.display = "none";
-	},
 
 	loadCsvFromUrl: function() {
 		var csvUrl = decodeURIComponent(this.queryString.loadcsv);
@@ -282,7 +297,7 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 		this.fileFormElement.html(csvFormSkeleton);
 		// stop the form "submitting" and causing page reload
 		$('form#tm-file-select').submit(function() { return false; });
-		this.fileInputElement = this.fileFormElement.select("#fileinput");
+		this.fileInputElement = this.fileFormElement.select('input[type="file"]');
 		csv.setFileInputElement(this.fileInputElement);
 		csv.setUrlInputElement(this.fileFormElement.select("#urlinput"),
 							this.fileFormElement.select("#url-download-button"));
@@ -301,6 +316,65 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 		this.addChangeFilterSpecLink(elFilterSpecChange);
 		// finally ensure the tab is now available
 		document.querySelector('li[role=filters]').style.display = "block";
+        document.querySelector('li[role=export]').style.display = "block";
+	},
+
+	createVideoProgressModal: function (videoExport) {
+		var videoProgress = Progress(document.body);
+		videoExport.on('start', function () {
+			videoProgress.setProgress(0);
+			videoProgress.show();
+		});
+		videoExport.on('progress', function (event, progress) {
+			videoProgress.setProgress(progress);
+		});
+		videoExport.on('end', videoProgress.hide.bind(videoProgress));
+	},
+
+	createLayerLoadingModal: function (layerLoader, mapper) {
+		var layerSpinner = Spinner(document.body);
+
+		layerLoader.on("start", function (event, filesize) {
+			if (filesize > 1000000) {
+				var msg = "WARNING: layer files > 1Mb in size are likely to cause " +
+					"performance issues";
+				layerSpinner.setMessage(msg);
+			}
+			layerSpinner.show();
+		});
+
+		layerLoader.on("error", function () {
+			layerSpinner.hide();
+		});
+
+		layerLoader.on("layer", function (event, layer) {
+			// the mapper knows when the topojson has been drawn, so allow that to
+			// control when the spinner is hidden
+			// TODO don't pass callbacks around, use events consistently throughout
+			try {
+				mapper.loadTopoJSON(layer, function () {
+					layerSpinner.hide();
+					layerLoader.layerReady(layer);
+
+					// we copy the layers list here, otherwise we can't detect changes
+					// to the number of layers
+					var layers = [];
+					for (var i = 0; i < layerLoader.layers.length; i++) {
+						layers.push(util.deepCopy(layerLoader.layers[i]));
+					}
+					arrows.drawLegend({layers: layers});
+				});
+			} catch (e) {
+				console.error(e);
+
+				// very unlikely to reach this, as any valid JSON is handled correctly
+				// by d3's topojson loader, even if it doesn't contain any
+				// geometry data at all
+				layerSpinner.hide();
+				layerLoader.showError("Error rendering topojson; check your file.");
+				layerLoader.setIsLoading(false);
+			}
+		});
 	},
 
 	addChangeFilterSpecLink: function(elFilterSpecChange) {
@@ -319,11 +393,11 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 		}
 		this.minMaxYear = csv.getMinMaxYear(filters);
 		if (this.minMaxYear[0] === 0 && this.minMaxYear[1] === 0) {
-			yearslider.disableSection("No Year Column");
+			yearslider.enable("No Year Column");
 		} else if (this.minMaxYear[0] === this.minMaxYear[1]) {
-			yearslider.disableSection("There is only data for one year");
+			yearslider.disable("There is only data for one year");
 		} else {
-			yearslider.enableSection(this.minMaxYear[0], this.minMaxYear[1]);
+			yearslider.enable(this.minMaxYear[0], this.minMaxYear[1]);
 		}
 		this.createFilterForm(filters);
 	},
@@ -348,11 +422,13 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 		this.currentUnit = csv.getUnit(this.currentFilterSpec, filterValues);
 		this.drawArrows(routes,pointRoles, maxQuantity);
 
-		// colour in the countries that are trading
-		mapper.setTradingCountries(pointRoles);
+		// colour in the countries that are trading and/or countries containing a port
+		// which is trading
+		mapper.setTradingCountries(routes.getCountryCodes());
 		this.stopNowWorking();
 	},
-	drawArrows: function(routes,pointRoles,maxQuantity) {
+
+	drawArrows: function(routes, pointRoles, maxQuantity) {
 			arrows.currentUnit = this.currentUnit;
 			// now draw the routes
 			if (this.config.arrowType === "plain-arrows") {
@@ -362,9 +438,11 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 			} else {
 					console.log("unknown config.arrowType: " + this.config.arrowType);
 			}
-			arrows.drawLegend();
-	},
 
+			// check which roles are actually used in routes and only draw nodes
+			// in the legend for those roles
+			arrows.drawLegend({locationRoles: routes.getUniqueRoles()});
+	},
 
 	yearSliderEnableDisableCallback: function(enable) {
 		if (enable) {
@@ -403,21 +481,47 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 		}
 	},
 
-	csvLoadedCallback: function(csvData, csvFirstTenRows, filterSpec) {
+	csvLoadedCallback: function(csvFileName, csvData, csvFirstTenRows, filterSpec) {
 		// first cache the current values, so we can regenerate if we want
 		this.currentCsvData = csvData;
 		this.currentCsvFirstTenRows = csvFirstTenRows;
 		this.currentFilterSpec = filterSpec;
+
+		// update file name
+		this.fileFormElement.select('.custom-fileinput-filename').text(csvFileName);
 
 		document.querySelector("body").classList.add("csv-data-loaded");
 		this.updateMapperZoom();
 		this.updateMaxSingleYearQuantity();
 		this.showFilteredCsv(filterform.filterValues);
 		this.addChangeFilterSpecToDataTab();
+		this.setVideoExportButtonActive(filterSpec);
 		var errorsShown = this.reportCsvLoadErrors();
 		if (!errorsShown) {
 			// switch to filters tab
 			$('#panel-tabs a[href="#filters"]').tab('show');
+		}
+	},
+
+	setVideoExportButtonActive: function(filterSpec) {
+		// if the filter spec has at least one year column,
+		// enable the video export button; note that if the year column is empty
+		// for all rows, the video export will be available but may break
+		var on = false;
+
+		if (filterSpec !== false) {
+			for (var columnName in filterSpec) {
+				if (filterSpec[columnName].type === "year") {
+					on = true;
+					break;
+				}
+			}
+		}
+
+		if (on) {
+			this.videoExportButtonElement.attr("disabled", null);
+		}	else {
+			this.videoExportButtonElement.attr("disabled", "disabled");
 		}
 	},
 
@@ -451,6 +555,16 @@ function($, d3, arrows, csv, filterform, mapper, route, yearslider, util,
 
 	csvLoadErrorCallback: function() {
 		return this.reportCsvLoadErrors();
+	},
+
+
+	/**
+	 * Adjust layout when needed
+	 */
+	updateLayout: function() {
+		// Resize the active pane
+		var $activePane = $('#tabs .tab-pane.active');
+		$activePane.css('max-height', $(window).height() - $activePane.offset().top);
 	}
 
 	};

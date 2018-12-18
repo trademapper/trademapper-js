@@ -3,7 +3,7 @@ define(
 	function(q, csv, csvdefs, route) {
 		"use strict";
 		var returnedCsv,
-			setReturnedCsv = function(csvData, csvFirstTenRows, filterSpec) {
+			setReturnedCsv = function(csvFilename, csvData, csvFirstTenRows, filterSpec) {
 				returnedCsv = csvData;
 			},
 			returnedFilters,
@@ -31,7 +31,14 @@ define(
 				"2003,II,Elephantidae,Loxodonta africana,AT,NA,,,10,tusks,,H,W\n" +
 				"2003,II,Elephantidae,Loxodonta africana,AT,NA,,6,,tusks,,P,W\n" +
 				"2003,II,Elephantidae,Loxodonta africana,AT,NA,,6,,tusks,,T,W\n" +
-				"2003,II,Elephantidae,Loxodonta africana,AT,ZA,BW,,2,tusks,,H,W";
+				"2003,II,Elephantidae,Loxodonta africana,AT,ZA,BW,,2,tusks,,H,W",
+			csvLocationPrecedenceHeader = "Year,Family,Exporter reported quantity," +
+				"Exporter Country,Exporter ICAO,Importer Country, Importer ICAO\n",
+			csvLocationPrecedence = csvLocationPrecedenceHeader +
+				"2004,Elephantidae,1,GB,,AM,\n" +
+				"2005,Elephantidae,2,GB,EGBB,AM,\n" +
+				"2006,Elephantidae,3,GB,,AM,UDYE\n" +
+				"2007,Elephantidae,4,GB,EGBB,AM,UDYE";
 
 		var run = function() {
 
@@ -41,6 +48,7 @@ define(
 					csv.init(setReturnedCsv, setReturnedFilters, setErrorMessage, false);
 					// we also need to be able to create points
 					route.setCountryGetPointFunc(function() { return [8, 9]; });
+					route.setPortGetPointFunc(function() { return [2, 3]; });
 					route.setLatLongToPointFunc(function(latlong) { return latlong; });
 				}
 			});
@@ -196,6 +204,83 @@ define(
 							values: ["W"]
 						}
 					});
+			});
+
+			q.test('check location precedence (multiple location columns with same order and role)', function() {
+				returnedCsv = null;
+				errorMessageList = null;
+
+				var filterSpec = {
+					"Year": {
+						type: "year"
+					},
+					"Family": {
+						type: "text"
+					},
+					"Exporter reported quantity": {
+						type: "quantity"
+					},
+					"Exporter Country": {
+						type: "location",
+						locationOrder: 1,
+						locationType: "country_code",
+						locationRole: "exporter"
+					},
+					"Exporter ICAO": {
+						type: "location",
+						locationOrder: 1,
+						locationType: "port_code",
+						locationRole: "exporter"
+					},
+					"Importer Country": {
+						type: "location",
+						locationOrder: 2,
+						locationType: "country_code",
+						locationRole: "importer"
+					},
+					"Importer ICAO": {
+						type: "location",
+						locationOrder: 2,
+						locationType: "port_code",
+						locationRole: "importer"
+					}
+				};
+
+				csv.processCSVString(csvLocationPrecedence, filterSpec);
+
+				q.equal(errorMessageList, null);
+				q.notEqual(returnedCsv, null);
+
+				var routes = csv.filterDataAndReturnRoutes(
+					returnedCsv, filterSpec, initialFilterValue);
+				var routeList = routes.getRoutes();
+				q.equal(routeList.length, 4);
+				for (var i = 0; i < routeList.length; i++) {
+					q.equal(routeList[i].points.length, 2);
+				}
+
+				// test the individual routes
+				/*
+				"2004,Elephantidae,1,GB,,AM,"
+				"2005,Elephantidae,2,GB,EGBB,AM,"
+				"2006,Elephantidae,3,GB,,AM,UDYE
+				"2007,Elephantidae,4,GB,EGBB,AM,UDYE"
+				*/
+				var route1 = routeList[0];
+				q.equal(route1.points[0].countryCode, "GB");
+				q.equal(route1.points[1].countryCode, "AM");
+
+				var route2 = routeList[1];
+				q.equal(route2.points[0].portCode, "EGBB");
+				q.equal(route2.points[1].countryCode, "AM");
+
+				var route3 = routeList[2];
+				q.equal(route3.points[0].countryCode, "GB");
+				q.equal(route3.points[1].portCode, "UDYE");
+
+				var route4 = routeList[3];
+				q.equal(route4.points[0].portCode, "EGBB");
+				q.equal(route4.points[1].portCode, "UDYE");
 			});
 
 			q.test('check autodetectCsvType matches exact text', function() {

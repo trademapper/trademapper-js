@@ -5,7 +5,7 @@
 	<link rel="stylesheet" href="build/css/trademapper.css"></link>
 	<link rel="stylesheet" href="build/styles/bootstrap.min.css"></link>
 	<link rel="stylesheet" href="build/styles/bootstrap-switch.min.css"></link>
-	<link rel="stylesheet" href="build/styles/d3.slider.css"></link>
+	<link rel="stylesheet" href="build/styles/bootstrap-slider.min.css"></link>
 	<title>TradeMapper</title>
 	<script data-main="js/main" src="js/require.js"></script>
 </head>
@@ -25,71 +25,101 @@
 					<div role="tabpanel" id="tabs">
 						<button class="toggle" id="info-panel-toggle">Hide</button>
 						<ul class="nav nav-tabs" role="tablist" id="panel-tabs">
-							<li role="info" class="active"><a href="#info" role="tab" data-toggle="tab">Info</a></li>
-							<li role="data"><a href="#data" role="tab" data-toggle="tab">Data</a></li>
+							<li role="info" class="active"><a href="#info" role="tab" data-toggle="tab">Get Started</a></li>
+							<li role="export"><a href="#export" role="tab" data-toggle="tab">Export</a></li>
 							<li role="filters"><a href="#filters" role="tab" data-toggle="tab">Filters</a></li>
 							<li role="options"><a href="#options" role="tab" data-toggle="tab">Options</a></li>
 							<li role="help"><a href="#help" role="tab" data-toggle="tab">Help</a></li>
 						</ul>
 							<div class="tab-content">
 								<div role="tabpanel" id="info" class="tab-pane active">
-									<!-- Info Tab - Start Editable tab text-->
-									<h2 class="tab-pane-title">Visualise wildlife trade data</h2>
-									<p>
-									TradeMapper is an interactive tool originally developed by TRAFFIC and WWF to visualise trade data. The code for TradeMapper has been made
-									open-source via <a href="https://github.com/trademapper/trademapper-js">GitHub</a> to encourage further development and use. Any re-use of the
-									source code is governed under the <a href="http://opensource.org/licenses/GPL-3.0">GPL v3</a> license, meaning that any re-use must retain the
-									copyright and conditions, and that the names of the original creators cannot be used to endorse products derived from the software without
-									explicit permission.
-									</p>
-									<!-- Info Tab - End Editable tab text-->
-									<div class="social-share">
-										<h3>Share #TradeMapper </h3>
-										<ul class="ss-share">
-											<li class="ss-share-item">
-												<a title="Share #TradeMapper on Twitter" target="_blank"
-													class="twitter ss-share-link ico-twitter" href="https://twitter.com/share?
-													text=%23TradeMapper-%20web%20tool%20developed%20by%20%40TRAFFIC_WLTrade%20%26%20%40wwf_uk%20to%20explore%20%26%20map%20wildlife%20trade%20data%20quickly%20%26%20easily%20;
-													url=http%3A%2F%2Ftrademapper.aptivate.org%2F;">
-												</a>
-											</li>
-										</ul>
-									</div>
+									<section>
+										<p>TradeMapper is an interactive tool to visualise trade data developed by <a href="https://www.traffic.org/">TRAFFIC</a> with the generous support of <a href="https://www.wwf.org.uk/">WWF-UK</a> and <a href="https://www.arcadiafund.org.uk">Arcadia</a>, a Charitable Fund of Lisbet Rausing and Peter Baldwin.</p>
+									</section>
+									<section class="tabpane-actionbox">
+										<h1>Trade data</h1>
+										<p>To get started, upload your data in <abbr title="Comma separated values">CSV</abbr> format.</p>
+										<div class="user-actions">
+											<form id="tm-file-select"></form>
+										</div>
+									</section>
+									<section class="tabpane-actionbox">
+										<h1>Map layers</h1>
+										<p>Add up to three layers to your map in <a href="https://github.com/topojson/topojson" title="The TopoJSON format">TopoJSON format</a>. <strong>Use files &lt; 1Mb in size; larger files cause performance issues.</strong> Layers must be in <abbr title="World Geodetic System 1984">WGS84</abbr>. Convert and simplify map files at <a href="http://mapshaper.org">mapshaper</a>.</p>
+										<div class="user-actions">
+											<form id="tm-layer-select"></form>
+										</div>
+									</section>
+									<section>
+										<h1>Support us</h1>
+										<p>Please help us continue development of this tool by <a href='https://docs.google.com/forms/d/1NlyNK8LJu2hKWX0uUVJSFDJIrg3Urtv40MitzQm2-Cc/viewform' target="_blank">completing our user survey</a> and sharing TradeMapper.</p>
+                                        <div id="tabpanel-info-supportus-buttons"><div class="flex-inner">
+											<a class="btn btn-success ss-share-link ico-survey" target="_blank" href="https://docs.google.com/forms/d/1NlyNK8LJu2hKWX0uUVJSFDJIrg3Urtv40MitzQm2-Cc/viewform">User survey</a>
+											<a class="btn btn-info ss-share-link ico-twitter" target="_blank" href="https://twitter.com/share?text=%23TradeMapper-+web+tool+developed+by+%40TRAFFIC_WLTrade%2C+%40wwf_uk+%26+%40ArcadiaFund+to+explore+%26+map+wildlife+trade+data+quickly+%26+easily+%40aptivateuk;url=http%3A%2F%2Ftrademapper.co.uk%2F;">
+												Share on Twitter
+											</a>
+                                        </div></div>
+									</section>
 								</div>
-								<div role="tabpanel" id="data" class="tab-pane">
-									<!-- Data Tab - Start Editable tab text-->
-									<h2 class="tab-pane-title">Import Data</h2>
-									<p>Trademapper only accepts CSV format</p>
-									<!-- Data Tab - End Editable tab text-->
-									<div class="user-actions">
-										<form id="tm-file-select"></form>
-									</div>
+								<div role="tabpanel" id="export" class="tab-pane">
+									<section>
+										<p>You can export the current view for use in other applications. Choose your preferred format below.</p>
+									</section>
+
+									<section class="tabpane-actionbox">
+										<h1>PNG</h1>
+										<p>PNG is a common image format that can be used by programs such as Word and PowerPoint.</p>
+										<button type="button" class="btn btn-primary btn-export" id="tm-png-export">Export PNG</button>
+									</section>
+
+									<section class="tabpane-actionbox">
+										<h1>SVG</h1>
+										<p><a href="https://en.wikipedia.org/wiki/Scalable_Vector_Graphics" title="Scalable vector graphic" target="_blank">SVG</a> is a scalable vector file format which can be imported by programs such as Photoshop, or converted to other image file formats.</p>
+										<button type="button" class="btn btn-primary btn-export" id="tm-svg-export">Export SVG</button>
+									</section>
+
+									<section class="tabpane-actionbox">
+										<h1>Animated GIF</h1>
+										<p>Export an animation of your data if it spans multiple years. The animation can then be added to presentations or shared on social media.</p>
+										<button type="button" class="btn btn-primary btn-export" id="tm-video-export">Export GIF</button>
+									</section>
 								</div>
 								<div role="tabpanel" id="filters" class="tab-pane">
-									<form id="form-filters">
-									</form>
+									<section>
+										<form id="form-filters">
+										</form>
+									</section>
 								</div>
 								<div role="tabpanel" id="options" class="tab-pane">
 									<!-- Options Tab - Start Editable tab text-->
-									<h2 class="tab-pane-title">Options</h2>
+									<h1 class="tab-pane-title">Options</h1>
 									<p>options panel form</p>
 									<!-- Options Tab - End Editable tab text-->
 								</div>
 								<div role="tabpanel" id="help" class="tab-pane">
 									<!-- Help Tab - Start Editable tab text-->
-									<h2 class="tab-pane-title">Help</h2>
-										<p>For more information please read our <a href="https://trademapper.github.io/trademapper-js/" target="_blank">detailed guide to using TradeMapper</a>.</p>
-										<h3>Disclaimer</h3> The map shown is from data from <a href="http://www.naturalearthdata.com/">naturalearthdata.com</a> and doesn't imply an opinion of the legal status of borders/territories.</p>
-										<p><strong>Built by: </strong><a title="visit Aptivate website" href="http://www.aptivate.org">Aptivate</a> <strong>Code: </strong><a title="View source code" href="https://github.com/trademapper/trademapper-js">GitHub</a></p>
-									<!-- Help Tab - Start Editable tab text-->
+									<section>
+										<p>For more information please read our detailed <a href="https://trademapper.github.io/trademapper-js/" target="_blank">guide to using TradeMapper</a>.</p>
+									</section>
+									<section class="tabpane-actionbox">
+										<h1>Disclaimer</h1>
+										<p>TradeMapper accepts no liability whatsoever for any loss or damage howsoever arising from third party websites.</p>
+										<p>The map shown is from data from <a href="http://www.naturalearthdata.com/">naturalearthdata.com</a> and doesn't imply an opinion of the legal status of borders/territories.</p>
+									</section>
+									<section class="tabpane-actionbox">
+										<h1>Citation</h1>
+										<cite>TRAFFIC (2018) TradeMapper – a tool for visualising trade data. Available at <a href="http:www.trademapper.co.uk">www.trademapper.co.uk</a></cite>
+									</section>
+									<section>
+										<p><strong>Built by: </strong><a title="Aptivate website" href="http://www.aptivate.org">Aptivate</a> <strong>Code: </strong><a title="Code repository" href="https://github.com/trademapper/trademapper-js">GitHub</a></p>
+									</section>
 								</div>
 							</div>
 						</div>
 				</aside>
 				<div id="trademapper" class="map col">
-					<div id="slider" class="slider">
+					<div id="slider">
 						<div id="change-over-time">
-						</div>
 					</div>
 				</div>
 			</div>

@@ -1099,6 +1099,15 @@ p.tooltip-location {
 		.progress-bar {
 			background-color: #dc3545 !important;
 		}
+
+		[data-role="tm-modal-spinner-message"] {
+			background-color: $importer-colour;
+			font-weight: bold;
+			border-radius: 4px;
+			width: 50%;
+			margin: 1rem auto;
+			padding: 1rem;
+		}
 	}
 }
 
@@ -1211,13 +1220,13 @@ p.tooltip-location {
 
 #cookiedialog-banner {
 	position: relative;
-	
+
 	h1 {
-		font-size: 18px; 
+		font-size: 18px;
 		font-weight: bold;
 		margin: 1rem 0 0;
 	}
-	
+
 	a{
 		color: $importer-colour;
 		font-weight: bold;

@@ -3,7 +3,7 @@
 var fs = require('fs');
 var path = require('path');
 var process = require('process');
-var topojson = require(path.join(__dirname, 'trademapper', 'js', 'lib', 'topojson.v3.0.2.min'));
+var topojson = require('../trademapper/js/lib/topojson.v3.0.2.min');
 
 
 if (process.argv.length < 3) {

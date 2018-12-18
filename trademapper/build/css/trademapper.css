@@ -902,6 +902,13 @@ p.tooltip-location {
       font-weight: 800; }
     .tm-modal .tm-modal-body .progress-bar {
       background-color: #dc3545 !important; }
+    .tm-modal .tm-modal-body [data-role="tm-modal-spinner-message"] {
+      background-color: #ff6600;
+      font-weight: bold;
+      border-radius: 4px;
+      width: 50%;
+      margin: 1rem auto;
+      padding: 1rem; }
 
 .tm-modal[data-visible="true"] {
   display: flex !important; }

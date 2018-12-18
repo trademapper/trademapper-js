@@ -31,18 +31,20 @@ define([
 	"text!../fragments/layerformskeleton.html",
 ], function ($, doT, config, layerElementSkeleton, layerFormSkeleton) {
 
-	// represents a layer and its related DOM elements
-	var Layer = function (id, filename, colour, data) {
+	// represents a layer and its related DOM elements;
+	// filesize is in bytes
+	var Layer = function (id, filename, filesize, colour, data) {
 		// template filled with filename and current colour
 		var ctx = {filename: filename, colour: colour};
-		var html = doT.template(layerElementSkeleton)(ctx);
+		var elt = doT.template(layerElementSkeleton)(ctx);
 
 		return {
 			id: id,
 			filename: filename,
+			filesize: filesize,
 			colour: colour,
 			data: data,
-			elt: html,
+			elt: elt,
 		};
 	};
 
@@ -125,8 +127,9 @@ define([
 				reader.onload = function () {
 					try {
 						var data = JSON.parse(reader.result);
-					// return parsed JSON
-					resolve(data);
+
+						// resolve to parsed JSON
+						resolve(data);
 					} catch (e) {
 						reject("Unable to load JSON from file " + file.name);
 					}
@@ -164,7 +167,7 @@ define([
 
 		// file: File object
 		addLayer: function (file) {
-			this.eventFirer.trigger("start");
+			this.eventFirer.trigger("start", file.size);
 
 			this.clearErrors();
 
@@ -181,7 +184,7 @@ define([
 				function (data) {
 					// make Layer
 					var layer = Layer("layer" + layerNumber, file.name,
-						this.LAYER_COLOURS[layerNumber - 1], data);
+						file.size, this.LAYER_COLOURS[layerNumber - 1], data);
 
 					// notify listeners that layer is ready
 					this.eventFirer.trigger("layer", layer);

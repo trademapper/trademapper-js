@@ -15,7 +15,7 @@ var fs = require('fs');
 var process = require('process');
 var path = require('path');
 
-var d3 = require('./trademapper/js/lib/d3.min');
+var d3 = require('../trademapper/js/lib/d3.min');
 
 
 var scriptName = path.basename(process.argv[1]);

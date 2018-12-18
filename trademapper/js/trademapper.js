@@ -334,7 +334,12 @@ function($, d3, analytics, arrows, csv, filterform, mapper, route, yearslider,
 	createLayerLoadingModal: function (layerLoader, mapper) {
 		var layerSpinner = Spinner(document.body);
 
-		layerLoader.on("start", function () {
+		layerLoader.on("start", function (event, filesize) {
+			if (filesize > 1000000) {
+				var msg = "WARNING: layer files > 1Mb in size are likely to cause " +
+					"performance issues";
+				layerSpinner.setMessage(msg);
+			}
 			layerSpinner.show();
 		});
 
@@ -350,6 +355,14 @@ function($, d3, analytics, arrows, csv, filterform, mapper, route, yearslider,
 				mapper.loadTopoJSON(layer, function () {
 					layerSpinner.hide();
 					layerLoader.layerReady(layer);
+
+					// we copy the layers list here, otherwise we can't detect changes
+					// to the number of layers
+					var layers = [];
+					for (var i = 0; i < layerLoader.layers.length; i++) {
+						layers.push(util.deepCopy(layerLoader.layers[i]));
+					}
+					arrows.drawLegend({layers: layers});
 				});
 			} catch (e) {
 				console.error(e);
@@ -414,7 +427,8 @@ function($, d3, analytics, arrows, csv, filterform, mapper, route, yearslider,
 		mapper.setTradingCountries(routes.getCountryCodes());
 		this.stopNowWorking();
 	},
-	drawArrows: function(routes,pointRoles,maxQuantity) {
+
+	drawArrows: function(routes, pointRoles, maxQuantity) {
 			arrows.currentUnit = this.currentUnit;
 			// now draw the routes
 			if (this.config.arrowType === "plain-arrows") {
@@ -424,9 +438,11 @@ function($, d3, analytics, arrows, csv, filterform, mapper, route, yearslider,
 			} else {
 					console.log("unknown config.arrowType: " + this.config.arrowType);
 			}
-			arrows.drawLegend();
-	},
 
+			// check which roles are actually used in routes and only draw nodes
+			// in the legend for those roles
+			arrows.drawLegend({locationRoles: routes.getUniqueRoles()});
+	},
 
 	yearSliderEnableDisableCallback: function(enable) {
 		if (enable) {

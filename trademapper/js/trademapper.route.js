@@ -1,5 +1,5 @@
 
-define(["trademapper.portlookup"], function(portlookup) {
+define(["trademapper.portlookup", "util"], function(portlookup, util) {
 	"use strict";
 	// this is done to avoid circular dependencies
 	var countryGetPointFunc, portGetPointFunc, latLongToPointFunc,
@@ -396,6 +396,23 @@ define(["trademapper.portlookup"], function(portlookup) {
 			}
 		}
 		return pointRoles;
+	};
+
+	/*
+	 * Extract an array of all the roles which occur on the routes in the
+	 * collection.
+	 * Returns an array of roles, which is equal to or a subset of the roles
+	 * in locationRoles, with no duplicate values.
+	 */
+	RouteCollection.prototype.getUniqueRoles = function() {
+		var collectedRoles = [];
+		var pointRoles = this.getPointRoles();
+
+		for (var key in pointRoles) {
+			collectedRoles = collectedRoles.concat(pointRoles[key].roles.toArray());
+		}
+
+		return util.unique(collectedRoles);
 	};
 
 	RouteCollection.prototype.addRoute = function(route) {

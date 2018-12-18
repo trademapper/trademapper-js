@@ -1,6 +1,8 @@
 module.exports = function(grunt) {
-    var sourceDir = 'trademapper/resources/',
-        buildDir = 'trademapper/build/';
+    var sourceDir = 'trademapper',
+				resourceDir = sourceDir + '/resources/',
+        buildDir = sourceDir + '/build/',
+				distDir = 'dist/';
 
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
@@ -8,7 +10,7 @@ module.exports = function(grunt) {
         //Compile sass to css
         sass: {
             dist: {
-                src: sourceDir + 'styles/**/*.scss',
+                src: resourceDir + 'styles/**/*.scss',
                 dest: buildDir + 'css/trademapper.css'
             }
         },
@@ -16,17 +18,21 @@ module.exports = function(grunt) {
         //Watch files for changes, then run given task
         watch: {
             sass: {
-                files: [sourceDir + 'styles/**/*.scss'],
+                files: [resourceDir + 'styles/**/*.scss'],
                 tasks: ['sass']
             }
         },
 
-        //Copy source files to build dir
+				clean: {
+						dist: [distDir]
+				},
+
+        //Copy source files to build dir or dist directory
         copy: {
-            dist: {
+            build: {
                 files: [{
                     expand: true,
-                    cwd: sourceDir,
+                    cwd: resourceDir,
                     src: [
                         'images/**/*.jpg',
                         'images/**/*.png',
@@ -39,12 +45,39 @@ module.exports = function(grunt) {
                     dest: buildDir
                 }]
             },
-        }
+
+						// this copies files from build/, so copy:build needs to be run
+						// first for this to produce a working distribution
+						dist: {
+								files: [
+										{
+												expand: true,
+												cwd: sourceDir,
+												src: [
+													'index.html',
+													'js/**',
+													'fragments/**',
+													'build/**',
+													'sample_data/**',
+													'!build/css/trademapper.css.map',
+													'!build/styles/bootstrap.css',
+													'!build/styles/bootstrap-switch.css',
+													'!build/styles/bootstrap.css.map',
+												],
+												dest: distDir
+										},
+								]
+						}
+        },
     });
 
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-sass');
     grunt.loadNpmTasks('grunt-contrib-watch');
+		grunt.loadNpmTasks('grunt-contrib-clean');
 
-    grunt.registerTask('default',['sass', 'copy', 'watch']);
+    grunt.registerTask('default',['sass', 'copy:build', 'watch']);
+
+		// produces a built version of the app in the dist/ directory
+		grunt.registerTask('dist', ['clean:dist', 'sass', 'copy:build', 'copy:dist']);
 };

@@ -3,7 +3,7 @@ permalink: /
 layout:    default
 title:     What is TradeMapper?
 ---
-![TradeMapper](https://raw.githubusercontent.com/trademapper/trademapper-js/TradeMapper_cover.png "TradeMapper")
+![TradeMapper](https://github.com/trademapper/trademapper-js/blob/staging/TradeMapper_cover.png)
 
 
 ### What is TradeMapper?

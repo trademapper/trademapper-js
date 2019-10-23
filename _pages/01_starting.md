@@ -28,7 +28,7 @@ Below are steps for getting started with TradeMapper. Please read these in conju
  
   * __Location__ - This should be used when a column contains information on a location in the trade chain. If you select Location, two further boxes will appear underneath which allow you to select;
   
-     * The type of location data (Country Code (e.g. TZ), Country Code (Multiple values) (e.g. TZ, UG, HK) or Latitude/Longitude Place Name (e.g. Chitwan National Park).
+     * The type of location data (Country Code (e.g. TZ), Country Code (Multiple values) (e.g. TZ, UG, HK), Port Code (IATA or UNLOCODE), Latitude/Longitude Place Name (e.g. Chitwan National Park).
      
      * The role of the location in the trade chain (origin, exporter, transit, importer). These different roles are symbolised by different coloured points on the map.
      

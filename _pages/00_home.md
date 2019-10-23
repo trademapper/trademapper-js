@@ -12,7 +12,7 @@ TradeMapper is an interactive browser-based tool developed by TRAFFIC and WWF to
 
 TradeMapper is a tool to help analyse and visualise data. However it is essential that you recognise the limitations and caveats associated with your dataset, and keep this in mind when interpreting the map.
 
-Users can also use TradeMapper to visualise non-wildlife flow data such as flows of investments or people, or points at single locations.  
+Users can also use TradeMapper to visualise non-wildlife flow data such as flows of investments or people.  
 
 TradeMapper was initially created by Willow Outhwaite (TRAFFIC) and Paul Roberts (formerly WWF-UK). TRAFFIC was developed by TRAFFIC with the generous support of WWF-UK and Arcadia, a Charitable Fund of Lisbet Rausing and Peter Baldwin.
  

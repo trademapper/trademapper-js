@@ -14,14 +14,33 @@ TradeMapper uses 2-letter ISO codes as they are less prone to spelling mistakes 
 
 As well as country codes, TradeMapper also works with locations given as geographical coordinates.
 
-__Why are some countries green?__
-If a country is involved in the trade (either as origin, exporter, transit, importer) then it will be highlighted in green on the map. This makes it easier to determine which countries are involved and which are not. In some rare cases, overseas territories/regions may also be green (e.g. French Guiana if France is involved in trade).
+__Why are some countries dark grey?__
+If a country is involved in the trade (either as origin, exporter, transit, importer) then it will be highlighted in dark grey on the map. This makes it easier to determine which countries are involved and which are not. In some rare cases, overseas territories/regions may also be dark grey (e.g. French Guiana if France is involved in trade).
 
 __What do the coloured circles mean?__
 The coloured circles (points) represent the different role(s) a country plays in the trade chain: a country could be the origin of the wildlife product, it could be an exporter, a transit point or an importer. A country can have multiple roles so may have more than one coloured dot. You assign these roles using the Custom CSV Importer box. Check the legend on the map to find out which colour relates to which role.
 
 __What do the grey diagonal lines over some countries mean?__
 These lines symbolise disputed regions or territories such as Kashmir. This data comes from www.naturalearthdata.com and doesn't imply an opinion of the legal status of borders/territories by TRAFFIC or WWF.
+
+__How do I add map layers?__
+TradeMapper can display map layers (polygons, lines, points) that are in TopoJSON format.
+If you have map layers in different formats (e.g. Shapefiles, GeoJSON, CSV) then you can easily convert them to TopoJSON using a free tool called Mapshaper https://mapshaper.org/. THIS TAKES LESS THAN 3 MINUTES!
+Your map layer must be in the coordinate system WGS84. If your layer is in a different coordinate system you will need to convert it (using a GIS such as ArcGIS or QGIS).
+Step by Step Guide to Converting from Shapefile to TopoJSON
+1.	Navigate to https://mapshaper.org/
+2.	Click “select” and navigate to your saved Shapefile
+3.	Select all the files that make up a Shapefile (.CPG, .DBF, .PRJ, .SHP, .SHX) and click Open 
+4.	Click Import (keep the default settings that Mapshaper suggests)
+5.	A map of your Shapefile will appear. Click Export and select TopoJSON. Your TopoJSON map layer is ready to load into TradeMapper!
+
+6.	If the TopoJSON layer is unnecessarily complex (e.g. a species’ range that is very detailed) you can simplify it in Mapshaper. Follow steps 1-5 above to produce a TopoJSON. 
+7.	Load your TopoJSON into Mapshaper using the same method detailed above for a Shapefile.
+8.	Click Simplify (keep the default settings that Mapshaper suggests) and use the Slider at the top of the screen to simplify the layer as much as you want.
+9.	Click Export (as TopoJSON) and your simplified layer is ready to load into TradeMapper!
+To load the map layer into TradeMapper, simply navigate to http://www.trademapper.co.uk/ (if you haven’t already) and click Add Map Layer. You can include up to three map layers in one map. The colours of the map layers are pre-determined (green, yellow, red).  
+
+
 
 __How can I make arrows merge?__
 In certain cases it may be useful to make all the arrows travelling in the same direction into one thick arrow rather than several thin arrows. This is possible by adding “/?arrowtype=flowmap” to the end of the url. However, this does have several limitations (e.g. pop up boxes no longer work, there are bends in the arrows when smaller arrows split off which can appear like transit points). Hopefully future development will improve this function but for now please be wary and make sure you understand exactly what you are doing.

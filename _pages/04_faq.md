@@ -54,3 +54,10 @@ TradeMapper runs locally on your computer so no information is transmitted via t
 
 __How can I make arrows merge?__
 In certain cases it may be useful to make all the arrows travelling in the same direction into one thick arrow rather than several thin arrows. This is possible by adding “/?arrowtype=flowmap” to the end of the url. However, this does have several limitations (e.g. pop up boxes no longer work, there are bends in the arrows when smaller arrows split off which can appear like transit points). Hopefully future development will improve this function but for now please be wary and make sure you understand exactly what you are doing.
+
+__Why won't my CSV work?__
+If there is a problem with your CSV then it will not display correctly in TradeMapper. The Custom CSV Importer Box will still appear but instead of neatly being aligned into the correct columns, it will look strange:
+
+![TradeMapper](https://github.com/trademapper/trademapper-js/blob/staging/TradeMapper_cover.png)
+
+

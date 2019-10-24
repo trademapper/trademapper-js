@@ -24,7 +24,8 @@ __What do the grey diagonal lines over some countries mean?__
 These lines symbolise disputed regions or territories such as Kashmir. This data comes from www.naturalearthdata.com and doesn't imply an opinion of the legal status of borders/territories by TRAFFIC or WWF.
 
 __How do I add map layers?__
-TradeMapper can display map layers (polygons, lines, points) that are in TopoJSON format. You can include up to three map layers in one map. The colours of the map layers are pre-determined (green, yellow, red).
+TradeMapper can display map layers (polygons, lines, points) that are in TopoJSON format. You can include up to three map layers in one map. The colours of the map layers are pre-determined (green, yellow, red). The name given to the map layer in the legend will the file name (limited to 10 characters).
+
 If you have map layers in different formats (e.g. Shapefiles, GeoJSON, CSV) then you can easily convert them to TopoJSON using a free tool called Mapshaper https://mapshaper.org/. THIS TAKES LESS THAN 3 MINUTES!
 Your map layer must be in the coordinate system WGS84. If your layer is in a different coordinate system you will need to convert it (using a GIS such as ArcGIS or QGIS).
 

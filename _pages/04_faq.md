@@ -58,8 +58,6 @@ In certain cases it may be useful to make all the arrows travelling in the same 
 __Why won't my CSV work?__
 If there is a problem with your CSV then it will not display correctly in TradeMapper. The Custom CSV Importer Box will still appear but instead of neatly being aligned into the correct columns, it will look strange:
 
-![Error loading CSV](https://github.com/trademapper/trademapper-js/blob/gh-pages/CSV_error1.png)
-
 There are a couple of reasons why this may have happened and solutions to try out:
 -	Did you save your file as a CSV (Comma delimited) (*.csv) file, or as one of the other CSV options in Excel (e.g. CSV UTF-8, CSV (Macintosh), CSV (MS-DOS)?
 

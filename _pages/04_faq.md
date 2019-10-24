@@ -60,4 +60,14 @@ If there is a problem with your CSV then it will not display correctly in TradeM
 
 ![Error loading CSV](https://github.com/trademapper/trademapper-js/blob/gh-pages/CSV_error1.png)
 
+There are a couple of reasons why this may have happened and solutions to try out:
+-	Did you save your file as a CSV (Comma delimited) (*.csv) file, or as one of the other CSV options in Excel (e.g. CSV UTF-8, CSV (Macintosh), CSV (MS-DOS)?
+
+-	Is there something wrong with the CSV? Open it in Excel and look for problems e.g. is all data in one column? Avoid using “double quotes” or other strange characters in your column headings as these can confuse TradeMapper and other programmes.
+
+-	Did you create your CSV using a Mac? Sometimes this can cause unexplainable errors. Do make sure you have saved correctly the file as a CSV (Comma delimited) (*.csv) file.
+
+-	Check in Excel that the delimiter is set to a comma (under File -> Options -> Advanced -> Editing Selection -> Untick the “Use system separators” setting and put a comma in the “Decimal Separator” field.
+
+-	If none of the points above fix your problem, it could be that the default decimal symbol on your computer is not a full stop (.) but instead uses another character such as a comma (,).  You can check this in the control panel of your computer. Be cautious when amending this as it might have implication for other programs on your computer – it is suggested that when using TradeMapper change it to a full stop, and when finished return to the default (e.g. a comma). If relevant, ask your IT support to assist with this.
 

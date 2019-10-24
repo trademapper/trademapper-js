@@ -24,9 +24,10 @@ __What do the grey diagonal lines over some countries mean?__
 These lines symbolise disputed regions or territories such as Kashmir. This data comes from www.naturalearthdata.com and doesn't imply an opinion of the legal status of borders/territories by TRAFFIC or WWF.
 
 __How do I add map layers?__
-TradeMapper can display map layers (polygons, lines, points) that are in TopoJSON format.
+TradeMapper can display map layers (polygons, lines, points) that are in TopoJSON format. You can include up to three map layers in one map. The colours of the map layers are pre-determined (green, yellow, red).
 If you have map layers in different formats (e.g. Shapefiles, GeoJSON, CSV) then you can easily convert them to TopoJSON using a free tool called Mapshaper https://mapshaper.org/. THIS TAKES LESS THAN 3 MINUTES!
 Your map layer must be in the coordinate system WGS84. If your layer is in a different coordinate system you will need to convert it (using a GIS such as ArcGIS or QGIS).
+
 Step by Step Guide to Converting from Shapefile to TopoJSON
 1.	Navigate to https://mapshaper.org/
 2.	Click “select” and navigate to your saved Shapefile
@@ -34,22 +35,22 @@ Step by Step Guide to Converting from Shapefile to TopoJSON
 4.	Click Import (keep the default settings that Mapshaper suggests)
 5.	A map of your Shapefile will appear. Click Export and select TopoJSON. Your TopoJSON map layer is ready to load into TradeMapper!
 
-6.	If the TopoJSON layer is unnecessarily complex (e.g. a species’ range that is very detailed) you can simplify it in Mapshaper. Follow steps 1-5 above to produce a TopoJSON. 
-7.	Load your TopoJSON into Mapshaper using the same method detailed above for a Shapefile.
-8.	Click Simplify (keep the default settings that Mapshaper suggests) and use the Slider at the top of the screen to simplify the layer as much as you want.
-9.	Click Export (as TopoJSON) and your simplified layer is ready to load into TradeMapper!
-To load the map layer into TradeMapper, simply navigate to http://www.trademapper.co.uk/ (if you haven’t already) and click Add Map Layer. You can include up to three map layers in one map. The colours of the map layers are pre-determined (green, yellow, red).  
+Step by Step Guide to Simplifying a map layer
+1.	If the TopoJSON layer is unnecessarily complex (e.g. a species’ range that is very detailed) you can simplify it in Mapshaper. Follow steps 1-5 above to produce a TopoJSON. 
+2.	Load your TopoJSON into Mapshaper using the same method detailed above for a Shapefile.
+3.	Click Simplify (keep the default settings that Mapshaper suggests) and use the Slider at the top of the screen to simplify the layer as much as you want.
+4.	Click Export (as TopoJSON) and your simplified layer is ready to load into TradeMapper!
+5. To load the map layer into TradeMapper, simply navigate to http://www.trademapper.co.uk/ (if you haven’t already) and click Add Map Layer.   
 
-
-
-__How can I make arrows merge?__
-In certain cases it may be useful to make all the arrows travelling in the same direction into one thick arrow rather than several thin arrows. This is possible by adding “/?arrowtype=flowmap” to the end of the url. However, this does have several limitations (e.g. pop up boxes no longer work, there are bends in the arrows when smaller arrows split off which can appear like transit points). Hopefully future development will improve this function but for now please be wary and make sure you understand exactly what you are doing.
 
 __How can I change the size of the arrows?__
 The default maximum thickness of arrows is currently 30 pixels. If this seems too thick or thin it is possible to manually change it by adding ”/?maxarrowwidth=10” to the end of the url (this will reduce it to 10 pixels but any number can be used).
 
-__How can I create an image__
-Images can be created by pressing the print screen button on your keyboard and pasting it into a document/editing program. There are also a number of ‘snipping’ add ons for your browser which can be downloaded and allow any portion of the screen to be selected and saved as an image (rather than print screen which takes the entire screen).
+__How can I create an image/animation__
+Once your trade data has been loaded into TradeMapper, an Export tab will appear in the panel on the left. Maps can be exported as PNGs (a common image format that can be used by programs such as Word and PowerPoint) or SVG (scalable vector file format which can be imported by programs such as Photoshop, or converted to other image file formats). If the trade data contains data from more than one year, you can also export an animated GIF showing the change over time. This GIF can be added to presentations or shared on social media.
 
 __How secure is TradeMapper?__
 TradeMapper runs locally on your computer so no information is transmitted via the internet when using a .csv file stored on your computer.
+
+__How can I make arrows merge?__
+In certain cases it may be useful to make all the arrows travelling in the same direction into one thick arrow rather than several thin arrows. This is possible by adding “/?arrowtype=flowmap” to the end of the url. However, this does have several limitations (e.g. pop up boxes no longer work, there are bends in the arrows when smaller arrows split off which can appear like transit points). Hopefully future development will improve this function but for now please be wary and make sure you understand exactly what you are doing.

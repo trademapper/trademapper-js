@@ -4,15 +4,8 @@ layout:    default
 title:     Getting Started
 ---
 
-###YouTube tutorials 
 
-<a href="https://www.youtube.com/watch?v=Bnsr5Hpt07k">How do I import data?</a> 
-
-<a href="https://www.youtube.com/watch?v=EIklmvz_KiU">What if my data doesn't contain 2- letter country codes?</a> 
-
-<a href="https://www.youtube.com/watch?v=B4ND5ZmuPhU">What if my location is given in coordinates?</a> 
-
-##Quick start
+__Quick start__
 
 Below are steps for getting started with TradeMapper. Please read these in conjuction with the rest of the information on this website.
 
@@ -67,6 +60,15 @@ TradeMapper will attempt to auto-assign roles to each of the columns but you sho
 12) Under the "Export" tab you can select different formats for exporting your map: .png, .svg and animated .gif.
 
   
+__YouTube tutorials__
+
+These tutorials were made using an older version of TradeMapper so look a little different.
+
+<a href="https://www.youtube.com/watch?v=Bnsr5Hpt07k">How do I import data?</a> 
+
+<a href="https://www.youtube.com/watch?v=EIklmvz_KiU">What if my data doesn't contain 2- letter country codes?</a> 
+
+<a href="https://www.youtube.com/watch?v=B4ND5ZmuPhU">What if my location is given in coordinates?</a> 
   
 
 

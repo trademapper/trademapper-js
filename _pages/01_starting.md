@@ -16,15 +16,13 @@ title:     Getting Started
 
 Below are steps for getting started with TradeMapper. Please read these in conjuction with the rest of the information on this website.
 
-1) Select the 'Data' tab and navigate to your .csv file. Files can be accessed from your computer or online using a url _(e.g. paste http://trademapper.aptivate.org/sample_data/cites/cites_unicorn.csv into the box_).
+1) On the Get Started tab, click "select data" and navigate to your .csv file.
 
-2) If your data is from the CITES or ETIS databases then it should import and draw instantly onto the map.
+2) A Custom CSV Importer box will appear. This interface allows you to map any data by telling TradeMapper which columns to look in for certain information (such as the year, or the location). Do not use any commas within your numerical data (e.g. 100,000 should be 100000).
 
-3) If your data does not come from CITES or ETIS, a Custom CSV Importer box will appear. This interface allows you to map any data by telling TradeMapper which columns to look in for certain information (such as the year, or the location). Do not use any commas within your numerical data (e.g. 100,000 should be 100000).
+3) Use the orange boxes in the Custom CSV Importer interface to assign each column a role:
 
-4) Use the orange boxes in the Custom CSV Importer interface to assign each column a role:
-
-  * __Ignore__ - TradeMapper will ignore this column so it will not be possible to filter on at a later stage. This is useful   when you have lots of columns in your .csv which are irrelevant.
+  * __Ignore__ - TradeMapper will ignore this column so it will not be possible to filter on at a later stage. This is useful when you have lots of columns in your .csv which are irrelevant.
  
   * __Location__ - This should be used when a column contains information on a location in the trade chain. If you select Location, two further boxes will appear underneath which allow you to select;
   
@@ -34,7 +32,7 @@ Below are steps for getting started with TradeMapper. Please read these in conju
      
      * An orange Location Order circle will also appear underneath. TradeMapper uses this number to draw the locations in the correct order (e.g. type '1' if this location is the first in the trade chain, type '2' if it is the second etc.).
 
-  * __Location Coordinates__ - This should be used when a column contains specific geographical coordinates (GPS) rather than a 2-letter country code. If this option is selected, one further box will appear underneath:
+  * __Location Coordinates__ - This should be used when a column contains specific geographical coordinates (GPS) rather than a 2-letter country code or a port code. If this option is selected, one further box will appear underneath:
  
      * This box can be used to specify if the data in that column is the Latitude or the Longitude. The latitude and longitude of the location must be stored in separate columns. 
  
@@ -50,28 +48,26 @@ Below are steps for getting started with TradeMapper. Please read these in conju
 
 TradeMapper will attempt to auto-assign roles to each of the columns but you should alyways check these are correct.
 
-5) Click Done. The Custom CSV Importer box can be found on the 'Filters' tab and accessed at any time.
+4) Click Done. The Custom CSV Importer box can be found on the 'Filters' tab and accessed at any time.
 
-6) Check the 'Data' tab to see if any errors have occured.
+5) On the 'Filters' tab, select the correct column for ‘Quantity’. TradeMapper uses data from this column to draw the arrows, and the thickness of the arrow is based on this. The legend for the arrows and points will appear on the map automatically.
 
-7) On the 'Filters' tab, select the correct column for ‘Quantity’. TradeMapper uses data from this column to draw the arrows, and the thickness of the arrow is based on this. The legend for the arrows and points will appear on the map automatically.
+6) Use the filters on the 'Filters' tab if required. Changes to the map will be instant when you change something in the filters.
 
-8) Use the filters on the 'Filters' tab if required. Changes to the map will be instant when you change something in the filters.
+7) Use the 'Hide' tab to hide the control panel to allow more of the map to be shown.
 
-9) Use the 'Hide' tab to hide the control panel to allow more of the map to be shown.
+8) Hover over arrows to get a pop up box which contains detailed information for that specific arrow. Pop up boxes can be dragged to a new location or closed by pressing the ‘X’ in the box.  Hover over the symbols which relate to each country's role in the hover box to reveal their meaning (e.g. black circle with cross means origin), or hover over the 2-letter country code in the hover box to see the full country name.
 
-10) Hover over arrows to get a pop up box which contains detailed information for that specific arrow. Pop up boxes can be dragged to a new location or closed by pressing the ‘X’ in the box.  Hover over the symbols which relate to each country's role in the hover box to reveal their meaning (e.g. black circle with cross means origin), or hover over the 2-letter country code in the hover box to see the full country name.
+9) Zoom in using the wheel on your mouse if required.
 
-11) Zoom in using the wheel on your mouse if required.
+10) Pan by clicking on the map with your mouse and dragging if required.
 
-12) Pan by clicking on the map with your mouse and dragging if required.
+11) Click the Play button at the bottom of the screen to view an animation of the data over time. Click the Pause button or drag the slider to a specific year to investigate further. Click the Year Slide off to return to the filters.
 
-13) Click the Play button at the bottom of the screen to view an animation of the data over time. Click the Pause button or drag the slider to a specific year to investigate further. Click the Year Slide off to return to the filters. _(Zoom/pan is disabled when using the change over time function)_.
+12) Under the "Export" tab you can select different formats for exporting your map: .png, .svg and animated .gif.
 
-14) Share your map by:
-
-  * Taking a screenshot
-  * Embedding the .csv in the url and sharing.
+  
+  
 
 
 

@@ -3,10 +3,8 @@ permalink: /
 layout:    default
 title:     What is TradeMapper?
 ---
-![TradeMapper](https://github.com/trademapper/trademapper-js/blob/staging/TradeMapper_cover.png)
+![](https://github.com/trademapper/trademapper-js/blob/staging/TradeMapper_cover.png)
 
-
-### What is TradeMapper?
 
 TradeMapper is an interactive browser-based tool developed by TRAFFIC to visualise wildlife trade data quickly and easily. TradeMapper can be used both to analyse data, and also create attractive maps for inclusion in reports and presentations. 
 

@@ -49,7 +49,7 @@ Step by Step Guide to Simplifying a map layer
 4.	Click Export (as TopoJSON) and your simplified layer is ready to load into TradeMapper!
 5. To load the map layer into TradeMapper, simply navigate to http://www.trademapper.co.uk/ (if you haven’t already) and click Add Map Layer.   
 
-__How can I create an image/animation__
+__How can I create an image/animation?__
 Once your trade data has been loaded into TradeMapper, an Export tab will appear in the panel on the left. Maps can be exported as PNGs (a common image format that can be used by programs such as Word and PowerPoint) or SVG (scalable vector file format which can be imported by programs such as Photoshop, or converted to other image file formats). If the trade data contains data from more than one year, you can also export an animated GIF showing the change over time. This GIF can be added to presentations or shared on social media.
 
 __How secure is TradeMapper?__

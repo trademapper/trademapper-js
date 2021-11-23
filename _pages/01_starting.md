@@ -43,33 +43,25 @@ TradeMapper will attempt to auto-assign roles to each of the columns but you sho
 
 4) Click Done. The Custom CSV Importer box can be found on the 'Filters' tab and accessed at any time.
 
-5) On the 'Filters' tab, select the correct column for ‘Quantity’. TradeMapper uses data from this column to draw the arrows, and the thickness of the arrow is based on this. The legend for the arrows and points will appear on the map automatically.
+5) Add in any map layers you may have to give context to your trade data e.g. polygon of national parts. See FAQs for further guidance.
 
-6) Use the filters on the 'Filters' tab if required. Changes to the map will be instant when you change something in the filters.
+6) On the 'Filters' tab, select the correct column for ‘Quantity’. TradeMapper uses data from this column to draw the arrows, and the thickness of the arrow is based on this. The legend for the arrows and points will appear on the map automatically.
 
-7) Use the 'Hide' tab to hide the control panel to allow more of the map to be shown.
+7) Use the filters on the 'Filters' tab if required. Changes to the map will be instant when you change something in the filters.
 
-8) Hover over arrows to get a pop up box which contains detailed information for that specific arrow. Pop up boxes can be dragged to a new location or closed by pressing the ‘X’ in the box.  Hover over the symbols which relate to each country's role in the hover box to reveal their meaning (e.g. black circle with cross means origin), or hover over the 2-letter country code in the hover box to see the full country name.
+8) Use the 'Hide' tab to hide the control panel to allow more of the map to be shown.
 
-9) Zoom in using the wheel on your mouse if required.
+9) Hover over arrows to get a pop up box which contains detailed information for that specific arrow. Pop up boxes can be dragged to a new location or closed by pressing the ‘X’ in the box.  Hover over the symbols which relate to each country's role in the hover box to reveal their meaning (e.g. black circle with cross means origin), or hover over the 2-letter country code in the hover box to see the full country name.
 
-10) Pan by clicking on the map with your mouse and dragging if required.
+10) Zoom in using the wheel on your mouse if required.
 
-11) Click the Play button at the bottom of the screen to view an animation of the data over time. Click the Pause button or drag the slider to a specific year to investigate further. Click the Year Slide off to return to the filters.
+11) Pan by clicking on the map with your mouse and dragging if required.
 
-12) Under the "Export" tab you can select different formats for exporting your map: .png, .svg and animated .gif.
+12) Click the Play button at the bottom of the screen to view an animation of the data over time. Click the Pause button or drag the slider to a specific year to investigate further. Click the Year Slide off to return to the filters.
 
-  
-__YouTube tutorials__
+13) Under the "Export" tab you can select different formats for exporting your map: .png, .svg and animated .gif.
 
-These tutorials were made using an older version of TradeMapper so look a little different.
 
-<a href="https://www.youtube.com/watch?v=Bnsr5Hpt07k">How do I import data?</a> 
-
-<a href="https://www.youtube.com/watch?v=EIklmvz_KiU">What if my data doesn't contain 2- letter country codes?</a> 
-
-<a href="https://www.youtube.com/watch?v=B4ND5ZmuPhU">What if my location is given in coordinates?</a> 
-  
 
 
 

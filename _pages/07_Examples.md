@@ -20,6 +20,8 @@ How do I import data? https://www.youtube.com/watch?v=Bnsr5Hpt07k
 
 How do I find 2-letter country codes? https://www.youtube.com/watch?v=EIklmvz_KiU
 
+How do I add in map layers (polygons, lines, points)? https://www.youtube.com/watch?v=CKAYtAaOmd0 
+
 How to map trade between sea/airports? https://www.youtube.com/watch?v=i7VGSRMygnU&t=464s
 
 How do I map trade if my location is given in geographic coordinates? https://www.youtube.com/watch?v=B4ND5ZmuPhU 

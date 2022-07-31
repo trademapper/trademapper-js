@@ -41,3 +41,10 @@ We have more detailed information on the [wiki](https://github.com/trademapper/t
 * [How to use TradeMapper](https://github.com/trademapper/trademapper-js/wiki/How-to-use-trademapper)
 * [Getting set up for development](https://github.com/trademapper/trademapper-js/wiki/Development)
 * [A guide to the code](https://github.com/trademapper/trademapper-js/wiki/Guide-to-the-code)
+
+Docker usage
+-------------
+
+From the root directory run docker build -t trademapper:0.1 . to build the container image; run docker run -d -p 80:80 trademapper:0.1 to start the container .
+
+Remember any changes to the codebase will require a new docker build and new docker run ( remember to kill the previosu container )
